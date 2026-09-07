@@ -1,0 +1,14 @@
+{
+  "type": "frontend",
+  "name": "Word Document Compressor presents docx upload zone and image quality settings",
+  "description": "Verifies the Word compressor page presents docx file dropzone, image compression quality sliders, layout preservation assurances, and FAQ.",
+  "priority": "p1",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to /tools/word-compressor" },
+    { "type": "assertion", "description": "Verify the docx dropzone is visible with file format requirements and size limits" },
+    { "type": "assertion", "description": "Verify the image quality compression slider and preset options are interactive" },
+    { "type": "assertion", "description": "Verify the feature badges highlighting lossless layout preservation and client-side processing are displayed" },
+    { "type": "action", "description": "Click on the first Word compressor FAQ item" },
+    { "type": "assertion", "description": "Verify the FAQ panel opens with detailed explanation of docx XML structure optimization" }
+  ]
+}

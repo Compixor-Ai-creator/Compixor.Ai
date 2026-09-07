@@ -1,0 +1,15 @@
+{
+  "type": "frontend",
+  "name": "QR Code Generator configures custom content and renders styled preview",
+  "description": "Verifies user can enter URL content, switch input types, select color and style presets, and generate interactive QR previews with export options.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to /tools/qr-generator" },
+    { "type": "assertion", "description": "Verify the QR generator page renders input tabs for URL, Text, WiFi, Contact, and Email alongside a live QR preview card" },
+    { "type": "action", "description": "Click the 'Text' input tab" },
+    { "type": "action", "description": "Type 'TestSprite Autonomous Verification' into the text input area" },
+    { "type": "action", "description": "Click the 'Cyber Violet' style preset button" },
+    { "type": "assertion", "description": "Verify the QR code preview card reflects the updated styling and renders the canvas element" },
+    { "type": "assertion", "description": "Verify the PNG and SVG download buttons are enabled and visible in the action panel" }
+  ]
+}

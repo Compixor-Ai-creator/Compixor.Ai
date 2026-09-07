@@ -1,0 +1,14 @@
+{
+  "type": "frontend",
+  "name": "PDF Compressor provides dropzone and configurable compression settings",
+  "description": "Verifies the PDF compressor interface presents drag-and-drop upload, compression level selection controls, and client-side privacy assurances.",
+  "priority": "p1",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to /tools/pdf-compressor" },
+    { "type": "assertion", "description": "Verify the upload dropzone is visible with clear instructions for uploading PDF files" },
+    { "type": "assertion", "description": "Verify compression level options for Extreme, Recommended, and Low compression are present" },
+    { "type": "action", "description": "Click the 'Extreme Compression' option card" },
+    { "type": "assertion", "description": "Verify the selected compression level card is highlighted as active" },
+    { "type": "assertion", "description": "Verify the trust signals and privacy guarantee section confirms 100% in-browser processing" }
+  ]
+}

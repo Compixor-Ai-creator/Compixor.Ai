@@ -1,0 +1,15 @@
+{
+  "type": "frontend",
+  "name": "Passport Photo Maker configures country standards and printable sheet layouts",
+  "description": "Verifies the passport photo tool provides standard country dimension presets, background replacement options, and print sheet configuration.",
+  "priority": "p1",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to /tools/passport-photo" },
+    { "type": "assertion", "description": "Verify the photo maker upload area and country preset selector are visible" },
+    { "type": "action", "description": "Click on the country preset selector and choose 'Schengen / EU (35x45 mm)'" },
+    { "type": "assertion", "description": "Verify the dimensions indicator updates to 35 x 45 mm" },
+    { "type": "action", "description": "Click the 'Light Blue' background color option" },
+    { "type": "assertion", "description": "Verify the background color selection is updated" },
+    { "type": "assertion", "description": "Verify the 4x6 inch printable sheet toggle option is available" }
+  ]
+}

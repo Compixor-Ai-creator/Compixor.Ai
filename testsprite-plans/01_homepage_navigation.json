@@ -1,0 +1,15 @@
+{
+  "type": "frontend",
+  "name": "Homepage showcases tool suite and navigates to tools successfully",
+  "description": "Verifies the homepage displays the brand headline, 4 productivity tool cards, FAQ accordion items, and navigates into tool subpages via CTA links.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to /" },
+    { "type": "assertion", "description": "Verify the hero section displays the main headline and badge highlighting client-side private tools" },
+    { "type": "assertion", "description": "Verify the tools grid displays 4 distinct tool cards for PDF Compressor, Word Compressor, Passport Photo Maker, and QR Code Generator" },
+    { "type": "action", "description": "Click the first FAQ accordion item to expand it" },
+    { "type": "assertion", "description": "Verify the FAQ answer panel expands and reveals explanation text" },
+    { "type": "action", "description": "Click the 'PDF Compressor' card button" },
+    { "type": "assertion", "description": "Verify the browser navigates to /tools/pdf-compressor and displays the PDF tool interface" }
+  ]
+}
