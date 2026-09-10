@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+/* Fonts loaded via next/font in layout.tsx — no @import needed */
 
 @tailwind base;
 @tailwind components;
@@ -51,8 +51,9 @@
 
   body {
     @apply bg-white dark:bg-surface-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-300;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
   }
+
 }
 
 @layer components {
@@ -502,6 +503,51 @@
     .animate-badge-2,
     .animate-badge-3 {
       animation: none !important;
+    }
+  }
+
+  /* ─── Mobile Performance: Disable heavy GPU effects on small screens ─── */
+  @media (max-width: 768px) {
+    /* Stop heavy animated ambient orbs on mobile */
+    .slide-blur-orb-1,
+    .slide-blur-orb-2,
+    .slide-blur-orb-3 {
+      animation: none !important;
+      filter: none !important;
+      -webkit-filter: none !important;
+      opacity: 0 !important;
+    }
+
+    /* Simplify glass-card blur on mobile (heavy compositor layer) */
+    .glass-card {
+      backdrop-filter: blur(4px) !important;
+      -webkit-backdrop-filter: blur(4px) !important;
+    }
+
+    /* Simplify glass-nav blur on mobile */
+    .glass-nav {
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+    }
+
+    /* Stop rotating gradient border animation on mobile */
+    .glow-border::before {
+      animation: none !important;
+      background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    }
+
+    /* Stop all ambient orb animations */
+    .slide-blur-container {
+      display: none !important;
+    }
+
+    /* Disable hover transform animations on mobile (touch has no hover) */
+    .glass-card:hover {
+      transform: none !important;
+    }
+
+    .btn-primary:hover {
+      transform: none !important;
     }
   }
 }

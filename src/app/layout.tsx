@@ -1,12 +1,34 @@
 import type { Metadata } from 'next';
+import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/react';
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
+
+const BASE_URL = 'https://compixor.ai';
 
 export const metadata: Metadata = {
-  title: 'COMPIXOR.AI — Professional Media & Document Tools',
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: 'COMPIXOR.AI — Professional Media & Document Tools',
+    template: '%s | COMPIXOR.AI',
+  },
   description:
     'Compress PDFs, optimize Word documents, generate passport photos, and create custom QR codes — all processed locally in your browser. Fast, private, and free.',
   keywords: [
@@ -18,11 +40,42 @@ export const metadata: Metadata = {
     'privacy first',
     'client-side processing',
   ],
+  alternates: {
+    canonical: BASE_URL,
+  },
   openGraph: {
     title: 'COMPIXOR.AI — Professional Media & Document Tools',
     description:
       'Transform your files instantly with AI-powered tools that never leave your browser.',
     type: 'website',
+    url: BASE_URL,
+    siteName: 'COMPIXOR.AI',
+    images: [
+      {
+        url: '/images/og-banner.png',
+        width: 1200,
+        height: 630,
+        alt: 'COMPIXOR.AI — Professional Media & Document Tools',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'COMPIXOR.AI — Professional Media & Document Tools',
+    description:
+      'Transform your files instantly with AI-powered tools that never leave your browser.',
+    images: ['/images/og-banner.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
@@ -32,19 +85,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="en"
+      className={`dark ${inter.variable} ${outfit.variable}`}
+      suppressHydrationWarning
+    >
       <body className="min-h-screen topo-bg">
         <ThemeProvider>
           <div className="relative min-h-screen flex flex-col">
@@ -78,6 +123,7 @@ export default function RootLayout({
             }}
           />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

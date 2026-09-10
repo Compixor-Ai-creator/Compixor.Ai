@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable gzip compression
+  compress: true,
+
+  // Optimize package imports to reduce bundle size (tree-shaking)
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
+
   webpack: (config) => {
     config.resolve.alias.canvas = false;
     config.resolve.fallback = {
@@ -9,6 +17,7 @@ const nextConfig = {
     };
     return config;
   },
+
   async rewrites() {
     return [
       {

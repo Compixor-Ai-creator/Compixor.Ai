@@ -358,9 +358,14 @@ export default function HomePage() {
         <div className="space-y-4">
           {homeFaqs.map((faq, idx) => {
             const isOpen = activeFaq === idx;
+            const panelId = `faq-panel-${idx}`;
+            const triggerId = `faq-trigger-${idx}`;
             return (
               <div key={idx} className="glass-card rounded-2xl overflow-hidden transition">
                 <button
+                  id={triggerId}
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
                   onClick={() => setActiveFaq(isOpen ? null : idx)}
                   className="w-full p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-zinc-900 dark:text-white"
                 >
@@ -374,14 +379,21 @@ export default function HomePage() {
                     }`}
                   />
                 </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 pt-3">
-                    {faq.a}
-                  </div>
-                )}
+                {/* Answer always in DOM for SEO — hidden via CSS, not unmounted */}
+                <div
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={triggerId}
+                  className={`px-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 transition-all duration-300 overflow-hidden ${
+                    isOpen ? 'max-h-96 pb-5 pt-3 opacity-100' : 'max-h-0 pb-0 pt-0 opacity-0'
+                  }`}
+                >
+                  {faq.a}
+                </div>
               </div>
             );
           })}
+
         </div>
       </section>
 
