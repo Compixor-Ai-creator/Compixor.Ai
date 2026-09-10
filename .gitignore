@@ -32,3 +32,21 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Python virtual environment (contains large ML binaries like llvmlite.dll)
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Flask instance folder
+instance/
+
+# Python egg
+*.egg-info/
+dist/
