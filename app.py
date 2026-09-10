@@ -1,456 +1,329 @@
 """
-Flask Background Remover API
-Replaces legacy tint/filter effects with deep-learning AI background removal using rembg and PIL.
+Flask AI Passport Photo Maker & Background Remover — v3.0
+Fixes:
+  - rembg.remove() called with raw bytes (not PIL Image), which is the safe cross-version API
+  - Full image-mode normalisation (RGBA/RGB/P/L) before and after removal
+  - Pillow dpi kwarg passed as a plain int tuple accepted by all Pillow >=9 versions
+  - sheet canvas converted to RGB before saving (avoids "cannot write mode RGBA as JPEG" edge case)
+  - Response changed to JSON { ok, image (base64), filename } so frontend never needs to use alert()
+  - All exceptions include full traceback in dev; sanitised in prod
 """
 
 import io
 import os
+import base64
 import logging
-from flask import Flask, request, send_file, render_template_string, jsonify
-from PIL import Image
+import traceback
+from flask import Flask, request, send_file, render_template, jsonify
+from PIL import Image, ImageDraw
 import rembg
 
-# Setup logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+# ── Logging ──────────────────────────────────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
 logger = logging.getLogger(__name__)
 
-# Initialize Flask application
-app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Allow up to 32MB image uploads
+# ── App init ──────────────────────────────────────────────────────────────────
+TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), 'templates')
+app = Flask(__name__, template_folder=TEMPLATES_DIR)
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024   # 32 MB upload cap
+DEV_MODE = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
 
-# Enable Cross-Origin Resource Sharing (CORS) headers for frontend integration
+
 @app.after_request
-def add_cors_headers(response):
+def add_cors(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
 
 
-# ==============================================================================
-# IMAGE PROCESSING CORE: REMBG BACKGROUND REMOVAL
-# ==============================================================================
-def remove_background(input_image_bytes: bytes) -> bytes:
+# ── Constants ─────────────────────────────────────────────────────────────────
+COLOR_MAP = {
+    'white':      (255, 255, 255),
+    'light-blue': (224, 242, 254),   # NADRA / Gulf light blue #e0f2fe
+    'blue':       (29,  78,  216),   # Royal navy blue #1d4ed8
+    'light-gray': (226, 232, 240),   # ICAO / Schengen #e2e8f0
+    'transparent': None              # Pure alpha cutout
+}
+
+# Output pixel sizes @ 300 DPI
+PASSPORT_SPECS = {
+    '2x2':   {'w': 600, 'h': 600},   # US / India / 51×51 mm
+    '35x45': {'w': 413, 'h': 531},   # UK / EU / NADRA / 35×45 mm
+}
+
+
+# ── Image helpers ─────────────────────────────────────────────────────────────
+
+def _to_safe_rgb(img: Image.Image) -> Image.Image:
+    """Convert any PIL mode to plain RGB — needed before JPEG export."""
+    if img.mode == 'RGBA':
+        bg = Image.new('RGB', img.size, (255, 255, 255))
+        bg.paste(img, mask=img.split()[3])
+        return bg
+    return img.convert('RGB')
+
+
+def remove_background(raw_bytes: bytes) -> Image.Image:
     """
-    Core AI background removal pipeline.
-    
-    Replaces legacy tint/color-grading logic:
-      - Takes raw image buffer
-      - Loads into PIL.Image with RGBA conversion
-      - Runs rembg.remove() for studio-grade portrait & object background removal
-      - Exports clean transparent PNG buffer
+    Run rembg on the raw file bytes and return an RGBA PIL Image.
+    We pass *bytes* rather than a PIL Image — that is the universal
+    input type accepted by all rembg versions (>=2.0).
     """
-    # 1. Open image using PIL
-    input_image = Image.open(io.BytesIO(input_image_bytes)).convert("RGBA")
-    
-    # 2. Run rembg dynamic background removal
-    # (Replaced legacy tint/filter transformation with state-of-the-art AI matting)
-    output_image = rembg.remove(input_image)
-    
-    # 3. Save resulting image with alpha channel to an in-memory PNG byte stream
-    output_buffer = io.BytesIO()
-    output_image.save(output_buffer, format="PNG", optimize=True)
-    output_buffer.seek(0)
-    
-    return output_buffer.getvalue()
+    # rembg.remove() → bytes (PNG with alpha channel)
+    result_bytes = rembg.remove(raw_bytes)
+
+    # Parse back to PIL and guarantee RGBA mode
+    cutout = Image.open(io.BytesIO(result_bytes))
+    if cutout.mode != 'RGBA':
+        cutout = cutout.convert('RGBA')
+    return cutout
 
 
-# ==============================================================================
-# ROUTES & ENDPOINTS
-# ==============================================================================
-
-@app.route('/health', methods=['GET'])
-def health_check():
-    """Health check endpoint for container probes and load balancers."""
-    return jsonify({
-        "status": "healthy",
-        "service": "Flask Rembg Background Remover",
-        "version": "1.0.0"
-    }), 200
-
-
-@app.route('/remove-bg', methods=['POST', 'OPTIONS'])
-@app.route('/api/remove-bg', methods=['POST', 'OPTIONS'])
-@app.route('/api/process', methods=['POST', 'OPTIONS'])
-def process_remove_background():
+def apply_background(cutout: Image.Image, bg_color_key: str) -> Image.Image:
     """
-    API endpoint: Takes an uploaded image file, processes it through rembg.remove(),
-    and returns a clean PNG file with transparent background.
+    Composite the RGBA cutout onto a solid background colour.
+    Returns RGBA when transparent is requested, RGB otherwise
+    (so downstream code can save without mode issues).
+    """
+    bg_key = (bg_color_key or 'white').lower().strip()
+    bg_rgb = COLOR_MAP.get(bg_key, (255, 255, 255))
+
+    if bg_rgb is None:
+        # Transparent — return the raw RGBA cutout
+        return cutout
+
+    # Create RGB canvas and alpha-composite the cutout over it
+    canvas = Image.new('RGBA', cutout.size, bg_rgb + (255,))
+    canvas.paste(cutout, (0, 0), cutout)
+    # Convert to RGB so saving never triggers RGBA warnings
+    return canvas.convert('RGB')
+
+
+def crop_to_passport(img: Image.Image, photo_size: str) -> Image.Image:
+    """
+    Center-crop the image to the target passport aspect ratio then
+    scale to the exact 300-DPI pixel dimensions.
+    A 12 % top bias preserves the crown of the head.
+    """
+    spec = PASSPORT_SPECS.get(photo_size, PASSPORT_SPECS['2x2'])
+    tw, th = spec['w'], spec['h']
+    target_ratio = tw / th
+
+    ow, oh = img.size
+    orig_ratio = ow / oh
+
+    if orig_ratio > target_ratio:
+        # Wider than target → crop left/right symmetrically
+        nw = int(oh * target_ratio)
+        left = (ow - nw) // 2
+        box = (left, 0, left + nw, oh)
+    else:
+        # Taller than target → keep top, trim bottom (12 % bias)
+        nh = int(ow / target_ratio)
+        excess = oh - nh
+        top = max(0, int(excess * 0.12))
+        box = (0, top, ow, top + nh)
+
+    return img.crop(box).resize((tw, th), Image.Resampling.LANCZOS)
+
+
+def build_sheet(photo: Image.Image, paper_size: str, count: int) -> Image.Image:
+    """
+    Tile `count` copies of `photo` onto a 300-DPI printable sheet.
+    Returns an RGB Image (white sheet background).
+    """
+    if paper_size == 'single' or count <= 1:
+        # For a single photo just make sure it's RGB-safe
+        return photo if photo.mode == 'RGB' else _to_safe_rgb(photo)
+
+    # ── Sheet dimensions (300 DPI) ────────────────────────────────────────
+    if paper_size == '4x6':
+        sw, sh = 1800, 1200   # 6 × 4 inches landscape
+        grid = {2: (2, 1), 4: (2, 2), 6: (3, 2)}.get(count, (3, 2))
+    elif paper_size == 'a4':
+        sw, sh = 2480, 3508   # A4 portrait
+        grid = {6: (2, 3), 12: (3, 4), 16: (4, 4)}.get(count, (4, 4))
+    else:
+        return photo if photo.mode == 'RGB' else _to_safe_rgb(photo)
+
+    cols, rows = grid
+    is_rgba = photo.mode == 'RGBA'
+
+    # ── Create sheet canvas (always RGB white) ────────────────────────────
+    sheet_mode = 'RGBA' if is_rgba else 'RGB'
+    sheet_fill = (255, 255, 255, 255) if is_rgba else (255, 255, 255)
+    sheet = Image.new(sheet_mode, (sw, sh), sheet_fill)
+    draw  = ImageDraw.Draw(sheet)
+
+    # ── Scale photo to fit cell with 6 % margin each side ────────────────
+    cell_w = sw / cols
+    cell_h = sh / rows
+    fit_w  = cell_w * 0.88
+    fit_h  = cell_h * 0.88
+
+    pw, ph = photo.size
+    if (pw / ph) > (fit_w / fit_h):
+        dw = int(fit_w)
+        dh = int(fit_w * ph / pw)
+    else:
+        dh = int(fit_h)
+        dw = int(fit_h * pw / ph)
+
+    thumb = photo.resize((dw, dh), Image.Resampling.LANCZOS)
+
+    # ── Paste copies ──────────────────────────────────────────────────────
+    placed = 0
+    for r in range(rows):
+        for c in range(cols):
+            if placed >= count:
+                break
+            cx = int(c * cell_w + (cell_w - dw) / 2)
+            cy = int(r * cell_h + (cell_h - dh) / 2)
+
+            if is_rgba:
+                sheet.paste(thumb, (cx, cy), thumb)
+            else:
+                sheet.paste(thumb, (cx, cy))
+
+            # Subtle cut-guide border
+            draw.rectangle(
+                [cx - 1, cy - 1, cx + dw, cy + dh],
+                outline=(203, 213, 225) if not is_rgba else (203, 213, 225, 255),
+                width=1
+            )
+            placed += 1
+
+    # Always return RGB for final export
+    return sheet.convert('RGB') if sheet.mode == 'RGBA' else sheet
+
+
+def _encode_image(img: Image.Image) -> tuple[str, bytes]:
+    """
+    Encode a PIL Image to PNG bytes and a base64 data-URI string.
+    Returns (data_uri, raw_bytes).
+    """
+    buf = io.BytesIO()
+    # Pillow >=9 accepts a plain int-tuple for dpi; ensure RGB for PNG to
+    # avoid any palette/transparency edge cases.
+    save_img = img if img.mode in ('RGB', 'RGBA') else img.convert('RGB')
+    save_img.save(buf, format='PNG', dpi=(300, 300))
+    raw = buf.getvalue()
+    b64 = base64.b64encode(raw).decode('ascii')
+    data_uri = f"data:image/png;base64,{b64}"
+    return data_uri, raw
+
+
+# ── Routes ────────────────────────────────────────────────────────────────────
+
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
+
+
+@app.route('/generate-passport-photo', methods=['POST', 'OPTIONS'])
+def generate_passport_photo():
+    """
+    Full passport-photo pipeline:
+      1. rembg background removal (bytes → bytes → RGBA PIL)
+      2. Solid-colour background compositing
+      3. Aspect-ratio crop + 300-DPI resize
+      4. Multi-photo printable grid sheet
+      5. Return JSON { ok, image (base64 data-URI), filename }
+         so the frontend can update <img> src in-place, no page reload.
     """
     if request.method == 'OPTIONS':
         return '', 204
 
-    # 1. Check for uploaded file in multipart form data
-    file = None
-    if 'file' in request.files:
-        file = request.files['file']
-    elif 'image' in request.files:
-        file = request.files['image']
+    # ── File ──────────────────────────────────────────────────────────────
+    file = request.files.get('file') or request.files.get('image')
+    if not file or not file.filename:
+        return jsonify({'ok': False, 'error': 'No image file uploaded (key: file or image).'}), 400
 
-    if not file or file.filename == '':
-        return jsonify({
-            "error": "No file uploaded. Please provide an image file with key 'file' or 'image' in multipart/form-data."
-        }), 400
+    raw_bytes = file.read()
+    if not raw_bytes:
+        return jsonify({'ok': False, 'error': 'Uploaded file is empty.'}), 400
+
+    # ── Form params ───────────────────────────────────────────────────────
+    paper_size = request.form.get('paper_size', '4x6').lower().strip()
+    photo_size = request.form.get('photo_size', '2x2').lower().strip()
+    bg_color   = request.form.get('bg_color',   'white').lower().strip()
+    try:
+        photo_count = max(1, int(request.form.get('photo_count', 6)))
+    except (ValueError, TypeError):
+        photo_count = 6
+
+    logger.info(
+        f"[generate] file={file.filename!r} paper={paper_size} "
+        f"size={photo_size} bg={bg_color} count={photo_count}"
+    )
 
     try:
-        logger.info(f"Processing background removal for file: {file.filename}")
-        raw_bytes = file.read()
-        
-        # Verify valid image content
-        if len(raw_bytes) == 0:
-            return jsonify({"error": "Uploaded file is empty."}), 400
+        # Step 1: AI background removal — pass raw bytes, not PIL Image
+        cutout = remove_background(raw_bytes)
 
-        # Execute rembg background removal
-        clean_png_bytes = remove_background(raw_bytes)
+        # Step 2: Apply solid background colour (or keep transparent)
+        coloured = apply_background(cutout, bg_color)
 
-        # Return transparent PNG
-        return send_file(
-            io.BytesIO(clean_png_bytes),
-            mimetype='image/png',
-            as_attachment=False,
-            download_name='transparent_output.png'
-        )
+        # Step 3: Crop + resize to biometric passport spec
+        passport = crop_to_passport(coloured, photo_size)
 
-    except Exception as e:
-        logger.error(f"Error processing image {file.filename}: {str(e)}", exc_info=True)
+        # Step 4: Tile onto printable sheet
+        sheet = build_sheet(passport, paper_size, photo_count)
+
+        # Step 5: Encode as base64 PNG
+        data_uri, raw_png = _encode_image(sheet)
+        filename = f"passport_{paper_size}_{photo_size}.png"
+
         return jsonify({
-            "error": "Failed to process image.",
-            "details": str(e)
-        }), 500
+            'ok':       True,
+            'image':    data_uri,
+            'filename': filename,
+        })
+
+    except Exception as exc:
+        tb = traceback.format_exc()
+        logger.error(f"[generate] FAILED: {exc}\n{tb}")
+        detail = tb if DEV_MODE else str(exc)
+        return jsonify({'ok': False, 'error': 'Image processing failed.', 'detail': detail}), 500
 
 
-# ==============================================================================
-# BUILT-IN INTERACTIVE WEB UI (GET /)
-# ==============================================================================
-UI_TEMPLATE = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Background Remover Studio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #090d16;
-            color: #f1f5f9;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
-        }
-        .container {
-            max-width: 900px;
-            width: 100%;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .badge {
-            display: inline-block;
-            background: rgba(99, 102, 241, 0.15);
-            color: #818cf8;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            padding: 6px 14px;
-            border-radius: 9999px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        h1 {
-            font-size: 38px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 30%, #818cf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-        }
-        p.subtitle {
-            color: #94a3b8;
-            font-size: 15px;
-        }
-        .card {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 20px;
-            padding: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .dropzone {
-            border: 2px dashed #374151;
-            border-radius: 16px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: rgba(17, 24, 39, 0.6);
-        }
-        .dropzone:hover, .dropzone.dragover {
-            border-color: #6366f1;
-            background: rgba(99, 102, 241, 0.05);
-        }
-        .icon {
-            font-size: 40px;
-            margin-bottom: 12px;
-        }
-        .upload-text {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 6px;
-        }
-        .upload-hint {
-            color: #64748b;
-            font-size: 13px;
-        }
-        .btn {
-            background: linear-gradient(135deg, #4f46e5, #6366f1);
-            color: #ffffff;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .btn:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.4);
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .preview-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 28px;
-        }
-        @media (max-width: 640px) {
-            .preview-grid { grid-template-columns: 1fr; }
-        }
-        .preview-box {
-            background: #0f172a;
-            border: 1px solid #1e293b;
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-        }
-        .preview-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #94a3b8;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .img-wrapper {
-            width: 100%;
-            height: 280px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border-radius: 10px;
-        }
-        .checkerboard {
-            background-color: #1e293b;
-            background-image:
-                linear-gradient(45deg, #0f172a 25%, transparent 25%),
-                linear-gradient(-45deg, #0f172a 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #0f172a 75%),
-                linear-gradient(-45deg, transparent 75%, #0f172a 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-        }
-        .img-wrapper img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 0.8s ease-in-out infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .download-btn {
-            background: #10b981;
-            margin-top: 14px;
-            padding: 10px 18px;
-            font-size: 13px;
-        }
-        .download-btn:hover {
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
-        }
-        .api-info {
-            margin-top: 32px;
-            padding: 20px;
-            background: #0b1120;
-            border: 1px solid #1e293b;
-            border-radius: 14px;
-            font-size: 13px;
-            color: #94a3b8;
-        }
-        code {
-            background: #1e293b;
-            color: #818cf8;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <span class="badge">Production AI Service</span>
-            <h1>Background Remover API</h1>
-            <p class="subtitle">Deep-learning background separation powered by rembg &amp; Python Flask</p>
-        </div>
+@app.route('/remove-bg', methods=['POST', 'OPTIONS'])
+@app.route('/api/remove-bg', methods=['POST', 'OPTIONS'])
+def api_remove_bg():
+    """Standalone background-removal endpoint → returns transparent PNG directly."""
+    if request.method == 'OPTIONS':
+        return '', 204
 
-        <div class="card">
-            <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
-                <div class="icon">✨</div>
-                <div class="upload-text">Click to choose a photo or drag &amp; drop here</div>
-                <div class="upload-hint">Supports PNG, JPG, JPEG, WEBP (up to 32MB)</div>
-                <input type="file" id="fileInput" accept="image/*" style="display: none;">
-            </div>
+    file = request.files.get('file') or request.files.get('image')
+    if not file or not file.filename:
+        return jsonify({'ok': False, 'error': 'No file provided.'}), 400
 
-            <button class="btn" id="processBtn" disabled onclick="removeBg()">
-                <span>Remove Background</span>
-            </button>
+    raw_bytes = file.read()
+    if not raw_bytes:
+        return jsonify({'ok': False, 'error': 'Empty file.'}), 400
 
-            <div class="preview-grid" id="previewGrid" style="display: none;">
-                <div class="preview-box">
-                    <div class="preview-title">Original Photo</div>
-                    <div class="img-wrapper">
-                        <img id="origImg" src="" alt="Original">
-                    </div>
-                </div>
-                <div class="preview-box">
-                    <div class="preview-title">Transparent Cutout</div>
-                    <div class="img-wrapper checkerboard">
-                        <img id="resultImg" src="" alt="Output">
-                    </div>
-                    <a id="downloadLink" class="btn download-btn" download="cutout.png">
-                        ⬇ Download Transparent PNG
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="api-info">
-            <strong style="color: #f1f5f9;">Direct REST API Endpoint:</strong><br><br>
-            <code>curl -X POST -F "file=@photo.jpg" http://localhost:5000/remove-bg --output cutout.png</code>
-        </div>
-    </div>
-
-    <script>
-        const fileInput = document.getElementById('fileInput');
-        const dropzone = document.getElementById('dropzone');
-        const processBtn = document.getElementById('processBtn');
-        const previewGrid = document.getElementById('previewGrid');
-        const origImg = document.getElementById('origImg');
-        const resultImg = document.getElementById('resultImg');
-        const downloadLink = document.getElementById('downloadLink');
-
-        let currentFile = null;
-
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
-            }
-        });
-
-        dropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropzone.classList.add('dragover');
-        });
-        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
-        dropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropzone.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
-                handleFile(e.dataTransfer.files[0]);
-            }
-        });
-
-        function handleFile(file) {
-            currentFile = file;
-            origImg.src = URL.createObjectURL(file);
-            previewGrid.style.display = 'grid';
-            resultImg.src = '';
-            downloadLink.style.display = 'none';
-            processBtn.disabled = false;
-        }
-
-        async function removeBg() {
-            if (!currentFile) return;
-
-            processBtn.disabled = true;
-            processBtn.innerHTML = '<span class="spinner"></span> Processing with AI...';
-
-            const formData = new FormData();
-            formData.append('file', currentFile);
-
-            try {
-                const response = await fetch('/remove-bg', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    const err = await response.json();
-                    alert('Error: ' + (err.error || 'Failed to remove background'));
-                    return;
-                }
-
-                const blob = await response.blob();
-                const cutoutUrl = URL.createObjectURL(blob);
-                resultImg.src = cutoutUrl;
-                downloadLink.href = cutoutUrl;
-                downloadLink.style.display = 'flex';
-            } catch (err) {
-                alert('Network error: ' + err.message);
-            } finally {
-                processBtn.disabled = false;
-                processBtn.innerHTML = '<span>Remove Background</span>';
-            }
-        }
-    </script>
-</body>
-</html>
-"""
-
-@app.route('/', methods=['GET'])
-def index():
-    """Serve modern interactive browser UI."""
-    return render_template_string(UI_TEMPLATE)
+    try:
+        cutout = remove_background(raw_bytes)
+        buf = io.BytesIO()
+        cutout.save(buf, format='PNG')
+        buf.seek(0)
+        return send_file(buf, mimetype='image/png', download_name='cutout.png')
+    except Exception as exc:
+        logger.error(f"[remove-bg] {exc}", exc_info=True)
+        return jsonify({'ok': False, 'error': str(exc)}), 500
 
 
-# ==============================================================================
-# MAIN ENTRY POINT (LOCAL DEVELOPMENT)
-# ==============================================================================
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({'status': 'healthy', 'service': 'Passport Photo Maker', 'version': '3.0.0'})
+
+
+# ── Entry point ───────────────────────────────────────────────────────────────
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
-    logger.info(f"Starting Flask Background Remover service on port {port}...")
-    app.run(host='0.0.0.0', port=port, debug=debug_mode)
+    logger.info(f"Starting on port {port} …")
+    app.run(host='0.0.0.0', port=port, debug=DEV_MODE)

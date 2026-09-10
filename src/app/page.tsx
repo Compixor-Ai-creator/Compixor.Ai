@@ -19,8 +19,8 @@ import {
   ChevronDown,
   HelpCircle,
   Layers,
-  Maximize,
 } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/SocialIcons';
 
 const tools = [
   {
@@ -55,7 +55,7 @@ const tools = [
   },
   {
     href: '/tools/full-dp-maker',
-    icon: Maximize,
+    icon: WhatsAppIcon,
     title: 'Full DP Maker',
     tagline: 'No Crop Profile Picture',
     description: 'Fit whole portrait & landscape photos inside WhatsApp, Instagram, and Facebook avatar circles with blur, color, and mirror backgrounds.',
@@ -140,9 +140,37 @@ export default function HomePage() {
     <div className="relative">
       {/* ============ HERO SECTION ============ */}
       <section className="relative overflow-hidden">
-        {/* Glow gradients */}
-        <div className="absolute top-16 left-1/4 w-80 h-80 bg-brand-500/10 rounded-full blur-[110px] pointer-events-none" />
-        <div className="absolute top-36 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[130px] pointer-events-none" />
+        {/* ── Ambient Glow Orbs (pointer-events-none, behind all content) ── */}
+
+        {/* Orb 1 — Violet / Purple — top-left */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -z-10 -top-10 -left-16 w-[480px] h-[480px] rounded-full opacity-30 dark:opacity-25"
+          style={{
+            background: 'radial-gradient(ellipse at center, #7c3aed 0%, #6d28d9 35%, transparent 70%)',
+            filter: 'blur(90px)',
+          }}
+        />
+
+        {/* Orb 2 — Cyan / Emerald — bottom-right */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -z-10 bottom-0 -right-20 w-[560px] h-[440px] rounded-full opacity-25 dark:opacity-20"
+          style={{
+            background: 'radial-gradient(ellipse at center, #06b6d4 0%, #10b981 45%, transparent 70%)',
+            filter: 'blur(110px)',
+          }}
+        />
+
+        {/* Orb 3 — Rose / Amber accent — upper-right, very subtle */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -z-10 top-8 right-8 w-[320px] h-[280px] rounded-full opacity-20 dark:opacity-15"
+          style={{
+            background: 'radial-gradient(ellipse at center, #f43f5e 0%, #fb923c 55%, transparent 72%)',
+            filter: 'blur(80px)',
+          }}
+        />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 md:pt-28 pb-16">
           <motion.div
@@ -153,7 +181,7 @@ export default function HomePage() {
           >
             {/* Badge */}
             <motion.div variants={itemVariants} className="mb-6">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/25 dark:border-brand-400/30 backdrop-blur-sm shadow-sm shadow-brand-500/10">
                 <Sparkles className="w-3.5 h-3.5" />
                 All-in-One Client-Side Document & Media Toolkit
               </span>
@@ -184,13 +212,16 @@ export default function HomePage() {
               variants={itemVariants}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <Link href="/tools/pdf-compressor" className="w-full sm:w-auto btn-primary flex items-center justify-center gap-2 text-base px-8 py-3.5">
-                Compress PDF Free
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link href="#tools" className="w-full sm:w-auto btn-secondary flex items-center justify-center gap-2 text-base px-8 py-3.5">
-                Explore All 4 Tools
-              </Link>
+              {/* Subtle frosted glass pill wrapping both CTAs */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 p-2 sm:p-2.5 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/50 dark:border-white/10 backdrop-blur-md shadow-sm w-full sm:w-auto">
+                <Link href="/tools/pdf-compressor" className="w-full sm:w-auto btn-primary flex items-center justify-center gap-2 text-base px-8 py-3.5">
+                  Compress PDF Free
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link href="#tools" className="w-full sm:w-auto btn-secondary flex items-center justify-center gap-2 text-base px-8 py-3.5">
+                  Explore All 5 Tools
+                </Link>
+              </div>
             </motion.div>
           </motion.div>
         </div>
@@ -355,7 +386,21 @@ export default function HomePage() {
       </section>
 
       {/* ============ CTA BOX ============ */}
-      <section className="py-16">
+      <section className="py-16 relative overflow-hidden">
+        {/* Ambient glow behind the CTA box */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -z-10 inset-0 flex items-center justify-center"
+        >
+          <div
+            className="w-[600px] h-[300px] rounded-full opacity-20 dark:opacity-15"
+            style={{
+              background: 'radial-gradient(ellipse at center, #7c3aed 0%, #06b6d4 50%, transparent 72%)',
+              filter: 'blur(80px)',
+            }}
+          />
+        </div>
+
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             className="glow-border p-10 sm:p-14 rounded-3xl"

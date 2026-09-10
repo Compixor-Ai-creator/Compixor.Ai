@@ -32,12 +32,15 @@ import {
   Sparkle,
   Smartphone,
   CheckCircle,
+  Zap,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
+import { WhatsAppIcon, InstagramIcon, FacebookIcon, TelegramIcon, TwitterXIcon, LinkedInIcon, YouTubeIcon } from '@/components/SocialIcons';
 
 type FillMode = 'blur' | 'color' | 'gradient' | 'mirror' | 'resize' | 'crop';
 type ImageFormat = 'image/jpeg' | 'image/png' | 'image/webp';
+type SocialPlatform = 'whatsapp' | 'instagram' | 'facebook' | 'telegram' | 'twitter' | 'linkedin' | 'youtube' | 'custom';
 
 interface PresetSize {
   id: string;
@@ -45,6 +48,98 @@ interface PresetSize {
   size: number;
   description: string;
 }
+
+interface SocialPlatformPreset {
+  id: SocialPlatform;
+  name: string;
+  size: number;
+  label: string;
+  color: string;
+  gradient: string;
+  bgColor: string;
+  borderColor: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const socialPlatformPresets: SocialPlatformPreset[] = [
+  {
+    id: 'whatsapp',
+    name: 'WhatsApp DP',
+    size: 500,
+    label: '500 × 500 px',
+    color: 'from-[#25D366] to-[#128C7E]',
+    gradient: 'linear-gradient(135deg, #25D366, #128C7E)',
+    bgColor: 'bg-[#25D366]/10 border-[#25D366]/30',
+    borderColor: 'border-[#25D366]',
+    icon: WhatsAppIcon,
+  },
+  {
+    id: 'instagram',
+    name: 'Instagram',
+    size: 320,
+    label: '320 × 320 px',
+    color: 'from-[#E1306C] via-[#C13584] to-[#833AB4]',
+    gradient: 'linear-gradient(135deg, #833AB4, #C13584, #E1306C)',
+    bgColor: 'bg-[#E1306C]/10 border-[#C13584]/30',
+    borderColor: 'border-[#C13584]',
+    icon: InstagramIcon,
+  },
+  {
+    id: 'facebook',
+    name: 'Facebook',
+    size: 170,
+    label: '170 × 170 px',
+    color: 'from-[#1877F2] to-[#0C5CC7]',
+    gradient: 'linear-gradient(135deg, #1877F2, #0C5CC7)',
+    bgColor: 'bg-[#1877F2]/10 border-[#1877F2]/30',
+    borderColor: 'border-[#1877F2]',
+    icon: FacebookIcon,
+  },
+  {
+    id: 'telegram',
+    name: 'Telegram',
+    size: 512,
+    label: '512 × 512 px',
+    color: 'from-[#2CA5E0] to-[#1B8BC1]',
+    gradient: 'linear-gradient(135deg, #2CA5E0, #1B8BC1)',
+    bgColor: 'bg-[#2CA5E0]/10 border-[#2CA5E0]/30',
+    borderColor: 'border-[#2CA5E0]',
+    icon: TelegramIcon,
+  },
+  {
+    id: 'twitter',
+    name: 'Twitter / X',
+    size: 400,
+    label: '400 × 400 px',
+    color: 'from-[#14171A] to-[#333]',
+    gradient: 'linear-gradient(135deg, #14171A, #444)',
+    bgColor: 'bg-zinc-900/10 border-zinc-600/30',
+    borderColor: 'border-zinc-700',
+    icon: TwitterXIcon,
+  },
+  {
+    id: 'linkedin',
+    name: 'LinkedIn',
+    size: 400,
+    label: '400 × 400 px',
+    color: 'from-[#0A66C2] to-[#0050A0]',
+    gradient: 'linear-gradient(135deg, #0A66C2, #0050A0)',
+    bgColor: 'bg-[#0A66C2]/10 border-[#0A66C2]/30',
+    borderColor: 'border-[#0A66C2]',
+    icon: LinkedInIcon,
+  },
+  {
+    id: 'youtube',
+    name: 'YouTube',
+    size: 800,
+    label: '800 × 800 px',
+    color: 'from-[#FF0000] to-[#CC0000]',
+    gradient: 'linear-gradient(135deg, #FF0000, #CC0000)',
+    bgColor: 'bg-[#FF0000]/10 border-[#FF0000]/30',
+    borderColor: 'border-[#FF0000]',
+    icon: YouTubeIcon,
+  },
+];
 
 const sizePresets: PresetSize[] = [
   { id: '1024', label: '1024 × 1024 px', size: 1024, description: 'Recommended HD (Universal standard)' },
@@ -147,6 +242,9 @@ export default function FullDpMakerPage() {
   const [exportFormat, setExportFormat] = useState<ImageFormat>('image/jpeg');
   const [downloadSuccess, setDownloadSuccess] = useState<boolean>(false);
   const [downloadedInfo, setDownloadedInfo] = useState<{ size: string; res: string } | null>(null);
+
+  // Social platform selection
+  const [selectedPlatform, setSelectedPlatform] = useState<SocialPlatform>('whatsapp');
 
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
@@ -529,8 +627,71 @@ export default function FullDpMakerPage() {
     );
   };
 
+  // Select a social platform preset — syncs resolution and ensures full-photo fill mode
+  const selectPlatform = useCallback(
+    (platformId: SocialPlatform) => {
+      setSelectedPlatform(platformId);
+      const preset = socialPlatformPresets.find((p) => p.id === platformId);
+      if (preset) {
+        setSelectedSizePreset(String(preset.size));
+        // If user is in 'crop' mode, switch to 'blur' to preserve the full photo
+        if (fillMode === 'crop' || fillMode === 'resize') {
+          setFillMode('blur');
+        }
+      }
+    },
+    [fillMode]
+  );
+
+  // 1-Click Download: instantly export at the active platform resolution
+  const handleOneClickDownload = useCallback(
+    (platformId?: SocialPlatform) => {
+      const img = imageElementRef.current;
+      if (!img) {
+        toast.info('Upload a photo first to download your DP!');
+        return;
+      }
+
+      const targetPlatform = platformId ?? selectedPlatform;
+      const preset = socialPlatformPresets.find((p) => p.id === targetPlatform);
+      if (!preset) return;
+
+      const exportSize = preset.size;
+      const exportCanvas = document.createElement('canvas');
+      renderSquareDP(exportCanvas, exportSize, true);
+
+      const ext = exportFormat === 'image/png' ? 'png' : exportFormat === 'image/webp' ? 'webp' : 'jpg';
+      const quality = exportFormat === 'image/png' ? undefined : 0.95;
+
+      exportCanvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            toast.error('Failed to export image.');
+            return;
+          }
+          const sizeKb = Math.round(blob.size / 1024);
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `${targetPlatform}-dp-${exportSize}x${exportSize}.${ext}`;
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+
+          setDownloadedInfo({ size: `${sizeKb} KB`, res: `${exportSize} × ${exportSize} px` });
+          setDownloadSuccess(true);
+          toast.success(`${preset.name} DP downloaded! (${exportSize}×${exportSize}px, ${sizeKb} KB)`);
+        },
+        exportFormat,
+        quality
+      );
+    },
+    [selectedPlatform, exportFormat, renderSquareDP]
+  );
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 md:py-16">
       {/* Header */}
       <motion.div
         className="text-center max-w-3xl mx-auto mb-10"
@@ -552,7 +713,7 @@ export default function FullDpMakerPage() {
       </motion.div>
 
       {/* Main App Workspace */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-8 items-start">
         {/* Left Side: Controls & Background Fill Modes (7 cols) */}
         <motion.div
           className="lg:col-span-7 space-y-6"
@@ -562,7 +723,7 @@ export default function FullDpMakerPage() {
         >
           {/* Upload Area */}
           {!imageSrc ? (
-            <div className="glass-card p-6 rounded-3xl space-y-4">
+            <div className="glass-card p-4 sm:p-6 rounded-3xl space-y-4">
               <FileDropZone
                 accept="image/jpeg,image/png,image/webp,image/gif,image/bmp"
                 onFileDrop={handleFileLoad}
@@ -577,7 +738,7 @@ export default function FullDpMakerPage() {
             </div>
           ) : (
             /* Editing Controls */
-            <div className="glass-card p-6 rounded-3xl space-y-6">
+            <div className="glass-card p-4 sm:p-6 rounded-3xl space-y-5 sm:space-y-6">
               <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-4">
                 <div>
                   <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
@@ -605,7 +766,65 @@ export default function FullDpMakerPage() {
                 </div>
               </div>
 
+              {/* ── Social Platform Preset Selector ── */}
+              <div className="space-y-2">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <Smartphone className="w-3.5 h-3.5 text-brand-500" />
+                  Platform Preset — 1:1 Square DP
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  {socialPlatformPresets.map((platform) => {
+                    const PlatformIcon = platform.icon;
+                    const isActive = selectedPlatform === platform.id;
+                    return (
+                      <button
+                        key={platform.id}
+                        id={`platform-${platform.id}`}
+                        onClick={() => selectPlatform(platform.id)}
+                        className={`relative py-2.5 px-2 rounded-2xl border-2 text-center transition-all duration-200 overflow-hidden ${
+                          isActive
+                            ? `${platform.bgColor} shadow-md`
+                            : 'border-zinc-200 dark:border-zinc-700/70 bg-white/40 dark:bg-zinc-900/40 hover:border-zinc-300 dark:hover:border-zinc-600'
+                        }`}
+                      >
+                        {/* Active gradient shimmer strip */}
+                        {isActive && (
+                          <div
+                            className={`absolute inset-x-0 top-0 h-[3px] rounded-t-xl bg-gradient-to-r ${platform.color}`}
+                          />
+                        )}
+                        <PlatformIcon
+                          className={`w-4 h-4 mx-auto mb-1 transition-colors ${
+                            isActive ? 'text-zinc-800 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'
+                          }`}
+                        />
+                        <span
+                          className={`block text-[10px] font-bold leading-tight truncate ${
+                            isActive ? 'text-zinc-800 dark:text-white' : 'text-zinc-600 dark:text-zinc-400'
+                          }`}
+                        >
+                          {platform.name}
+                        </span>
+                        <span className="block text-[9px] text-zinc-500 dark:text-zinc-500 mt-0.5 font-mono truncate">
+                          {platform.label}
+                        </span>
+                        {isActive && (
+                          <span
+                            className={`absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-gradient-to-br ${platform.color}`}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-[10px] text-zinc-500 dark:text-zinc-500 flex items-center gap-1">
+                  <Check className="w-3 h-3 text-emerald-500 shrink-0" />
+                  Full photo is preserved — no cropping. Selecting a platform sets the download resolution automatically.
+                </p>
+              </div>
+
               {/* Background Fill Modes Switcher */}
+
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                 {(
                   [
@@ -917,12 +1136,12 @@ export default function FullDpMakerPage() {
 
         {/* Right Side: Interactive Preview & Download Settings (5 cols) */}
         <motion.div
-          className="lg:col-span-5 sticky top-24 space-y-6"
+          className="lg:col-span-5 lg:sticky lg:top-24 space-y-5 md:space-y-6"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <div className="glass-card p-6 md:p-8 rounded-3xl text-center space-y-6">
+          <div className="glass-card p-4 sm:p-6 md:p-8 rounded-3xl text-center space-y-4 sm:space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
                 <Smartphone className="w-4 h-4 text-brand-500" />
@@ -982,9 +1201,9 @@ export default function FullDpMakerPage() {
                     <circle cx="50" cy="50" r="49" fill="none" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="1.2" strokeDasharray="3 2" />
                   </svg>
 
-                  {/* Label badge */}
-                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-[9px] font-bold text-white uppercase tracking-wider">
-                    WhatsApp / Instagram Circle Guide
+                  {/* Label badge — updates with active platform */}
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-[9px] font-bold text-white uppercase tracking-wider whitespace-nowrap">
+                    {socialPlatformPresets.find((p) => p.id === selectedPlatform)?.name ?? 'WhatsApp'} Circle Guide
                   </div>
                 </div>
               )}
@@ -995,6 +1214,64 @@ export default function FullDpMakerPage() {
               <p className="text-[11px] text-zinc-500 dark:text-zinc-400 flex items-center justify-center gap-1">
                 <span>🖱️ Drag canvas to reposition • Scroll mouse wheel to zoom</span>
               </p>
+            )}
+
+            {/* ── 1-Click Download DP — Prominent Action ── */}
+            {imageSrc ? (
+              <div className="space-y-3">
+                {/* Main 1-click button */}
+                <button
+                  id="one-click-download-dp"
+                  onClick={() => handleOneClickDownload()}
+                  className="w-full relative overflow-hidden rounded-2xl py-3.5 px-4 flex items-center justify-center gap-3 font-bold text-sm text-white shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] hover:shadow-xl"
+                  style={{
+                    background: socialPlatformPresets.find((p) => p.id === selectedPlatform)?.gradient ?? 'linear-gradient(135deg, #25D366, #128C7E)',
+                  }}
+                >
+                  {/* Subtle shimmer overlay */}
+                  <div className="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity rounded-2xl" />
+                  <Zap className="w-5 h-5 shrink-0" />
+                  <span className="flex flex-col items-start leading-tight">
+                    <span className="text-sm font-black">1-Click Download DP</span>
+                    <span className="text-[11px] font-medium opacity-90">
+                      {socialPlatformPresets.find((p) => p.id === selectedPlatform)?.name} •{' '}
+                      {socialPlatformPresets.find((p) => p.id === selectedPlatform)?.label} • No Crop
+                    </span>
+                  </span>
+                  <Download className="w-4 h-4 shrink-0 ml-auto" />
+                </button>
+
+                {/* Quick download pills for other platforms */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {socialPlatformPresets
+                    .filter((p) => p.id !== selectedPlatform)
+                    .map((platform) => {
+                      const PlatformIcon = platform.icon;
+                      return (
+                        <button
+                          key={platform.id}
+                          onClick={() => handleOneClickDownload(platform.id)}
+                          title={`Download ${platform.name} (${platform.label})`}
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 bg-white/50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all"
+                        >
+                          <PlatformIcon className="w-3 h-3 shrink-0" />
+                          <span className="truncate max-w-[60px]">{platform.name.split(' ')[0]}</span>
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+            ) : (
+              /* No photo yet — show teaser button */
+              <button
+                id="one-click-download-dp-empty"
+                onClick={() => toast.info('Upload a photo first to enable 1-click DP download.')}
+                className="w-full rounded-2xl py-4 px-5 flex items-center justify-center gap-3 font-bold text-sm border-2 border-dashed border-zinc-300 dark:border-zinc-600 text-zinc-400 dark:text-zinc-500 hover:border-brand-400 hover:text-brand-500 transition-all duration-200"
+              >
+                <Zap className="w-5 h-5" />
+                <span className="text-sm">1-Click Download DP</span>
+                <span className="ml-auto text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500">Upload first</span>
+              </button>
             )}
 
             {/* Export Settings Panel */}

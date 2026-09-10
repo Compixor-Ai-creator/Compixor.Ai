@@ -15,11 +15,11 @@ import {
   FileDown,
   FileText,
   Camera,
-  Maximize,
   QrCode,
   AlertTriangle,
   ChevronDown,
 } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/SocialIcons';
 
 export interface ErrorStageProps {
   type: '404' | 'error';
@@ -37,7 +37,7 @@ const quickTools = [
   { href: '/tools/pdf-compressor', label: 'PDF Compressor', icon: FileDown },
   { href: '/tools/word-compressor', label: 'Word Compressor', icon: FileText },
   { href: '/tools/passport-photo', label: 'Passport Photo', icon: Camera },
-  { href: '/tools/full-dp-maker', label: 'Full DP Maker', icon: Maximize },
+  { href: '/tools/full-dp-maker', label: 'Full DP Maker', icon: WhatsAppIcon },
   { href: '/tools/qr-generator', label: 'QR Generator', icon: QrCode },
 ];
 
