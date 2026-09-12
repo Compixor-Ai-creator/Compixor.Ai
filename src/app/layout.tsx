@@ -95,6 +95,11 @@ export default function RootLayout({
       className={`dark ${inter.variable} ${outfit.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <link rel="icon" href="/icon.png?v=2" type="image/png" sizes="any" />
+        <link rel="shortcut icon" href="/icon.png?v=2" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-icon.png?v=2" />
+      </head>
       <body className="min-h-screen topo-bg">
         <ThemeProvider>
           <div className="relative min-h-screen flex flex-col">
