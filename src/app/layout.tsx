@@ -66,6 +66,11 @@ export const metadata: Metadata = {
       'Transform your files instantly with AI-powered tools that never leave your browser.',
     images: ['/images/og-banner.png'],
   },
+  icons: {
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/apple-icon.png',
+  },
   robots: {
     index: true,
     follow: true,

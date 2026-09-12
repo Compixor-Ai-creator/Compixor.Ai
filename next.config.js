@@ -8,13 +8,38 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
 
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
+    const path = require('path');
     config.resolve.alias.canvas = false;
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
       path: false,
+      crypto: false,
     };
+
+    if (isServer) {
+      config.resolve.alias['onnxruntime-web'] = false;
+      config.resolve.alias['@imgly/background-removal'] = false;
+    } else {
+      config.resolve.alias['onnxruntime-web$'] = path.resolve(
+        __dirname,
+        'node_modules/onnxruntime-web/dist/ort.min.js'
+      );
+      config.resolve.alias['onnxruntime-web/webgpu$'] = path.resolve(
+        __dirname,
+        'node_modules/onnxruntime-web/dist/ort.webgpu.min.js'
+      );
+      config.resolve.alias['onnxruntime-web/wasm$'] = path.resolve(
+        __dirname,
+        'node_modules/onnxruntime-web/dist/ort.wasm.min.js'
+      );
+      config.resolve.alias['onnxruntime-web/all$'] = path.resolve(
+        __dirname,
+        'node_modules/onnxruntime-web/dist/ort.all.min.js'
+      );
+    }
+
     return config;
   },
 

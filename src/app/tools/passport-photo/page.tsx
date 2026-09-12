@@ -41,6 +41,12 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
+import {
+  removeBackgroundISNet,
+  refineCutoutCanvas,
+  sampleOriginalBgColor,
+  MattingProgress,
+} from '@/utils/backgroundMatting';
 
 export interface BiometricSpec {
   headHeightPercent: number; // Crown to chin % of photo height
@@ -320,7 +326,7 @@ const sizeLimitOptions = [
 const faqs = [
   {
     q: 'How does the remove.bg-grade background removal work?',
-    a: 'We use high-resolution client-side AI matting with morphological opening and closing (to remove stray background specks and fill interior pinholes), edge de-spill (which neutralizes residual background color halos on hair strands), and continuous subpixel alpha feathering.',
+    a: 'We use the high-precision IS-Net neural matting model (IS-Net FP16) executing 100% client-side via WebAssembly & WebGPU. It features an intermediate canvas smoothing pipeline with alpha boundary choke (to eliminate outer fringing), 1.2px Gaussian edge feathering (to eradicate jagged contours and aliasing along hair and shoulders), and color de-spill to neutralize residual wall color halos.',
   },
   {
     q: 'Can I download just the transparent PNG cutout without any background?',
@@ -613,9 +619,12 @@ export default function PassportPhotoPage() {
   // Background removal state
   const [enableBgRemoval, setEnableBgRemoval] = useState(false);
   const [bgTolerance, setBgTolerance] = useState(45); // 15% - 85% confidence cutoff
-  const [bgFeather, setBgFeather] = useState(4); // 1px - 6px edge feather (default 4px for soft hair edges)
+  const [bgFeather, setBgFeather] = useState(1.2); // 0.5px - 2.5px edge feather (default 1.2px for natural hair/shoulder softness)
+  const [bgChoke, setBgChoke] = useState(0.6); // 0.0px - 1.2px alpha boundary choke to eliminate fringe halos
+  const [enableDecontamination, setEnableDecontamination] = useState(true); // Neutralizes original backdrop color bleed
   const [isSegmenting, setIsSegmenting] = useState(false);
   const [segmentationStatus, setSegmentationStatus] = useState<string | null>(null);
+  const [mattingProgress, setMattingProgress] = useState<MattingProgress | null>(null);
 
   // Step-by-step processing state
   type ProcessingStep = null | 'optimizing' | 'removing-bg' | 'compositing' | 'done';
@@ -642,6 +651,7 @@ export default function PassportPhotoPage() {
   const previewBoxRef = useRef<HTMLDivElement>(null);
 
   // Cached Step 1 Cutout (Clean Transparent Subject PNG)
+  const rawCutoutCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const cachedCutoutCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const segmenterRef = useRef<any>(null);
 
@@ -872,20 +882,13 @@ export default function PassportPhotoPage() {
     ctx.globalCompositeOperation = 'source-over';
     ctx.globalAlpha = 1.0;
 
-    const showCheckerboard = previewTab === 'cutout' || bgColor === 'transparent';
+    const isTransparent = previewTab === 'cutout' || bgColor === 'transparent';
 
-    // STEP 1: Always fill background first (solid color or checkerboard for transparent mode)
-    if (showCheckerboard) {
+    // STEP 1: Always fill background first (solid color or pure transparent for cutout PNG export)
+    if (isTransparent) {
       ctx.clearRect(0, 0, width, height);
-      const checkSize = 16;
-      for (let y = 0; y < height; y += checkSize) {
-        for (let x = 0; x < width; x += checkSize) {
-          ctx.fillStyle = (Math.floor(x / checkSize) + Math.floor(y / checkSize)) % 2 === 0 ? '#f1f5f9' : '#ffffff';
-          ctx.fillRect(x, y, checkSize, checkSize);
-        }
-      }
     } else {
-      // Solid color fill — pure, no transparency, no tint
+      // Solid color fill — pure, no transparency, no tint (e.g. #FFFFFF for US/NADRA, #e0f2fe light blue)
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);
     }
@@ -949,120 +952,118 @@ export default function PassportPhotoPage() {
 
     // 2. If Background Removal is DISABLED: Cache source photo directly
     if (!enableBgRemoval) {
+      rawCutoutCanvasRef.current = sourceCanvas;
       cachedCutoutCanvasRef.current = sourceCanvas;
       setSegmentationStatus(null);
+      setMattingProgress(null);
       setProcessingStep(null);
       compositeFinalCanvas();
       return;
     }
 
-    // 3. PRE-RESIZE to max 1024px for AI engine (prevents freeze on high-res images)
-    const MAX_AI_DIM = 1024;
-    let aiCanvas = sourceCanvas;
-    if (width > MAX_AI_DIM || height > MAX_AI_DIM) {
-      const aiScale = MAX_AI_DIM / Math.max(width, height);
-      const aiW = Math.round(width * aiScale);
-      const aiH = Math.round(height * aiScale);
-      aiCanvas = document.createElement('canvas');
-      aiCanvas.width = aiW;
-      aiCanvas.height = aiH;
-      const aiCtx = aiCanvas.getContext('2d');
-      if (aiCtx) {
-        aiCtx.imageSmoothingEnabled = true;
-        aiCtx.imageSmoothingQuality = 'high';
-        aiCtx.drawImage(sourceCanvas, 0, 0, aiW, aiH);
-      }
-    }
-
-    // 4. Run AI Portrait Matting
+    // 3. Run High-Precision AI Portrait Matting (IS-Net FP16)
     setIsSegmenting(true);
     setProcessingStep('removing-bg');
-    setSegmentationStatus('Removing Background...');
+    setSegmentationStatus('Initializing High-Precision AI Model...');
+    setMattingProgress({ stage: 'Starting IS-Net Matting Engine...', current: 0, total: 100, percent: 0 });
 
     // Yield again so UI can update
     await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
     try {
-      const segmenter = segmenterRef.current;
+      let rawCutoutCanvas: HTMLCanvasElement | null = null;
 
-      if (segmenter) {
-        // Send pre-resized frame to MediaPipe Selfie Segmentation
-        await new Promise<void>((resolve) => {
-          segmenter.onResults((results: any) => {
-            const rawMaskCanvas = results.segmentationMask;
+      try {
+        // High-Accuracy Client-Side Model: @imgly/background-removal (isnet_fp16)
+        const cutoutBlob = await removeBackgroundISNet(sourceCanvas, (p) => {
+          setMattingProgress(p);
+          setSegmentationStatus(`${p.stage} ${p.percent > 0 ? `(${p.percent}%)` : ''}`);
+        });
 
-            if (rawMaskCanvas) {
-              // Scale mask back up to full output resolution
-              const offMask = document.createElement('canvas');
-              offMask.width = width;
-              offMask.height = height;
-              const offCtx = offMask.getContext('2d');
+        const cutoutImg = new Image();
+        const blobUrl = URL.createObjectURL(cutoutBlob);
+        await new Promise<void>((resolve, reject) => {
+          cutoutImg.onload = () => resolve();
+          cutoutImg.onerror = reject;
+          cutoutImg.src = blobUrl;
+        });
 
-              if (offCtx) {
-                offCtx.imageSmoothingEnabled = true;
-                offCtx.imageSmoothingQuality = 'high';
-                offCtx.drawImage(rawMaskCanvas, 0, 0, width, height);
-
-                const maskData = offCtx.getImageData(0, 0, width, height);
-                const rawAlpha = new Uint8Array(width * height);
-                for (let i = 0; i < width * height; i++) {
-                  rawAlpha[i] = maskData.data[i * 4]; // Grayscale channel
-                }
-
-                // Clean mask: remove background islands, fill pinholes, feather softly
-                const refinedAlpha = cleanAndRefineAlphaMask(rawAlpha, width, height, bgTolerance, bgFeather);
-
-                // GPU-accelerated Gaussian blur to soften harsh hair/edge boundaries
-                // This converts MediaPipe's jagged mask edges into natural feathered transitions
-                // blurPx = bgFeather * 1.5 gives natural softness without losing subject definition
-                const softAlpha = applyCanvasMaskBlur(refinedAlpha, width, height, Math.round(bgFeather * 1.5));
-
-                // Create clean cutout canvas — pure subject on transparent bg, NO color tinting
-                const cutoutCanvas = document.createElement('canvas');
-                cutoutCanvas.width = width;
-                cutoutCanvas.height = height;
-                const cutCtx = cutoutCanvas.getContext('2d');
-
-                if (cutCtx) {
-                  // Get the full-resolution subject pixels
-                  const finalSubjectData = srcCtx.getImageData(0, 0, width, height);
-
-                  // Apply soft blurred alpha — edges fade naturally (no hard cutline)
+        rawCutoutCanvas = document.createElement('canvas');
+        rawCutoutCanvas.width = width;
+        rawCutoutCanvas.height = height;
+        const rcCtx = rawCutoutCanvas.getContext('2d', { willReadFrequently: true });
+        rcCtx?.drawImage(cutoutImg, 0, 0, width, height);
+        URL.revokeObjectURL(blobUrl);
+      } catch (imglyErr) {
+        console.warn('[PassportStudio] IS-Net error or unsupported browser feature, trying MediaPipe fallback:', imglyErr);
+        const segmenter = segmenterRef.current;
+        if (segmenter) {
+          // Fallback to MediaPipe
+          await new Promise<void>((resolve) => {
+            segmenter.onResults((results: any) => {
+              const rawMaskCanvas = results.segmentationMask;
+              if (rawMaskCanvas) {
+                const offMask = document.createElement('canvas');
+                offMask.width = width;
+                offMask.height = height;
+                const offCtx = offMask.getContext('2d');
+                if (offCtx) {
+                  offCtx.drawImage(rawMaskCanvas, 0, 0, width, height);
+                  const maskData = offCtx.getImageData(0, 0, width, height);
+                  const rawAlpha = new Uint8Array(width * height);
                   for (let i = 0; i < width * height; i++) {
-                    finalSubjectData.data[i * 4 + 3] = softAlpha[i];
+                    rawAlpha[i] = maskData.data[i * 4];
                   }
-
-                  cutCtx.putImageData(finalSubjectData, 0, 0);
-                  cachedCutoutCanvasRef.current = cutoutCanvas;
-                  setSegmentationStatus('Applying Passport Dimensions...');
+                  const refinedAlpha = cleanAndRefineAlphaMask(rawAlpha, width, height, bgTolerance, bgFeather);
+                  rawCutoutCanvas = document.createElement('canvas');
+                  rawCutoutCanvas.width = width;
+                  rawCutoutCanvas.height = height;
+                  const cutCtx = rawCutoutCanvas.getContext('2d', { willReadFrequently: true });
+                  if (cutCtx) {
+                    const finalSubjectData = srcCtx.getImageData(0, 0, width, height);
+                    for (let i = 0; i < width * height; i++) {
+                      finalSubjectData.data[i * 4 + 3] = refinedAlpha[i];
+                    }
+                    cutCtx.putImageData(finalSubjectData, 0, 0);
+                  }
                 }
               }
-            }
-            resolve();
+              resolve();
+            });
+            segmenter.send({ image: sourceCanvas });
           });
-
-          segmenter.send({ image: aiCanvas });
-        });
-      } else {
-        // Fallback: No AI — use full source image as cutout
-        const cutoutCanvas = document.createElement('canvas');
-        cutoutCanvas.width = width;
-        cutoutCanvas.height = height;
-        const cutCtx = cutoutCanvas.getContext('2d');
-        if (cutCtx) {
-          cutCtx.drawImage(sourceCanvas, 0, 0);
-          cachedCutoutCanvasRef.current = cutoutCanvas;
         }
       }
+
+      if (!rawCutoutCanvas) {
+        rawCutoutCanvas = sourceCanvas;
+      }
+
+      rawCutoutCanvasRef.current = rawCutoutCanvas;
+
+      // STEP 4: Intermediate Canvas Alpha Mask Smoothing, Edge Feathering & Decontamination
+      setProcessingStep('compositing');
+      setSegmentationStatus('Smoothing & Decontaminating Boundary...');
+
+      const originalBg = sampleOriginalBgColor(srcCtx, width, height);
+      const refinedCanvas = refineCutoutCanvas(rawCutoutCanvas, {
+        featherRadius: bgFeather,
+        chokeAmount: bgChoke,
+        decontaminate: enableDecontamination,
+        originalBgColor: originalBg,
+      });
+
+      cachedCutoutCanvasRef.current = refinedCanvas;
+      setSegmentationStatus('Biometric Cutout Ready');
     } catch (err) {
       console.error('[PassportStudio] Segmentation error:', err);
+      rawCutoutCanvasRef.current = sourceCanvas;
       cachedCutoutCanvasRef.current = sourceCanvas;
       setSegmentationStatus('Cutout fallback active');
     } finally {
       setIsSegmenting(false);
-      setProcessingStep('compositing');
-      setSegmentationStatus('Applying Passport Dimensions...');
-      // Final compositing step
+      setMattingProgress(null);
+      setProcessingStep('done');
       compositeFinalCanvas();
     }
   }, [
@@ -1078,9 +1079,29 @@ export default function PassportPhotoPage() {
     enableBgRemoval,
     bgTolerance,
     bgFeather,
+    bgChoke,
+    enableDecontamination,
     previewDimensions,
     compositeFinalCanvas,
   ]);
+
+  // Instant re-refining when edge sliders (feather / choke / decontamination) are tweaked
+  const handleRefineEdgeSettings = useCallback(() => {
+    if (!rawCutoutCanvasRef.current || !enableBgRemoval) return;
+    const refined = refineCutoutCanvas(rawCutoutCanvasRef.current, {
+      featherRadius: bgFeather,
+      chokeAmount: bgChoke,
+      decontaminate: enableDecontamination,
+    });
+    cachedCutoutCanvasRef.current = refined;
+    compositeFinalCanvas();
+  }, [bgFeather, bgChoke, enableDecontamination, enableBgRemoval, compositeFinalCanvas]);
+
+  useEffect(() => {
+    if (rawCutoutCanvasRef.current && enableBgRemoval) {
+      handleRefineEdgeSettings();
+    }
+  }, [bgFeather, bgChoke, enableDecontamination, handleRefineEdgeSettings]);
 
   // Re-run Step 1 when transform / crop / filter parameters change
   useEffect(() => {
@@ -1326,6 +1347,10 @@ export default function PassportPhotoPage() {
     setContrast(100);
     setSaturation(100);
     setEnableBgRemoval(false);
+    setBgFeather(1.2);
+    setBgChoke(0.6);
+    setEnableDecontamination(true);
+    setMattingProgress(null);
     setSelectedOutfit('none');
     setPreviewTab('background');
     toast.info('Studio settings reset to default.');
@@ -1335,7 +1360,9 @@ export default function PassportPhotoPage() {
   const handleMakeNewImage = () => {
     setImageSrc(null);
     imageElementRef.current = null;
+    rawCutoutCanvasRef.current = null;
     cachedCutoutCanvasRef.current = null;
+    setMattingProgress(null);
     resetTransform();
     setCurrentStep('edit');
   };
@@ -1808,78 +1835,98 @@ export default function PassportPhotoPage() {
                         </div>
                       )}
 
-                      {/* Sliders: Mask Threshold & Hair Feathering */}
-                      <div className="p-3.5 rounded-xl bg-brand-500/5 border border-brand-500/15 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <div className="flex justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
-                            <span>Detection Sensitivity (Cutoff)</span>
-                            <span>{bgTolerance}%</span>
+                      {/* Precision Sliders: Edge Feathering & Alpha Choke */}
+                      <div className="p-3.5 rounded-xl bg-brand-500/5 border border-brand-500/15 space-y-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <div className="flex justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                              <span>Edge Feathering (Softening)</span>
+                              <span className="font-mono text-brand-600 dark:text-brand-400">{bgFeather.toFixed(1)}px</span>
+                            </div>
+                            <input
+                              type="range"
+                              min="0.5"
+                              max="2.5"
+                              step="0.1"
+                              value={bgFeather}
+                              onChange={(e) => setBgFeather(parseFloat(e.target.value))}
+                              className="w-full slider-blur cursor-pointer"
+                              title="Controls Gaussian blur feathering on subject contours"
+                            />
+                            <p className="text-[10px] text-zinc-400 mt-0.5">Smooths hair, neck & shoulder contours</p>
                           </div>
-                          <input
-                            type="range"
-                            min="15"
-                            max="85"
-                            value={bgTolerance}
-                            onChange={(e) => setBgTolerance(parseInt(e.target.value))}
-                            className="w-full slider-blur cursor-pointer"
-                          />
+                          <div>
+                            <div className="flex justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                              <span>Boundary Choke (Fringe Cut)</span>
+                              <span className="font-mono text-brand-600 dark:text-brand-400">{bgChoke.toFixed(1)}px</span>
+                            </div>
+                            <input
+                              type="range"
+                              min="0.0"
+                              max="1.2"
+                              step="0.1"
+                              value={bgChoke}
+                              onChange={(e) => setBgChoke(parseFloat(e.target.value))}
+                              className="w-full slider-blur cursor-pointer"
+                              title="Insets boundary by subpixel to remove outer backdrop halo"
+                            />
+                            <p className="text-[10px] text-zinc-400 mt-0.5">Eliminates outer wall color rim</p>
+                          </div>
                         </div>
-                        <div>
-                          <div className="flex justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
-                            <span>Edge Smoothing (Hair Feathering)</span>
-                            <span>{bgFeather}px</span>
-                          </div>
-                          <input
-                            type="range"
-                            min="1"
-                            max="6"
-                            value={bgFeather}
-                            onChange={(e) => setBgFeather(parseInt(e.target.value))}
-                            className="w-full slider-blur cursor-pointer"
-                          />
+
+                        {/* Decontamination Toggle */}
+                        <div className="pt-2 border-t border-brand-500/10 flex items-center justify-between">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={enableDecontamination}
+                              onChange={(e) => setEnableDecontamination(e.target.checked)}
+                              className="rounded text-brand-500 focus:ring-brand-500"
+                            />
+                            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-200">
+                              Background Color Decontamination & De-Spill
+                            </span>
+                          </label>
+                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                            Active
+                          </span>
                         </div>
                       </div>
 
-                      {/* Step-by-step Processing Indicator */}
-                      <div className="flex flex-col gap-1.5 px-3 py-3 rounded-lg bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
-                        {[
-                          { key: 'optimizing', label: 'Optimizing Image...' },
-                          { key: 'removing-bg', label: 'Removing Background...' },
-                          { key: 'compositing', label: 'Applying Passport Dimensions...' },
-                        ].map((step) => {
-                          const stepOrder = ['optimizing', 'removing-bg', 'compositing', 'done'];
-                          const currentIdx = stepOrder.indexOf(processingStep ?? '');
-                          const stepIdx = stepOrder.indexOf(step.key);
-                          const isActive = processingStep === step.key;
-                          const isDone = currentIdx > stepIdx || processingStep === 'done';
-                          const isPending = !isActive && !isDone;
-                          return (
-                            <div key={step.key} className={`flex items-center gap-2 text-xs font-semibold transition-all ${
-                              isActive ? 'text-brand-600 dark:text-brand-400' :
-                              isDone ? 'text-emerald-600 dark:text-emerald-400' :
-                              'text-zinc-400 dark:text-zinc-600'
-                            }`}>
-                              {isActive ? (
+                      {/* Visual Progress & Processing Status */}
+                      <div className="flex flex-col gap-2 p-3 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
+                        {mattingProgress && (
+                          <div className="space-y-1.5 pb-1">
+                            <div className="flex items-center justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-200">
+                              <span className="flex items-center gap-1.5 text-brand-600 dark:text-brand-400">
                                 <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
-                              ) : isDone ? (
-                                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                              ) : (
-                                <div className="w-3.5 h-3.5 rounded-full border-2 border-current shrink-0 opacity-40" />
+                                {mattingProgress.stage}
+                              </span>
+                              {mattingProgress.percent > 0 && (
+                                <span className="font-mono text-xs font-bold text-brand-600 dark:text-brand-400">
+                                  {mattingProgress.percent}%
+                                </span>
                               )}
-                              {step.label}
                             </div>
-                          );
-                        })}
-                        <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-zinc-200 dark:border-zinc-700/60">
-                          <span className="text-[11px] text-zinc-400 flex items-center gap-1">
+                            <div className="w-full bg-zinc-200 dark:bg-zinc-700 h-1.5 rounded-full overflow-hidden">
+                              <div
+                                className="bg-brand-500 h-full rounded-full transition-all duration-200 ease-out"
+                                style={{ width: `${Math.max(8, mattingProgress.percent)}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between pt-1 border-t border-zinc-200 dark:border-zinc-700/60 text-[11px] text-zinc-500 dark:text-zinc-400">
+                          <span className="flex items-center gap-1">
                             {isSegmenting ? (
-                              <><Loader2 className="w-3 h-3 animate-spin" /> Processing...</>
+                              <><Loader2 className="w-3 h-3 animate-spin text-brand-500" /> Processing AI Matting...</>
                             ) : (
-                              <><ShieldCheck className="w-3 h-3 text-emerald-500" /> {segmentationStatus || 'AI Matting Ready'}</>
+                              <><ShieldCheck className="w-3 h-3 text-emerald-500" /> {segmentationStatus || 'IS-Net Precision Matting Active'}</>
                             )}
                           </span>
-                          <span className="text-[11px] text-zinc-400">
-                            {previewTab === 'cutout' ? 'Transparent PNG' : `BG: ${bgColor}`}
+                          <span className="font-medium text-zinc-600 dark:text-zinc-300">
+                            {previewTab === 'cutout' ? 'Transparent Cutout' : `BG: ${bgColor}`}
                           </span>
                         </div>
                       </div>
@@ -1987,6 +2034,11 @@ export default function PassportPhotoPage() {
                   width: `${previewDimensions.width}px`,
                   height: `${previewDimensions.height}px`,
                   backgroundColor: previewTab === 'cutout' || bgColor === 'transparent' ? '#ffffff' : bgColor,
+                  backgroundImage: (previewTab === 'cutout' || bgColor === 'transparent')
+                    ? 'linear-gradient(45deg, #e2e8f0 25%, transparent 25%), linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e2e8f0 75%), linear-gradient(-45deg, transparent 75%, #e2e8f0 75%)'
+                    : 'none',
+                  backgroundSize: '16px 16px',
+                  backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px',
                 }}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -1997,6 +2049,32 @@ export default function PassportPhotoPage() {
                 onTouchEnd={handleMouseUp}
               >
                 <canvas ref={canvasRef} className="w-full h-full object-contain block" />
+
+                {/* Lightweight Visual Progress Indicator / Spinner during Model Parsing & Alpha Mask Generation */}
+                {isSegmenting && (
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xs p-4 text-white text-center animate-in fade-in duration-200">
+                    <div className="p-3.5 rounded-2xl bg-zinc-900/90 border border-white/10 shadow-2xl flex flex-col items-center gap-2 max-w-[210px]">
+                      <Loader2 className="w-7 h-7 text-brand-400 animate-spin" />
+                      <p className="text-xs font-bold text-zinc-100 leading-tight">
+                        {mattingProgress?.stage || 'Generating Alpha Mask...'}
+                      </p>
+                      {mattingProgress && mattingProgress.percent > 0 && (
+                        <div className="w-full space-y-1 mt-1">
+                          <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                            <div
+                              className="bg-brand-500 h-full rounded-full transition-all duration-200"
+                              style={{ width: `${mattingProgress.percent}%` }}
+                            />
+                          </div>
+                          <span className="text-[10px] text-zinc-400 font-mono">
+                            {mattingProgress.percent}%
+                          </span>
+                        </div>
+                      )}
+                      <span className="text-[9px] text-zinc-400">100% Client-Side Processing</span>
+                    </div>
+                  </div>
+                )}
 
                 {!imageSrc && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-zinc-400">
@@ -2140,6 +2218,11 @@ export default function PassportPhotoPage() {
                     width: `${previewDimensions.width * 0.85}px`,
                     height: `${previewDimensions.height * 0.85}px`,
                     backgroundColor: previewTab === 'cutout' || bgColor === 'transparent' ? '#ffffff' : bgColor,
+                    backgroundImage: (previewTab === 'cutout' || bgColor === 'transparent')
+                      ? 'linear-gradient(45deg, #e2e8f0 25%, transparent 25%), linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e2e8f0 75%), linear-gradient(-45deg, transparent 75%, #e2e8f0 75%)'
+                      : 'none',
+                    backgroundSize: '16px 16px',
+                    backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px',
                   }}
                 >
                   <canvas ref={canvasRef} className="w-full h-full object-contain block" />
