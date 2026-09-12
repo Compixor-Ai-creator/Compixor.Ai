@@ -578,6 +578,12 @@ export default function PassportPhotoPage() {
   const [isSegmenting, setIsSegmenting] = useState(false);
   const [segmentationStatus, setSegmentationStatus] = useState<string | null>(null);
 
+  // Step-by-step processing state
+  type ProcessingStep = null | 'optimizing' | 'removing-bg' | 'compositing' | 'done';
+  const [processingStep, setProcessingStep] = useState<ProcessingStep>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+
   // Outfit overlay
   const [selectedOutfit, setSelectedOutfit] = useState<string>('none');
   const [outfitScale, setOutfitScale] = useState(1.0);
@@ -810,7 +816,7 @@ export default function PassportPhotoPage() {
   }, [selectedOutfit, outfitScale, outfitOffsetY]);
 
   // STEP 2 — Instant Solid Color Background Compositing Engine
-  // Redraws the solid background color + the cached Step 1 transparent cutout PNG in <1ms
+  // Rule: Solid BG fill FIRST → then draw pure transparent subject cutout on top (no blending/tinting)
   const compositeFinalCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -823,9 +829,13 @@ export default function PassportPhotoPage() {
     canvas.width = width;
     canvas.height = height;
 
+    // Reset compositing to standard (no blending artifacts)
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1.0;
+
     const showCheckerboard = previewTab === 'cutout' || bgColor === 'transparent';
 
-    // 1. Draw solid background color or checkerboard
+    // STEP 1: Always fill background first (solid color or checkerboard for transparent mode)
     if (showCheckerboard) {
       ctx.clearRect(0, 0, width, height);
       const checkSize = 16;
@@ -836,20 +846,27 @@ export default function PassportPhotoPage() {
         }
       }
     } else {
+      // Solid color fill — pure, no transparency, no tint
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);
     }
 
-    // 2. Draw the cached transparent subject cutout on top
+    // STEP 2: Draw the clean RGBA subject cutout directly on top (source-over)
+    // The cutout canvas has transparent background + subject with alpha mask — no color contamination
     if (cachedCutoutCanvasRef.current) {
+      ctx.globalCompositeOperation = 'source-over';
       ctx.drawImage(cachedCutoutCanvasRef.current, 0, 0, width, height);
     }
 
-    // 3. Draw formal outfit overlay (if selected)
+    // STEP 3: Draw formal outfit overlay (if selected) on top of subject
     drawOutfitOverlay(ctx, width, height);
+
+    setProcessingStep('done');
   }, [activePreset, bgColor, previewTab, drawOutfitOverlay]);
 
+
   // STEP 1 — Background Removal & Subject Separation (Produces Pure Transparent Cutout PNG)
+  // Pre-resizes image to max 1024px for speed, then runs MediaPipe AI matting
   const processSubjectCutout = useCallback(async () => {
     const img = imageElementRef.current;
     if (!img || !img.complete || img.naturalWidth === 0) return;
@@ -861,6 +878,12 @@ export default function PassportPhotoPage() {
     const scaleY = height / previewDimensions.height;
     const scaledPanX = panX * scaleX;
     const scaledPanY = panY * scaleY;
+
+    setProcessingStep('optimizing');
+    setSegmentationStatus('Optimizing Image...');
+
+    // Yield to browser to paint the loading state before heavy work
+    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
     // 1. Render transformed and filtered subject photo onto offscreen sourceCanvas
     const sourceCanvas = document.createElement('canvas');
@@ -889,49 +912,54 @@ export default function PassportPhotoPage() {
     if (!enableBgRemoval) {
       cachedCutoutCanvasRef.current = sourceCanvas;
       setSegmentationStatus(null);
+      setProcessingStep(null);
       compositeFinalCanvas();
       return;
     }
 
-    // 3. Run AI Portrait Matting & Precision De-Fringing Pipeline
+    // 3. PRE-RESIZE to max 1024px for AI engine (prevents freeze on high-res images)
+    const MAX_AI_DIM = 1024;
+    let aiCanvas = sourceCanvas;
+    if (width > MAX_AI_DIM || height > MAX_AI_DIM) {
+      const aiScale = MAX_AI_DIM / Math.max(width, height);
+      const aiW = Math.round(width * aiScale);
+      const aiH = Math.round(height * aiScale);
+      aiCanvas = document.createElement('canvas');
+      aiCanvas.width = aiW;
+      aiCanvas.height = aiH;
+      const aiCtx = aiCanvas.getContext('2d');
+      if (aiCtx) {
+        aiCtx.imageSmoothingEnabled = true;
+        aiCtx.imageSmoothingQuality = 'high';
+        aiCtx.drawImage(sourceCanvas, 0, 0, aiW, aiH);
+      }
+    }
+
+    // 4. Run AI Portrait Matting
     setIsSegmenting(true);
-    setSegmentationStatus('Extracting hair & portrait with AI...');
+    setProcessingStep('removing-bg');
+    setSegmentationStatus('Removing Background...');
+
+    // Yield again so UI can update
+    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
     try {
       const segmenter = segmenterRef.current;
 
-      // Sample original corner background color for de-spill / de-fringing
-      const srcData = srcCtx.getImageData(0, 0, width, height);
-      const cornerSize = Math.max(6, Math.floor(Math.min(width, height) * 0.06));
-      let sumR = 0, sumG = 0, sumB = 0, sampleCount = 0;
-      for (let y = 0; y < cornerSize; y++) {
-        for (let x = 0; x < cornerSize; x++) {
-          const idx = (y * width + x) * 4;
-          sumR += srcData.data[idx];
-          sumG += srcData.data[idx + 1];
-          sumB += srcData.data[idx + 2];
-          sampleCount++;
-        }
-      }
-      const bgR = Math.round(sumR / sampleCount);
-      const bgG = Math.round(sumG / sampleCount);
-      const bgB = Math.round(sumB / sampleCount);
-
       if (segmenter) {
-        // Send high-resolution frame to MediaPipe Selfie Segmentation
+        // Send pre-resized frame to MediaPipe Selfie Segmentation
         await new Promise<void>((resolve) => {
           segmenter.onResults((results: any) => {
             const rawMaskCanvas = results.segmentationMask;
 
             if (rawMaskCanvas) {
-              // Read raw continuous alpha values
+              // Scale mask back up to full output resolution
               const offMask = document.createElement('canvas');
               offMask.width = width;
               offMask.height = height;
               const offCtx = offMask.getContext('2d');
 
               if (offCtx) {
-                // High quality smooth bicubic scaling
                 offCtx.imageSmoothingEnabled = true;
                 offCtx.imageSmoothingQuality = 'high';
                 offCtx.drawImage(rawMaskCanvas, 0, 0, width, height);
@@ -945,33 +973,34 @@ export default function PassportPhotoPage() {
                 // Clean mask: remove background islands, fill pinholes in hair, feather softly
                 const refinedAlpha = cleanAndRefineAlphaMask(rawAlpha, width, height, bgTolerance, bgFeather);
 
-                // Create clean cutout canvas
+                // Create clean cutout canvas — pure subject on transparent bg, NO color de-spill/tinting
                 const cutoutCanvas = document.createElement('canvas');
                 cutoutCanvas.width = width;
                 cutoutCanvas.height = height;
                 const cutCtx = cutoutCanvas.getContext('2d');
 
                 if (cutCtx) {
-                  // Get fresh copy of transformed subject pixels
+                  // Get the full-resolution subject pixels
                   const finalSubjectData = srcCtx.getImageData(0, 0, width, height);
 
-                  // Apply color de-spill: neutralizes residual red/background color on hair edges
-                  applyColorDeSpill(finalSubjectData, refinedAlpha, width, height, bgR, bgG, bgB);
+                  // Apply ONLY the alpha mask — no color manipulation, no de-spill, no tinting
+                  for (let i = 0; i < width * height; i++) {
+                    finalSubjectData.data[i * 4 + 3] = refinedAlpha[i];
+                  }
 
                   cutCtx.putImageData(finalSubjectData, 0, 0);
-
                   cachedCutoutCanvasRef.current = cutoutCanvas;
-                  setSegmentationStatus('Hair & edges matting complete');
+                  setSegmentationStatus('Applying Passport Dimensions...');
                 }
               }
             }
             resolve();
           });
 
-          segmenter.send({ image: sourceCanvas });
+          segmenter.send({ image: aiCanvas });
         });
       } else {
-        // High-precision fallback
+        // Fallback: No AI — use full source image as cutout
         const cutoutCanvas = document.createElement('canvas');
         cutoutCanvas.width = width;
         cutoutCanvas.height = height;
@@ -987,7 +1016,9 @@ export default function PassportPhotoPage() {
       setSegmentationStatus('Cutout fallback active');
     } finally {
       setIsSegmenting(false);
-      // Run Step 2 instant compositing
+      setProcessingStep('compositing');
+      setSegmentationStatus('Applying Passport Dimensions...');
+      // Final compositing step
       compositeFinalCanvas();
     }
   }, [
@@ -1318,20 +1349,38 @@ export default function PassportPhotoPage() {
     toast.success(`Photo downloaded! (${Math.round(blob.size / 1024)} KB)`);
   };
 
-  // Export Printable Multi-Sheet
-  const downloadPrintableSheet = () => {
+  // Export Printable Multi-Sheet (async toBlob — non-blocking, no UI freeze)
+  const downloadPrintableSheet = async () => {
     const sheetCanvas = sheetCanvasRef.current;
     if (!sheetCanvas) return;
 
-    const link = document.createElement('a');
-    link.download = `passport-print-sheet-${sheetPreset}-${activePreset.id}.jpg`;
-    link.href = sheetCanvas.toDataURL('image/jpeg', 0.98);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    setIsDownloading(true);
+    toast.info('Preparing your print sheet...');
 
-    toast.success(`Printable sheet downloaded! Ready for printing at 100% scale.`);
+    // toBlob is async and non-blocking — no UI freeze on large 2480×3508px canvas
+    sheetCanvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          toast.error('Sheet export failed. Please try again.');
+          setIsDownloading(false);
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `passport-print-sheet-${sheetPreset}-${activePreset.id}.jpg`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        setIsDownloading(false);
+        toast.success(`✅ Print sheet downloaded! Print at 100% scale for correct sizing.`);
+      },
+      'image/jpeg',
+      0.97
+    );
   };
+
 
   // Computed count of sheet photos
   const sheetPhotoCount = useMemo(() => {
@@ -1747,20 +1796,50 @@ export default function PassportPhotoPage() {
                         </div>
                       </div>
 
-                      {/* Status & De-spill active indicator */}
-                      <div className="flex items-center justify-between text-xs px-3 py-2 rounded-lg bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">
-                        <span className="flex items-center gap-2">
-                          {isSegmenting ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-500" />
-                          ) : (
-                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                          )}
-                          {segmentationStatus || 'De-spill & Anti-aliasing active'}
-                        </span>
-                        <span className="text-[11px] text-zinc-400">
-                          {previewTab === 'cutout' ? 'Transparent Cutout Mode' : `Solid: ${bgColor}`}
-                        </span>
+                      {/* Step-by-step Processing Indicator */}
+                      <div className="flex flex-col gap-1.5 px-3 py-3 rounded-lg bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
+                        {[
+                          { key: 'optimizing', label: 'Optimizing Image...' },
+                          { key: 'removing-bg', label: 'Removing Background...' },
+                          { key: 'compositing', label: 'Applying Passport Dimensions...' },
+                        ].map((step) => {
+                          const stepOrder = ['optimizing', 'removing-bg', 'compositing', 'done'];
+                          const currentIdx = stepOrder.indexOf(processingStep ?? '');
+                          const stepIdx = stepOrder.indexOf(step.key);
+                          const isActive = processingStep === step.key;
+                          const isDone = currentIdx > stepIdx || processingStep === 'done';
+                          const isPending = !isActive && !isDone;
+                          return (
+                            <div key={step.key} className={`flex items-center gap-2 text-xs font-semibold transition-all ${
+                              isActive ? 'text-brand-600 dark:text-brand-400' :
+                              isDone ? 'text-emerald-600 dark:text-emerald-400' :
+                              'text-zinc-400 dark:text-zinc-600'
+                            }`}>
+                              {isActive ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+                              ) : isDone ? (
+                                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                              ) : (
+                                <div className="w-3.5 h-3.5 rounded-full border-2 border-current shrink-0 opacity-40" />
+                              )}
+                              {step.label}
+                            </div>
+                          );
+                        })}
+                        <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-zinc-200 dark:border-zinc-700/60">
+                          <span className="text-[11px] text-zinc-400 flex items-center gap-1">
+                            {isSegmenting ? (
+                              <><Loader2 className="w-3 h-3 animate-spin" /> Processing...</>
+                            ) : (
+                              <><ShieldCheck className="w-3 h-3 text-emerald-500" /> {segmentationStatus || 'AI Matting Ready'}</>
+                            )}
+                          </span>
+                          <span className="text-[11px] text-zinc-400">
+                            {previewTab === 'cutout' ? 'Transparent PNG' : `BG: ${bgColor}`}
+                          </span>
+                        </div>
                       </div>
+
                     </div>
                   )}
                 </div>
@@ -2169,10 +2248,14 @@ export default function PassportPhotoPage() {
               {/* Right Panel Download Button */}
               <button
                 onClick={downloadPrintableSheet}
-                className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-sm font-semibold shadow-glow"
+                disabled={isDownloading}
+                className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-sm font-semibold shadow-glow disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                <Printer className="w-4 h-4" />
-                Download Print Sheet ({sheetPreset.toUpperCase()})
+                {isDownloading ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Preparing Sheet...</>
+                ) : (
+                  <><Printer className="w-4 h-4" /> Download Passport Sheet ({sheetPreset.toUpperCase()})</>
+                )}
               </button>
             </motion.div>
           </div>
