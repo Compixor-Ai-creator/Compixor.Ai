@@ -212,10 +212,28 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${inter.variable} ${outfit.variable}`}
+      className={`${inter.variable} ${outfit.variable}`}
       suppressHydrationWarning
     >
       <head>
+        {/* Anti-FOUC Theme Initializer Script: runs synchronously before body render */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('compixor-theme');
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (saved === 'dark' || (!saved && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=4" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=4" />
         <link rel="shortcut icon" href="/favicon.ico?v=4" />
