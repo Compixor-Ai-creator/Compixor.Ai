@@ -106,6 +106,35 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=4" />
         <link rel="shortcut icon" href="/favicon.ico?v=4" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4" />
+        {/* JSON-LD Structured Data: WebSite & Organization Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: 'COMPIXOR.AI',
+                url: 'https://compixor-ai.vercel.app/',
+                potentialAction: {
+                  '@type': 'SearchAction',
+                  target: 'https://compixor-ai.vercel.app/?q={search_term_string}',
+                  'query-input': 'required name=search_term_string',
+                },
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'COMPIXOR.AI',
+                url: 'https://compixor-ai.vercel.app/',
+                logo: 'https://compixor-ai.vercel.app/icon.png',
+                sameAs: [
+                  'https://compixor.ai',
+                ],
+              },
+            ]),
+          }}
+        />
       </head>
       <body className="min-h-screen topo-bg">
         <ThemeProvider>
