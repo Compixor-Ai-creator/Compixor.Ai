@@ -96,9 +96,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" href="/icon.png?v=2" type="image/png" sizes="any" />
-        <link rel="shortcut icon" href="/icon.png?v=2" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-icon.png?v=2" />
+        <link rel="icon" href="/icon.png?v=3" type="image/png" sizes="any" />
+        <link rel="shortcut icon" href="/icon.png?v=3" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-icon.png?v=3" />
       </head>
       <body className="min-h-screen topo-bg">
         <ThemeProvider>
