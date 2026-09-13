@@ -67,9 +67,15 @@ export const metadata: Metadata = {
     images: ['/images/og-banner.png'],
   },
   icons: {
-    icon: '/icon.png',
-    shortcut: '/icon.png',
-    apple: '/apple-icon.png',
+    icon: [
+      { url: '/favicon-32x32.png?v=4', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png?v=4', sizes: '16x16', type: 'image/png' },
+      { url: '/icon.png?v=4', sizes: '512x512', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico?v=4',
+    apple: [
+      { url: '/apple-touch-icon.png?v=4', sizes: '180x180', type: 'image/png' },
+    ],
   },
   robots: {
     index: true,
@@ -96,9 +102,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" href="/icon.png?v=3" type="image/png" sizes="any" />
-        <link rel="shortcut icon" href="/icon.png?v=3" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-icon.png?v=3" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=4" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=4" />
+        <link rel="shortcut icon" href="/favicon.ico?v=4" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4" />
       </head>
       <body className="min-h-screen topo-bg">
         <ThemeProvider>
