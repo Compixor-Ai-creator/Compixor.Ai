@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://compixor.ai/sitemap.xml',
+    sitemap: 'https://compixor-ai.vercel.app/sitemap.xml',
   };
 }
