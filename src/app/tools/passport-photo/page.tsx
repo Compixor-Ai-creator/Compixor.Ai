@@ -2086,9 +2086,68 @@ export default function PassportPhotoPage() {
                 )}
 
                 {!imageSrc && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-zinc-400">
-                    <Camera className="w-10 h-10 mb-2 opacity-50" />
-                    <p className="text-xs">Upload a portrait to start positioning</p>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
+                    {/* Authentic Biometric Sample Portrait */}
+                    <img
+                      src="/images/passport-sample.jpg"
+                      alt="Official Biometric Passport Sample"
+                      className="w-full h-full object-cover opacity-85 dark:opacity-80 scale-105 pointer-events-none"
+                    />
+
+                    {/* Official Biometric Guidelines Overlay across sample */}
+                    <div className="absolute inset-0 pointer-events-none border-2 border-brand-500/50 rounded-2xl overflow-hidden">
+                      {/* Vertical Center Axis */}
+                      <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 border-l border-dashed border-cyan-400/70" />
+
+                      {/* Head Crown Guide */}
+                      <div
+                        className="absolute w-full border-t border-dashed border-amber-400/90 flex items-center justify-end pr-2"
+                        style={{ top: `${activePreset.biometricSpec.topMarginPercent}%` }}
+                      >
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-amber-900 bg-amber-300/95 px-1.5 py-0.5 rounded shadow-xs">
+                          Crown
+                        </span>
+                      </div>
+
+                      {/* Oval Biometric Head Enclosure (70-80% height guideline) */}
+                      <div
+                        className="absolute border-2 border-dashed border-brand-400/90 rounded-full shadow-xs"
+                        style={{
+                          top: `${activePreset.biometricSpec.topMarginPercent}%`,
+                          left: `${(100 - activePreset.biometricSpec.headWidthPercent) / 2}%`,
+                          width: `${activePreset.biometricSpec.headWidthPercent}%`,
+                          height: `${activePreset.biometricSpec.headHeightPercent}%`,
+                        }}
+                      />
+
+                      {/* Eye Level Guide */}
+                      <div
+                        className="absolute w-full border-t border-dashed border-emerald-400/90 flex items-center justify-start pl-2"
+                        style={{ top: `${activePreset.biometricSpec.eyeLevelPercent}%` }}
+                      >
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-950 bg-emerald-300/95 px-1.5 py-0.5 rounded shadow-xs">
+                          Eyes {activePreset.biometricSpec.eyeLevelPercent}%
+                        </span>
+                      </div>
+
+                      {/* Chin Guide */}
+                      <div
+                        className="absolute w-full border-t border-dashed border-amber-400/90 flex items-center justify-end pr-2"
+                        style={{
+                          top: `${activePreset.biometricSpec.topMarginPercent + activePreset.biometricSpec.headHeightPercent}%`,
+                        }}
+                      >
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-amber-900 bg-amber-300/95 px-1.5 py-0.5 rounded shadow-xs">
+                          Chin
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Subtle upload badge indicator */}
+                    <div className="absolute bottom-3 inset-x-3 py-2 px-3 rounded-xl bg-black/65 backdrop-blur-md border border-white/20 text-white text-center shadow-lg">
+                      <p className="text-[11px] font-semibold text-white/95">Biometric Studio Preview</p>
+                      <p className="text-[9px] text-zinc-300">Upload your portrait to align & export</p>
+                    </div>
                   </div>
                 )}
 
