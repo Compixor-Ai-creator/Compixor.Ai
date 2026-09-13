@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
+import DropAnywhere from '@/components/DropAnywhere';
 import ProgressRing from '@/components/ProgressRing';
 
 interface ImageDetail {
@@ -221,6 +222,14 @@ export default function WordCompressorPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+      {/* Fullscreen Drop Anywhere Drag & Drop Overlay */}
+      <DropAnywhere
+        onFileDrop={handleFileDrop}
+        accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.docx,.doc"
+        title="Drop Word document anywhere"
+        subtitle="to optimize embedded images instantly"
+      />
+
       {/* Header */}
       <motion.div
         className="text-center mb-10"

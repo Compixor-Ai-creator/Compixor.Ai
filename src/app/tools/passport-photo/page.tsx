@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
+import DropAnywhere from '@/components/DropAnywhere';
 import {
   removeBackgroundISNet,
   refineCutoutCanvas,
@@ -1466,6 +1467,14 @@ export default function PassportPhotoPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+      {/* Fullscreen Drop Anywhere Drag & Drop Overlay */}
+      <DropAnywhere
+        onFileDrop={handleFileDrop}
+        accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif"
+        title="Drop image anywhere"
+        subtitle="to open in Passport Biometric Studio"
+      />
+
       {/* Header */}
       <motion.div
         className="text-center max-w-3xl mx-auto mb-10"

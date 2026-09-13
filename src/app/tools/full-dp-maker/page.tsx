@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
+import DropAnywhere from '@/components/DropAnywhere';
 import { WhatsAppIcon, InstagramIcon, FacebookIcon, TelegramIcon, TwitterXIcon, LinkedInIcon, YouTubeIcon } from '@/components/SocialIcons';
 
 type FillMode = 'blur' | 'color' | 'gradient' | 'mirror' | 'resize' | 'crop';
@@ -692,6 +693,14 @@ export default function FullDpMakerPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 md:py-16">
+      {/* Fullscreen Drop Anywhere Drag & Drop Overlay */}
+      <DropAnywhere
+        onFileDrop={handleFileLoad}
+        accept="image/jpeg,image/png,image/webp,image/gif,image/bmp"
+        title="Drop image anywhere"
+        subtitle="to make full profile picture instantly"
+      />
+
       {/* Header */}
       <motion.div
         className="text-center max-w-3xl mx-auto mb-10"

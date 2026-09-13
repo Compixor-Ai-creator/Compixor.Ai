@@ -21,6 +21,7 @@ import {
 import { toast } from 'sonner';
 import pako from 'pako';
 import FileDropZone from '@/components/FileDropZone';
+import DropAnywhere from '@/components/DropAnywhere';
 import ProgressRing from '@/components/ProgressRing';
 
 type CompressionLevel = 'low' | 'recommended' | 'deep';
@@ -717,6 +718,14 @@ export default function PdfCompressorPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+      {/* Fullscreen Drop Anywhere Drag & Drop Overlay */}
+      <DropAnywhere
+        onFileDrop={handleFileDrop}
+        accept="application/pdf,.pdf"
+        title="Drop PDF anywhere"
+        subtitle="to optimize and compress instantly"
+      />
+
       {/* Header */}
       <motion.div
         className="text-center mb-10"
