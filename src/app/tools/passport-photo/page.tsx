@@ -2123,10 +2123,10 @@ export default function PassportPhotoPage() {
                       {/* Eye Level Guide */}
                       <div
                         className="absolute w-full border-t border-dashed border-emerald-400/90 flex items-center justify-start pl-2"
-                        style={{ top: `${activePreset.biometricSpec.eyeLevelPercent}%` }}
+                        style={{ top: `${activePreset.biometricSpec.eyeLinePercent}%` }}
                       >
                         <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-950 bg-emerald-300/95 px-1.5 py-0.5 rounded shadow-xs">
-                          Eyes {activePreset.biometricSpec.eyeLevelPercent}%
+                          Eyes {activePreset.biometricSpec.eyeLinePercent}%
                         </span>
                       </div>
 
