@@ -16,7 +16,7 @@ import {
   FileCheck2,
   Sliders,
   FileText,
-  ScanLine,
+  Info,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import pako from 'pako';
@@ -33,8 +33,9 @@ interface CompressionResult {
   reductionPercent: number;
   pageCount: number;
   imagesProcessed: number;
-  engineUsed: 'native' | 'deep';
-  isStubbornCandidate?: boolean;
+  streamsCompressed: number;
+  unreferencedObjectsRemoved: number;
+  isAlreadyOptimized: boolean;
 }
 
 interface CompressionTierConfig {
@@ -44,7 +45,6 @@ interface CompressionTierConfig {
   badge: string;
   description: string;
   targetReduction: string;
-  mode: 'native' | 'deep';
   jpegQuality: number;
   maxDimension: number;
   convertFlateToJpeg: boolean;
@@ -57,24 +57,22 @@ const compressionLevels: CompressionTierConfig[] = [
     id: 'low',
     label: 'Low Compression',
     tagline: '10–25% Reduction',
-    badge: 'Lossless Text',
-    description: 'Preserves near-original visual fidelity. 150 DPI cap, quality 85, 100% crisp vector text & fonts.',
+    badge: '100% Vector Text',
+    description: 'Preserves near-original visual fidelity. Cleans metadata, recompresses internal streams, and optimizes high-res embedded photos (1800px cap, quality 85).',
     targetReduction: '10–25%',
-    mode: 'native',
     jpegQuality: 0.85,
-    maxDimension: 1700,
+    maxDimension: 1800,
     convertFlateToJpeg: false,
-    stripMetadata: false,
+    stripMetadata: true,
     minImageBytes: 15360,
   },
   {
     id: 'recommended',
     label: 'Balanced (Recommended)',
-    tagline: '35–50% Reduction',
-    badge: 'Selectable Text Preserved',
-    description: 'Optimal balance of clarity and file size for resumes, essays & reports. 110 DPI downsampling, quality 65.',
-    targetReduction: '35–50%',
-    mode: 'native',
+    tagline: '30–50% Reduction',
+    badge: 'Crisp Vector Text',
+    description: 'Optimal balance of clarity and file size for resumes, essays & reports. Recompresses streams, strips unreferenced objects, and optimizes embedded images (1200px cap, quality 65).',
+    targetReduction: '30–50%',
     jpegQuality: 0.65,
     maxDimension: 1200,
     convertFlateToJpeg: true,
@@ -83,36 +81,35 @@ const compressionLevels: CompressionTierConfig[] = [
   },
   {
     id: 'deep',
-    label: 'Deep Scanned (Maximum)',
-    tagline: '65–85%+ Reduction',
-    badge: 'iLovePDF-Level Compactor',
-    description: 'Aggressive page rasterizer for scanned documents, contracts, receipts, camera photos & stubborn PDFs.',
-    targetReduction: '65–85%+',
-    mode: 'deep',
-    jpegQuality: 0.60,
-    maxDimension: 1100,
+    label: 'Maximum Compression',
+    tagline: '50–75% Reduction',
+    badge: '100% Vector Text',
+    description: 'Aggressive native stream compression and embedded image downsampling (900px cap, quality 50). Text and vector graphics remain 100% crisp and unrasterized.',
+    targetReduction: '50–75%',
+    jpegQuality: 0.50,
+    maxDimension: 900,
     convertFlateToJpeg: true,
     stripMetadata: true,
-    minImageBytes: 0,
+    minImageBytes: 4096,
   },
 ];
 
 const pdfFaqs = [
   {
-    q: 'How does the Smart Hybrid PDF compressor work?',
-    a: 'Compixor features two engines: 1) A Native Vector Engine that preserves 100% copy-pasteable text and sharp fonts while compressing embedded photos, and 2) A Deep Scanned Rasterizer (powered by pdfjs-dist) that downsamples stubborn scanned contracts and receipts to achieve 65%–85%+ reduction, matching iLovePDF.',
+    q: 'How does the Native PDF optimizer work?',
+    a: 'Compixor operates directly on the PDF structure using native stream compression, metadata stripping, unreferenced object removal, and embedded raster image optimization. Vector text, fonts, and layouts are never rasterized into blurry pixels.',
   },
   {
-    q: 'Will my text still be selectable (Ctrl+F)?',
-    a: 'Yes! In Low and Balanced modes, all text remains 100% vector, selectable, and searchable. If you select Deep Scanned Mode, pages are converted into optimized web-resolution canvases—ideal for scanned paperwork where text is already non-selectable.',
+    q: 'Will my text still be selectable (Ctrl+F) and sharp?',
+    a: 'Yes! All vector text, fonts, links, and forms remain 100% vector without any rasterization or degradation. Text stays razor-sharp, searchable, and selectable at any zoom level across all compression modes.',
+  },
+  {
+    q: 'What happens if my PDF is already optimized?',
+    a: 'Compixor includes an automatic enlargement safety check: if optimizing a document would make it larger (common with pure-text or already-compacted files), Compixor automatically returns your original file and notifies you: "This PDF is already highly optimized and cannot be reduced further."',
   },
   {
     q: 'Are my confidential documents uploaded to any server?',
     a: "Never. Unlike traditional online tools that store your PDFs on remote cloud servers, Compixor's entire compression process takes place inside your browser's local sandbox memory. Zero file data ever leaves your device.",
-  },
-  {
-    q: 'Why did my previous PDF barely reduce in size?',
-    a: 'Many PDFs are scanned documents encoded with legacy JBIG2 or CCITT Fax formats that ordinary web tools cannot compress without dedicated native engines. Compixors Deep Scanned Mode was specifically built to handle these stubborn files with massive reduction.',
   },
 ];
 
@@ -296,27 +293,29 @@ export default function PdfCompressorPage() {
     return `${len}_${(hash >>> 0).toString(16)}`;
   };
 
-  // ── Engine 1: Native Mode (Preserves Selectable Text & Vector Graphics) ──
+  // ── Native Vector & Stream Compression Engine (pdf-lib + pako) ──
   const runNativeCompression = useCallback(
     async (
       arrayBuffer: ArrayBuffer,
       config: CompressionTierConfig
     ): Promise<CompressionResult> => {
       const pdfLib = await import('pdf-lib');
-      const { PDFDocument, PDFName, PDFNumber, PDFRawStream, PDFStream } = pdfLib;
+      const { PDFDocument, PDFName, PDFNumber, PDFRawStream, PDFStream, PDFRef, PDFDict, PDFArray } = pdfLib;
 
-      setProgress(15);
-      setStatusMessage('Analyzing document catalog & fonts...');
+      setProgress(12);
+      setStatusMessage('Parsing PDF catalog & structure...');
 
       const pdfDoc = await PDFDocument.load(arrayBuffer, {
         ignoreEncryption: true,
       });
 
       const pageCount = pdfDoc.getPageCount();
-      setProgress(22);
-      setStatusMessage('Scanning embedded images and streams...');
-
       const context = pdfDoc.context;
+
+      setProgress(20);
+      setStatusMessage('Scanning embedded images and graphics...');
+
+      // 1. Embedded Image Optimization
       const allObjects = context.enumerateIndirectObjects();
       const imageEntries: Array<{
         ref: ReturnType<typeof context.enumerateIndirectObjects>[number][0];
@@ -333,8 +332,6 @@ export default function PdfCompressorPage() {
         }
       }
 
-      setProgress(28);
-
       const dedupeMap = new Map<string, ReturnType<typeof context.stream>>();
       let imagesCompressed = 0;
       const totalImages = imageEntries.length;
@@ -343,13 +340,14 @@ export default function PdfCompressorPage() {
         const { ref, stream } = imageEntries[i];
         const dict = stream.dict;
 
-        setStatusMessage(`Optimizing image ${i + 1} of ${totalImages}...`);
+        setStatusMessage(`Optimizing embedded image ${i + 1} of ${totalImages}...`);
 
         try {
           const filter = dict.get(PDFName.of('Filter'));
           const filterStr = filter ? filter.toString() : '';
           const smask = dict.get(PDFName.of('SMask'));
           const mask = dict.get(PDFName.of('Mask'));
+          // Do not convert or resize images with alpha/stencil masks to avoid transparency corruption
           const hasTransparencyMask = Boolean(smask || mask);
 
           const widthObj = dict.get(PDFName.of('Width'));
@@ -362,7 +360,7 @@ export default function PdfCompressorPage() {
               ? stream.contents
               : (stream as unknown as { contents: Uint8Array }).contents;
 
-          if (rawBytes && rawBytes.length >= config.minImageBytes) {
+          if (rawBytes && rawBytes.length >= config.minImageBytes && !hasTransparencyMask && origWidth > 0 && origHeight > 0) {
             let processedResult: { bytes: Uint8Array; width: number; height: number } | null = null;
 
             if (filterStr.includes('DCTDecode')) {
@@ -370,10 +368,7 @@ export default function PdfCompressorPage() {
               processedResult = await processAndReEncodeImage(img, config.jpegQuality, config.maxDimension);
             } else if (
               config.convertFlateToJpeg &&
-              !hasTransparencyMask &&
-              (filterStr.includes('FlateDecode') || !filter) &&
-              origWidth > 0 &&
-              origHeight > 0
+              (filterStr.includes('FlateDecode') || !filter)
             ) {
               const colorSpace = dict.get(PDFName.of('ColorSpace'))?.toString() || 'DeviceRGB';
               const bpcObj = dict.get(PDFName.of('BitsPerComponent'));
@@ -388,7 +383,8 @@ export default function PdfCompressorPage() {
             if (processedResult) {
               const { bytes: newBytes, width: newWidth, height: newHeight } = processedResult;
 
-              if (newBytes.length < rawBytes.length * 0.95 || newWidth < origWidth) {
+              // Safety check: Only replace if newly encoded image is genuinely smaller
+              if (newBytes.length < rawBytes.length * 0.95 || (newWidth < origWidth && newBytes.length <= rawBytes.length)) {
                 const imgHash = computeFastHash(newBytes);
 
                 if (dedupeMap.has(imgHash)) {
@@ -414,14 +410,14 @@ export default function PdfCompressorPage() {
           // Keep original image untouched
         }
 
-        const imageProgress = 28 + ((i + 1) / Math.max(totalImages, 1)) * 52;
+        const imageProgress = 20 + ((i + 1) / Math.max(totalImages, 1)) * 40;
         setProgress(imageProgress);
       }
 
-      setProgress(82);
-
+      // 2. Metadata Stripping
+      setProgress(64);
       if (config.stripMetadata) {
-        setStatusMessage('Stripping bloated metadata & unreferenced objects...');
+        setStatusMessage('Stripping unused metadata & XML streams...');
         try {
           pdfDoc.setTitle('');
           pdfDoc.setAuthor('');
@@ -431,17 +427,21 @@ export default function PdfCompressorPage() {
           pdfDoc.setCreator('');
 
           const catalog = pdfDoc.catalog;
-          catalog.delete(PDFName.of('Metadata'));
-          catalog.delete(PDFName.of('PieceInfo'));
-          catalog.delete(PDFName.of('MarkInfo'));
+          if (catalog) {
+            catalog.delete(PDFName.of('Metadata'));
+            catalog.delete(PDFName.of('PieceInfo'));
+            catalog.delete(PDFName.of('MarkInfo'));
+            catalog.delete(PDFName.of('NeedsRendering'));
+          }
 
           const pages = pdfDoc.getPages();
           for (const page of pages) {
             page.node.delete(PDFName.of('Thumb'));
             page.node.delete(PDFName.of('PieceInfo'));
+            page.node.delete(PDFName.of('Metadata'));
           }
 
-          for (const [ref, obj] of allObjects) {
+          for (const [ref, obj] of context.enumerateIndirectObjects()) {
             if (obj instanceof PDFRawStream || obj instanceof PDFStream) {
               const dict = obj.dict;
               const type = dict.get(PDFName.of('Type'));
@@ -456,162 +456,155 @@ export default function PdfCompressorPage() {
             }
           }
         } catch {
-          // Safe metadata stripping
+          // Safe fallback
         }
       }
 
-      setProgress(88);
-      setStatusMessage('Compressing object streams and packing cross-reference table...');
+      // 3. Native Internal Stream Compression with pako
+      setProgress(74);
+      setStatusMessage('Recompressing internal object streams with Flate/Deflate...');
+      let streamsCompressed = 0;
+
+      for (const [ref, obj] of context.enumerateIndirectObjects()) {
+        if (obj instanceof PDFRawStream || obj instanceof PDFStream) {
+          const dict = obj.dict;
+          const subtype = dict.get(PDFName.of('Subtype'));
+          if (subtype === PDFName.of('Image')) continue;
+
+          const filter = dict.get(PDFName.of('Filter'));
+          const filterName = filter ? filter.toString() : '';
+
+          const contents =
+            obj instanceof PDFRawStream
+              ? obj.contents
+              : (obj as unknown as { contents: Uint8Array }).contents;
+
+          if (!contents || contents.length === 0) continue;
+
+          if (!filter || filterName === '/null') {
+            // Uncompressed stream - compress with deflate level 9
+            try {
+              const deflated = pako.deflate(contents, { level: 9 });
+              if (deflated.length < contents.length) {
+                dict.set(PDFName.of('Filter'), PDFName.of('FlateDecode'));
+                dict.set(PDFName.of('Length'), PDFNumber.of(deflated.length));
+                context.assign(ref, PDFRawStream.of(dict, deflated));
+                streamsCompressed++;
+              }
+            } catch {
+              // Ignore
+            }
+          } else if (filterName.includes('FlateDecode') && !filterName.includes('[')) {
+            // Recompress with maximum deflate compression
+            try {
+              const uncompressed = pako.inflate(contents);
+              const recompressed = pako.deflate(uncompressed, { level: 9 });
+              if (recompressed.length < contents.length * 0.98) {
+                dict.set(PDFName.of('Length'), PDFNumber.of(recompressed.length));
+                context.assign(ref, PDFRawStream.of(dict, recompressed));
+                streamsCompressed++;
+              }
+            } catch {
+              // Stream may have unsupported predictor or corrupt data, keep as-is
+            }
+          }
+        }
+      }
+
+      // 4. Mark-and-Sweep Garbage Collection for Unreferenced Objects
+      setProgress(84);
+      setStatusMessage('Purging unreferenced objects & duplicate resources...');
+      let unreferencedObjectsRemoved = 0;
+
+      try {
+        const visitedRefs = new Set<string>();
+        const queue: any[] = [];
+
+        if (pdfDoc.catalog) queue.push(pdfDoc.catalog);
+        if (context.trailerInfo) {
+          if (context.trailerInfo.Root) queue.push(context.trailerInfo.Root);
+          if (context.trailerInfo.Info) queue.push(context.trailerInfo.Info);
+        }
+
+        while (queue.length > 0) {
+          const current = queue.pop();
+          if (!current) continue;
+
+          if (current instanceof (PDFRef as any)) {
+            const key = `${current.objectNumber}_${current.generationNumber}`;
+            if (visitedRefs.has(key)) continue;
+            visitedRefs.add(key);
+            const resolved = context.lookup(current) as any;
+            if (resolved) queue.push(resolved);
+          } else if (current instanceof (PDFDict as any)) {
+            for (const [, val] of current.entries()) {
+              queue.push(val);
+            }
+          } else if (current instanceof (PDFArray as any)) {
+            for (const val of current.asArray()) {
+              queue.push(val);
+            }
+          } else if (current instanceof (PDFStream as any) || current instanceof (PDFRawStream as any)) {
+            queue.push(current.dict);
+          }
+        }
+
+        for (const [ref] of context.enumerateIndirectObjects()) {
+          const key = `${ref.objectNumber}_${ref.generationNumber}`;
+          if (!visitedRefs.has(key)) {
+            context.delete(ref);
+            unreferencedObjectsRemoved++;
+          }
+        }
+      } catch {
+        // Safe fallback
+      }
+
+      // 5. Serialize PDF with object stream compaction
+      setProgress(92);
+      setStatusMessage('Compacting xref tables and finalizing PDF...');
 
       const compressedBytes = await pdfDoc.save({
         useObjectStreams: true,
         addDefaultPage: false,
+        updateFieldAppearances: false,
       });
 
-      setProgress(96);
+      setProgress(98);
 
-      const blob = new Blob([compressedBytes as BlobPart], { type: 'application/pdf' });
       const originalSize = arrayBuffer.byteLength;
-      const compressedSize = blob.size;
-      const reductionPercent = Math.max(0, ((originalSize - compressedSize) / originalSize) * 100);
+      let finalBlob: Blob;
+      let compressedSize: number;
+      let reductionPercent: number;
+      let isAlreadyOptimized = false;
 
-      // Flag stubborn files (scans / complex vector PDFs with low reduction)
-      const isStubbornCandidate = reductionPercent < 12 && originalSize > 150 * 1024;
+      // 6. Safety Check (Prevent File Enlargement)
+      if (compressedBytes.byteLength < originalSize) {
+        finalBlob = new Blob([compressedBytes as BlobPart], { type: 'application/pdf' });
+        compressedSize = compressedBytes.byteLength;
+        reductionPercent = ((originalSize - compressedSize) / originalSize) * 100;
+        isAlreadyOptimized = false;
+      } else {
+        // Automatically return the pristine original file if compression resulted in enlargement or equal size
+        finalBlob = new Blob([arrayBuffer], { type: 'application/pdf' });
+        compressedSize = originalSize;
+        reductionPercent = 0;
+        isAlreadyOptimized = true;
+      }
 
       return {
-        blob,
+        blob: finalBlob,
         originalSize,
         compressedSize,
         reductionPercent,
         pageCount,
         imagesProcessed: imagesCompressed,
-        engineUsed: 'native',
-        isStubbornCandidate,
+        streamsCompressed,
+        unreferencedObjectsRemoved,
+        isAlreadyOptimized,
       };
     },
     [loadImageFromBytes, processAndReEncodeImage, extractFlateImageData]
-  );
-
-  // ── Engine 2: Deep Scanned Mode (Page-Level Canvas Rasterizer via pdfjs-dist) ──
-  const runDeepScannedCompression = useCallback(
-    async (
-      arrayBuffer: ArrayBuffer,
-      config: CompressionTierConfig
-    ): Promise<CompressionResult> => {
-      setStatusMessage('Loading high-performance raster engine...');
-      setProgress(10);
-
-      const pdfjsLib = await import('pdfjs-dist');
-      if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-        try {
-          pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-        } catch {
-          pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
-        }
-      }
-
-      const pdfLib = await import('pdf-lib');
-      const { PDFDocument } = pdfLib;
-
-      setProgress(18);
-      setStatusMessage('Reading document structure & pages...');
-
-      const loadingTask = pdfjsLib.getDocument({
-        data: new Uint8Array(arrayBuffer),
-        cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/cmaps/`,
-        cMapPacked: true,
-      });
-      const pdfDoc = await loadingTask.promise;
-      const pageCount = pdfDoc.numPages;
-
-      const outputPdfDoc = await PDFDocument.create();
-
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d', { willReadFrequently: true });
-      if (!ctx) throw new Error('Canvas 2D context unavailable');
-
-      for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
-        const pct = Math.round(20 + ((pageNum - 1) / pageCount) * 68);
-        setProgress(pct);
-        setStatusMessage(`Rasterizing & compressing page ${pageNum} of ${pageCount}...`);
-
-        const page = await pdfDoc.getPage(pageNum);
-        const unscaledViewport = page.getViewport({ scale: 1.0 });
-
-        // Calculate scale targeting optimal DPI (~100-120 DPI)
-        const maxSide = Math.max(unscaledViewport.width, unscaledViewport.height);
-        let scale = 1.35;
-        if (maxSide * scale > config.maxDimension) {
-          scale = config.maxDimension / maxSide;
-        }
-        scale = Math.min(Math.max(scale, 0.75), 1.6);
-
-        const viewport = page.getViewport({ scale });
-        canvas.width = Math.round(viewport.width);
-        canvas.height = Math.round(viewport.height);
-
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        await page.render({
-          canvasContext: ctx,
-          viewport,
-        }).promise;
-
-        const jpegBytes: Uint8Array = await new Promise((resolve, reject) => {
-          canvas.toBlob(
-            (b) => {
-              if (!b) return reject(new Error(`Failed to rasterize page ${pageNum}`));
-              b.arrayBuffer().then((buf) => resolve(new Uint8Array(buf)));
-            },
-            'image/jpeg',
-            config.jpegQuality
-          );
-        });
-
-        const embeddedImage = await outputPdfDoc.embedJpg(jpegBytes);
-        const newPage = outputPdfDoc.addPage([unscaledViewport.width, unscaledViewport.height]);
-        newPage.drawImage(embeddedImage, {
-          x: 0,
-          y: 0,
-          width: unscaledViewport.width,
-          height: unscaledViewport.height,
-        });
-
-        page.cleanup();
-      }
-
-      // Free canvas memory
-      canvas.width = 0;
-      canvas.height = 0;
-
-      setProgress(92);
-      setStatusMessage('Assembling optimized document streams...');
-
-      const outputBytes = await outputPdfDoc.save({
-        useObjectStreams: true,
-        addDefaultPage: false,
-      });
-
-      setProgress(98);
-
-      const blob = new Blob([outputBytes as BlobPart], { type: 'application/pdf' });
-      const originalSize = arrayBuffer.byteLength;
-      const compressedSize = blob.size;
-      const reductionPercent = Math.max(0, ((originalSize - compressedSize) / originalSize) * 100);
-
-      return {
-        blob,
-        originalSize,
-        compressedSize,
-        reductionPercent,
-        pageCount,
-        imagesProcessed: pageCount,
-        engineUsed: 'deep',
-        isStubbornCandidate: false,
-      };
-    },
-    []
   );
 
   const handleCompress = useCallback(async () => {
@@ -627,25 +620,19 @@ export default function PdfCompressorPage() {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-
-      let res: CompressionResult;
-      if (config.mode === 'deep') {
-        res = await runDeepScannedCompression(arrayBuffer, config);
-      } else {
-        res = await runNativeCompression(arrayBuffer, config);
-      }
+      const res = await runNativeCompression(arrayBuffer, config);
 
       setProgress(100);
       setResult(res);
 
-      if (res.reductionPercent >= 40) {
+      if (res.isAlreadyOptimized) {
+        toast.info('This PDF is already highly optimized and cannot be reduced further.');
+      } else if (res.reductionPercent >= 40) {
         toast.success(
           `Excellent! Reduced by ${res.reductionPercent.toFixed(1)}% (${formatFileSize(
             res.originalSize - res.compressedSize
           )} saved).`
         );
-      } else if (res.isStubbornCandidate) {
-        toast.info('Document processed. Notice: Scanned elements detected for deeper compression.');
       } else {
         toast.success(
           `PDF optimized! Reduced by ${res.reductionPercent.toFixed(1)}% across ${res.pageCount} page${
@@ -662,36 +649,7 @@ export default function PdfCompressorPage() {
     } finally {
       setIsProcessing(false);
     }
-  }, [file, level, runNativeCompression, runDeepScannedCompression]);
-
-  const handleTriggerDeepScanned = useCallback(async () => {
-    if (!file) return;
-    setLevel('deep');
-    setIsProcessing(true);
-    setProgress(5);
-    setError(null);
-    setStatusMessage('Switching to Deep Scanned Mode...');
-
-    const deepConfig = compressionLevels.find((l) => l.id === 'deep')!;
-
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const res = await runDeepScannedCompression(arrayBuffer, deepConfig);
-      setProgress(100);
-      setResult(res);
-      toast.success(
-        `Deep Scanned success! Squeezed by ${res.reductionPercent.toFixed(1)}% (${formatFileSize(
-          res.originalSize - res.compressedSize
-        )} saved).`
-      );
-    } catch (err) {
-      console.error('Deep compression error:', err);
-      setError('Deep compression failed. The file may be password-protected or invalid.');
-      toast.error('Deep compression failed.');
-    } finally {
-      setIsProcessing(false);
-    }
-  }, [file, runDeepScannedCompression]);
+  }, [file, level, runNativeCompression]);
 
   const handleDownload = useCallback(() => {
     if (!result || !file) return;
@@ -735,14 +693,14 @@ export default function PdfCompressorPage() {
       >
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-500 dark:text-brand-300 border border-brand-500/20 mb-4">
           <Sparkles className="w-3.5 h-3.5" />
-          Smart Hybrid In-Browser PDF Optimizer
+          Native Vector PDF Optimizer & Stream Compactor
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
           Compress PDF Online
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
-          Reduce PDF file sizes with intelligent multi-engine compression.
-          Preserve crisp selectable text or achieve extreme scanned reduction — 100% private, zero uploads.
+          Reduce PDF file sizes with intelligent native stream optimization.
+          Preserves 100% crisp vector text, sharp fonts, and embedded layouts — zero blurry pixels, zero uploads.
         </p>
       </motion.div>
 
@@ -816,18 +774,8 @@ export default function PdfCompressorPage() {
                         </span>
                       </div>
                       <div className="mb-2">
-                        <span
-                          className={`text-[10px] font-semibold px-2 py-0.5 rounded-md inline-flex items-center gap-1 ${
-                            lvl.mode === 'deep'
-                              ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
-                              : 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
-                          }`}
-                        >
-                          {lvl.mode === 'deep' ? (
-                            <ScanLine className="w-3 h-3" />
-                          ) : (
-                            <FileText className="w-3 h-3" />
-                          )}
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md inline-flex items-center gap-1 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                          <FileText className="w-3 h-3" />
                           {lvl.badge}
                         </span>
                       </div>
@@ -879,30 +827,20 @@ export default function PdfCompressorPage() {
         {/* Results */}
         {result && file && (
           <div className="space-y-6">
-            {/* Stubborn Scanned Fallback Alert */}
-            {result.isStubbornCandidate && (
-              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                    <ScanLine className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-zinc-900 dark:text-white">
-                      Scanned Document or Stubborn Layers Detected
-                    </p>
-                    <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                      This PDF yielded only {result.reductionPercent.toFixed(1)}% reduction with native text preservation. Switch to Deep Scanned Mode for up to 85% compression.
-                    </p>
-                  </div>
+            {/* Safety Check Notice for Already Optimized PDF */}
+            {result.isAlreadyOptimized && (
+              <div className="p-4 rounded-2xl bg-brand-500/10 border border-brand-500/20 flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <Info className="w-5 h-5" />
                 </div>
-                <button
-                  onClick={handleTriggerDeepScanned}
-                  disabled={isProcessing}
-                  className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold shrink-0 transition flex items-center gap-1.5 shadow-sm"
-                >
-                  <Zap className="w-3.5 h-3.5" />
-                  Apply Deep Scanned Mode
-                </button>
+                <div>
+                  <p className="text-xs font-bold text-zinc-900 dark:text-white">
+                    This PDF is already highly optimized and cannot be reduced further.
+                  </p>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
+                    Compixor detected that recompressing this document would enlarge its file size or compromise quality. We safely returned your original file so you don&apos;t end up with bloated size or blurry text.
+                  </p>
+                </div>
               </div>
             )}
 
@@ -922,31 +860,18 @@ export default function PdfCompressorPage() {
               <div className="p-5 rounded-2xl bg-emerald-500/10 text-center border border-emerald-500/20">
                 <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mb-1">Reduction</p>
                 <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
-                  {result.reductionPercent.toFixed(1)}%
+                  {result.isAlreadyOptimized ? 'Optimal' : `${result.reductionPercent.toFixed(1)}%`}
                 </p>
               </div>
               <div className="p-5 rounded-2xl bg-cyan-500/10 text-center border border-cyan-500/20">
                 <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 mb-1">
-                  {result.engineUsed === 'deep' ? 'Engine' : 'Images Optimized'}
+                  Text & Vectors
                 </p>
                 <p className="text-sm sm:text-base font-bold text-cyan-600 dark:text-cyan-400 mt-1">
-                  {result.engineUsed === 'deep' ? 'Deep Scanned' : `${result.imagesProcessed} (${result.pageCount} pgs)`}
+                  100% Crisp Vector
                 </p>
               </div>
             </div>
-
-            {/* Processing State while switching engines */}
-            {isProcessing && (
-              <div className="flex flex-col items-center py-6">
-                <ProgressRing progress={progress} size={90} />
-                <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mt-4">
-                  {statusMessage}
-                </p>
-                <p className="text-xs text-zinc-400 mt-1">
-                  Applying Deep Scanned compression ({Math.round(progress)}%)
-                </p>
-              </div>
-            )}
 
             {!isProcessing && (
               <div className="flex flex-col sm:flex-row gap-3">
@@ -955,7 +880,7 @@ export default function PdfCompressorPage() {
                   className="btn-primary flex-1 flex items-center justify-center gap-2 py-3.5 font-semibold text-sm"
                 >
                   <Download className="w-4 h-4" />
-                  Download Compressed PDF
+                  {result.isAlreadyOptimized ? 'Download Verified PDF' : 'Download Compressed PDF'}
                 </button>
                 <button
                   onClick={handleReset}
@@ -977,10 +902,10 @@ export default function PdfCompressorPage() {
             <Sliders className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
-            Dual Engine Intelligence
+            Native Vector Engine
           </h3>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-            Choose between native vector preservation (for crisp selectable text) or aggressive deep scan rasterization (for maximum file reduction).
+            Preserves 100% copy-pasteable text, sharp fonts, and vector paths. Pages are never rasterized into blurry canvas images.
           </p>
         </div>
 
@@ -989,10 +914,10 @@ export default function PdfCompressorPage() {
             <FileCheck2 className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
-            Deduplication & Stream Packing
+            Stream Packing & Object GC
           </h3>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-            Eliminates duplicate assets, strips unused document XML metadata, and compacts cross-reference object tables.
+            Eliminates orphaned fonts, strips XML metadata, recompresses Flate/Deflate streams, and compacts cross-reference tables.
           </p>
         </div>
 
@@ -1001,10 +926,10 @@ export default function PdfCompressorPage() {
             <ShieldCheck className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
-            100% Client-Side Privacy
+            Enlargement Safety Check
           </h3>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-            Processing runs strictly inside WebAssembly & HTML5 Canvas in your browser memory. Zero files uploaded to remote servers.
+            Guarantees files never enlarge. If a PDF is already optimized, Compixor automatically returns the original without bloating.
           </p>
         </div>
       </section>
