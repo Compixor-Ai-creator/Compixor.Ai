@@ -19,8 +19,53 @@ import {
   ChevronDown,
   HelpCircle,
   Layers,
+  Crop,
+  ShieldCheck,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
+
+const heroFeatures = [
+  {
+    href: '/tools/passport-photo',
+    icon: Camera,
+    title: 'Biometric Passport Photo Maker',
+    description: 'NADRA, US Visa & Schengen ready',
+    color: 'from-emerald-500 to-teal-500',
+    badge: 'Popular',
+  },
+  {
+    href: '/tools/pdf-compressor',
+    icon: FileDown,
+    title: 'Smart Document Compressor',
+    description: 'Reduce PDF & Word size without quality loss',
+    color: 'from-brand-500 to-indigo-600',
+    badge: 'Fast',
+  },
+  {
+    href: '/tools/full-dp-maker',
+    icon: Crop,
+    title: 'All Social Media DP Resizer',
+    description: 'No-crop square fit for WhatsApp, Instagram & Facebook with blur background',
+    color: 'from-violet-500 to-purple-600',
+    badge: 'Trending',
+  },
+  {
+    href: '/tools/qr-generator',
+    icon: QrCode,
+    title: 'High-Res QR Code Generator',
+    description: 'Custom styles, instant download',
+    color: 'from-amber-500 to-rose-500',
+    badge: 'Instant',
+  },
+  {
+    href: '#tools',
+    icon: ShieldCheck,
+    title: '100% Client-Side Privacy',
+    description: 'Zero uploads to servers, instant browser-level processing',
+    color: 'from-cyan-500 to-blue-600',
+    badge: '100% Private',
+  },
+];
 
 const tools = [
   {
@@ -172,58 +217,144 @@ export default function HomePage() {
           }}
         />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 md:pt-28 pb-16">
-          <motion.div
-            className="text-center max-w-4xl mx-auto"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-          >
-            {/* Badge */}
-            <motion.div variants={itemVariants} className="mb-6">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/25 dark:border-brand-400/30 backdrop-blur-sm shadow-sm shadow-brand-500/10">
-                <Sparkles className="w-3.5 h-3.5" />
-                All-in-One Client-Side Document & Media Toolkit
-              </span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-20 pb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            {/* Left Column: Hero Copy & CTA */}
+            <motion.div
+              className="lg:col-span-7 text-left"
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+            >
+              {/* Badge */}
+              <motion.div variants={itemVariants} className="mb-6">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/25 dark:border-brand-400/30 backdrop-blur-sm shadow-sm shadow-brand-500/10">
+                  <Sparkles className="w-3.5 h-3.5 text-brand-500" />
+                  All-in-One Client-Side Document & Media Toolkit
+                </span>
+              </motion.div>
+
+              {/* Headline */}
+              <motion.h1
+                variants={itemVariants}
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-display leading-[1.02] tracking-tight mb-6"
+              >
+                <span className="text-zinc-900 dark:text-white">Transform{' '}</span>
+                <span className="text-gradient">Your Files.</span>
+                <br />
+                <span className="text-zinc-900 dark:text-white">Zero Server Uploads.</span>
+              </motion.h1>
+
+              {/* Subheadline */}
+              <motion.p
+                variants={itemVariants}
+                className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mb-8 leading-relaxed"
+              >
+                High-performance biometric passport photos, document compression, social media DP resizer,
+                and vector QR codes — executed <span className="font-semibold text-brand-500 dark:text-brand-300">100% locally</span> in your browser.
+              </motion.p>
+
+              {/* Primary CTA */}
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6"
+              >
+                <a
+                  href="#tools"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 text-base sm:text-lg px-8 py-4 font-bold shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer"
+                >
+                  <span>Start Now — Make Your Life Easy</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </a>
+              </motion.div>
+
+              {/* Sub-tags / Badges (General, zero PDF mentions) */}
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-1"
+              >
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/60 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  100% Free
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/60 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  Instant Processing
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/60 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  Zero Data Leaks
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/60 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  No Sign-Up Required
+                </span>
+              </motion.div>
             </motion.div>
 
-            {/* Headline */}
-            <motion.h1
-              variants={itemVariants}
-              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-display leading-[0.95] tracking-tight mb-6"
-            >
-              <span className="text-zinc-900 dark:text-white">Transform{' '}</span>
-              <span className="text-gradient">Your Files.</span>
-              <br />
-              <span className="text-zinc-900 dark:text-white">Zero Server Uploads.</span>
-            </motion.h1>
-
-            {/* Subheadline */}
-            <motion.p
-              variants={itemVariants}
-              className="text-base sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed"
-            >
-              High-performance PDF compression, Word document optimization, biometric passport photos,
-              and vector QR codes — executed <span className="font-semibold text-brand-500 dark:text-brand-300">100% locally</span> in your browser.
-            </motion.p>
-
-            {/* CTAs */}
+            {/* Right Column: 5 Core Tools Feature Highlight Card */}
             <motion.div
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+              className="lg:col-span-5"
+              initial={{ opacity: 0, x: 25 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              {/* Subtle frosted glass pill wrapping both CTAs */}
-              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 p-2 sm:p-2.5 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/50 dark:border-white/10 backdrop-blur-md shadow-sm w-full sm:w-auto">
-                <Link href="/tools/pdf-compressor" className="w-full sm:w-auto btn-primary flex items-center justify-center gap-2 text-base px-8 py-3.5">
-                  Compress PDF Free
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link href="#tools" className="w-full sm:w-auto btn-secondary flex items-center justify-center gap-2 text-base px-8 py-3.5">
-                  Explore All 5 Tools
-                </Link>
+              <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/60 dark:border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+                <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-zinc-200/60 dark:border-zinc-800/60">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
+                      Core Toolkit Features
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-500/15 text-brand-600 dark:text-brand-300">
+                    5 Essential Tools
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  {heroFeatures.map((feat, idx) => {
+                    const Icon = feat.icon;
+                    const isAnchor = feat.href.startsWith('#');
+                    return (
+                      <Link
+                        key={idx}
+                        href={feat.href}
+                        onClick={
+                          isAnchor
+                            ? (e) => {
+                                e.preventDefault();
+                                document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' });
+                              }
+                            : undefined
+                        }
+                        className="group flex items-center gap-3.5 p-2.5 sm:p-3 rounded-2xl transition-all duration-200 hover:bg-white/70 dark:hover:bg-zinc-800/70 hover:shadow-sm border border-transparent hover:border-zinc-200/60 dark:hover:border-zinc-700/60"
+                      >
+                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${feat.color} flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-200`}>
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-1">
+                            <p className="text-sm font-bold text-zinc-900 dark:text-white truncate group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                              {feat.title}
+                            </p>
+                            <ArrowRight className="w-3.5 h-3.5 text-zinc-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
+                          </div>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-snug line-clamp-1 mt-0.5">
+                            {feat.description}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -427,10 +558,17 @@ export default function HomePage() {
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-lg mx-auto">
               Select a tool and start processing files in seconds. No credit card or registration needed.
             </p>
-            <Link href="/tools/pdf-compressor" className="btn-primary inline-flex items-center gap-2 text-base px-8 py-3.5">
-              Start Free Now
+            <a
+              href="#tools"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="btn-primary inline-flex items-center gap-2 text-base px-8 py-3.5 font-bold cursor-pointer"
+            >
+              <span>Start Now — Make Your Life Easy</span>
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </a>
           </motion.div>
         </div>
       </section>
