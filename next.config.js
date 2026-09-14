@@ -57,6 +57,26 @@ const nextConfig = {
         source: '/pdf-compressor',
         destination: '/tools/pdf-compressor',
       },
+      {
+        source: '/tools/pdf-merge',
+        destination: '/tools/pdf-organizer?tab=merge',
+      },
+      {
+        source: '/tools/pdf-split',
+        destination: '/tools/pdf-organizer?tab=split',
+      },
+      {
+        source: '/pdf-organizer',
+        destination: '/tools/pdf-organizer',
+      },
+      {
+        source: '/merge-pdf',
+        destination: '/tools/pdf-organizer?tab=merge',
+      },
+      {
+        source: '/split-pdf',
+        destination: '/tools/pdf-organizer?tab=split',
+      },
     ];
   },
 };

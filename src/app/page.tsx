@@ -21,10 +21,19 @@ import {
   Layers,
   Crop,
   ShieldCheck,
+  Files,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
 
 const heroFeatures = [
+  {
+    href: '/tools/pdf-organizer',
+    icon: Files,
+    title: 'PDF Merge & Split Organizer',
+    description: 'Combine multiple PDFs or extract exact page ranges',
+    color: 'from-cyan-500 to-indigo-600',
+    badge: 'New',
+  },
   {
     href: '/tools/passport-photo',
     icon: Camera,
@@ -68,6 +77,16 @@ const heroFeatures = [
 ];
 
 const tools = [
+  {
+    href: '/tools/pdf-organizer',
+    icon: Files,
+    title: 'Smart PDF Merge & Split',
+    tagline: '100% Client-Side Privacy',
+    description: 'Combine multiple PDF files in custom order or extract exact page ranges into separate documents with visual page previews.',
+    color: 'from-cyan-500 to-indigo-600',
+    stats: 'Merge Unlimited · Split in Seconds',
+    badge: 'New',
+  },
   {
     href: '/tools/pdf-compressor',
     icon: FileDown,
@@ -312,7 +331,7 @@ export default function HomePage() {
                     </span>
                   </div>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-500/15 text-brand-600 dark:text-brand-300">
-                    5 Essential Tools
+                    6 Essential Tools
                   </span>
                 </div>
 

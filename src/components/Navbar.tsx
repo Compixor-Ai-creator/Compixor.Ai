@@ -16,10 +16,12 @@ import {
   QrCode,
   Sparkles,
   Info,
+  Files,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
 
 const navLinks = [
+  { href: '/tools/pdf-organizer', label: 'PDF Merge & Split', icon: Files },
   { href: '/tools/pdf-compressor', label: 'PDF Compressor', icon: FileDown },
   { href: '/tools/word-compressor', label: 'Word Compressor', icon: FileText },
   { href: '/tools/passport-photo', label: 'Passport Photo', icon: Camera },
@@ -47,7 +49,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-nav ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-nav overflow-hidden ${
           scrolled ? 'shadow-lg' : ''
         }`}
       >
@@ -65,7 +67,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Nav Links */}
-            <div className="hidden lg:flex items-center gap-0.5 xl:gap-1 overflow-x-auto no-scrollbar">
+            <div className="hidden lg:flex items-center gap-0.5 xl:gap-1">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 const Icon = link.icon;

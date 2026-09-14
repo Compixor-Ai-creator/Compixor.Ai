@@ -135,6 +135,21 @@ export default function RootLayout({
     {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
+      name: 'Compixor PDF Merge & Split',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'All',
+      browserRequirements: 'Requires modern web browser with WebAssembly and JavaScript enabled',
+      url: 'https://compixor-ai.vercel.app/tools/pdf-organizer',
+      description: 'Combine multiple PDF files into one document or extract and split page ranges client-side in the browser with zero server uploads.',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
       name: 'Compixor PDF Compressor',
       applicationCategory: 'BusinessApplication',
       operatingSystem: 'All',
