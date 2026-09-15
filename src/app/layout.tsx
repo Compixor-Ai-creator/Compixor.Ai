@@ -26,53 +26,49 @@ const BASE_URL = 'https://compixor-ai.vercel.app';
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'Compixor.Ai — Free Online Privacy-First Media & Document Tools',
-    template: '%s | Compixor.Ai — Client-Side Privacy Tools',
+    default: 'Compixor AI — Free Online Privacy-First Media & Document Tools',
+    template: '%s | Compixor AI — Client-Side Privacy Tools',
   },
   description:
-    'All-in-one free, 100% client-side privacy toolkit. Compress PDFs, shrink Word documents, create biometric passport photos, format full DP pictures without cropping, and generate high-res vector QR codes entirely in your browser with zero server uploads.',
+    'Compixor AI is a 100% private, client-side toolkit developed by Haroon Ali. Compress PDFs, make NADRA passport photos, resize social media DPs, and generate QR codes instantly.',
   keywords: [
-    'Compixor',
-    'Compixor.Ai',
-    'free client side pdf compressor',
-    'compress pdf online without upload',
-    'word document docx compressor',
-    'nadra passport photo maker free',
-    'us visa passport photo online',
-    'no crop whatsapp dp maker',
-    'full dp profile picture maker',
-    'custom qr code generator svg',
-    'privacy first media tools',
-    'browser based document compression',
+    'compixor',
+    'compixor ai',
+    'haroon ali',
+    'pdf compressor',
+    'passport photo maker',
+    'word compressor',
+    'dp resizer',
+    'qr code generator',
   ],
-  authors: [{ name: 'Compixor.Ai Team' }],
-  creator: 'Compixor.Ai',
-  publisher: 'Compixor.Ai',
+  authors: [{ name: 'Haroon Ali', url: 'https://compixor-ai.vercel.app' }],
+  creator: 'Haroon Ali',
+  publisher: 'Compixor AI',
   alternates: {
     canonical: BASE_URL,
   },
   openGraph: {
-    title: 'Compixor.Ai — Free Online Privacy-First Media & Document Tools',
+    title: 'Compixor AI — Free Online Privacy-First Media & Document Tools',
     description:
-      'Transform, compress, and edit documents & media directly in your browser. 100% private, instantaneous execution with zero remote server file uploads.',
+      'Compixor AI is a 100% private, client-side toolkit developed by Haroon Ali. Compress PDFs, make NADRA passport photos, resize social media DPs, and generate QR codes instantly.',
     type: 'website',
     url: BASE_URL,
-    siteName: 'Compixor.Ai',
+    siteName: 'Compixor AI',
     locale: 'en_US',
     images: [
       {
         url: '/images/og-banner.png',
         width: 1200,
         height: 630,
-        alt: 'Compixor.Ai — Client-Side Document and Media Toolkit',
+        alt: 'Compixor AI — Free Online Privacy-First Media & Document Tools',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Compixor.Ai — Free Online Privacy-First Media & Document Tools',
+    title: 'Compixor AI — Free Online Privacy-First Media & Document Tools',
     description:
-      'Compress PDFs, shrink DOCX, generate passport photos, full DPs, and custom QR codes locally in your browser. Zero cloud uploads.',
+      'Compixor AI is a 100% private, client-side toolkit developed by Haroon Ali. Compress PDFs, make NADRA passport photos, resize social media DPs, and generate QR codes instantly.',
     images: ['/images/og-banner.png'],
   },
   icons: {
@@ -104,14 +100,52 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const mainWebApplicationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Compixor AI',
+    alternateName: ['Compixor', 'Compixor AI', 'Compixor.Ai'],
+    url: 'https://compixor-ai.vercel.app/',
+    applicationCategory: 'UtilitiesApplication, MultimediaApplication',
+    operatingSystem: 'All',
+    description:
+      'Privacy-first client-side media and document tools developed by Haroon Ali. Includes local PDF merge and split, biometric passport photo maker, document compression, and no-crop DP resizers with zero server uploads.',
+    browserRequirements: 'Requires HTML5 compatible browser. Requires HTML5 Canvas support.',
+    permissions: '100% client-side privacy. Zero server uploads.',
+    author: {
+      '@type': 'Person',
+      name: 'Haroon Ali',
+      jobTitle: 'Founder & Lead Developer',
+      url: 'https://compixor-ai.vercel.app/',
+    },
+    creator: {
+      '@type': 'Person',
+      name: 'Haroon Ali',
+      url: 'https://compixor-ai.vercel.app/',
+    },
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    featureList: [
+      '100% Client-side Processing (Zero Server Uploads)',
+      'PDF Merge & Split',
+      'Biometric Passport Photo Maker',
+      'Smart Document & Image Compression',
+      'No-Crop Social DP Resizer',
+      'QR Code Generator',
+    ],
+  };
+
   const structuredData = [
     {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: 'Compixor.Ai',
-      alternateName: ['Compixor', 'Compixor AI'],
+      name: 'Compixor AI',
+      alternateName: ['Compixor', 'Compixor AI', 'Compixor.Ai'],
       url: 'https://compixor-ai.vercel.app/',
-      description: 'Free, privacy-first in-browser document compression and media tools suite.',
+      description: 'Compixor AI is a 100% private, client-side toolkit developed by Haroon Ali. Compress PDFs, make NADRA passport photos, resize social media DPs, and generate QR codes instantly.',
       potentialAction: {
         '@type': 'SearchAction',
         target: {
@@ -120,17 +154,25 @@ export default function RootLayout({
         },
         'query-input': 'required name=search_term_string',
       },
+      author: {
+        '@type': 'Person',
+        name: 'Haroon Ali',
+      },
     },
     {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'Compixor.Ai',
+      name: 'Compixor AI',
       url: 'https://compixor-ai.vercel.app/',
       logo: 'https://compixor-ai.vercel.app/icon.png',
       sameAs: [
         'https://compixor.ai',
       ],
       description: 'Provider of client-side privacy-first web utilities for media and documents.',
+      founder: {
+        '@type': 'Person',
+        name: 'Haroon Ali',
+      },
     },
     {
       '@context': 'https://schema.org',
@@ -238,8 +280,7 @@ export default function RootLayout({
               (function() {
                 try {
                   var saved = localStorage.getItem('compixor-theme');
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (saved === 'dark' || (!saved && prefersDark)) {
+                  if (saved === 'dark') {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
@@ -253,6 +294,13 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=4" />
         <link rel="shortcut icon" href="/favicon.ico?v=4" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4" />
+        {/* Exact WebApplication JSON-LD Schema for Google Search & Gemini AI Entity Recognition */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(mainWebApplicationSchema),
+          }}
+        />
         {/* JSON-LD Structured Data: WebSite, Organization & WebApplications */}
         <script
           type="application/ld+json"

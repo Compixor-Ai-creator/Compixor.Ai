@@ -138,11 +138,11 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-zinc-400 dark:text-zinc-500">
-            © {new Date().getFullYear()} CompixorAi. Built with clinical precision.
+        <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            © 2026 Compixor AI. Developed and Owned by Haroon Ali. All tools run 100% client-side for total privacy.
           </p>
-          <p className="text-xs text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
+          <p className="text-xs text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 shrink-0">
             Designed for privacy & performance
           </p>
         </div>
