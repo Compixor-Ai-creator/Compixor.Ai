@@ -80,7 +80,7 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
 }
 
-const STORAGE_KEY = 'compixor_watermark_settings_v1';
+const STORAGE_KEY = 'compixor_watermark_settings_v2';
 
 // Default persisted settings
 interface SavedSettings {
@@ -105,7 +105,7 @@ interface SavedSettings {
 
 const DEFAULT_SETTINGS: SavedSettings = {
   watermarkType: 'text',
-  text: 'CONFIDENTIAL',
+  text: 'COMPIXOR.AI',
   fontFamily: 'Helvetica',
   fontStyle: 'bold',
   fontSize: 48,
@@ -219,9 +219,12 @@ export default function PdfWatermarkClient({
   // Load settings from localStorage
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('compixor_watermark_settings_v1');
       if (saved) {
         const parsed = JSON.parse(saved);
+        if (parsed.text === 'CONFIDENTIAL') {
+          parsed.text = 'COMPIXOR.AI';
+        }
         setSettings((prev) => ({ ...prev, ...parsed }));
       }
     } catch (e) {
@@ -1515,7 +1518,7 @@ export default function PdfWatermarkClient({
                           type="text"
                           value={settings.text}
                           onChange={(e) => updateSettings({ text: e.target.value })}
-                          placeholder="e.g. CONFIDENTIAL, DRAFT, COPY, WASIF"
+                          placeholder="e.g. COMPIXOR.AI, DRAFT, COPY, WASIF"
                           className="w-full text-xs font-medium px-3.5 py-2.5 bg-slate-50/90 dark:bg-slate-850/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-900 dark:text-white placeholder:text-slate-400 transition-all shadow-2xs"
                         />
                       </div>
