@@ -32,10 +32,17 @@ import {
   Loader2,
   FileSpreadsheet,
   Image as ImageIcon,
+  RotateCw,
+  ChevronLeft,
+  ChevronRight,
+  LayoutGrid,
+  ListFilter,
 } from 'lucide-react';
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, degrees } from 'pdf-lib';
 import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import { toast } from 'sonner';
+import RelatedPdfTools from '@/components/RelatedPdfTools';
 
 // Helper to format bytes
 function formatFileSize(bytes: number): string {
@@ -58,6 +65,17 @@ interface MergeFileItem {
   isEncrypted: boolean;
   isCorrupted: boolean;
   errorMessage?: string;
+}
+
+interface MergePageItem {
+  id: string;
+  fileId: string;
+  fileName: string;
+  sourcePageIndex: number;
+  displayPageNumber: number;
+  fileType: 'pdf' | 'image';
+  thumbnailUrl: string | null;
+  rotation: number; // 0, 90, 180, 270 degrees
 }
 
 // Helper to decode an image (e.g. WEBP or fallback PNG/JPG) into a transparent canvas and export as PNG bytes
@@ -244,6 +262,8 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
   // FEATURE 1: PDF MERGER STATE
   // -------------------------------------------------------------
   const [mergeFiles, setMergeFiles] = useState<MergeFileItem[]>([]);
+  const [mergePages, setMergePages] = useState<MergePageItem[]>([]);
+  const [mergeViewMode, setMergeViewMode] = useState<'pages' | 'files'>('pages');
   const [isMerging, setIsMerging] = useState(false);
   const [mergeProgress, setMergeProgress] = useState(0);
   const [mergeStatus, setMergeStatus] = useState('');
@@ -251,6 +271,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
   const [mergeResultStats, setMergeResultStats] = useState<{ count: number; pages: number; size: number } | null>(null);
   const mergeFileInputRef = useRef<HTMLInputElement>(null);
   const [isMergeDragOver, setIsMergeDragOver] = useState(false);
+  const mergeDragCounterRef = useRef(0);
 
   // -------------------------------------------------------------
   // FEATURE 2: PDF SPLITTER STATE
@@ -273,6 +294,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
   const [splitResultStats, setSplitResultStats] = useState<{ pages: number; size: number; isZip: boolean } | null>(null);
   const splitFileInputRef = useRef<HTMLInputElement>(null);
   const [isSplitDragOver, setIsSplitDragOver] = useState(false);
+  const splitDragCounterRef = useRef(0);
   const [isDraggingGlobal, setIsDraggingGlobal] = useState(false);
   const dragCounterRef = useRef(0);
 
@@ -314,6 +336,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
     const toastId = toast.loading(`Analyzing ${validFiles.length} file(s)...`);
 
     const newItems: MergeFileItem[] = [];
+    const newPageItems: MergePageItem[] = [];
 
     for (let i = 0; i < validFiles.length; i++) {
       const file = validFiles[i];
@@ -321,7 +344,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
       const isImg = isImageFile(file);
 
       if (isImg) {
-        // Image item (JPG / PNG)
+        // Image item (JPG / PNG / WEBP)
         let thumbnailUrl: string | null = null;
         let isCorrupted = false;
         let errorMessage: string | undefined;
@@ -345,6 +368,19 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
           isCorrupted,
           errorMessage,
         });
+
+        if (!isCorrupted) {
+          newPageItems.push({
+            id: `page_${id}_0`,
+            fileId: id,
+            fileName: file.name,
+            sourcePageIndex: 0,
+            displayPageNumber: 1,
+            fileType: 'image',
+            thumbnailUrl,
+            rotation: 0,
+          });
+        }
       } else {
         // PDF item
         try {
@@ -374,15 +410,18 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
             }
           }
 
-          // Render page 1 thumbnail
           let thumbnailUrl: string | null = null;
+          let pdfjsDocProxy: any = null;
+
           if (!isEncrypted && !isCorrupted) {
             try {
-              const thumbRes = await renderFirstPageThumbnail(buffer);
-              thumbnailUrl = thumbRes.thumbnailUrl;
-              if (thumbRes.pageCount > 0) pageCount = thumbRes.pageCount;
-            } catch {
-              // Keep fallback
+              const pdfjs = await getPdfJs();
+              const loadingTask = pdfjs.getDocument({ data: new Uint8Array(buffer.slice(0)) });
+              pdfjsDocProxy = await loadingTask.promise;
+              if (pdfjsDocProxy.numPages > 0) pageCount = pdfjsDocProxy.numPages;
+              thumbnailUrl = await renderPageThumbnail(pdfjsDocProxy, 1);
+            } catch (err) {
+              console.warn('PDF.js thumbnail render error:', err);
             }
           }
 
@@ -398,6 +437,43 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
             isCorrupted,
             errorMessage,
           });
+
+          if (!isEncrypted && !isCorrupted) {
+            for (let p = 1; p <= pageCount; p++) {
+              newPageItems.push({
+                id: `page_${id}_${p - 1}`,
+                fileId: id,
+                fileName: file.name,
+                sourcePageIndex: p - 1,
+                displayPageNumber: p,
+                fileType: 'pdf',
+                thumbnailUrl: p === 1 ? thumbnailUrl : null,
+                rotation: 0,
+              });
+            }
+
+            // Asynchronously load remaining page thumbnails if multi-page
+            if (pdfjsDocProxy && pageCount > 1) {
+              (async () => {
+                for (let p = 2; p <= pageCount; p++) {
+                  try {
+                    const thumb = await renderPageThumbnail(pdfjsDocProxy, p);
+                    if (thumb) {
+                      setMergePages((current) =>
+                        current.map((item) =>
+                          item.fileId === id && item.sourcePageIndex === p - 1
+                            ? { ...item, thumbnailUrl: thumb }
+                            : item
+                        )
+                      );
+                    }
+                  } catch (err) {
+                    console.warn(`Failed loading thumbnail for page ${p}:`, err);
+                  }
+                }
+              })();
+            }
+          }
         } catch {
           newItems.push({
             id,
@@ -417,13 +493,18 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
 
     toast.dismiss(toastId);
     setMergeFiles((prev) => [...prev, ...newItems]);
+    setMergePages((prev) => [...prev, ...newPageItems]);
     setMergeResultBlob(null);
     setMergeResultStats(null);
-    toast.success(`Added ${newItems.length} PDF${newItems.length > 1 ? 's' : ''} to merge queue.`);
+    toast.success(
+      `Added ${newItems.length} file${newItems.length > 1 ? 's' : ''} (${newPageItems.length} total pages) to queue.`
+    );
   }, []);
 
   const handleMergeDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    mergeDragCounterRef.current = 0;
     setIsMergeDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       processNewMergeFiles(Array.from(e.dataTransfer.files));
@@ -443,18 +524,50 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
 
   const removeMergeItem = (id: string) => {
     setMergeFiles((prev) => prev.filter((item) => item.id !== id));
+    setMergePages((prev) => prev.filter((item) => item.fileId !== id));
   };
 
   const clearMergeAll = () => {
     setMergeFiles([]);
+    setMergePages([]);
     setMergeResultBlob(null);
     setMergeResultStats(null);
   };
 
-  // Perform PDF Merge
+  // Page-level manipulation helpers
+  const rotateMergePage = (pageId: string) => {
+    setMergePages((prev) =>
+      prev.map((p) => (p.id === pageId ? { ...p, rotation: (p.rotation + 90) % 360 } : p))
+    );
+  };
+
+  const deleteMergePage = (pageId: string) => {
+    setMergePages((prev) => prev.filter((p) => p.id !== pageId));
+    toast.info('Page removed from merge sequence.');
+  };
+
+  const moveMergePage = (index: number, direction: 'left' | 'right') => {
+    if (direction === 'left' && index === 0) return;
+    if (direction === 'right' && index === mergePages.length - 1) return;
+
+    const targetIndex = direction === 'left' ? index - 1 : index + 1;
+    setMergePages((prev) => {
+      const updated = [...prev];
+      const [moved] = updated.splice(index, 1);
+      updated.splice(targetIndex, 0, moved);
+      return updated;
+    });
+  };
+
+  // Perform PDF Merge using page sequence and rotations
   const handleExecuteMerge = async () => {
-    if (mergeFiles.length < 2) {
-      toast.error('Please upload at least 2 PDF files to merge.');
+    if (mergePages.length === 0) {
+      toast.error('No pages remaining to merge. Please add files.');
+      return;
+    }
+
+    if (mergeFiles.length < 2 && mergePages.length < 2) {
+      toast.error('Please upload at least 2 files or pages to merge.');
       return;
     }
 
@@ -465,31 +578,38 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
 
     setIsMerging(true);
     setMergeProgress(5);
-    setMergeStatus('Initializing empty PDF container...');
+    setMergeStatus('Initializing PDF compilation...');
 
     try {
       const mergedPdf = await PDFDocument.create();
-      let totalPagesAdded = 0;
 
-      for (let i = 0; i < mergeFiles.length; i++) {
-        const item = mergeFiles[i];
-        const stepProgress = Math.round(10 + (i / mergeFiles.length) * 75);
+      // Pre-load and cache PDFDocuments by fileId to avoid repeated loading
+      const pdfDocMap = new Map<string, PDFDocument>();
+      for (const f of mergeFiles) {
+        if (f.fileType === 'pdf') {
+          const buf = await f.file.arrayBuffer();
+          const doc = await PDFDocument.load(buf, { ignoreEncryption: true });
+          pdfDocMap.set(f.id, doc);
+        }
+      }
+
+      for (let i = 0; i < mergePages.length; i++) {
+        const pageItem = mergePages[i];
+        const stepProgress = Math.round(10 + (i / mergePages.length) * 75);
         setMergeProgress(stepProgress);
-        setMergeStatus(
-          `Processing ${item.fileType === 'image' ? 'image' : 'document'} ${i + 1} of ${mergeFiles.length}: "${item.name}"...`
-        );
+        setMergeStatus(`Processing page ${i + 1} of ${mergePages.length} ("${pageItem.fileName}")...`);
 
-        if (item.fileType === 'image') {
-          // Convert image file into a single page in mergedPdf
-          const imgData = await imageFileToEmbedData(item.file);
-          let embeddedImg;
-          if (imgData.isPng) {
-            embeddedImg = await mergedPdf.embedPng(imgData.bytes);
-          } else {
-            embeddedImg = await mergedPdf.embedJpg(imgData.bytes);
-          }
+        const sourceFile = mergeFiles.find((f) => f.id === pageItem.fileId);
+        if (!sourceFile) continue;
 
-          // Consistent standard A4 page dimensions (595.28 x 841.89 points)
+        if (pageItem.fileType === 'image') {
+          // Convert image file into a page in mergedPdf
+          const imgData = await imageFileToEmbedData(sourceFile.file);
+          const embeddedImg = imgData.isPng
+            ? await mergedPdf.embedPng(imgData.bytes)
+            : await mergedPdf.embedJpg(imgData.bytes);
+
+          // Standard A4 page dimensions (595.28 x 841.89 points)
           const isLandscape = embeddedImg.width > embeddedImg.height;
           const pageWidth = isLandscape ? 841.89 : 595.28;
           const pageHeight = isLandscape ? 595.28 : 841.89;
@@ -510,17 +630,19 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
             width: drawWidth,
             height: drawHeight,
           });
-          totalPagesAdded++;
-        } else {
-          // PDF document
-          const arrayBuffer = await item.file.arrayBuffer();
-          const srcDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-          const pageIndices = srcDoc.getPageIndices();
-          const copiedPages = await mergedPdf.copyPages(srcDoc, pageIndices);
 
-          for (const page of copiedPages) {
-            mergedPdf.addPage(page);
-            totalPagesAdded++;
+          if (pageItem.rotation !== 0) {
+            page.setRotation(degrees(pageItem.rotation));
+          }
+        } else {
+          // PDF document page
+          const srcDoc = pdfDocMap.get(pageItem.fileId);
+          if (srcDoc) {
+            const [copiedPage] = await mergedPdf.copyPages(srcDoc, [pageItem.sourcePageIndex]);
+            const existingAngle = copiedPage.getRotation().angle || 0;
+            const finalAngle = (existingAngle + pageItem.rotation) % 360;
+            copiedPage.setRotation(degrees(finalAngle));
+            mergedPdf.addPage(copiedPage);
           }
         }
       }
@@ -535,12 +657,12 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
       setMergeResultBlob(blob);
       setMergeResultStats({
         count: mergeFiles.length,
-        pages: totalPagesAdded,
+        pages: mergePages.length,
         size: blob.size,
       });
 
       toast.success(
-        `Successfully merged ${mergeFiles.length} files (${totalPagesAdded} total pages)!`
+        `Successfully merged ${mergeFiles.length} files (${mergePages.length} total pages)!`
       );
     } catch (err: any) {
       console.error('Merge error:', err);
@@ -650,6 +772,8 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
 
   const handleSplitDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    splitDragCounterRef.current = 0;
     setIsSplitDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       processSplitFile(e.dataTransfer.files[0]);
@@ -1019,7 +1143,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
           setSplitProgress(Math.round(90 + metadata.percent * 0.1));
         });
 
-        const filename = `${baseName}_all_pages.zip`;
+        const filename = 'split_documents.zip';
         setSplitResultBlob(zipBlob);
         setSplitResultFilename(filename);
         setSplitResultStats({
@@ -1282,30 +1406,45 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
             {/* If No Files: Drop Zone */}
             {mergeFiles.length === 0 && (
               <div
-                className={`drop-zone p-10 md:p-14 flex flex-col items-center justify-center text-center cursor-pointer ${
-                  isMergeDragOver ? 'drag-over' : ''
+                className={`drop-zone p-10 md:p-14 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ${
+                  isMergeDragOver ? 'drag-over !border-brand-500 !bg-brand-500/10 ring-4 ring-brand-500/20 shadow-glow scale-[1.01]' : ''
                 }`}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  mergeDragCounterRef.current += 1;
+                  if (e.dataTransfer?.types && Array.from(e.dataTransfer.types).includes('Files')) {
+                    setIsMergeDragOver(true);
+                  }
+                }}
                 onDragOver={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
+                  if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
                   setIsMergeDragOver(true);
                 }}
                 onDragLeave={(e) => {
                   e.preventDefault();
-                  setIsMergeDragOver(false);
+                  e.stopPropagation();
+                  mergeDragCounterRef.current -= 1;
+                  if (mergeDragCounterRef.current <= 0) {
+                    mergeDragCounterRef.current = 0;
+                    setIsMergeDragOver(false);
+                  }
                 }}
                 onDrop={handleMergeDrop}
                 onClick={() => mergeFileInputRef.current?.click()}
               >
-                <div className="w-16 h-16 rounded-2xl bg-brand-500/10 flex items-center justify-center text-brand-500 mb-4 transition-transform group-hover:scale-110">
+                <div className="w-16 h-16 rounded-2xl bg-brand-500/10 flex items-center justify-center text-brand-500 mb-4 transition-transform group-hover:scale-110 pointer-events-none">
                   <Files className="w-8 h-8" />
                 </div>
-                <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">
-                  Drop PDF, JPG, PNG, or WEBP files here to merge.
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1 pointer-events-none">
+                  {isMergeDragOver ? 'Drop files to merge them now' : 'Drop PDF, JPG, PNG, or WEBP files here to merge.'}
                 </h3>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-                  or click to select multiple documents & images from your computer
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4 pointer-events-none">
+                  {isMergeDragOver ? 'Release to add files to merge queue' : 'or click to select multiple documents & images from your computer'}
                 </p>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 pointer-events-none">
                   <Lock className="w-3 h-3 text-emerald-500" />
                   Converts images to standard A4 pages & merges 100% locally
                 </div>
@@ -1376,117 +1515,256 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
                   </div>
                 )}
 
-                {/* Reorderable Files List */}
-                <div className="space-y-2.5">
-                  <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider pl-1">
-                    Drag or use arrows to adjust concatenation order:
-                  </p>
+                {/* View Mode Switcher: Page Organizer Grid vs Files List */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-1">
+                  <div className="inline-flex p-1 rounded-xl bg-zinc-200/60 dark:bg-surface-800 border border-zinc-200 dark:border-zinc-700/60 text-xs font-semibold self-start">
+                    <button
+                      onClick={() => setMergeViewMode('pages')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition ${
+                        mergeViewMode === 'pages'
+                          ? 'bg-white dark:bg-surface-700 text-brand-600 dark:text-brand-300 shadow-xs font-bold'
+                          : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                      }`}
+                    >
+                      <LayoutGrid className="w-3.5 h-3.5" />
+                      <span>Page Organizer ({mergePages.length} Pages)</span>
+                    </button>
+                    <button
+                      onClick={() => setMergeViewMode('files')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition ${
+                        mergeViewMode === 'files'
+                          ? 'bg-white dark:bg-surface-700 text-brand-600 dark:text-brand-300 shadow-xs font-bold'
+                          : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                      }`}
+                    >
+                      <ListFilter className="w-3.5 h-3.5" />
+                      <span>File Queue ({mergeFiles.length} Files)</span>
+                    </button>
+                  </div>
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    {mergeViewMode === 'pages'
+                      ? 'Reorder, rotate & delete individual pages'
+                      : 'Adjust full document sequence'}
+                  </span>
+                </div>
 
-                  <div className="space-y-2 max-h-[480px] overflow-y-auto pr-1">
-                    {mergeFiles.map((item, index) => (
-                      <div
-                        key={item.id}
-                        className={`flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border transition-all ${
-                          item.isEncrypted || item.isCorrupted
-                            ? 'bg-red-500/5 border-red-500/30'
-                            : 'bg-white/70 dark:bg-surface-800/70 border-zinc-200/80 dark:border-zinc-700/60 shadow-xs hover:border-brand-500/40'
-                        }`}
-                      >
-                        {/* Left: Thumbnail & Details */}
-                        <div className="flex items-center gap-3.5 min-w-0">
-                          {/* Order index pill */}
-                          <span className="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-bold flex items-center justify-center shrink-0">
-                            {index + 1}
-                          </span>
-
-                          {/* Page 1 Thumbnail or Fallback Icon */}
-                          <div className="w-12 h-16 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 overflow-hidden flex items-center justify-center shrink-0 shadow-xs relative">
-                            {item.thumbnailUrl ? (
-                              <img
-                                src={item.thumbnailUrl}
-                                alt={`Preview of ${item.name}`}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : item.fileType === 'image' ? (
-                              <ImageIcon className="w-6 h-6 text-cyan-500/60" />
-                            ) : (
-                              <FileText className="w-6 h-6 text-brand-500/60" />
-                            )}
-                            {item.isEncrypted && (
-                              <div className="absolute inset-0 bg-red-950/70 flex items-center justify-center">
-                                <Lock className="w-4 h-4 text-red-300" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* File info */}
-                          <div className="min-w-0">
-                            <p className="font-bold text-sm text-zinc-900 dark:text-white truncate max-w-xs sm:max-w-md">
-                              {item.name}
-                            </p>
-                            <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                              {item.fileType === 'image' ? (
-                                <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 flex items-center gap-1">
-                                  <ImageIcon className="w-2.5 h-2.5" />
-                                  {item.file.type.includes('webp') || item.name.toLowerCase().endsWith('.webp')
-                                    ? 'WEBP'
-                                    : item.file.type.includes('png') || item.name.toLowerCase().endsWith('.png')
-                                    ? 'PNG'
-                                    : 'JPG'}
+                {/* VIEW 1: PAGE ORGANIZER GRID */}
+                {mergeViewMode === 'pages' && (
+                  <div className="space-y-3">
+                    {mergePages.length === 0 ? (
+                      <div className="p-8 text-center rounded-2xl bg-zinc-100/50 dark:bg-surface-800/50 border border-dashed border-zinc-300 dark:border-zinc-700 text-xs text-zinc-500">
+                        No pages in merge queue. Upload documents or images above.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 max-h-[580px] overflow-y-auto p-1">
+                        {mergePages.map((pageItem, index) => (
+                          <div
+                            key={pageItem.id}
+                            className="group relative rounded-2xl bg-white dark:bg-surface-800 border border-zinc-200/80 dark:border-zinc-700/60 p-2.5 flex flex-col items-center shadow-xs hover:shadow-md hover:border-brand-500/40 transition-all"
+                          >
+                            {/* Top Card Header: Sequence Number & Rotation Badge */}
+                            <div className="w-full flex items-center justify-between mb-2 px-1 text-[11px] font-bold">
+                              <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">
+                                #{index + 1}
+                              </span>
+                              {pageItem.rotation > 0 ? (
+                                <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] flex items-center gap-1">
+                                  <RotateCw className="w-2.5 h-2.5" />
+                                  {pageItem.rotation}°
                                 </span>
                               ) : (
-                                <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 flex items-center gap-1">
-                                  <FileText className="w-2.5 h-2.5" />
-                                  PDF
-                                </span>
+                                <span className="text-[10px] text-zinc-400">0°</span>
                               )}
-                              <span>{formatFileSize(item.size)}</span>
-                              <span>•</span>
-                              <span>
-                                {item.isEncrypted ? 'Password Locked' : `${item.pageCount} page${item.pageCount !== 1 ? 's' : ''}`}
-                              </span>
                             </div>
 
-                            {item.errorMessage && (
-                              <p className="text-[11px] font-semibold text-red-500 mt-1 flex items-center gap-1">
-                                <AlertCircle className="w-3 h-3" />
-                                {item.errorMessage}
+                            {/* Thumbnail Container */}
+                            <div className="w-full aspect-[3/4] rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-700/60 flex items-center justify-center overflow-hidden relative shadow-inner mb-2">
+                              {pageItem.thumbnailUrl ? (
+                                <img
+                                  src={pageItem.thumbnailUrl}
+                                  alt={`Page ${index + 1}`}
+                                  style={{
+                                    transform: `rotate(${pageItem.rotation}deg)`,
+                                    transition: 'transform 0.2s ease',
+                                  }}
+                                  className="w-full h-full object-contain p-1"
+                                />
+                              ) : (
+                                <div className="flex flex-col items-center justify-center text-zinc-400 p-2 text-center">
+                                  <FileText className="w-6 h-6 mb-1 opacity-50 text-brand-500" />
+                                  <span className="text-[10px]">p.{pageItem.displayPageNumber}</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Source File & Page Snippet */}
+                            <div className="w-full text-center px-1 mb-2">
+                              <p
+                                className="text-[11px] font-semibold text-zinc-800 dark:text-zinc-200 truncate"
+                                title={pageItem.fileName}
+                              >
+                                {pageItem.fileName}
                               </p>
-                            )}
+                              <p className="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                Page {pageItem.displayPageNumber}
+                              </p>
+                            </div>
+
+                            {/* Action Buttons: Move Left, Rotate 90, Move Right, Delete */}
+                            <div className="w-full grid grid-cols-4 gap-1 pt-1.5 border-t border-zinc-100 dark:border-zinc-700/60">
+                              <button
+                                onClick={() => moveMergePage(index, 'left')}
+                                disabled={index === 0 || isMerging}
+                                title="Move Left"
+                                className="p-1 rounded-lg text-zinc-500 hover:text-brand-600 hover:bg-brand-500/10 disabled:opacity-30 disabled:hover:bg-transparent transition flex items-center justify-center"
+                              >
+                                <ChevronLeft className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => rotateMergePage(pageItem.id)}
+                                disabled={isMerging}
+                                title="Rotate 90° Clockwise"
+                                className="p-1 rounded-lg text-zinc-500 hover:text-amber-600 hover:bg-amber-500/10 disabled:opacity-30 transition flex items-center justify-center"
+                              >
+                                <RotateCw className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => moveMergePage(index, 'right')}
+                                disabled={index === mergePages.length - 1 || isMerging}
+                                title="Move Right"
+                                className="p-1 rounded-lg text-zinc-500 hover:text-brand-600 hover:bg-brand-500/10 disabled:opacity-30 disabled:hover:bg-transparent transition flex items-center justify-center"
+                              >
+                                <ChevronRight className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => deleteMergePage(pageItem.id)}
+                                disabled={isMerging}
+                                title="Delete Page"
+                                className="p-1 rounded-lg text-zinc-500 hover:text-red-500 hover:bg-red-500/10 disabled:opacity-30 transition flex items-center justify-center"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* VIEW 2: FILES LIST QUEUE */}
+                {mergeViewMode === 'files' && (
+                  <div className="space-y-2.5">
+                    <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider pl-1">
+                      Drag or use arrows to adjust concatenation order:
+                    </p>
+
+                    <div className="space-y-2 max-h-[480px] overflow-y-auto pr-1">
+                      {mergeFiles.map((item, index) => (
+                        <div
+                          key={item.id}
+                          className={`flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border transition-all ${
+                            item.isEncrypted || item.isCorrupted
+                              ? 'bg-red-500/5 border-red-500/30'
+                              : 'bg-white/70 dark:bg-surface-800/70 border-zinc-200/80 dark:border-zinc-700/60 shadow-xs hover:border-brand-500/40'
+                          }`}
+                        >
+                          {/* Left: Thumbnail & Details */}
+                          <div className="flex items-center gap-3.5 min-w-0">
+                            {/* Order index pill */}
+                            <span className="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-bold flex items-center justify-center shrink-0">
+                              {index + 1}
+                            </span>
+
+                            {/* Page 1 Thumbnail or Fallback Icon */}
+                            <div className="w-12 h-16 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 overflow-hidden flex items-center justify-center shrink-0 shadow-xs relative">
+                              {item.thumbnailUrl ? (
+                                <img
+                                  src={item.thumbnailUrl}
+                                  alt={`Preview of ${item.name}`}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : item.fileType === 'image' ? (
+                                <ImageIcon className="w-6 h-6 text-cyan-500/60" />
+                              ) : (
+                                <FileText className="w-6 h-6 text-brand-500/60" />
+                              )}
+                              {item.isEncrypted && (
+                                <div className="absolute inset-0 bg-red-950/70 flex items-center justify-center">
+                                  <Lock className="w-4 h-4 text-red-300" />
+                                </div>
+                              )}
+                            </div>
+
+                            {/* File info */}
+                            <div className="min-w-0">
+                              <p className="font-bold text-sm text-zinc-900 dark:text-white truncate max-w-xs sm:max-w-md">
+                                {item.name}
+                              </p>
+                              <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                                {item.fileType === 'image' ? (
+                                  <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 flex items-center gap-1">
+                                    <ImageIcon className="w-2.5 h-2.5" />
+                                    {item.file.type.includes('webp') || item.name.toLowerCase().endsWith('.webp')
+                                      ? 'WEBP'
+                                      : item.file.type.includes('png') || item.name.toLowerCase().endsWith('.png')
+                                      ? 'PNG'
+                                      : 'JPG'}
+                                  </span>
+                                ) : (
+                                  <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 flex items-center gap-1">
+                                    <FileText className="w-2.5 h-2.5" />
+                                    PDF
+                                  </span>
+                                )}
+                                <span>{formatFileSize(item.size)}</span>
+                                <span>•</span>
+                                <span>
+                                  {item.isEncrypted ? 'Password Locked' : `${item.pageCount} page${item.pageCount !== 1 ? 's' : ''}`}
+                                </span>
+                              </div>
+
+                              {item.errorMessage && (
+                                <p className="text-[11px] font-semibold text-red-500 mt-1 flex items-center gap-1">
+                                  <AlertCircle className="w-3 h-3" />
+                                  {item.errorMessage}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Right: Order controls & Remove button */}
+                          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+                            <button
+                              onClick={() => moveMergeItem(index, 'up')}
+                              disabled={index === 0 || isMerging}
+                              title="Move file up in merge order"
+                              className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent transition"
+                            >
+                              <MoveUp className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => moveMergeItem(index, 'down')}
+                              disabled={index === mergeFiles.length - 1 || isMerging}
+                              title="Move file down in merge order"
+                              className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent transition"
+                            >
+                              <MoveDown className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => removeMergeItem(item.id)}
+                              disabled={isMerging}
+                              title="Remove file"
+                              className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-500/10 transition"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
-
-                        {/* Right: Order controls & Remove button */}
-                        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-                          <button
-                            onClick={() => moveMergeItem(index, 'up')}
-                            disabled={index === 0 || isMerging}
-                            title="Move file up in merge order"
-                            className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent transition"
-                          >
-                            <MoveUp className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => moveMergeItem(index, 'down')}
-                            disabled={index === mergeFiles.length - 1 || isMerging}
-                            title="Move file down in merge order"
-                            className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent transition"
-                          >
-                            <MoveDown className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => removeMergeItem(item.id)}
-                            disabled={isMerging}
-                            title="Remove file"
-                            className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-500/10 transition"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Progress bar during merge */}
                 {isMerging && (
@@ -1632,30 +1910,45 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
             {/* If No PDF Uploaded Yet */}
             {!splitFile && (
               <div
-                className={`drop-zone p-10 md:p-14 flex flex-col items-center justify-center text-center cursor-pointer ${
-                  isSplitDragOver ? 'drag-over' : ''
+                className={`drop-zone p-10 md:p-14 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ${
+                  isSplitDragOver ? 'drag-over !border-cyan-500 !bg-cyan-500/10 ring-4 ring-cyan-500/20 shadow-glow scale-[1.01]' : ''
                 }`}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  splitDragCounterRef.current += 1;
+                  if (e.dataTransfer?.types && Array.from(e.dataTransfer.types).includes('Files')) {
+                    setIsSplitDragOver(true);
+                  }
+                }}
                 onDragOver={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
+                  if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
                   setIsSplitDragOver(true);
                 }}
                 onDragLeave={(e) => {
                   e.preventDefault();
-                  setIsSplitDragOver(false);
+                  e.stopPropagation();
+                  splitDragCounterRef.current -= 1;
+                  if (splitDragCounterRef.current <= 0) {
+                    splitDragCounterRef.current = 0;
+                    setIsSplitDragOver(false);
+                  }
                 }}
                 onDrop={handleSplitDrop}
                 onClick={() => splitFileInputRef.current?.click()}
               >
-                <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 mb-4 transition-transform group-hover:scale-110">
+                <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 mb-4 transition-transform group-hover:scale-110 pointer-events-none">
                   <Scissors className="w-8 h-8" />
                 </div>
-                <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">
-                  Drop your PDF here to extract or split
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1 pointer-events-none">
+                  {isSplitDragOver ? 'Drop PDF to split now' : 'Drop your PDF here to extract or split'}
                 </h3>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-                  or click to browse a PDF document from your device
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4 pointer-events-none">
+                  {isSplitDragOver ? 'Release file to open page splitter' : 'or click to browse a PDF document from your device'}
                 </p>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 pointer-events-none">
                   <Lock className="w-3 h-3 text-emerald-500" />
                   Client-side thumbnail rendering & range extraction
                 </div>
@@ -2105,6 +2398,9 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
           })}
         </div>
       </section>
+
+      {/* Related Tools */}
+      <RelatedPdfTools currentTool="organizer" />
     </div>
   );
 }

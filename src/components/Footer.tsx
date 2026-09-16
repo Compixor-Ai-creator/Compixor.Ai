@@ -38,6 +38,14 @@ export default function Footer() {
             <ul className="space-y-2.5">
               <li>
                 <Link
+                  href="/tools/pdf-watermark"
+                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                >
+                  PDF Watermark & Remover
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/tools/pdf-organizer"
                   className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >

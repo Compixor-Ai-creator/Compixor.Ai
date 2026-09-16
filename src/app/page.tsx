@@ -22,17 +22,35 @@ import {
   Crop,
   ShieldCheck,
   Files,
+  Stamp,
+  Eraser,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
 
 const heroFeatures = [
+  {
+    href: '/tools/add-watermark',
+    icon: Stamp,
+    title: 'Add Watermark to PDF',
+    description: 'Add vector text/image watermarks with opacity and rotation controls',
+    color: 'from-rose-500 to-pink-600',
+    badge: 'New',
+  },
+  {
+    href: '/tools/remove-watermark',
+    icon: Eraser,
+    title: 'Remove Watermark from PDF',
+    description: 'Detect, strip text watermarks or erase stamps losslessly with zero uploads',
+    color: 'from-amber-500 to-rose-600',
+    badge: 'Featured',
+  },
   {
     href: '/tools/pdf-organizer',
     icon: Files,
     title: 'PDF Merge & Split Organizer',
     description: 'Combine multiple PDFs or extract exact page ranges',
     color: 'from-cyan-500 to-indigo-600',
-    badge: 'New',
+    badge: 'Popular',
   },
   {
     href: '/tools/passport-photo',
@@ -78,6 +96,26 @@ const heroFeatures = [
 
 const tools = [
   {
+    href: '/tools/add-watermark',
+    icon: Stamp,
+    title: 'Add Watermark to PDF',
+    tagline: '100% Client-Side Privacy',
+    description: 'Add customizable vector text or image watermarks across single, range, or all pages with full opacity and font controls.',
+    color: 'from-rose-500 to-pink-600',
+    stats: 'Instant Watermarking',
+    badge: 'New',
+  },
+  {
+    href: '/tools/remove-watermark',
+    icon: Eraser,
+    title: 'Remove Watermark from PDF',
+    tagline: '100% Client-Side Privacy',
+    description: 'Erase watermarks, logos, and stamps cleanly with intelligent text stream stripping and interactive vector redaction.',
+    color: 'from-amber-500 to-rose-600',
+    stats: '100% Removal Detection',
+    badge: 'Featured',
+  },
+  {
     href: '/tools/pdf-organizer',
     icon: Files,
     title: 'Smart PDF Merge & Split',
@@ -85,7 +123,7 @@ const tools = [
     description: 'Combine multiple PDF files in custom order or extract exact page ranges into separate documents with visual page previews.',
     color: 'from-cyan-500 to-indigo-600',
     stats: 'Merge Unlimited · Split in Seconds',
-    badge: 'New',
+    badge: 'Popular',
   },
   {
     href: '/tools/pdf-compressor',
@@ -331,7 +369,7 @@ export default function HomePage() {
                     </span>
                   </div>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-500/15 text-brand-600 dark:text-brand-300">
-                    6 Essential Tools
+                    8 Essential Tools
                   </span>
                 </div>
 

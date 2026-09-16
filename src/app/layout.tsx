@@ -100,6 +100,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Compixor.Ai',
+    url: 'https://compixor-ai.vercel.app/',
+    author: {
+      '@type': 'Person',
+      name: 'Haroon Ali',
+    },
+    creator: {
+      '@type': 'Person',
+      name: 'Haroon Ali',
+    },
+  };
+
   const mainWebApplicationSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
@@ -294,6 +309,11 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=4" />
         <link rel="shortcut icon" href="/favicon.ico?v=4" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4" />
+        {/* WebSite Schema (Compixor.Ai by Haroon Ali) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {/* Exact WebApplication JSON-LD Schema for Google Search & Gemini AI Entity Recognition */}
         <script
           type="application/ld+json"
