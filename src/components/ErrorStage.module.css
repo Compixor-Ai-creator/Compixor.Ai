@@ -1,0 +1,109 @@
+/* Error Stage Mascot & Hologram Animations */
+@keyframes mascotFloat {
+  0%, 100% {
+    transform: translateY(-8px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(5px) rotate(-0.5deg);
+  }
+}
+
+@keyframes shadowScale {
+  0%, 100% {
+    transform: scale(0.88, 0.85);
+    opacity: 0.35;
+    filter: blur(12px);
+  }
+  50% {
+    transform: scale(1.06, 1.05);
+    opacity: 0.55;
+    filter: blur(8px);
+  }
+}
+
+@keyframes radarSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes radarPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes badgeFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes holoGlow {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(1);
+    filter: drop-shadow(0 0 16px rgba(6, 182, 212, 0.45));
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.04);
+    filter: drop-shadow(0 0 26px rgba(124, 58, 237, 0.65));
+  }
+}
+
+.mascotFloat {
+  animation: mascotFloat 4.2s ease-in-out infinite;
+}
+
+.groundShadow {
+  animation: shadowScale 4.2s ease-in-out infinite;
+}
+
+.radarSpin {
+  animation: radarSpin 36s linear infinite;
+}
+
+.radarPulse {
+  animation: radarPulse 5s ease-in-out infinite;
+}
+
+.holoGlow {
+  animation: holoGlow 3.5s ease-in-out infinite;
+}
+
+.badge1 {
+  animation: badgeFloat 3.8s ease-in-out 0s infinite;
+}
+
+.badge2 {
+  animation: badgeFloat 4.2s ease-in-out 0.7s infinite;
+}
+
+.badge3 {
+  animation: badgeFloat 4.6s ease-in-out 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascotFloat,
+  .groundShadow,
+  .radarSpin,
+  .radarPulse,
+  .holoGlow,
+  .badge1,
+  .badge2,
+  .badge3 {
+    animation: none !important;
+  }
+}

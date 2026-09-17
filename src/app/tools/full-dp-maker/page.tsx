@@ -37,6 +37,8 @@ import {
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
+import RelatedTools from '@/components/RelatedTools';
+import { fullDpMakerFaqs } from '@/data/faqs';
 import { WhatsAppIcon, InstagramIcon, FacebookIcon, TelegramIcon, TwitterXIcon, LinkedInIcon, YouTubeIcon } from '@/components/SocialIcons';
 
 type FillMode = 'blur' | 'color' | 'gradient' | 'mirror' | 'resize' | 'crop';
@@ -183,28 +185,7 @@ const platformSizes = [
   { platform: 'Discord', size: '128 × 128 px', minSize: '512 × 512 px recommended', shape: 'Circle', notes: 'Supports animated GIF or static DP' },
 ];
 
-const faqs = [
-  {
-    q: 'Why do WhatsApp and Instagram cut off my profile pictures?',
-    a: 'WhatsApp, Instagram, and Facebook mandate a strict 1:1 square ratio for profile pictures, and then display them inside a circular mask. If your photo is a portrait (tall) or landscape (wide), the app forces you to crop out friends, scenery, or your full outfit. Full DP Maker fits your whole photo inside a square and fills the empty margins with aesthetic blur, color, or gradient backgrounds.',
-  },
-  {
-    q: 'Does the circular guide appear on the downloaded image?',
-    a: 'No! The circular dashed guide is strictly a preview aid inside the tool to help you ensure faces and text stay safely inside the avatar boundary. The exported file is a clean, crisp square image.',
-  },
-  {
-    q: 'What is the best background fill mode?',
-    a: 'The "Blur" mode is the most popular choice used by influencers and creators: it scales your photo into the background with a soft Gaussian blur, making your profile picture feel expansive and natural. For clean minimal aesthetics, the "Color" (White or Black) and "Gradient" modes are also favorites.',
-  },
-  {
-    q: 'Is my photo uploaded to any server?',
-    a: 'Never. Compixor processes all image manipulations, Gaussian blurs, gradients, and exports 100% client-side in your web browser memory sandbox. Your personal photos never leave your device.',
-  },
-  {
-    q: 'Can I paste an image directly from my clipboard?',
-    a: 'Yes! Just take a screenshot or copy any image and press Ctrl+V (or Cmd+V on Mac) anywhere on this page to load it instantly.',
-  },
-];
+const faqs = fullDpMakerFaqs;
 
 export default function FullDpMakerPage() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -713,7 +694,7 @@ export default function FullDpMakerPage() {
           No Crop Profile Picture Maker
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Full DP Maker Online
+          No-Crop DP Maker for WhatsApp, Instagram & Facebook
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           Create full-size profile pictures for WhatsApp, Instagram, Facebook, and Telegram without cropping anything out.
@@ -1536,6 +1517,9 @@ export default function FullDpMakerPage() {
           })}
         </div>
       </section>
+
+      {/* Cross-Tool Internal Linking */}
+      <RelatedTools currentTool="full-dp-maker" />
     </div>
   );
 }

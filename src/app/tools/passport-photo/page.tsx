@@ -42,6 +42,8 @@ import {
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
+import RelatedTools from '@/components/RelatedTools';
+import { passportPhotoFaqs } from '@/data/faqs';
 import {
   removeBackgroundISNet,
   refineCutoutCanvas,
@@ -324,24 +326,7 @@ const sizeLimitOptions = [
   { id: '30kb', label: 'Under 30 KB', maxBytes: 30 * 1024 },
 ];
 
-const faqs = [
-  {
-    q: 'How does the remove.bg-grade background removal work?',
-    a: 'We use the high-precision IS-Net neural matting model (IS-Net FP16) executing 100% client-side via WebAssembly & WebGPU. It features an intermediate canvas smoothing pipeline with alpha boundary choke (to eliminate outer fringing), 1.2px Gaussian edge feathering (to eradicate jagged contours and aliasing along hair and shoulders), and color de-spill to neutralize residual wall color halos.',
-  },
-  {
-    q: 'Can I download just the transparent PNG cutout without any background?',
-    a: 'Yes! Select the "Cutout" tab or the "Transparent (PNG Cutout)" swatch. Downloading the single photo will export a pure 32-bit transparent PNG with soft hair edges.',
-  },
-  {
-    q: 'How does the printable sheet with cut marks work?',
-    a: 'We generate an exact 300 DPI high-resolution sheet with standard ~1.5px border outlines and corner registration crop ticks extending outside each photo, so you can cleanly cut individual copies with scissors or a paper trimmer.',
-  },
-  {
-    q: 'Is my portrait uploaded to any remote server?',
-    a: 'Never. All AI portrait matting, face cropping, background filtering, outfit compositing, and file exports are executed 100% locally in your browser memory sandbox.',
-  },
-];
+const faqs = passportPhotoFaqs;
 
 // High-precision morphological mask cleanup (Open/Close) + smoothstep edge feathering
 function cleanAndRefineAlphaMask(
@@ -1487,7 +1472,7 @@ export default function PassportPhotoPage() {
           AI Portrait Matting & Biometric Studio
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          {currentStep === 'edit' ? 'Passport Photo Maker Online' : 'Download Passport Size Image'}
+          Passport Size Photo Maker Online Free
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           {currentStep === 'edit'
@@ -2562,6 +2547,9 @@ export default function PassportPhotoPage() {
           })}
         </div>
       </section>
+
+      {/* Cross-Tool Internal Linking */}
+      <RelatedTools currentTool="passport-photo" />
     </div>
   );
 }

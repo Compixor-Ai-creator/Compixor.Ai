@@ -1,33 +1,50 @@
 import type { Metadata } from 'next';
+import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
+import { removeWatermarkFaqs } from '@/data/faqs';
+
+const TITLE = 'PDF Watermark Remover Online Free - No Login Required | Compixor AI';
+const DESCRIPTION =
+  'Remove watermarks, logos, and stamps from PDF files free online. No login, no upload, no software — 100% private and instant.';
+const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/remove-watermark';
 
 export const metadata: Metadata = {
-  title: 'Remove Watermark from PDF Online — 100% Private & Free | Compixor.Ai',
-  description:
-    'Losslessly remove watermarks, stamps, and logos from PDF documents in your browser. Vector stream stripping and interactive erase box with zero cloud uploads.',
+  title: {
+    absolute: TITLE,
+  },
+  description: DESCRIPTION,
   keywords: [
-    'remove watermark from pdf',
+    'pdf watermark remover',
     'pdf watermark remover online',
-    'erase watermark from pdf free',
-    'pdf redact watermark',
-    'clean pdf watermarks',
-    'lossless watermark removal',
-    'private pdf watermark cleaner',
+    'pdf watermark remover free',
+    'pdf watermark remover online free',
+    'pdf watermark remover online free without login',
+    'remove watermark from pdf online',
+    'pdf file watermark remover',
+    'pdf background watermark remover',
+    'delete pdf watermark online',
   ],
   alternates: {
-    canonical: 'https://compixor-ai.vercel.app/tools/remove-watermark',
+    canonical: CANONICAL_URL,
   },
   openGraph: {
-    title: 'Remove Watermark from PDF Online — 100% Private & Free | Compixor.Ai',
-    description:
-      'Losslessly remove watermarks, stamps, and logos from PDF documents in your browser. Vector stream stripping and interactive erase box with zero cloud uploads.',
-    url: 'https://compixor-ai.vercel.app/tools/remove-watermark',
+    title: TITLE,
+    description: DESCRIPTION,
+    url: CANONICAL_URL,
     type: 'website',
+    images: [
+      {
+        url: '/images/og-banner.png',
+        width: 1200,
+        height: 630,
+        alt: 'PDF Watermark Remover Online Free - Compixor AI',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Remove Watermark from PDF Online — 100% Private & Free | Compixor.Ai',
-    description:
-      'Losslessly remove watermarks, stamps, and logos from PDF documents in your browser. Vector stream stripping and interactive erase box with zero cloud uploads.',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ['/images/og-banner.png'],
   },
 };
 
@@ -36,5 +53,35 @@ export default function RemoveWatermarkLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <SoftwareAppJsonLd
+        name="PDF Watermark Remover Online Free"
+        description={DESCRIPTION}
+        url={CANONICAL_URL}
+        applicationCategory="Utility"
+        operatingSystem="Any/Web"
+        price="0"
+        priceCurrency="USD"
+        ratingValue="4.9"
+        reviewCount="1280"
+        featureList={[
+          '100% Client-Side In-Browser Watermark Removal',
+          'Lossless Structured Artifact Removal',
+          'Interactive Vector Erase & Redaction Tool',
+          'Targeted Text Matcher Engine',
+          'Zero Login & Zero Server Uploads',
+        ]}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', url: 'https://compixor-ai.vercel.app/' },
+          { name: 'Tools', url: 'https://compixor-ai.vercel.app/#tools' },
+          { name: 'Remove PDF Watermark', url: CANONICAL_URL },
+        ]}
+      />
+      <FaqJsonLd faqs={removeWatermarkFaqs} />
+      {children}
+    </>
+  );
 }

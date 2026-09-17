@@ -38,11 +38,13 @@ import {
   LayoutGrid,
   ListFilter,
 } from 'lucide-react';
-import { PDFDocument, degrees } from 'pdf-lib';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 import { toast } from 'sonner';
 import RelatedPdfTools from '@/components/RelatedPdfTools';
+import { pdfOrganizerFaqs } from '@/data/faqs';
+
+async function getPdfLib() {
+  return await import('pdf-lib');
+}
 
 // Helper to format bytes
 function formatFileSize(bytes: number): string {
@@ -151,6 +153,7 @@ async function imageFileToEmbedData(file: File): Promise<{ bytes: Uint8Array; is
   const buffer = await file.arrayBuffer();
 
   try {
+    const { PDFDocument } = await getPdfLib();
     const testDoc = await PDFDocument.create();
     if (isPng) {
       await testDoc.embedPng(buffer);
@@ -234,25 +237,7 @@ async function renderPageThumbnail(pdfDocProxy: any, pageNum: number): Promise<s
   }
 }
 
-// FAQ Data
-const toolFaqs = [
-  {
-    q: 'Is there a limit on how many PDFs I can merge or split?',
-    a: 'No! Because all processing takes place entirely on your device using client-side WebAssembly, there are no artificial file count limits, daily quotas, or paywalls. You can merge as many documents as your browser memory allows.',
-  },
-  {
-    q: 'Are my confidential documents uploaded to any server?',
-    a: 'Never. Unlike traditional online PDF tools that upload your files to remote cloud servers, Compixor executes 100% locally in your browser memory. Zero file data, metadata, or document contents ever leave your device.',
-  },
-  {
-    q: 'How does the range input syntax work for splitting?',
-    a: 'You can enter single pages or page ranges separated by commas, such as "1-3, 5, 8-10". Compixor automatically validates bounds, checks for reversed ranges (e.g. 10-5), removes duplicates, and visually highlights the matching pages on the interactive preview grid.',
-  },
-  {
-    q: 'Can this tool process password-protected or encrypted PDFs?',
-    a: 'For security and privacy reasons, standard password-protected PDFs must have their security encryption removed before merging or extracting pages. Compixor will immediately alert you if an uploaded PDF is password-encrypted.',
-  },
-];
+const toolFaqs = pdfOrganizerFaqs;
 
 export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTab?: 'merge' | 'split' }) {
   const [activeTab, setActiveTab] = useState<'merge' | 'split'>(initialTab);
@@ -392,6 +377,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
           let errorMessage: string | undefined;
 
           try {
+            const { PDFDocument } = await getPdfLib();
             const doc = await PDFDocument.load(buffer, { ignoreEncryption: true });
             if ((doc as any).isEncrypted) {
               isEncrypted = true;
@@ -581,10 +567,11 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
     setMergeStatus('Initializing PDF compilation...');
 
     try {
+      const { PDFDocument, degrees } = await getPdfLib();
       const mergedPdf = await PDFDocument.create();
 
       // Pre-load and cache PDFDocuments by fileId to avoid repeated loading
-      const pdfDocMap = new Map<string, PDFDocument>();
+      const pdfDocMap = new Map<string, any>();
       for (const f of mergeFiles) {
         if (f.fileType === 'pdf') {
           const buf = await f.file.arrayBuffer();
@@ -708,6 +695,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
 
       // Verify encryption with pdf-lib first
       try {
+        const { PDFDocument } = await getPdfLib();
         const doc = await PDFDocument.load(buffer, { ignoreEncryption: true });
         if ((doc as any).isEncrypted) {
           setSplitError('This file is encrypted and password-protected. Please decrypt it first.');
@@ -1082,6 +1070,10 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
     setSplitStatus('Reading document structure...');
 
     try {
+      const [{ PDFDocument, degrees }, JSZipModule] = await Promise.all([
+        getPdfLib(),
+        import('jszip').then((m) => m.default || m),
+      ]);
       const srcDoc = await PDFDocument.load(splitArrayBuffer, { ignoreEncryption: true });
       const totalPages = srcDoc.getPageCount();
 
@@ -1119,7 +1111,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
       // MODE 2: Split All Pages -> Zip of individual 1-page PDFs
       else if (splitMode === 'all-pages') {
         setSplitStatus(`Splitting into ${totalPages} single-page documents...`);
-        const zip = new JSZip();
+        const zip = new JSZipModule();
         const baseName = splitFile.name.replace(/\.pdf$/i, '');
 
         for (let i = 0; i < totalPages; i++) {
@@ -1187,7 +1179,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
           toast.success(`Extracted page ${p} successfully!`);
         } else {
           // Multiple individual pages -> Zip
-          const zip = new JSZip();
+          const zip = new JSZipModule();
           for (let i = 0; i < pagesToExtract.length; i++) {
             const pageNum = pagesToExtract[i];
             const pct = Math.round(15 + (i / pagesToExtract.length) * 70);
@@ -1297,8 +1289,8 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
           <span>Document Toolkit • 100% In-Browser Engine</span>
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
-          Merge & Split PDFs.{' '}
-          <span className="text-gradient block sm:inline">Zero Server Uploads.</span>
+          Merge & Split PDF Online Free{' '}
+          <span className="text-gradient block sm:inline">- Combine or Extract Pages</span>
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
           Combine multiple documents into one or extract exact page ranges seamlessly with zero cloud uploads

@@ -24,22 +24,19 @@ import {
   ArrowDownToLine,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import pako from 'pako';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import {
-  PDFDocument,
-  PDFName,
-  PDFNumber,
-  PDFRawStream,
-  PDFStream,
-  PDFRef,
-  PDFDict,
-  PDFArray,
-} from 'pdf-lib';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import RelatedPdfTools from '@/components/RelatedPdfTools';
+import { pdfCompressorFaqs } from '@/data/faqs';
+
+async function getPdfLib() {
+  return await import('pdf-lib');
+}
+
+async function getPako() {
+  const mod = await import('pako');
+  return mod.default || mod;
+}
 
 type CompressionLevel = 'balanced' | 'extreme' | 'print';
 
@@ -125,24 +122,7 @@ interface BatchFileItem {
   error?: string;
 }
 
-const pdfFaqs = [
-  {
-    q: 'How does the Native PDF optimizer preserve vector text?',
-    a: 'Compixor operates directly on the PDF internal stream dictionary structure using native stream compression, metadata stripping, unreferenced object removal, and embedded raster photo optimization. Fonts, curves, vector text, and hyperlinks are never converted to raster images or blurry pixels.',
-  },
-  {
-    q: 'Will my text still be selectable (Ctrl+F) and sharp?',
-    a: 'Yes! All vector text, fonts, links, and form fields remain 100% vector without any rasterization. Text stays razor-sharp, searchable, and selectable at any zoom level across all compression tiers.',
-  },
-  {
-    q: 'What happens if my PDF is already compressed?',
-    a: 'Compixor includes an automated size inflation guard: if compressing a document would make it larger or equal (common with pure-text or already-compacted files), Compixor automatically preserves your original pristine file and notifies you: "This PDF is already highly compressed and cannot be reduced further."',
-  },
-  {
-    q: 'Can I upload multiple PDFs at once?',
-    a: 'Yes! You can upload up to 5 PDFs simultaneously. Each document displays its own live progress bar and individual download button, plus a one-click "Download All (ZIP)" button to export all compressed documents in a single bundle.',
-  },
-];
+const pdfFaqs = pdfCompressorFaqs;
 
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B';
@@ -337,12 +317,13 @@ export default function PdfCompressorPage() {
       width: number,
       height: number,
       colorSpace: string,
-      bitsPerComponent: number
+      bitsPerComponent: number,
+      pakoModule?: any
     ): ImageData | null => {
       try {
         let uncompressed: Uint8Array;
         try {
-          uncompressed = pako.inflate(rawBytes);
+          uncompressed = pakoModule ? pakoModule.inflate(rawBytes) : rawBytes;
         } catch {
           uncompressed = rawBytes;
         }
@@ -399,6 +380,9 @@ export default function PdfCompressorPage() {
       onProgress: (prog: number, msg: string) => void
     ): Promise<CompressionResult> => {
       onProgress(8, 'Parsing document structure...');
+      const [{ PDFDocument, PDFName, PDFNumber, PDFRawStream, PDFStream, PDFRef, PDFDict, PDFArray }, pako] =
+        await Promise.all([getPdfLib(), getPako()]);
+
       const pdfDoc = await PDFDocument.load(arrayBuffer, {
         ignoreEncryption: true,
         updateMetadata: false,
@@ -502,7 +486,8 @@ export default function PdfCompressorPage() {
                   origWidth,
                   origHeight,
                   colorSpace,
-                  bpc
+                  bpc,
+                  pako
                 );
                 if (imgData) {
                   processedResult = await processAndReEncodeImage(
@@ -810,8 +795,9 @@ export default function PdfCompressorPage() {
   }, [batchItems, isProcessingAll, level, enableTargetSize, targetSizeKB, runNativeCompression]);
 
   // Download individual file
-  const handleDownloadSingle = useCallback((item: BatchFileItem) => {
+  const handleDownloadSingle = useCallback(async (item: BatchFileItem) => {
     if (!item.result?.blob) return;
+    const { saveAs } = await import('file-saver');
     const baseName = item.file.name.replace(/\.pdf$/i, '');
     saveAs(item.result.blob, `${baseName}_compressed.pdf`);
   }, []);
@@ -826,7 +812,11 @@ export default function PdfCompressorPage() {
       return;
     }
 
-    const zip = new JSZip();
+    const [JSZipModule, { saveAs }] = await Promise.all([
+      import('jszip').then((m) => m.default || m),
+      import('file-saver'),
+    ]);
+    const zip = new JSZipModule();
     for (const item of doneItems) {
       const baseName = item.file.name.replace(/\.pdf$/i, '');
       zip.file(`${baseName}_compressed.pdf`, item.result!.blob);
@@ -871,7 +861,7 @@ export default function PdfCompressorPage() {
           Native Vector PDF Optimizer & Batch Compactor
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Compress PDF Online
+          Free PDF Compressor Online
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
           Reduce PDF file sizes with intelligent native stream optimization.

@@ -38,7 +38,6 @@ import {
   Stamp,
   MonitorSmartphone,
 } from 'lucide-react';
-import { saveAs } from 'file-saver';
 import { toast } from 'sonner';
 import RelatedPdfTools from '@/components/RelatedPdfTools';
 import {
@@ -873,6 +872,7 @@ export default function PdfWatermarkClient({
       const outputName = `${baseName}${suffix}.pdf`;
 
       const blob = new Blob([exportBytes as BlobPart], { type: 'application/pdf' });
+      const { saveAs } = await import('file-saver');
       saveAs(blob, outputName);
       toast.success(`Saved "${outputName}"`);
     } catch (err: any) {
@@ -993,10 +993,21 @@ export default function PdfWatermarkClient({
           <span>Document Security • 100% In-Browser Engine</span>
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
-          Protect & Clean PDFs.{' '}
-          <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-cyan-400 to-indigo-500 block sm:inline">
-            Zero Server Uploads.
-          </span>
+          {activeMode === 'add' ? (
+            <>
+              Add Watermark to PDF Online Free{' '}
+              <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-rose-500 via-pink-400 to-indigo-500 block sm:inline">
+                - Text & Image Watermark
+              </span>
+            </>
+          ) : (
+            <>
+              PDF Watermark Remover Online Free{' '}
+              <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-rose-400 to-indigo-500 block sm:inline">
+                - No Login Required
+              </span>
+            </>
+          )}
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
           Add custom stamps, logos, or remove watermarks seamlessly with zero cloud uploads and instantaneous client-side processing.
@@ -1703,7 +1714,7 @@ export default function PdfWatermarkClient({
                           <div className="flex items-center gap-3 p-3 bg-slate-50/90 dark:bg-slate-850/80 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl shadow-2xs">
                             <img
                               src={imagePreviewUrl}
-                              alt="Watermark preview"
+                              alt="Custom PDF Watermark image preview"
                               className="w-12 h-12 object-contain rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1"
                             />
                             <div className="flex-1 truncate">

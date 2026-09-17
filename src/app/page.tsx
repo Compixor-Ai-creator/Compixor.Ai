@@ -26,6 +26,7 @@ import {
   Eraser,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
+import { FaqJsonLd } from '@/components/JsonLd';
 
 const heroFeatures = [
   {
@@ -240,6 +241,7 @@ export default function HomePage() {
 
   return (
     <div className="relative">
+      <FaqJsonLd faqs={homeFaqs} />
       {/* ============ HERO SECTION ============ */}
       <section className="relative overflow-hidden">
         {/* ── Ambient Glow Orbs (pointer-events-none, behind all content) ── */}

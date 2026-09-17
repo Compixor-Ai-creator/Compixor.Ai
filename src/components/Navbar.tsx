@@ -44,7 +44,7 @@ const pdfToolsList: PdfToolItem[] = [
     icon: Files,
   },
   {
-    href: '/tools/pdf-watermark',
+    href: '/tools/add-watermark',
     label: 'Add PDF Watermark',
     subtitle: 'Stamp text or logo onto PDF',
     icon: Stamp,

@@ -27,6 +27,8 @@ import {
   Wand2,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import RelatedTools from '@/components/RelatedTools';
+import { qrGeneratorFaqs } from '@/data/faqs';
 
 type TabType = 'url' | 'text' | 'wifi' | 'contact' | 'email' | 'phone';
 type DotType = 'square' | 'dots' | 'rounded' | 'classy' | 'extra-rounded';
@@ -355,24 +357,7 @@ const tabs = [
   { id: 'phone' as TabType, label: 'Phone Call', icon: Phone },
 ];
 
-const faqs = [
-  {
-    q: 'Do the generated QR codes ever expire or require a subscription?',
-    a: 'Never! Our QR codes are 100% static, client-side encoded, and permanent. They embed the direct target data without passing through any redirect servers.',
-  },
-  {
-    q: 'How does logo embedding work?',
-    a: 'When you upload a logo, it is drawn directly in the center of the QR matrix. We automatically configure high error correction (Level H) so the QR code scans reliably across all devices.',
-  },
-  {
-    q: 'Which format should I download for printing?',
-    a: 'For print materials (flyers, menus, business cards, billboards), choose vector SVG format because it scales infinitely without pixelation. For social media or websites, PNG is ideal.',
-  },
-  {
-    q: 'Are Wi-Fi passwords or sensitive contact cards sent to any cloud server?',
-    a: 'No. CompixorAi runs 100% locally in your browser memory. No data is stored, cached, or transmitted over the network.',
-  },
-];
+const faqs = qrGeneratorFaqs;
 
 export default function QrGeneratorPage() {
   const [activeTab, setActiveTab] = useState<TabType>('url');
@@ -658,7 +643,7 @@ export default function QrGeneratorPage() {
           Pro Customizer • Logo Embedding • Unlimited Free
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Custom QR Code Generator
+          Free QR Code Generator Online
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           Create high-resolution, branded QR codes for websites, Wi-Fi networks, vCards, and emails.
@@ -1023,7 +1008,7 @@ export default function QrGeneratorPage() {
                 <div className="flex items-center gap-4">
                   <img
                     src={logoImage}
-                    alt="Uploaded Logo"
+                    alt="Custom Logo embedded in QR Code matrix"
                     className="w-12 h-12 object-contain rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white p-1"
                   />
                   <div className="flex-1">
@@ -1286,6 +1271,9 @@ export default function QrGeneratorPage() {
           })}
         </div>
       </section>
+
+      {/* Cross-Tool Internal Linking */}
+      <RelatedTools currentTool="qr-generator" />
     </div>
   );
 }

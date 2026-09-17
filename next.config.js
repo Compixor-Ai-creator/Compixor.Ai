@@ -3,6 +3,11 @@ const nextConfig = {
   // Enable gzip compression
   compress: true,
 
+  // Production compiler optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
+  },
+
   // Optimize package imports to reduce bundle size (tree-shaking)
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],

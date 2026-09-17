@@ -18,7 +18,9 @@ import {
   QrCode,
   AlertTriangle,
   ChevronDown,
+  HelpCircle,
 } from 'lucide-react';
+import styles from './ErrorStage.module.css';
 import { WhatsAppIcon } from '@/components/SocialIcons';
 
 export interface ErrorStageProps {
@@ -77,11 +79,11 @@ export default function ErrorStage({
             <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
               
               {/* Backdrop Radial Halo Stage */}
-              <div className="absolute inset-4 rounded-full bg-gradient-to-br from-brand-100/85 via-white/95 to-cyan-50/80 shadow-[0_15px_45px_rgba(124,58,237,0.15)] dark:shadow-[0_0_50px_rgba(124,58,237,0.35)] border border-brand-200/50 dark:border-brand-400/30 animate-radar-pulse" />
+              <div className={`absolute inset-4 rounded-full bg-gradient-to-br from-brand-100/85 via-white/95 to-cyan-50/80 shadow-[0_15px_45px_rgba(124,58,237,0.15)] dark:shadow-[0_0_50px_rgba(124,58,237,0.35)] border border-brand-200/50 dark:border-brand-400/30 ${styles.radarPulse}`} />
 
               {/* Animated Orbit Radar Concentric Rings */}
               <svg
-                className="absolute inset-0 w-full h-full stroke-brand-500/25 dark:stroke-brand-400/40 -z-0 pointer-events-none animate-radar-spin origin-center"
+                className={`absolute inset-0 w-full h-full stroke-brand-500/25 dark:stroke-brand-400/40 -z-0 pointer-events-none origin-center ${styles.radarSpin}`}
                 fill="none"
                 viewBox="0 0 460 460"
               >
@@ -91,13 +93,13 @@ export default function ErrorStage({
               </svg>
 
               {/* Holographic Backlight Glow Behind Mascot Screen Area */}
-              <div className="absolute top-12 left-1/2 -translate-x-1/2 w-64 h-52 bg-gradient-to-br from-cyan-400/35 via-brand-500/25 to-transparent rounded-full blur-2xl pointer-events-none -z-0 animate-holo-glow" />
+              <div className={`absolute top-12 left-1/2 -translate-x-1/2 w-64 h-52 bg-gradient-to-br from-cyan-400/35 via-brand-500/25 to-transparent rounded-full blur-2xl pointer-events-none -z-0 ${styles.holoGlow}`} />
 
               {/* Dynamic Grounding Shadow below Mascot */}
-              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-64 h-10 bg-gradient-to-r from-brand-900/15 via-zinc-900/35 to-brand-900/15 rounded-[100%] pointer-events-none z-[5] animate-ground-shadow" />
+              <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 w-64 h-10 bg-gradient-to-r from-brand-900/15 via-zinc-900/35 to-brand-900/15 rounded-[100%] pointer-events-none z-[5] ${styles.groundShadow}`} />
 
               {/* Floating Robot Mascot Illustration */}
-              <div className="relative z-10 w-full h-full flex items-center justify-center p-4 animate-mascot-float">
+              <div className={`relative z-10 w-full h-full flex items-center justify-center p-4 ${styles.mascotFloat}`}>
                 <img
                   src="/images/404-robot.png"
                   alt="System Error Mascot"
@@ -106,7 +108,7 @@ export default function ErrorStage({
               </div>
 
               {/* Badge 1: Top-Left ERR_DISCONNECT */}
-              <div className="absolute top-5 left-2 sm:left-6 bg-white/90 dark:bg-surface-850/90 backdrop-blur-md shadow-lg p-2.5 rounded-xl flex items-center gap-2 border border-zinc-200/80 dark:border-brand-500/30 z-20 animate-badge-1">
+              <div className={`absolute top-5 left-2 sm:left-6 bg-white/90 dark:bg-surface-850/90 backdrop-blur-md shadow-lg p-2.5 rounded-xl flex items-center gap-2 border border-zinc-200/80 dark:border-brand-500/30 z-20 ${styles.badge1}`}>
                 <Zap className="w-4 h-4 text-brand-500 dark:text-brand-400 fill-brand-500/20" />
                 <span className="font-mono text-xs text-zinc-700 dark:text-zinc-200 font-semibold tracking-wide">
                   {type === '404' ? 'ERR_DISCONNECT' : 'ERR_CRITICAL_FAIL'}
@@ -114,7 +116,7 @@ export default function ErrorStage({
               </div>
 
               {/* Badge 2: Top-Right Speech Bubble */}
-              <div className="absolute -top-3 right-1 sm:right-6 z-20 bg-white/95 dark:bg-surface-850/95 backdrop-blur-md rounded-2xl p-3 shadow-xl shadow-brand-500/10 dark:shadow-brand-950/50 flex items-center gap-2.5 transition-transform duration-300 hover:scale-105 border border-zinc-200/80 dark:border-brand-500/30 animate-badge-2">
+              <div className={`absolute -top-3 right-1 sm:right-6 z-20 bg-white/95 dark:bg-surface-850/95 backdrop-blur-md rounded-2xl p-3 shadow-xl shadow-brand-500/10 dark:shadow-brand-950/50 flex items-center gap-2.5 transition-transform duration-300 hover:scale-105 border border-zinc-200/80 dark:border-brand-500/30 ${styles.badge2}`}>
                 <div className="w-8 h-8 rounded-lg bg-brand-500/10 dark:bg-brand-500/20 flex items-center justify-center text-brand-500 dark:text-brand-400 shrink-0">
                   <Bot className="w-4 h-4" />
                 </div>
@@ -130,7 +132,7 @@ export default function ErrorStage({
               </div>
 
               {/* Badge 3: Bottom-Right Client Cache Status */}
-              <div className="absolute bottom-10 right-2 sm:right-6 bg-white/90 dark:bg-surface-850/90 backdrop-blur-md shadow-lg px-3.5 py-1.5 rounded-xl flex items-center gap-2 border border-zinc-200/80 dark:border-brand-500/30 z-20 animate-badge-3">
+              <div className={`absolute bottom-10 right-2 sm:right-6 bg-white/90 dark:bg-surface-850/90 backdrop-blur-md shadow-lg px-3.5 py-1.5 rounded-xl flex items-center gap-2 border border-zinc-200/80 dark:border-brand-500/30 z-20 ${styles.badge3}`}>
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee] animate-pulse" />
                 <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                   Client Cache: Intact

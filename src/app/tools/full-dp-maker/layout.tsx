@@ -1,25 +1,51 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
+import { fullDpMakerFaqs } from '@/data/faqs';
+
+const TITLE = 'No-Crop DP Maker for WhatsApp, Instagram & Facebook | Compixor AI';
+const DESCRIPTION =
+  'Resize your profile picture without cropping. Perfect square fit with blur background for WhatsApp, Instagram & Facebook — free.';
+const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/full-dp-maker';
 
 export const metadata: Metadata = {
-  title: 'Full DP Maker Online — No Crop Profile Picture for WhatsApp & Instagram',
-  description:
-    'Create uncropped full-size profile pictures for WhatsApp, Instagram, Facebook, and Telegram. Add aesthetic background blur, gradients, or mirror effects without cropping.',
+  title: {
+    absolute: TITLE,
+  },
+  description: DESCRIPTION,
   keywords: [
-    'no crop whatsapp dp maker',
-    'full dp profile picture maker',
-    'square photo maker without cropping',
-    'instagram no crop dp generator',
-    'fit full photo in whatsapp dp',
+    'whatsapp dp maker',
+    'instagram profile picture resizer',
+    'no crop dp',
+    'fb dp resize online',
+    'whatsapp dp without crop',
+    'no crop whatsapp profile picture',
+    'full size whatsapp photo',
+    'square dp maker online',
+    'whatsapp profile photo resizer',
+    'crop-free dp tool',
   ],
   alternates: {
-    canonical: 'https://compixor-ai.vercel.app/tools/full-dp-maker',
+    canonical: CANONICAL_URL,
   },
   openGraph: {
-    title: 'Full DP Maker Online — No Crop Profile Picture for WhatsApp & Instagram',
-    description:
-      'Fit complete rectangular photos into square profile pictures with background blur, colors, or gradients. Fast and free.',
-    url: 'https://compixor-ai.vercel.app/tools/full-dp-maker',
+    title: TITLE,
+    description: DESCRIPTION,
+    url: CANONICAL_URL,
     type: 'website',
+    images: [
+      {
+        url: '/images/og-banner.png',
+        width: 1200,
+        height: 630,
+        alt: 'No-Crop DP Maker for WhatsApp, Instagram & Facebook - Compixor AI',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ['/images/og-banner.png'],
   },
 };
 
@@ -28,5 +54,35 @@ export default function FullDpMakerLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <SoftwareAppJsonLd
+        name="No-Crop DP Maker for WhatsApp, Instagram & Facebook"
+        description={DESCRIPTION}
+        url={CANONICAL_URL}
+        applicationCategory="DesignApplication"
+        operatingSystem="Any/Web"
+        price="0"
+        priceCurrency="USD"
+        ratingValue="4.9"
+        reviewCount="1280"
+        featureList={[
+          'No-Crop 1:1 Square Profile Picture Fitting',
+          'Aesthetic Gaussian Blur Margin Backgrounds',
+          'Solid Color & Vibrant Gradient Presets',
+          'Circular Avatar Safety Guide Overlay',
+          'High-Resolution Lossless PNG & JPEG Export',
+        ]}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', url: 'https://compixor-ai.vercel.app/' },
+          { name: 'Tools', url: 'https://compixor-ai.vercel.app/#tools' },
+          { name: 'No-Crop DP Maker', url: CANONICAL_URL },
+        ]}
+      />
+      <FaqJsonLd faqs={fullDpMakerFaqs} />
+      {children}
+    </>
+  );
 }

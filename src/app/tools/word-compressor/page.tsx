@@ -20,6 +20,8 @@ import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import ProgressRing from '@/components/ProgressRing';
+import RelatedTools from '@/components/RelatedTools';
+import { wordCompressorFaqs } from '@/data/faqs';
 
 interface ImageDetail {
   name: string;
@@ -37,20 +39,7 @@ interface CompressionResult {
   imageDetails: ImageDetail[];
 }
 
-const wordFaqs = [
-  {
-    q: 'How does DOCX compression work in the browser?',
-    a: 'A .docx file is actually a zip archive containing XML structures and a media folder of embedded pictures. We unpack the archive in memory, re-encode embedded JPEG/PNG images with optimized compression, and re-pack the document with identical formatting.',
-  },
-  {
-    q: 'Will my fonts, tables, margins, or formulas change?',
-    a: 'Not at all. The underlying WordprocessingML document XML is untouched. Only the binary payload size of images inside the document is optimized.',
-  },
-  {
-    q: 'What if my Word document has no images?',
-    a: 'Documents consisting purely of text and tables are already tiny (usually under 50KB). The compression tool will re-archive the XML streams, but the most dramatic reductions (50–90%) happen when documents contain camera photos, screenshots, or pasted illustrations.',
-  },
-];
+const wordFaqs = wordCompressorFaqs;
 
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B';
@@ -242,7 +231,7 @@ export default function WordCompressorPage() {
           Docx Image Optimization Engine
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Compress Word Document (.docx)
+          Free Word Document Compressor
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
           Shrink bulky Microsoft Word files by optimizing embedded graphics and re-packing XML structures.
@@ -471,6 +460,9 @@ export default function WordCompressorPage() {
           })}
         </div>
       </section>
+
+      {/* Cross-Tool Internal Linking */}
+      <RelatedTools currentTool="word-compressor" />
     </div>
   );
 }
