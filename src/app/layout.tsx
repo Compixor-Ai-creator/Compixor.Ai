@@ -334,15 +334,15 @@ export default function RootLayout({
       <body className="min-h-screen topo-bg">
         <ThemeProvider>
           <div className="relative min-h-screen flex flex-col">
-            {/* Sliding Ambient Blur Glows */}
-            <div className="slide-blur-container">
+            {/* Sliding Ambient Blur Glows (Desktop only — disabled on mobile for 60fps scrolling) */}
+            <div className="hidden md:block slide-blur-container">
               <div className="slide-blur-orb-1" />
               <div className="slide-blur-orb-2" />
               <div className="slide-blur-orb-3" />
             </div>
 
-            {/* Hero Top Glow */}
-            <div className="fixed inset-0 pointer-events-none bg-hero-glow dark:bg-hero-glow-dark" />
+            {/* Hero Top Glow (Desktop only) */}
+            <div className="hidden md:block fixed inset-0 pointer-events-none bg-hero-glow dark:bg-hero-glow-dark" />
 
             <Navbar />
 

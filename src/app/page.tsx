@@ -258,7 +258,7 @@ export default function HomePage() {
         {/* Orb 1 — Violet / Purple — top-left */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 -top-10 -left-16 w-[480px] h-[480px] rounded-full opacity-30 dark:opacity-25"
+          className="hidden md:block pointer-events-none absolute -z-10 -top-10 -left-16 w-[480px] h-[480px] rounded-full opacity-30 dark:opacity-25"
           style={{
             background: 'radial-gradient(ellipse at center, #7c3aed 0%, #6d28d9 35%, transparent 70%)',
             filter: 'blur(90px)',
@@ -268,7 +268,7 @@ export default function HomePage() {
         {/* Orb 2 — Cyan / Emerald — bottom-right */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 bottom-0 -right-20 w-[560px] h-[440px] rounded-full opacity-25 dark:opacity-20"
+          className="hidden md:block pointer-events-none absolute -z-10 bottom-0 -right-20 w-[560px] h-[440px] rounded-full opacity-25 dark:opacity-20"
           style={{
             background: 'radial-gradient(ellipse at center, #06b6d4 0%, #10b981 45%, transparent 70%)',
             filter: 'blur(110px)',
@@ -278,7 +278,7 @@ export default function HomePage() {
         {/* Orb 3 — Rose / Amber accent — upper-right, very subtle */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 top-8 right-8 w-[320px] h-[280px] rounded-full opacity-20 dark:opacity-15"
+          className="hidden md:block pointer-events-none absolute -z-10 top-8 right-8 w-[320px] h-[280px] rounded-full opacity-20 dark:opacity-15"
           style={{
             background: 'radial-gradient(ellipse at center, #f43f5e 0%, #fb923c 55%, transparent 72%)',
             filter: 'blur(80px)',
