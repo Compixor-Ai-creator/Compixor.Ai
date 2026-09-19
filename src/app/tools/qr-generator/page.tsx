@@ -495,8 +495,8 @@ export default function QrGeneratorPage() {
         const QRCodeStyling = (await import('qr-code-styling')).default;
 
         const options: any = {
-          width: 280,
-          height: 280,
+          width: 200,
+          height: 200,
           type: 'svg',
           data: getQrValue(),
           dotsOptions: {
@@ -584,10 +584,19 @@ export default function QrGeneratorPage() {
   const handleDownload = async (extension: 'png' | 'svg') => {
     if (!qrCodeInstance.current) return;
     try {
-      await qrCodeInstance.current.download({
-        name: `compixor-qr-${Date.now()}`,
-        extension,
-      });
+      if (extension === 'png') {
+        qrCodeInstance.current.update({ width: 1000, height: 1000 });
+        await qrCodeInstance.current.download({
+          name: `compixor-qr-${Date.now()}`,
+          extension,
+        });
+        qrCodeInstance.current.update({ width: 200, height: 200 });
+      } else {
+        await qrCodeInstance.current.download({
+          name: `compixor-qr-${Date.now()}`,
+          extension,
+        });
+      }
       toast.success(`QR code downloaded as ${extension.toUpperCase()}!`);
     } catch (err) {
       toast.error('Failed to download QR code');
@@ -632,12 +641,7 @@ export default function QrGeneratorPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
       {/* Header */}
-      <motion.div
-        className="text-center max-w-3xl mx-auto mb-12"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="text-center max-w-3xl mx-auto mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4">
           <Sparkles className="w-3.5 h-3.5" />
           Pro Customizer • Logo Embedding • Unlimited Free
@@ -649,7 +653,7 @@ export default function QrGeneratorPage() {
           Create high-resolution, branded QR codes for websites, Wi-Fi networks, vCards, and emails.
           Embed custom logos, choose themes, and export print-ready vector SVGs.
         </p>
-      </motion.div>
+      </div>
 
       {/* Presets Rows Container */}
       <div className="w-full max-w-7xl mx-auto mb-10 space-y-3">
@@ -708,12 +712,7 @@ export default function QrGeneratorPage() {
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column: Form Controls (7 cols) */}
-        <motion.div
-          className="lg:col-span-7 space-y-6"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
+        <div className="lg:col-span-7 space-y-6">
           {/* Tab Selection */}
           <div className="glass-card p-1.5 flex flex-wrap gap-1 rounded-2xl">
             {tabs.map((t) => {
@@ -1163,23 +1162,18 @@ export default function QrGeneratorPage() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Right Column: Live Preview & Export (5 cols) */}
-        <motion.div
-          className="lg:col-span-5 sticky top-24 space-y-6"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <div className="glass-card p-6 md:p-8 rounded-3xl text-center space-y-6">
-            <h3 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
+        <div className="lg:col-span-5 sticky top-24 space-y-6">
+          <div className="glass-card p-4 sm:p-5 rounded-2xl text-center space-y-4">
+            <h3 className="text-base font-bold font-display text-zinc-900 dark:text-white">
               Live QR Preview
             </h3>
 
             {/* QR Canvas Container */}
-            <div className="flex items-center justify-center p-6 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-inner min-h-[310px]">
-              <div ref={qrRef} className="overflow-hidden rounded-xl" />
+            <div className="flex items-center justify-center p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-inner min-h-[220px] max-w-[240px] mx-auto">
+              <div ref={qrRef} className="overflow-hidden rounded-lg flex items-center justify-center" />
             </div>
 
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -1225,7 +1219,7 @@ export default function QrGeneratorPage() {
               <p className="text-xs text-zinc-500 dark:text-zinc-400">Scannable forever with zero subscription lockouts.</p>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* FAQ Section */}
