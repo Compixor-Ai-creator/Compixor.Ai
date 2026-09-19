@@ -872,8 +872,26 @@ export default function PdfWatermarkClient({
       const outputName = `${baseName}${suffix}.pdf`;
 
       const blob = new Blob([exportBytes as BlobPart], { type: 'application/pdf' });
-      const { saveAs } = await import('file-saver');
-      saveAs(blob, outputName);
+      
+      // Bulletproof native download — avoids file-saver ESM/CJS export mismatch
+      try {
+        const fileSaver = await import('file-saver');
+        const save = (fileSaver as any).saveAs || (fileSaver as any).default || fileSaver;
+        if (typeof save === 'function') {
+          save(blob, outputName);
+        } else {
+          throw new Error('Fallback to native');
+        }
+      } catch {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = outputName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
       toast.success(`Saved "${outputName}"`);
     } catch (err: any) {
       console.error('Download error:', err);

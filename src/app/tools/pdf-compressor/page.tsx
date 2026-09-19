@@ -797,9 +797,24 @@ export default function PdfCompressorPage() {
   // Download individual file
   const handleDownloadSingle = useCallback(async (item: BatchFileItem) => {
     if (!item.result?.blob) return;
-    const { saveAs } = await import('file-saver');
     const baseName = item.file.name.replace(/\.pdf$/i, '');
-    saveAs(item.result.blob, `${baseName}_compressed.pdf`);
+    const filename = `${baseName}_compressed.pdf`;
+    try {
+      const fileSaver = await import('file-saver');
+      const save = (fileSaver as any).saveAs || (fileSaver as any).default || fileSaver;
+      if (typeof save === 'function') {
+        save(item.result.blob, filename);
+        return;
+      }
+    } catch {}
+    const url = URL.createObjectURL(item.result.blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }, []);
 
   // Download all files as a single ZIP
@@ -812,10 +827,7 @@ export default function PdfCompressorPage() {
       return;
     }
 
-    const [JSZipModule, { saveAs }] = await Promise.all([
-      import('jszip').then((m) => m.default || m),
-      import('file-saver'),
-    ]);
+    const JSZipModule = await import('jszip').then((m) => m.default || m);
     const zip = new JSZipModule();
     for (const item of doneItems) {
       const baseName = item.file.name.replace(/\.pdf$/i, '');
@@ -823,7 +835,24 @@ export default function PdfCompressorPage() {
     }
 
     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    saveAs(zipBlob, 'compixor_compressed_documents.zip');
+    const zipName = 'compixor_compressed_documents.zip';
+    try {
+      const fileSaver = await import('file-saver');
+      const save = (fileSaver as any).saveAs || (fileSaver as any).default || fileSaver;
+      if (typeof save === 'function') {
+        save(zipBlob, zipName);
+        toast.success('Downloaded all compressed PDFs in a ZIP archive.');
+        return;
+      }
+    } catch {}
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = zipName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
     toast.success('Downloaded all compressed PDFs in a ZIP archive.');
   }, [batchItems, handleDownloadSingle]);
 
