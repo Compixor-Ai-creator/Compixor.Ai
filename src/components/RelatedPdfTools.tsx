@@ -12,6 +12,7 @@ import {
   Sparkles,
   ShieldCheck,
   LucideIcon,
+  Lock,
 } from 'lucide-react';
 
 export type PdfToolId =
@@ -19,7 +20,8 @@ export type PdfToolId =
   | 'remove-watermark'
   | 'compressor'
   | 'organizer'
-  | 'pdf-watermark';
+  | 'pdf-watermark'
+  | 'pdf-protect';
 
 export interface PdfToolConfig {
   id: PdfToolId;
@@ -77,6 +79,17 @@ export const PDF_TOOLS: PdfToolConfig[] = [
     color: 'from-cyan-500 to-indigo-600',
     tagline: '100% Client-Side Privacy',
     description: 'Combine multiple PDFs or extract exact page ranges into separate documents with visual previews.',
+  },
+  {
+    id: 'pdf-protect',
+    name: 'PDF Protect & Unlock',
+    badge: 'New',
+    stat: 'AES-256 Encryption',
+    href: '/tools/pdf-protect',
+    icon: Lock,
+    color: 'from-indigo-500 to-purple-600',
+    tagline: '100% Client-Side Privacy',
+    description: 'Password-protect PDFs with AES-256 encryption and granular permissions, or remove restrictions instantly.',
   },
 ];
 

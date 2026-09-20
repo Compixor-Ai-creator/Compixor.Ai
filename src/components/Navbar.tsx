@@ -20,6 +20,7 @@ import {
   Stamp,
   Eraser,
   ChevronDown,
+  Lock,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
 
@@ -54,6 +55,12 @@ const pdfToolsList: PdfToolItem[] = [
     label: 'Remove PDF Watermark',
     subtitle: 'Clean stamps and watermark layers',
     icon: Eraser,
+  },
+  {
+    href: '/tools/pdf-protect',
+    label: 'PDF Protect & Unlock',
+    subtitle: 'Add or remove password protection',
+    icon: Lock,
   },
 ];
 

@@ -177,6 +177,16 @@ const tools = [
     stats: 'SVG & PNG Export',
     badge: 'Static & Permanent',
   },
+  {
+    href: '/tools/pdf-protect',
+    icon: Lock,
+    title: 'PDF Protect & Unlock',
+    tagline: '100% Client-Side Privacy',
+    description: 'Password-protect PDFs with AES-256 encryption & custom permissions, or remove restrictions instantly.',
+    color: 'from-indigo-500 to-purple-600',
+    stats: 'AES-256 · Local Decrypt',
+    badge: 'New',
+  },
 ];
 
 const trustSignals = [
