@@ -531,18 +531,8 @@ export default function FullDpMakerPage() {
     return () => el.removeEventListener('wheel', handleWheel);
   }, [imageSrc]);
 
-  // Touch pan
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (!imageSrc || e.touches.length !== 1) return;
-    setIsDragging(true);
-    setDragStart({ x: e.touches[0].clientX - panX, y: e.touches[0].clientY - panY });
-  };
+  // Touch pan disabled on mobile to keep canvas locked as requested
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || e.touches.length !== 1) return;
-    setPanX(e.touches[0].clientX - dragStart.x);
-    setPanY(e.touches[0].clientY - dragStart.y);
-  };
 
   // Reset tool
   const resetAllSettings = () => {
@@ -1153,19 +1143,16 @@ export default function FullDpMakerPage() {
               </button>
             </div>
 
-            {/* Square Canvas Box */}
+            {/* Square Canvas Box — Drag and zoom enabled on desktop, locked on mobile */}
             <div
               ref={previewBoxRef}
-              className={`relative mx-auto rounded-2xl overflow-hidden shadow-2xl border border-zinc-300 dark:border-zinc-700 select-none aspect-square max-w-[380px] w-full ${
-                imageSrc ? 'cursor-grab active:cursor-grabbing' : ''
+              className={`relative mx-auto rounded-2xl overflow-hidden shadow-2xl border border-zinc-300 dark:border-zinc-700 select-none aspect-square max-w-[380px] w-full touch-pan-y ${
+                imageSrc ? 'md:cursor-grab md:active:cursor-grabbing' : ''
               }`}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleMouseUp}
             >
               <canvas ref={canvasRef} className="w-full h-full object-contain block" />
 
@@ -1199,9 +1186,9 @@ export default function FullDpMakerPage() {
               )}
             </div>
 
-            {/* Drag instruction */}
+            {/* Drag instruction — Desktop only */}
             {imageSrc && (
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 flex items-center justify-center gap-1">
+              <p className="hidden md:flex text-[11px] text-zinc-500 dark:text-zinc-400 items-center justify-center gap-1">
                 <span>🖱️ Drag canvas to reposition • Scroll mouse wheel to zoom</span>
               </p>
             )}
