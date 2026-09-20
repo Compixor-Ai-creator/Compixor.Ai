@@ -976,13 +976,138 @@ export function canvasCoordsToPdf(
   return { x, y };
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SMART ENGINE HELPERS (Engine A Upgrade)
+// ─────────────────────────────────────────────────────────────────────────────
+
 /**
- * 5. ENGINE A: STRIP DIGITAL WATERMARKS
- * Strips digital watermarks:
- * - Annotations with /Subtype /Stamp or /Watermark from page.node.Annots()
- * - Resources /ExtGState with low opacity (ca < 0.8 or CA < 0.8)
- * - /Artifact marked content streams (/Type /Watermark or /CompixorWatermark)
- * - Registered Compixor watermark streams
+ * Decode a PDF hex string like <004D004F004C...> (UTF-16BE) or <4D4F4C...> (Latin-1)
+ * into a plain JS string for keyword matching.
+ * This catches custom watermarks like "MOLVI SAQIB" stored as hex in PDF streams.
+ */
+function decodeHexPdfString(hex: string): string {
+  hex = hex.trim();
+  // Try UTF-16BE first: groups of 4 hex chars
+  if (hex.length >= 4 && hex.length % 4 === 0) {
+    let decoded = '';
+    for (let i = 0; i < hex.length; i += 4) {
+      const code = parseInt(hex.substring(i, i + 4), 16);
+      if (code > 0) decoded += String.fromCharCode(code);
+    }
+    if (decoded.length > 0 && /[a-zA-Z\u0600-\u06FF]/.test(decoded)) return decoded;
+  }
+  // Latin-1 fallback: groups of 2 hex chars
+  let decoded = '';
+  for (let i = 0; i < hex.length; i += 2) {
+    const byte = parseInt(hex.substring(i, i + 2), 16);
+    if (byte >= 32) decoded += String.fromCharCode(byte);
+  }
+  return decoded;
+}
+
+/**
+ * Extract all visible text tokens from a PDF content stream string.
+ * Handles both hex <DEADBEEF> and literal (Hello) PDF string encodings.
+ */
+function extractTextFromStream(streamText: string): { full: string; blocks: string[] } {
+  const blocks: string[] = [];
+
+  // Hex strings: <DEADBEEF>
+  const hexRegex = /<([0-9a-fA-F]{2,})>/g;
+  let m: RegExpExecArray | null;
+  while ((m = hexRegex.exec(streamText)) !== null) {
+    const decoded = decodeHexPdfString(m[1]);
+    if (decoded.trim().length > 0) blocks.push(decoded.trim());
+  }
+
+  // Literal PDF strings: (Hello World)
+  const litRegex = /\(([^)\\]*(?:\\.[^)\\]*)*)\)/g;
+  while ((m = litRegex.exec(streamText)) !== null) {
+    const raw = m[1].replace(/\\(.)/g, '$1');
+    if (raw.trim().length > 0) blocks.push(raw.trim());
+  }
+
+  return { full: blocks.join(' '), blocks };
+}
+
+/**
+ * Parse a PDF Tm text matrix [a b c d e f] and return the rotation angle in degrees.
+ * PDF Tm rotation = atan2(b, a).
+ */
+function getRotationFromMatrix(a: number, b: number): number {
+  const rad = Math.atan2(b, a);
+  const deg = (rad * 180) / Math.PI;
+  return (deg + 360) % 360;
+}
+
+/**
+ * Returns true if a PDF content stream contains text rendered at a diagonal angle
+ * (20°–70° or 110°–160°), which is characteristic of overlay watermarks.
+ * Checks both Tm (text matrix) and cm (concat matrix) operators.
+ */
+function hasAngledText(streamText: string): boolean {
+  // Check Tm operator: a b c d e f Tm
+  const tmRegex = /(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+Tm/g;
+  let m: RegExpExecArray | null;
+  while ((m = tmRegex.exec(streamText)) !== null) {
+    const a = parseFloat(m[1]);
+    const b = parseFloat(m[2]);
+    const angle = getRotationFromMatrix(a, b);
+    const absAngle = angle <= 180 ? angle : 360 - angle;
+    if ((absAngle >= 20 && absAngle <= 70) || (absAngle >= 110 && absAngle <= 160)) {
+      return true;
+    }
+  }
+  // Check cm operator: a b c d e f cm (only when b is non-zero, indicating rotation)
+  const cmRegex = /(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+cm/g;
+  while ((m = cmRegex.exec(streamText)) !== null) {
+    const a = parseFloat(m[1]);
+    const b = parseFloat(m[2]);
+    if (Math.abs(b) < 0.01) continue; // Skip pure scale/translate (no rotation)
+    const angle = getRotationFromMatrix(a, b);
+    const absAngle = angle <= 180 ? angle : 360 - angle;
+    if ((absAngle >= 20 && absAngle <= 70) || (absAngle >= 110 && absAngle <= 160)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Decompress a PDF content stream into its text representation.
+ * Returns empty string on failure.
+ */
+function decompressStream(obj: PDFStream | PDFRawStream): string {
+  let rawBytes: Uint8Array | null = null;
+  if (obj instanceof PDFRawStream) {
+    rawBytes = obj.contents;
+  } else if ('contents' in obj) {
+    rawBytes = (obj as unknown as { contents: Uint8Array }).contents;
+  }
+  if (!rawBytes) return '';
+  try {
+    const isFlate = obj.dict.get(PDFName.of('Filter')) === PDFName.of('FlateDecode');
+    if (isFlate) {
+      return new TextDecoder().decode(pako.inflate(rawBytes));
+    }
+    return new TextDecoder().decode(rawBytes);
+  } catch {
+    return '';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * 5. ENGINE A: STRIP DIGITAL WATERMARKS (Smart Upgraded)
+ * Strips digital watermarks using multiple detection strategies:
+ *  1. Annotations with /Subtype /Stamp or /Watermark
+ *  2. Resources /ExtGState with low opacity (ca < 0.8 or CA < 0.8)
+ *  3. XObjects named watermark|stamp|draft|compixor
+ *  4. /Artifact marked content streams (/Type /Watermark or /CompixorWatermark)
+ *  5. [NEW] Multi-page repeat hunter — same text on 3+ pages → watermark candidate
+ *  6. [NEW] Angle/rotation detector — diagonal text at 20°–70° → watermark candidate
+ *  7. [NEW] Hex-decoded text matching — decodes <hex> strings before keyword matching
  */
 export async function stripDigitalWatermarks(
   pdfBytes: ArrayBuffer | Uint8Array
@@ -990,6 +1115,65 @@ export async function stripDigitalWatermarks(
   const doc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
   let removedCount = 0;
   const pages = doc.getPages();
+
+  // ── [NEW] STRATEGY 5: Multi-Page Repeat Hunter ──────────────────────────────
+  // Scan all pages first. Collect every distinct decoded text token and count how
+  // many pages it appears on. Tokens seen on ≥3 pages (or all pages in short PDFs)
+  // are flagged as watermark candidates and targeted for removal below.
+  const textPageCount = new Map<string, number>(); // token → page count
+  const minRepeatPages = Math.max(2, Math.min(3, pages.length)); // 2 for 2-page, 3 for 3+
+
+  for (const pg of pages) {
+    const pgContents = pg.node.get(PDFName.of('Contents'));
+    if (!pgContents) continue;
+
+    const pgRefs: PDFRef[] = [];
+    if (pgContents instanceof PDFRef) {
+      const deref = doc.context.lookup(pgContents);
+      if (deref instanceof PDFArray) {
+        for (let i = 0; i < deref.size(); i++) {
+          const item = deref.get(i);
+          if (item instanceof PDFRef) pgRefs.push(item);
+        }
+      } else {
+        pgRefs.push(pgContents);
+      }
+    } else if (pgContents instanceof PDFArray) {
+      for (let i = 0; i < pgContents.size(); i++) {
+        const item = pgContents.get(i);
+        if (item instanceof PDFRef) pgRefs.push(item);
+      }
+    }
+
+    // Collect unique tokens seen on this page (avoid double-counting same stream)
+    const pageTokens = new Set<string>();
+    for (const ref of pgRefs) {
+      const obj = doc.context.lookup(ref);
+      if (!(obj instanceof PDFStream || obj instanceof PDFRawStream)) continue;
+      const streamText = decompressStream(obj);
+      if (!streamText) continue;
+      const { blocks } = extractTextFromStream(streamText);
+      for (const block of blocks) {
+        const normalized = block.toLowerCase().trim().replace(/\s+/g, ' ');
+        if (normalized.length >= 3) pageTokens.add(normalized);
+      }
+    }
+
+    // Increment global count for each unique token on this page
+    Array.from(pageTokens).forEach((token) => {
+      textPageCount.set(token, (textPageCount.get(token) ?? 0) + 1);
+    });
+  }
+
+  // Build set of repeat-watermark text tokens
+  const repeatWatermarkTokens = new Set<string>();
+  Array.from(textPageCount.entries()).forEach(([token, count]) => {
+    if (count >= minRepeatPages) {
+      repeatWatermarkTokens.add(token);
+    }
+  });
+  // ────────────────────────────────────────────────────────────────────────────
+
 
   for (const page of pages) {
     // 1. Scan and strip /Stamp and /Watermark subtype annotations from page.node
@@ -1215,7 +1399,7 @@ export async function stripDigitalWatermarks(
           }
         }
 
-        // Check if stream is a dedicated text watermark overlay
+        // Check if stream is a dedicated text watermark overlay (original keyword check)
         if (!isDedicatedOverlay && streamText.length < 800 && /BT[\s\S]*?ET/.test(streamText)) {
           if (
             /\/Artifact\s*<<[^>]*\/Type\s*\/Watermark/i.test(streamText) ||
@@ -1223,6 +1407,46 @@ export async function stripDigitalWatermarks(
             /watermark|confidential|sample|draft/i.test(streamText)
           ) {
             isDedicatedOverlay = true;
+          }
+        }
+
+        // ── [NEW] STRATEGY 7: Hex-decoded keyword matching ────────────────────
+        // Decode all hex strings in the stream and check for watermark keywords.
+        // Catches custom text like "MOLVI SAQIB" stored as <004D004F004C...>.
+        if (!isDedicatedOverlay && /BT[\s\S]*?ET/.test(streamText)) {
+          const { full: decodedFull } = extractTextFromStream(streamText);
+          if (/watermark|confidential|sample|draft/i.test(decodedFull)) {
+            isDedicatedOverlay = true;
+          }
+        }
+
+        // ── [NEW] STRATEGY 6: Angle/Rotation Detector ────────────────────────
+        // If the stream ONLY contains text (BT...ET) and it's rendered at a
+        // diagonal angle (20°–70°), treat the whole stream as a watermark overlay.
+        // Short streams (< 1500 chars) are typical watermark overlays; long streams
+        // are page content and are skipped to avoid false positives.
+        if (!isDedicatedOverlay && streamText.length < 1500 && /BT[\s\S]*?ET/.test(streamText)) {
+          if (hasAngledText(streamText)) {
+            // Extra safety: also require the stream to be mostly text ops, not graphics
+            const hasMeaningfulGraphics = /\d+\s+\d+\s+\d+\s+\d+\s+re\s+f/.test(streamText) &&
+              streamText.length > 600;
+            if (!hasMeaningfulGraphics) {
+              isDedicatedOverlay = true;
+            }
+          }
+        }
+
+        // ── [NEW] STRATEGY 5: Multi-Page Repeat Token Match ──────────────────
+        // If any text token in this stream was flagged as a cross-page repeat,
+        // and the stream is short (< 2000 chars, i.e. overlay-like), flag it.
+        if (!isDedicatedOverlay && streamText.length < 2000 && repeatWatermarkTokens.size > 0) {
+          const { blocks } = extractTextFromStream(streamText);
+          for (const block of blocks) {
+            const normalized = block.toLowerCase().trim().replace(/\s+/g, ' ');
+            if (repeatWatermarkTokens.has(normalized)) {
+              isDedicatedOverlay = true;
+              break;
+            }
           }
         }
 

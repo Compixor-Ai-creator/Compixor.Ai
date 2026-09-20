@@ -677,7 +677,7 @@ export default function PdfWatermarkClient({
     }
   };
 
-  // Remove Watermarks (Engine A: Auto-Strip Digital Watermarks)
+  // Remove Watermarks (Engine A: Auto-Strip Digital Watermarks — Smart Upgraded)
   const handleRemoveCompixorWatermarks = async () => {
     if (!pdfBytes) {
       toast.error('Please upload a PDF first.');
@@ -686,13 +686,13 @@ export default function PdfWatermarkClient({
 
     try {
       setIsProcessing(true);
-      setStatusMessage('Engine A: Scanning annotations, /Artifacts & low-opacity watermark layers...');
+      setStatusMessage('Engine A: Smart scanning — annotations, angle detection, repeat patterns & hex-encoded text...');
 
       const { pdfBytes: cleaned, removedCount } = await stripDigitalWatermarks(pdfBytes);
 
       if (removedCount === 0) {
         toast.info(
-          'No digital watermark layers or stamp annotations detected. If this is a flattened or scanned document, use Engine B: Erase Box below.'
+          'No watermark layers detected. If the watermark is a scanned/printed image (rasterized), use Engine B: Erase Box to manually erase it.'
         );
       } else {
         setPdfBytes(cleaned);
@@ -700,7 +700,7 @@ export default function PdfWatermarkClient({
         const loadingTask = pdfjs.getDocument({ data: cleaned.slice(0) });
         const updatedDoc = await loadingTask.promise;
         setPdfDocProxy(updatedDoc);
-        toast.success(`Engine A: Successfully stripped ${removedCount} watermark layer(s)!`);
+        toast.success(`Engine A: Removed ${removedCount} watermark layer(s)! (angle, repeat & keyword detection)`);
       }
     } catch (err: any) {
       console.error('Error removing watermark:', err);
