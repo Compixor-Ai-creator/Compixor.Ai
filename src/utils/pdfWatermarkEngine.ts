@@ -1172,8 +1172,84 @@ export async function stripDigitalWatermarks(
       repeatWatermarkTokens.add(token);
     }
   });
-  // ────────────────────────────────────────────────────────────────────────────
 
+  // ── [NEW] GLOBAL WATERMARK XOBJECT PRE-PASS ────────────────────────────────
+  // Scan all pages to identify watermark image/form XObjects across the whole document.
+  // Many PDFs share watermark image objects across pages (e.g. /Im0 on P1, /Im1 on P2 both
+  // pointing to the same underlying Image ref). Scanning globally ensures EVERY page knows
+  // which XObjects are watermarks, even if another page processed it first.
+  const globalWatermarkXObjKeys = new Set<string>();
+  const globalWatermarkXObjRefs = new Set<PDFRef>();
+
+  for (const pg of pages) {
+    const res = pg.node.get(PDFName.of('Resources'));
+    if (!res) continue;
+    let resDict: PDFDict | null = null;
+    if (res instanceof PDFRef) {
+      const deref = doc.context.lookup(res);
+      if (deref instanceof PDFDict) resDict = deref;
+    } else if (res instanceof PDFDict) {
+      resDict = res;
+    }
+    if (!resDict) continue;
+
+    const xObjVal = resDict.get(PDFName.of('XObject'));
+    let xObjDict: PDFDict | null = null;
+    if (xObjVal instanceof PDFRef) {
+      const deref = doc.context.lookup(xObjVal);
+      if (deref instanceof PDFDict) xObjDict = deref;
+    } else if (xObjVal instanceof PDFDict) {
+      xObjDict = xObjVal;
+    }
+    if (!xObjDict) continue;
+
+    for (const [key, val] of xObjDict.entries()) {
+      const xName = key.asString().replace(/^\//, '');
+      let xObj: any = null;
+      let refObj: PDFRef | null = null;
+      if (val instanceof PDFRef) {
+        refObj = val;
+        xObj = doc.context.lookup(val);
+      } else {
+        xObj = val;
+      }
+
+      if (xObj && xObj.dict) {
+        const subtype = xObj.dict.get(PDFName.of('Subtype'));
+        const subtypeName = subtype ? subtype.toString() : '';
+        const isNamedWm = /watermark|stamp|compixor|draft/i.test(xName);
+
+        if (subtypeName === '/Image') {
+          const smask = xObj.dict.get(PDFName.of('SMask'));
+          const mask = xObj.dict.get(PDFName.of('Mask'));
+          // Image with transparency mask or watermark name
+          if (smask || mask || isNamedWm) {
+            globalWatermarkXObjKeys.add(xName);
+            if (refObj) globalWatermarkXObjRefs.add(refObj);
+          }
+        } else if (subtypeName === '/Form') {
+          let formContent = '';
+          try {
+            if (typeof xObj.getContents === 'function') {
+              const raw = xObj.getContents();
+              const filter = xObj.dict.get(PDFName.of('Filter'));
+              if (filter === PDFName.of('FlateDecode')) {
+                formContent = new TextDecoder().decode(pako.inflate(raw));
+              } else {
+                formContent = new TextDecoder().decode(raw);
+              }
+            }
+          } catch {}
+
+          if (isNamedWm || /watermark|confidential|draft|sample|compixor/i.test(formContent)) {
+            globalWatermarkXObjKeys.add(xName);
+            if (refObj) globalWatermarkXObjRefs.add(refObj);
+          }
+        }
+      }
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────────
 
   for (const page of pages) {
     // 1. Scan and strip /Stamp and /Watermark subtype annotations from page.node
@@ -1267,9 +1343,9 @@ export async function stripDigitalWatermarks(
       }
     }
 
-    // 3. Inspect /Resources /XObject for watermark candidate Image or Form XObjects
-    const watermarkXObjKeys = new Set<string>();
-    const watermarkXObjRefs = new Set<PDFRef>();
+    // 3. Inherit watermark XObject keys from global pre-pass
+    const watermarkXObjKeys = new Set<string>(globalWatermarkXObjKeys);
+    const watermarkXObjRefs = new Set<PDFRef>(globalWatermarkXObjRefs);
     if (resDict) {
       const xObjVal = resDict.get(PDFName.of('XObject'));
       let xObjDict: PDFDict | null = null;
@@ -1300,7 +1376,6 @@ export async function stripDigitalWatermarks(
             if (subtypeName === '/Image') {
               const smask = xObj.dict.get(PDFName.of('SMask'));
               const mask = xObj.dict.get(PDFName.of('Mask'));
-              // Image with transparency mask or watermark name
               if (smask || mask || isNamedWm) {
                 watermarkXObjKeys.add(xName);
                 if (refObj) watermarkXObjRefs.add(refObj);
@@ -1597,13 +1672,14 @@ export async function stripDigitalWatermarks(
           xObjDict.delete(PDFName.of(wmKey));
         }
       }
-
-      for (const ref of Array.from(watermarkXObjRefs)) {
-        try {
-          doc.context.delete(ref);
-        } catch {}
-      }
     }
+  }
+
+  // Safely delete collected watermark XObjects from document context only AFTER all pages have finished processing
+  for (const ref of Array.from(globalWatermarkXObjRefs)) {
+    try {
+      doc.context.delete(ref);
+    } catch {}
   }
 
   // Also run removeCompixorWatermarks check to catch explicit Compixor registered streams
