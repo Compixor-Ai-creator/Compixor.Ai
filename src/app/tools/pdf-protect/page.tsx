@@ -25,6 +25,7 @@ import {
 import { toast } from 'sonner';
 import RelatedPdfTools from '@/components/RelatedPdfTools';
 import StaticToolSkeleton from '@/components/StaticToolSkeleton';
+import DropAnywhere from '@/components/DropAnywhere';
 
 // ─── Lazy imports ──────────────────────────────────────────────────────────────
 async function getPdfLib() {
@@ -131,9 +132,9 @@ function PasswordInput({
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-export default function PdfProtectPage() {
+export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: ActiveMode }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [activeMode, setActiveMode] = useState<ActiveMode>('protect');
+  const [activeMode, setActiveMode] = useState<ActiveMode>(initialMode);
 
   // File state
   const [file, setFile] = useState<File | null>(null);
@@ -351,6 +352,14 @@ export default function PdfProtectPage() {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+      {/* Fullscreen Drop Anywhere Drag & Drop Overlay */}
+      <DropAnywhere
+        onFileDrop={acceptFile}
+        accept="application/pdf,.pdf"
+        title="Drop PDF anywhere"
+        subtitle={activeMode === 'protect' ? 'to password protect instantly' : 'to unlock and decrypt instantly'}
+      />
+
       {/* ── Header ── */}
       <div className="text-center mb-10">
         <motion.div
@@ -803,4 +812,8 @@ export default function PdfProtectPage() {
       <RelatedPdfTools currentTool="pdf-protect" />
     </div>
   );
+}
+
+export default function PdfProtectPage() {
+  return <PdfProtectClient initialMode="protect" />;
 }

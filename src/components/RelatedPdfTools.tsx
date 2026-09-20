@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   LucideIcon,
   Lock,
+  Unlock,
 } from 'lucide-react';
 
 export type PdfToolId =
@@ -21,7 +22,9 @@ export type PdfToolId =
   | 'compressor'
   | 'organizer'
   | 'pdf-watermark'
-  | 'pdf-protect';
+  | 'pdf-protect'
+  | 'protect-pdf'
+  | 'unlock-pdf';
 
 export interface PdfToolConfig {
   id: PdfToolId;
@@ -81,15 +84,26 @@ export const PDF_TOOLS: PdfToolConfig[] = [
     description: 'Combine multiple PDFs or extract exact page ranges into separate documents with visual previews.',
   },
   {
-    id: 'pdf-protect',
-    name: 'PDF Protect & Unlock',
+    id: 'protect-pdf',
+    name: 'Protect PDF',
     badge: 'New',
     stat: 'AES-256 Encryption',
-    href: '/tools/pdf-protect',
+    href: '/tools/protect-pdf',
     icon: Lock,
     color: 'from-indigo-500 to-purple-600',
     tagline: '100% Client-Side Privacy',
-    description: 'Password-protect PDFs with AES-256 encryption and granular permissions, or remove restrictions instantly.',
+    description: 'Password-protect PDFs with AES-256 encryption and configure granular permissions for printing, copying, and editing.',
+  },
+  {
+    id: 'unlock-pdf',
+    name: 'Unlock PDF',
+    badge: 'New',
+    stat: '100% Local Decrypt',
+    href: '/tools/unlock-pdf',
+    icon: Unlock,
+    color: 'from-purple-500 to-pink-600',
+    tagline: '100% Client-Side Privacy',
+    description: 'Instantly remove passwords and security restrictions from PDF files you own without cloud uploads.',
   },
 ];
 

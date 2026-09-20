@@ -21,6 +21,7 @@ import {
   Eraser,
   ChevronDown,
   Lock,
+  Unlock,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
 
@@ -57,10 +58,16 @@ const pdfToolsList: PdfToolItem[] = [
     icon: Eraser,
   },
   {
-    href: '/tools/pdf-protect',
-    label: 'PDF Protect & Unlock',
-    subtitle: 'Add or remove password protection',
+    href: '/tools/protect-pdf',
+    label: 'Protect PDF',
+    subtitle: 'Add AES-256 password protection',
     icon: Lock,
+  },
+  {
+    href: '/tools/unlock-pdf',
+    label: 'Unlock PDF',
+    subtitle: 'Remove password and restrictions',
+    icon: Unlock,
   },
 ];
 

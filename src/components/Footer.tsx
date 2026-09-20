@@ -70,10 +70,18 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/tools/pdf-protect"
+                  href="/tools/protect-pdf"
                   className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
-                  PDF Protect & Unlock
+                  Protect PDF
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/tools/unlock-pdf"
+                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                >
+                  Unlock PDF
                 </Link>
               </li>
               <li>
