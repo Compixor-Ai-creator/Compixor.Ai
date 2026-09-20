@@ -262,13 +262,31 @@ export default function PdfWatermarkClient({
       const doc = await loadingTask.promise;
 
       setPdfFile(file);
-      setPdfBytes(uint8);
       setOriginalBytes(uint8);
       setPageCount(doc.numPages);
       setCurrentPage(1);
-      setPdfDocProxy(doc);
       setSelectionBox(null);
 
+      // In Remove mode, auto-strip digital watermarks on upload (True 1-Click removal like DPDF)
+      if (activeMode === 'remove') {
+        try {
+          setStatusMessage('Auto-detecting and stripping watermarks...');
+          const { pdfBytes: cleaned, removedCount } = await stripDigitalWatermarks(uint8);
+          if (removedCount > 0) {
+            setPdfBytes(cleaned);
+            const cleanedTask = pdfjs.getDocument({ data: cleaned.slice(0) });
+            const cleanedDoc = await cleanedTask.promise;
+            setPdfDocProxy(cleanedDoc);
+            toast.success(`1-Click Auto-Strip: Removed ${removedCount} watermark layer(s)!`);
+            return;
+          }
+        } catch (stripErr) {
+          console.warn('Auto-strip on upload skipped:', stripErr);
+        }
+      }
+
+      setPdfBytes(uint8);
+      setPdfDocProxy(doc);
       toast.success(`Loaded "${file.name}" (${doc.numPages} pages)`);
     } catch (err: any) {
       console.error('Error loading PDF:', err);
@@ -277,7 +295,8 @@ export default function PdfWatermarkClient({
       setIsProcessing(false);
       setStatusMessage('');
     }
-  }, []);
+  }, [activeMode]);
+
 
   // Window-level drag-and-drop listener (Intercepts browser default tab-opening behaviour)
   useEffect(() => {

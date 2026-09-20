@@ -1495,8 +1495,13 @@ export async function stripDigitalWatermarks(
           }
         }
 
-        // Strategy 5: Repeat token match — text found on 3+ pages
-        if (!isDedicatedOverlay && streamText.length < 2000 && repeatWatermarkTokens.size > 0) {
+        // Strategy 5: Repeat token match — ONLY if stream is short AND angled or low opacity
+        if (
+          !isDedicatedOverlay &&
+          streamText.length < 1000 &&
+          repeatWatermarkTokens.size > 0 &&
+          (hasAngledText(streamText) || lowOpacityGsKeys.size > 0)
+        ) {
           const { blocks } = extractTextFromStream(streamText);
           for (const block of blocks) {
             const normalized = block.toLowerCase().trim().replace(/\s+/g, ' ');
@@ -1567,57 +1572,24 @@ export async function stripDigitalWatermarks(
         }
       });
 
-      // ── [NEW] STRATEGY 6 INLINE: Remove angled BT..ET blocks from any stream ─
-      // For single-stream pages, we can't delete the whole stream.
-      // Instead, surgically find BT..ET blocks where the Tm matrix is diagonal
-      // (20°–70°) and strip only those blocks.
-      if (!streamModified || true) {
-        // Run always — catches watermarks even in shared/single streams
-        modifiedText = modifiedText.replace(/BT[\s\S]*?ET/g, (block) => {
-          // Only remove if this BT..ET block itself has angled text
-          if (!hasAngledText(block)) return block;
-          // Safety: skip if it contains meaningful table/border graphics
-          if (/\d+\s+\d+\s+\d+\s+\d+\s+re\s+f/.test(block)) return block;
-          removedCount++;
-          streamModified = true;
-          return '';
-        });
-      }
-
-      // ── [NEW] STRATEGY 5 INLINE: Remove repeat-pattern BT..ET blocks ─────────
-      // For single-stream pages, surgically remove BT..ET blocks whose decoded
-      // text matches repeat-watermark tokens (found on 3+ pages).
-      if (repeatWatermarkTokens.size > 0) {
-        modifiedText = modifiedText.replace(/BT[\s\S]*?ET/g, (block) => {
-          const { blocks } = extractTextFromStream(block);
-          for (const b of blocks) {
-            const normalized = b.toLowerCase().trim().replace(/\s+/g, ' ');
-            if (repeatWatermarkTokens.has(normalized)) {
-              removedCount++;
-              streamModified = true;
-              return '';
-            }
-          }
-          return block;
-        });
-      }
-
-      // ── [NEW] STRATEGY 7 INLINE: Hex-decoded text watermark removal ──────────
-      // Decode hex strings inside each BT..ET block. If the decoded content
-      // contains only 1–5 words (typical watermark), AND the block has low opacity
-      // or angled text, remove it. This catches "MOLVI SAQIB" style watermarks.
+      // ── SAFE INLINE WATERMARK REMOVAL ─────────────────────────────────────
+      // Only surgically remove small isolated watermark blocks (<300 chars)
+      // that are explicitly angled or low-opacity.
+      // NEVER delete large BT..ET blocks (>400 chars) as they contain page content/tables!
       if (lowOpacityGsKeys.size > 0 || hasAngledText(modifiedText)) {
         modifiedText = modifiedText.replace(/BT[\s\S]*?ET/g, (block) => {
-          const { full: decoded, blocks } = extractTextFromStream(block);
-          if (!decoded.trim()) return block;
-          // Typical watermarks are short (1–6 words), not paragraph text
-          const wordCount = decoded.trim().split(/\s+/).length;
-          if (wordCount > 8) return block; // Skip — looks like real content
-          // Only remove if the block is angled OR uses a low-opacity gs
+          // Safety 1: Never touch any block longer than 400 characters (real page content)
+          if (block.length > 400) return block;
+          // Safety 2: Never touch blocks containing table lines or multiple text commands
+          const tjCount = (block.match(/Tj|TJ/g) || []).length;
+          if (tjCount > 3) return block; // Real content has many text items, watermarks have 1-2
+
+          // Only remove if this specific small block is angled OR uses a low-opacity gs
           const blockIsAngled = hasAngledText(block);
           const blockUsesLowOpacity = Array.from(lowOpacityGsKeys).some((k) =>
             new RegExp(`\\/${k}\\s+gs`).test(block)
           );
+
           if (blockIsAngled || blockUsesLowOpacity) {
             removedCount++;
             streamModified = true;
@@ -1626,6 +1598,7 @@ export async function stripDigitalWatermarks(
           return block;
         });
       }
+
 
       if (streamModified) {
         const modifiedBytes = new TextEncoder().encode(modifiedText);
