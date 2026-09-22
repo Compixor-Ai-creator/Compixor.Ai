@@ -224,7 +224,7 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 8, scale: 0.98 }}
                       transition={{ duration: 0.18, ease: 'easeOut' }}
-                      className="absolute left-0 mt-2.5 w-[560px] rounded-3xl p-4 sm:p-5 z-50 bg-white/98 dark:bg-zinc-900/98 backdrop-blur-2xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl"
+                      className="absolute left-0 mt-2.5 w-[560px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-zinc-700/60 shadow-2xl shadow-purple-950/15 dark:shadow-black/70"
                     >
                       {/* Top Header Tag */}
                       <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-zinc-100 dark:border-zinc-800/80">
@@ -344,7 +344,7 @@ export default function Navbar() {
                           </div>
 
                           {/* Privacy Highlight Card */}
-                          <div className="p-3 rounded-2xl bg-gradient-to-br from-brand-500/10 via-purple-500/5 to-zinc-50 dark:to-zinc-800/40 border border-brand-500/20 dark:border-brand-400/20">
+                          <div className="p-3 rounded-2xl bg-brand-500/5 dark:bg-brand-500/10 border border-brand-500/20 dark:border-brand-400/20">
                             <div className="flex items-center gap-1.5 mb-1">
                               <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
                               <span className="text-xs font-bold text-zinc-900 dark:text-white">
