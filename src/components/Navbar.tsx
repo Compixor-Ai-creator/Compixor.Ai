@@ -22,54 +22,89 @@ import {
   ChevronDown,
   Lock,
   Unlock,
+  ShieldCheck,
+  ArrowRight,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
 
-interface PdfToolItem {
+export interface PdfToolItem {
   href: string;
   label: string;
   subtitle: string;
   icon: React.ComponentType<{ className?: string }>;
+  gradient: string;
+  badge?: string;
 }
 
-const pdfToolsList: PdfToolItem[] = [
+export interface PdfCategoryGroup {
+  category: string;
+  tools: PdfToolItem[];
+}
+
+export const pdfCategories: PdfCategoryGroup[] = [
   {
-    href: '/tools/pdf-compressor',
-    label: 'PDF Compressor',
-    subtitle: 'Reduce file size without losing quality',
-    icon: FileDown,
+    category: 'Compress & Organize',
+    tools: [
+      {
+        href: '/tools/pdf-compressor',
+        label: 'PDF Compressor',
+        subtitle: 'Reduce file size without quality loss',
+        icon: FileDown,
+        gradient: 'from-rose-500 to-red-600',
+        badge: 'Popular',
+      },
+      {
+        href: '/tools/pdf-organizer',
+        label: 'PDF Merge & Split',
+        subtitle: 'Combine or split pages locally',
+        icon: Files,
+        gradient: 'from-blue-500 to-indigo-600',
+      },
+    ],
   },
   {
-    href: '/tools/pdf-organizer',
-    label: 'PDF Merge & Split',
-    subtitle: 'Combine or split pages locally',
-    icon: Files,
+    category: 'Watermark & Redaction',
+    tools: [
+      {
+        href: '/tools/add-watermark',
+        label: 'Add PDF Watermark',
+        subtitle: 'Stamp text or logo onto PDF',
+        icon: Stamp,
+        gradient: 'from-pink-500 to-rose-600',
+        badge: 'New',
+      },
+      {
+        href: '/tools/remove-watermark',
+        label: 'Remove PDF Watermark',
+        subtitle: 'Clean stamps and watermark layers',
+        icon: Eraser,
+        gradient: 'from-amber-500 to-orange-600',
+      },
+    ],
   },
   {
-    href: '/tools/add-watermark',
-    label: 'Add PDF Watermark',
-    subtitle: 'Stamp text or logo onto PDF',
-    icon: Stamp,
-  },
-  {
-    href: '/tools/remove-watermark',
-    label: 'Remove PDF Watermark',
-    subtitle: 'Clean stamps and watermark layers',
-    icon: Eraser,
-  },
-  {
-    href: '/tools/protect-pdf',
-    label: 'Protect PDF',
-    subtitle: 'Add AES-256 password protection',
-    icon: Lock,
-  },
-  {
-    href: '/tools/unlock-pdf',
-    label: 'Unlock PDF',
-    subtitle: 'Remove password and restrictions',
-    icon: Unlock,
+    category: 'Security & Access',
+    tools: [
+      {
+        href: '/tools/protect-pdf',
+        label: 'Protect PDF',
+        subtitle: 'Add AES-256 password protection',
+        icon: Lock,
+        gradient: 'from-indigo-600 to-purple-600',
+        badge: 'AES-256',
+      },
+      {
+        href: '/tools/unlock-pdf',
+        label: 'Unlock PDF',
+        subtitle: 'Remove password and restrictions',
+        icon: Unlock,
+        gradient: 'from-emerald-500 to-teal-600',
+      },
+    ],
   },
 ];
+
+export const pdfToolsList: PdfToolItem[] = pdfCategories.flatMap((c) => c.tools);
 
 const topLevelNavLinks = [
   { href: '/tools/word-compressor', label: 'Word Compressor', icon: FileText },
@@ -94,7 +129,9 @@ export default function Navbar() {
   const isPdfRouteActive =
     pathname.startsWith('/tools/pdf-') ||
     pathname === '/tools/add-watermark' ||
-    pathname === '/tools/remove-watermark';
+    pathname === '/tools/remove-watermark' ||
+    pathname === '/tools/protect-pdf' ||
+    pathname === '/tools/unlock-pdf';
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -183,49 +220,157 @@ export default function Navbar() {
                 <AnimatePresence>
                   {pdfDropdownOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 6, scale: 0.98 }}
-                      transition={{ duration: 0.16, ease: 'easeOut' }}
-                      className="absolute left-0 mt-2 w-72 rounded-xl p-2 z-50 bg-white/95 dark:bg-[#0b0f19]/95 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-xl dark:shadow-2xl"
+                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                      className="absolute left-0 mt-2.5 w-[560px] rounded-3xl p-4 sm:p-5 z-50 bg-white/98 dark:bg-zinc-900/98 backdrop-blur-2xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl"
                     >
-                      <div className="px-2.5 py-1.5 mb-1 border-b border-gray-100 dark:border-white/5">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                          Client-Side PDF Toolkit
+                      {/* Top Header Tag */}
+                      <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-zinc-100 dark:border-zinc-800/80">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
+                            Client-Side PDF Toolkit
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300">
+                          6 Precision Tools
                         </span>
                       </div>
 
-                      <div className="flex flex-col gap-1">
-                        {pdfToolsList.map((item) => {
-                          const isCurrent =
-                            pathname === item.href ||
-                            (item.href === '/tools/pdf-watermark' && pathname === '/tools/add-watermark');
-                          const Icon = item.icon;
-                          return (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              onClick={() => setPdfDropdownOpen(false)}
-                              className={`flex items-start gap-3 p-2.5 rounded-lg transition-all duration-150 ${
-                                isCurrent
-                                  ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300'
-                                  : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-brand-600 dark:hover:text-brand-300'
-                              }`}
-                            >
-                              <div className="w-8 h-8 rounded-lg bg-brand-500/10 dark:bg-brand-500/15 flex items-center justify-center shrink-0 mt-0.5 text-brand-500">
-                                <Icon className="w-4 h-4" />
+                      {/* 2-Column Categorized Grid */}
+                      <div className="grid grid-cols-2 gap-4">
+                        {/* Column 1: Compress & Organize + Watermark */}
+                        <div className="space-y-4">
+                          {pdfCategories.slice(0, 2).map((group) => (
+                            <div key={group.category} className="space-y-1">
+                              <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-2">
+                                {group.category}
+                              </p>
+                              <div className="space-y-1">
+                                {group.tools.map((item) => {
+                                  const isCurrent =
+                                    pathname === item.href ||
+                                    (item.href === '/tools/pdf-watermark' && pathname === '/tools/add-watermark');
+                                  const Icon = item.icon;
+                                  return (
+                                    <Link
+                                      key={item.href}
+                                      href={item.href}
+                                      onClick={() => setPdfDropdownOpen(false)}
+                                      className={`group flex items-center gap-3 p-2 rounded-2xl transition-all duration-150 ${
+                                        isCurrent
+                                          ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300'
+                                          : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/70 hover:text-brand-600 dark:hover:text-brand-400'
+                                      }`}
+                                    >
+                                      {/* Vibrant Rounded Icon Badge */}
+                                      <div
+                                        className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-200`}
+                                      >
+                                        <Icon className="w-4 h-4" />
+                                      </div>
+                                      <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-1.5">
+                                          <p className="text-xs font-bold leading-tight truncate">
+                                            {item.label}
+                                          </p>
+                                          {item.badge && (
+                                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-brand-500/10 text-brand-600 dark:text-brand-300 shrink-0">
+                                              {item.badge}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-1">
+                                          {item.subtitle}
+                                        </p>
+                                      </div>
+                                      <ArrowRight className="w-3.5 h-3.5 text-zinc-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
+                                    </Link>
+                                  );
+                                })}
                               </div>
-                              <div className="min-w-0">
-                                <p className="text-xs font-bold leading-tight truncate">
-                                  {item.label}
-                                </p>
-                                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-snug">
-                                  {item.subtitle}
-                                </p>
-                              </div>
-                            </Link>
-                          );
-                        })}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Column 2: Security & Privacy + Client-Side Privacy Card */}
+                        <div className="space-y-4 flex flex-col justify-between">
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-2">
+                              {pdfCategories[2].category}
+                            </p>
+                            <div className="space-y-1">
+                              {pdfCategories[2].tools.map((item) => {
+                                const isCurrent = pathname === item.href;
+                                const Icon = item.icon;
+                                return (
+                                  <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={() => setPdfDropdownOpen(false)}
+                                    className={`group flex items-center gap-3 p-2 rounded-2xl transition-all duration-150 ${
+                                      isCurrent
+                                        ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300'
+                                        : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/70 hover:text-brand-600 dark:hover:text-brand-400'
+                                    }`}
+                                  >
+                                    <div
+                                      className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-200`}
+                                    >
+                                      <Icon className="w-4 h-4" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-1.5">
+                                        <p className="text-xs font-bold leading-tight truncate">
+                                          {item.label}
+                                        </p>
+                                        {item.badge && (
+                                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 shrink-0">
+                                            {item.badge}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-1">
+                                        {item.subtitle}
+                                      </p>
+                                    </div>
+                                    <ArrowRight className="w-3.5 h-3.5 text-zinc-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Privacy Highlight Card */}
+                          <div className="p-3 rounded-2xl bg-gradient-to-br from-brand-500/10 via-purple-500/5 to-zinc-50 dark:to-zinc-800/40 border border-brand-500/20 dark:border-brand-400/20">
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                              <span className="text-xs font-bold text-zinc-900 dark:text-white">
+                                100% Client-Side Privacy
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
+                              Documents process in device RAM — zero bytes leave your computer.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Dropdown Bottom Banner */}
+                      <div className="mt-3.5 pt-2.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between px-1 text-[11px] text-zinc-500 dark:text-zinc-400">
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          Zero Cloud Uploads · Instant In-Browser
+                        </span>
+                        <Link
+                          href="/#tools"
+                          onClick={() => setPdfDropdownOpen(false)}
+                          className="font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1"
+                        >
+                          View All 10 Tools &rarr;
+                        </Link>
                       </div>
                     </motion.div>
                   )}
@@ -329,32 +474,51 @@ export default function Navbar() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden border-t border-zinc-200/60 dark:border-zinc-800/60 px-2 py-2 space-y-1"
                     >
-                      {pdfToolsList.map((item) => {
-                        const isCurrent =
-                          pathname === item.href ||
-                          (item.href === '/tools/pdf-watermark' && pathname === '/tools/add-watermark');
-                        const Icon = item.icon;
-                        return (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            onClick={() => setMobileOpen(false)}
-                            className={`flex items-start gap-3 p-2.5 rounded-xl transition ${
-                              isCurrent
-                                ? 'bg-brand-500 text-white shadow-glow'
-                                : 'text-zinc-700 dark:text-zinc-300 hover:bg-brand-500/10 hover:text-brand-600 dark:hover:text-brand-300'
-                            }`}
-                          >
-                            <Icon className={`w-4 h-4 shrink-0 mt-0.5 ${isCurrent ? 'text-white' : 'text-brand-500'}`} />
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold leading-tight">{item.label}</p>
-                              <p className={`text-xs mt-0.5 ${isCurrent ? 'text-white/80' : 'text-zinc-500 dark:text-zinc-400'}`}>
-                                {item.subtitle}
-                              </p>
+                      <div className="space-y-3 py-1">
+                        {pdfCategories.map((group) => (
+                          <div key={group.category} className="space-y-1">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-2.5 pt-1">
+                              {group.category}
+                            </p>
+                            <div className="space-y-1">
+                              {group.tools.map((item) => {
+                                const isCurrent =
+                                  pathname === item.href ||
+                                  (item.href === '/tools/pdf-watermark' && pathname === '/tools/add-watermark');
+                                const Icon = item.icon;
+                                return (
+                                  <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={() => setMobileOpen(false)}
+                                    className={`flex items-center gap-3 p-2.5 rounded-xl transition ${
+                                      isCurrent
+                                        ? 'bg-brand-500 text-white shadow-glow'
+                                        : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5'
+                                    }`}
+                                  >
+                                    <div
+                                      className={`w-8 h-8 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shrink-0 shadow-xs`}
+                                    >
+                                      <Icon className="w-4 h-4" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-sm font-semibold leading-tight">{item.label}</p>
+                                      <p
+                                        className={`text-xs mt-0.5 ${
+                                          isCurrent ? 'text-white/80' : 'text-zinc-500 dark:text-zinc-400'
+                                        }`}
+                                      >
+                                        {item.subtitle}
+                                      </p>
+                                    </div>
+                                  </Link>
+                                );
+                              })}
                             </div>
-                          </Link>
-                        );
-                      })}
+                          </div>
+                        ))}
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
