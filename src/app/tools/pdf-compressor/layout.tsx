@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
 import { pdfCompressorFaqs } from '@/data/faqs';
 
-const TITLE = 'Free PDF Compressor Online - Reduce File Size Instantly | Compixor AI';
+const TITLE = 'Free PDF Compressor Online - Reduce File Size Up to 75% | Compixor AI';
 const DESCRIPTION =
-  'Compress PDF files online for free in seconds. 100% client-side, no uploads, no quality loss. Reduce PDF size up to 75% instantly.';
+  'Compress PDF files online free — 100% client-side, zero uploads, zero quality loss. Native vector optimization preserves sharp text & fonts. Reduce PDF size up to 75% instantly in your browser.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/pdf-compressor';
 
 export const metadata: Metadata = {
@@ -14,12 +14,15 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   keywords: [
     'pdf compressor',
-    'compress pdf online',
+    'compress pdf online free',
     'reduce pdf size online',
     'compress pdf without losing quality',
     'client side pdf compressor',
-    'free pdf compressor',
+    'pdf compressor no upload',
     'shrink pdf in browser',
+    'batch pdf compressor',
+    'compress pdf to smaller size',
+    'private pdf compressor',
   ],
   alternates: {
     canonical: CANONICAL_URL,

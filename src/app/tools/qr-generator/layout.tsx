@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
 import { qrGeneratorFaqs } from '@/data/faqs';
 
-const TITLE = 'Free QR Code Generator - Custom Colors & SVG Export | Compixor AI';
+const TITLE = 'Free QR Code Generator Online - Custom Colors, Logo & SVG | Compixor AI';
 const DESCRIPTION =
-  'Generate high-resolution QR codes for websites, WiFi & contact cards. Custom colors, instant SVG/PNG download — 100% free.';
+  'Create free high-resolution QR codes for URLs, WiFi, vCards & more. Add your logo, custom colors, and download instant SVG/PNG — no signup, no expiry, 100% private.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/qr-generator';
 
 export const metadata: Metadata = {
@@ -14,12 +14,14 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   keywords: [
     'qr code generator free',
-    'high resolution qr code',
-    'custom qr code maker',
-    'svg qr code online',
-    'vector qr code maker',
-    'free qr code with logo',
+    'free qr code generator no signup',
+    'qr code with logo free',
+    'svg qr code generator',
     'wifi qr code generator',
+    'vcard qr code generator',
+    'custom qr code maker',
+    'high resolution qr code generator',
+    'private qr code generator',
   ],
   alternates: {
     canonical: CANONICAL_URL,
@@ -34,7 +36,7 @@ export const metadata: Metadata = {
         url: '/images/og-banner.png',
         width: 1200,
         height: 630,
-        alt: 'Free QR Code Generator - Compixor AI',
+        alt: 'Free QR Code Generator Online - Compixor AI',
       },
     ],
   },

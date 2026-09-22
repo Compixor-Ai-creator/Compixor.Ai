@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
 import { fullDpMakerFaqs } from '@/data/faqs';
 
-const TITLE = 'No-Crop DP Maker for WhatsApp, Instagram & Facebook | Compixor AI';
+const TITLE = 'No-Crop DP Maker for WhatsApp, Instagram & Facebook Free | Compixor AI';
 const DESCRIPTION =
-  'Resize your profile picture without cropping. Perfect square fit with blur background for WhatsApp, Instagram & Facebook — free.';
+  'Create full-size profile pictures without cropping for WhatsApp, Instagram, Facebook & Telegram. Blur, gradient & mirror backgrounds. 100% free, private, browser-based.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/full-dp-maker';
 
 export const metadata: Metadata = {
@@ -14,15 +14,14 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   keywords: [
     'whatsapp dp maker',
-    'instagram profile picture resizer',
-    'no crop dp',
-    'fb dp resize online',
+    'no crop dp maker',
     'whatsapp dp without crop',
-    'no crop whatsapp profile picture',
+    'instagram profile picture resizer',
     'full size whatsapp photo',
+    'no crop profile picture',
     'square dp maker online',
-    'whatsapp profile photo resizer',
-    'crop-free dp tool',
+    'whatsapp full dp free',
+    'crop-free profile picture maker',
   ],
   alternates: {
     canonical: CANONICAL_URL,
@@ -37,7 +36,7 @@ export const metadata: Metadata = {
         url: '/images/og-banner.png',
         width: 1200,
         height: 630,
-        alt: 'No-Crop DP Maker for WhatsApp, Instagram & Facebook - Compixor AI',
+        alt: 'No-Crop DP Maker for WhatsApp, Instagram & Facebook Free - Compixor AI',
       },
     ],
   },

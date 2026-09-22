@@ -27,6 +27,8 @@ import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import RelatedPdfTools from '@/components/RelatedPdfTools';
+import ClientSideTrustSection from '@/components/ClientSideTrustSection';
+import FaqSection from '@/components/FaqSection';
 import { pdfCompressorFaqs } from '@/data/faqs';
 
 async function getPdfLib() {
@@ -122,8 +124,6 @@ interface BatchFileItem {
   error?: string;
 }
 
-const pdfFaqs = pdfCompressorFaqs;
-
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B';
   const k = 1024;
@@ -149,7 +149,6 @@ export default function PdfCompressorPage() {
   const [enableTargetSize, setEnableTargetSize] = useState(false);
   const [targetSizeKB, setTargetSizeKB] = useState<number>(300);
   const [isProcessingAll, setIsProcessingAll] = useState(false);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   // Keep track of all created object URLs to prevent memory leaks
   const createdUrlsRef = useRef<Set<string>>(new Set());
@@ -885,6 +884,35 @@ export default function PdfCompressorPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        {/* Hero section icon: Simple flat-style icon of a PDF document shrinking in size, arrow pointing down-right */}
+        <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 mb-5 p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/80 shadow-xs flex items-center justify-center">
+          <svg
+            className="w-full h-full text-brand-500"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-label="PDF document shrinking in size icon"
+            role="img"
+          >
+            <path
+              d="M12 10C12 7.79086 13.7909 6 16 6H38L50 18V44C50 46.2091 48.2091 48 46 48H16C13.7909 48 12 46.2091 12 44V10Z"
+              className="stroke-blue-200 dark:stroke-blue-800"
+              strokeWidth="2"
+              strokeDasharray="3 3"
+              fill="none"
+            />
+            <path
+              d="M20 20C20 18.8954 20.8954 18 22 18H38L46 26V52C46 53.1046 45.1046 54 44 54H22C20.8954 54 20 53.1046 20 52V20Z"
+              className="fill-blue-500/10 stroke-brand-500 dark:stroke-brand-400"
+              strokeWidth="2.5"
+            />
+            <path d="M38 18V26H46" className="stroke-brand-500 dark:stroke-brand-400" strokeWidth="2.5" strokeLinejoin="round" />
+            <path d="M26 34H40M26 40H36M26 46H32" className="stroke-brand-400/80 dark:stroke-brand-300/80" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="48" cy="48" r="10" className="fill-brand-600 dark:fill-brand-500 shadow-sm" />
+            <path d="M44 44L52 52M52 52H46M52 52V46" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4">
           <Sparkles className="w-3.5 h-3.5" />
           Native Vector PDF Optimizer & Batch Compactor
@@ -1235,85 +1263,245 @@ export default function PdfCompressorPage() {
         )}
       </motion.div>
 
-      {/* Feature Highlights Grid */}
+      {/* Feature Highlights Grid with custom icons */}
       <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 rounded-2xl glass-card">
-          <div className="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-500 flex items-center justify-center mb-4">
-            <Sparkles className="w-5 h-5" />
+        {/* Zero Rasterization */}
+        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+          <div>
+            {/* Simple flat icon showing sharp vector text vs blurry pixelated text side by side, minimalist line art, blue accent color */}
+            <div className="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 p-2.5 flex items-center justify-center mb-4 border border-brand-500/20">
+              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Vector "A" (sharp outline) */}
+                <path d="M5 24L10 8L15 24M7 19H13" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                {/* Divider */}
+                <line x1="17" y1="6" x2="17" y2="26" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2" className="opacity-40" />
+                {/* Pixelated dots representing raster blur */}
+                <rect x="20" y="8" width="3" height="3" fill="currentColor" opacity="0.3" />
+                <rect x="24" y="8" width="3" height="3" fill="currentColor" opacity="0.3" />
+                <rect x="22" y="12" width="3" height="3" fill="currentColor" opacity="0.4" />
+                <rect x="20" y="16" width="3" height="3" fill="currentColor" opacity="0.5" />
+                <rect x="24" y="16" width="3" height="3" fill="currentColor" opacity="0.5" />
+                <rect x="19" y="20" width="3" height="3" fill="currentColor" opacity="0.3" />
+                <rect x="25" y="20" width="3" height="3" fill="currentColor" opacity="0.3" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
+              Zero Rasterization
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Vector lines, typography, embedded font streams, and forms remain 100% native vector without degradation.
+            </p>
           </div>
-          <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
-            Zero Rasterization
-          </h3>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Vector lines, typography, embedded font streams, and forms remain 100% native vector without degradation.
-          </p>
         </div>
 
-        <div className="p-6 rounded-2xl glass-card">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
-            <ShieldCheck className="w-5 h-5" />
+        {/* Size Inflation Guard */}
+        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+          <div>
+            {/* Simple flat icon of a shield with a file icon inside, representing protection, minimalist line art style, blue and green accent */}
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 p-2.5 flex items-center justify-center mb-4 border border-emerald-500/20">
+              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Shield */}
+                <path d="M16 4L6 8V15C6 21.5 10.3 26.5 16 28C21.7 26.5 26 21.5 26 15V8L16 4Z" className="stroke-emerald-600 dark:stroke-emerald-400" strokeWidth="2" strokeLinejoin="round" />
+                {/* File icon inside shield */}
+                <path d="M12 11H18L21 14V21H12V11Z" className="stroke-brand-500 dark:stroke-brand-400" strokeWidth="1.8" strokeLinejoin="round" fill="none" />
+                <path d="M18 11V14H21" className="stroke-brand-500 dark:stroke-brand-400" strokeWidth="1.8" />
+                <path d="M14 17H19" className="stroke-emerald-600 dark:stroke-emerald-400" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
+              Size Inflation Guard
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              If a PDF is already fully compressed, Compixor automatically returns the original file to prevent size inflation.
+            </p>
           </div>
-          <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
-            Size Inflation Guard
-          </h3>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            If a PDF is already fully compressed, Compixor automatically returns the original file to prevent size inflation.
-          </p>
         </div>
 
-        <div className="p-6 rounded-2xl glass-card">
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-4">
-            <Layers className="w-5 h-5" />
+        {/* Batch Support */}
+        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+          <div>
+            {/* Simple flat icon showing 3 stacked document icons with a progress bar underneath, minimalist line art, blue accent color */}
+            <div className="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 p-2.5 flex items-center justify-center mb-4 border border-brand-500/20">
+              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* 3 stacked document outlines */}
+                <path d="M11 5H23V19H11V5Z" className="stroke-brand-300 dark:stroke-brand-600" strokeWidth="1.5" rx="1" />
+                <path d="M8 8H20V22H8V8Z" className="stroke-brand-400 dark:stroke-brand-500" strokeWidth="1.5" rx="1" />
+                <path d="M5 11H17V25H5V11Z" className="stroke-brand-600 dark:stroke-brand-300" strokeWidth="1.8" rx="1" fill="none" />
+                {/* Progress bar underneath */}
+                <rect x="5" y="27" width="22" height="3" rx="1.5" className="fill-zinc-200 dark:fill-zinc-700" />
+                <rect x="5" y="27" width="15" height="3" rx="1.5" className="fill-brand-500" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
+              Batch Support
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Process up to 5 PDFs concurrently with live progress reporting and download as individual files or a unified ZIP archive.
+            </p>
           </div>
-          <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
-            Batch Support
-          </h3>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Process up to 5 PDFs concurrently with live progress reporting and download as individual files or a unified ZIP archive.
-          </p>
         </div>
       </section>
 
-      {/* FAQs Section */}
-      <section className="mt-16 pt-10 border-t border-zinc-200/80 dark:border-zinc-800/80">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold font-display text-zinc-900 dark:text-white mb-2">
-            PDF Compressor FAQs
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-            Answers to common questions about PDF compression
-          </p>
-        </div>
+      {/* How It Works Section (placed between tool UI/features and FAQ) */}
+      <section className="mt-16 p-6 sm:p-8 rounded-3xl glass-card border border-zinc-200/80 dark:border-zinc-800/80">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-zinc-900 dark:text-white">
+              How PDF Compression Works in Your Browser
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+              Native WebAssembly stream processing with zero server uploads
+            </p>
+          </div>
 
-        <div className="space-y-3">
-          {pdfFaqs.map((faq, idx) => {
-            const isOpen = activeFaq === idx;
-            return (
-              <div key={idx} className="glass-card rounded-xl overflow-hidden transition">
-                <button
-                  onClick={() => setActiveFaq(isOpen ? null : idx)}
-                  className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm text-zinc-900 dark:text-white"
-                >
-                  <span className="flex items-center gap-2.5">
-                    <HelpCircle className="w-4 h-4 text-brand-500 shrink-0" />
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 pt-3">
-                    {faq.a}
+          {/* Visual Step-by-Step Cards (Matching UI illustration layout) */}
+          <div className="space-y-12">
+            {/* Step 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Visual Card 1 */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-blue-50/80 to-zinc-50 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm relative overflow-hidden">
+                <div className="bg-white dark:bg-zinc-800/90 rounded-2xl p-4 shadow-sm border border-zinc-200/70 dark:border-zinc-700/60 space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-zinc-500">
+                    <span className="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
+                    <span>quarterly_financial_report.pdf</span>
+                    <span className="ml-auto text-[11px] bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-300 px-2 py-0.5 rounded-md font-mono">18.4 MB</span>
                   </div>
-                )}
+                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/50 dark:border-zinc-700/40 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <span className="font-semibold text-zinc-800 dark:text-zinc-200">Browser Tab Sandbox</span>
+                    </div>
+                    <span className="text-[11px] text-emerald-600 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded">0 Bytes Transmitted</span>
+                  </div>
+                </div>
               </div>
-            );
-          })}
+
+              {/* Text for Step 1 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-sm">
+                    1
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    Load & Parse Document in Memory
+                  </h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
+                  When you drop a PDF into Compixor, WebAssembly parses internal content streams, embedded fonts, and raster images entirely in device RAM — zero cloud uploads, zero privacy risk.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Text for Step 2 */}
+              <div className="space-y-3 order-2 md:order-1">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-sm">
+                    2
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    Native Stream & Image Optimization
+                  </h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
+                  Embedded raster graphics are re-compressed and Flate object streams are compacted. Redundant metadata is stripped while vector lines, fonts, and form fields remain 100% untouched.
+                </p>
+              </div>
+
+              {/* Visual Card 2 */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-brand-50/80 to-zinc-50 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm order-1 md:order-2">
+                <div className="bg-white dark:bg-zinc-800/90 rounded-2xl p-4 shadow-sm border border-zinc-200/70 dark:border-zinc-700/60 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-brand-500" />
+                      Balanced Vector Preset
+                    </span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full text-[11px]">
+                      -68% Reduced
+                    </span>
+                  </div>
+                  <div className="w-full bg-zinc-100 dark:bg-zinc-700 h-2 rounded-full overflow-hidden">
+                    <div className="bg-gradient-to-r from-brand-500 to-cyan-500 h-full w-[68%] rounded-full"></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-[11px] text-zinc-500 pt-1">
+                    <span className="bg-zinc-50 dark:bg-zinc-900 px-2 py-1 rounded text-center">Vector Text: 100% Crisp</span>
+                    <span className="bg-zinc-50 dark:bg-zinc-900 px-2 py-1 rounded text-center">Inflation Guard: Active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Visual Card 3 */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-50/80 to-zinc-50 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
+                <div className="bg-white dark:bg-zinc-800/90 rounded-2xl p-4 shadow-sm border border-zinc-200/70 dark:border-zinc-700/60 space-y-3 text-center">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+                    <FileCheck2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-zinc-900 dark:text-white">report_compressed.pdf</h4>
+                    <p className="text-xs text-zinc-500 mt-0.5">18.4 MB &rarr; <span className="font-bold text-emerald-600">5.8 MB</span></p>
+                  </div>
+                  <div className="pt-1">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-600 text-white text-xs font-semibold shadow-xs">
+                      <Download className="w-3.5 h-3.5" /> Instant Single or Batch ZIP
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Text for Step 3 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-sm">
+                    3
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    Instant Safe Download
+                  </h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
+                  Your optimized PDF is rebuilt instantly in under a few seconds. Download individual PDFs or all compressed files in a single ZIP bundle with one click.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4 text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
+            <p>
+              Most online PDF compressors upload your file to a remote server, process it there, and send back a compressed copy — meaning your document (which might contain financial statements, contracts, or personal records) briefly sits on someone else&apos;s infrastructure.
+            </p>
+            <p>
+              Compixor works differently. Using WebAssembly, the entire compression engine runs locally inside your browser tab. When you drop a PDF into the tool, nothing is transmitted over the network — the file is read, processed, and compressed entirely in your device&apos;s memory.
+            </p>
+            <div>
+              <p className="font-semibold text-zinc-900 dark:text-white mb-2">Here&apos;s what happens under the hood:</p>
+              <ol className="list-decimal list-inside space-y-2 text-sm text-zinc-600 dark:text-zinc-300">
+                <li><strong className="text-zinc-800 dark:text-zinc-200">The PDF&apos;s internal structure is parsed</strong> — text streams, embedded fonts, images, and metadata are separated.</li>
+                <li><strong className="text-zinc-800 dark:text-zinc-200">Embedded raster images are re-encoded</strong> at an optimized quality/size ratio (this is usually where the biggest size savings come from).</li>
+                <li><strong className="text-zinc-800 dark:text-zinc-200">Redundant objects, unused metadata</strong>, and duplicate font subsets are stripped out.</li>
+                <li><strong className="text-zinc-800 dark:text-zinc-200">Vector content — text, lines, shapes, form fields —</strong> is left completely untouched, since compressing these further would degrade quality without meaningful size savings.</li>
+                <li><strong className="text-zinc-800 dark:text-zinc-200">The optimized PDF is rebuilt</strong> and made available for download — typically in under a few seconds for most documents.</li>
+              </ol>
+            </div>
+            <p>
+              Because nothing leaves your browser, this approach is inherently faster for small-to-medium files (no upload/download round trip) and inherently more private than server-based compressors.
+            </p>
+          </div>
         </div>
       </section>
+
+      {/* Reusable Client-Side Trust & Privacy Section */}
+      <ClientSideTrustSection />
+
+      {/* FAQs Section with SSR-friendly DOM rendering */}
+      <FaqSection
+        title="PDF Compressor FAQs"
+        subtitle="Answers to common questions about PDF compression"
+        faqs={pdfCompressorFaqs}
+      />
 
       {/* Related Tools */}
       <RelatedPdfTools currentTool="compressor" />

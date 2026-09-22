@@ -28,6 +28,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import RelatedTools from '@/components/RelatedTools';
+import ClientSideTrustSection from '@/components/ClientSideTrustSection';
+import FaqSection from '@/components/FaqSection';
 import { qrGeneratorFaqs } from '@/data/faqs';
 
 type TabType = 'url' | 'text' | 'wifi' | 'contact' | 'email' | 'phone';
@@ -357,8 +359,6 @@ const tabs = [
   { id: 'phone' as TabType, label: 'Phone Call', icon: Phone },
 ];
 
-const faqs = qrGeneratorFaqs;
-
 export default function QrGeneratorPage() {
   const [activeTab, setActiveTab] = useState<TabType>('url');
 
@@ -401,7 +401,6 @@ export default function QrGeneratorPage() {
   const [logoMargin, setLogoMargin] = useState(6);
 
   const [copied, setCopied] = useState(false);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCodeInstance = useRef<any>(null);
@@ -642,6 +641,29 @@ export default function QrGeneratorPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
+        {/* Hero Section Illustration: Smartphone camera scanning colorful QR code with sparkle/checkmark */}
+        <div className="mx-auto w-24 h-24 mb-6 p-4 rounded-3xl bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-brand-500/20 shadow-xs flex items-center justify-center relative">
+          <svg className="w-full h-full" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Phone outline */}
+            <rect x="18" y="8" width="28" height="48" rx="5" className="stroke-zinc-700 dark:stroke-zinc-300" strokeWidth="2.5" fill="none" />
+            <line x1="28" y1="12" x2="36" y2="12" className="stroke-zinc-400" strokeWidth="2" strokeLinecap="round" />
+            {/* Phone Screen with QR pattern */}
+            <rect x="22" y="16" width="20" height="20" rx="2" className="fill-brand-500/10" />
+            <rect x="24" y="18" width="6" height="6" className="fill-blue-600" />
+            <rect x="34" y="18" width="6" height="6" className="fill-purple-600" />
+            <rect x="24" y="28" width="6" height="6" className="fill-indigo-600" />
+            <rect x="32" y="28" width="3" height="3" className="fill-brand-500" />
+            <rect x="37" y="31" width="3" height="3" className="fill-purple-500" />
+            {/* Camera Viewfinder Crosshairs */}
+            <path d="M15 15H12V18M49 15H52V18M15 49H12V46M49 49H52V46" stroke="#2563eb" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            {/* Laser scan bar */}
+            <line x1="14" y1="32" x2="50" y2="32" stroke="#ec4899" strokeWidth="2" strokeDasharray="3 2" />
+            {/* Sparkle checkmark badge */}
+            <circle cx="48" cy="46" r="9" className="fill-emerald-500 shadow-sm" />
+            <path d="M44 46L47 49L52 43" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4">
           <Sparkles className="w-3.5 h-3.5" />
           Pro Customizer • Logo Embedding • Unlimited Free
@@ -649,10 +671,32 @@ export default function QrGeneratorPage() {
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
           Free QR Code Generator Online
         </h1>
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
+        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 mb-6">
           Create high-resolution, branded QR codes for websites, Wi-Fi networks, vCards, and emails.
           Embed custom logos, choose themes, and export print-ready vector SVGs.
         </p>
+
+        {/* Content Type Icons Row (6 items) */}
+        <div className="flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+            <LinkIcon className="w-3.5 h-3.5" /> Website URL
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+            <Type className="w-3.5 h-3.5" /> Plain Text
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+            <Wifi className="w-3.5 h-3.5" /> Wi-Fi Access
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+            <User className="w-3.5 h-3.5" /> vCard Contact
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+            <Mail className="w-3.5 h-3.5" /> Email
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+            <Phone className="w-3.5 h-3.5" /> Phone Call
+          </div>
+        </div>
       </div>
 
       {/* Presets Rows Container */}
@@ -1222,49 +1266,303 @@ export default function QrGeneratorPage() {
         </div>
       </div>
 
-      {/* FAQ Section */}
-      <section className="mt-24 pt-12 border-t border-zinc-200 dark:border-zinc-800 max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold font-display text-zinc-900 dark:text-white mb-2">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Everything you need to know about our QR Code Generator
-          </p>
+      {/* Feature Highlights Grid */}
+      <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Feature 1: Logo Embedding */}
+        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+          <div>
+            {/* Simple flat icon of a QR code pattern with a small logo placeholder square in the center */}
+            <div className="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 p-2.5 flex items-center justify-center mb-4 border border-brand-500/20">
+              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="8" height="8" rx="2" className="stroke-blue-600 dark:stroke-blue-400" strokeWidth="1.8" />
+                <rect x="20" y="4" width="8" height="8" rx="2" className="stroke-blue-600 dark:stroke-blue-400" strokeWidth="1.8" />
+                <rect x="4" y="20" width="8" height="8" rx="2" className="stroke-blue-600 dark:stroke-blue-400" strokeWidth="1.8" />
+                <rect x="6" y="6" width="4" height="4" className="fill-blue-600 dark:fill-blue-400" />
+                <rect x="22" y="6" width="4" height="4" className="fill-blue-600 dark:fill-blue-400" />
+                <rect x="6" y="22" width="4" height="4" className="fill-blue-600 dark:fill-blue-400" />
+                {/* Logo placeholder in center */}
+                <rect x="12" y="12" width="8" height="8" rx="2" className="fill-purple-500/20 stroke-purple-600" strokeWidth="1.6" />
+                <circle cx="16" cy="16" r="1.5" className="fill-purple-600" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
+              Center Logo Overlay
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Upload custom brand logos. Error correction automatically upgrades to Level H to ensure 100% scannability.
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-4">
-          {faqs.map((faq, idx) => {
-            const isOpen = activeFaq === idx;
-            return (
-              <div
-                key={idx}
-                className="glass-card rounded-xl overflow-hidden transition"
-              >
-                <button
-                  onClick={() => setActiveFaq(isOpen ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-zinc-900 dark:text-white"
-                >
-                  <span className="flex items-center gap-3">
-                    <HelpCircle className="w-4 h-4 text-brand-500 shrink-0" />
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 pt-3">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        {/* Feature 2: SVG/PNG Export */}
+        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+          <div>
+            {/* Simple flat icon showing two file format badges side by side (SVG and PNG) */}
+            <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 p-2.5 flex items-center justify-center mb-4 border border-blue-500/20">
+              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="8" width="12" height="16" rx="2" className="fill-blue-500/10 stroke-blue-600 dark:stroke-blue-400" strokeWidth="1.6" />
+                <text x="5" y="19" className="text-[7px] font-black fill-blue-600 dark:fill-blue-400">SVG</text>
+                <rect x="17" y="8" width="12" height="16" rx="2" className="fill-emerald-500/10 stroke-emerald-600 dark:stroke-emerald-400" strokeWidth="1.6" />
+                <text x="19" y="19" className="text-[7px] font-black fill-emerald-600 dark:fill-emerald-400">PNG</text>
+              </svg>
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
+              Infinite-Scale SVG & PNG
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Download mathematical vector SVG for billboards and print, or high-density PNG for digital screens.
+            </p>
+          </div>
+        </div>
+
+        {/* Feature 3: No Expiry */}
+        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+          <div>
+            {/* Simple flat icon of an infinity symbol combined with a QR code corner pattern */}
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 p-2.5 flex items-center justify-center mb-4 border border-emerald-500/20">
+              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="8" height="8" rx="2" className="stroke-zinc-400" strokeWidth="1.5" />
+                <rect x="6" y="6" width="4" height="4" className="fill-zinc-400" />
+                {/* Infinity symbol in green */}
+                <path d="M12 21C12 18.8 14 17 16 19C18 21 20 23 23 23C25.2 23 27 21.2 27 19C27 16.8 25.2 15 23 15C20 15 18 17 16 19C14 21 12 23 9 23C6.8 23 5 21.2 5 19C5 16.8 6.8 15 9 15C12 15 14 17 16 19" className="stroke-emerald-500" strokeWidth="2.2" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
+              Never Expires • No Account
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Directly encodes payload data into the matrix. Zero redirects, zero middleman servers, scannable forever.
+            </p>
+          </div>
         </div>
       </section>
+
+      {/* How It Works Section with Step-by-Step Visual Cards (matching user screenshot) */}
+      <section className="mt-16 p-6 sm:p-8 rounded-3xl glass-card border border-zinc-200/80 dark:border-zinc-800/80">
+        <div className="max-w-4xl mx-auto space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-zinc-900 dark:text-white">
+              How Compixor&apos;s QR Code Generator Works
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
+              A QR code is a two-dimensional pattern that encodes data directly into a scannable grid. Everything runs 100% locally in your browser.
+            </p>
+          </div>
+
+          {/* Step 1 & Step 2 Layout (Exact layout requested in user's image) */}
+          <div className="space-y-12">
+            {/* Step 1 Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Left Visual Card 1: Input URL, floating pills, QR preview */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-50/60 via-zinc-50 to-emerald-50/30 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm relative overflow-hidden">
+                <div className="flex items-center gap-4">
+                  {/* Left inputs mockup */}
+                  <div className="flex-1 space-y-3">
+                    <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 shadow-xs border border-zinc-200/70 dark:border-zinc-700/60 flex items-center justify-between text-xs">
+                      <span className="text-zinc-700 dark:text-zinc-200 font-medium">Enter URL</span>
+                      <span className="text-zinc-400">📢</span>
+                    </div>
+
+                    <div className="relative pl-3 space-y-1">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-emerald-500/60 shadow-xs text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                        <LinkIcon className="w-3 h-3 text-emerald-600" /> URL
+                      </div>
+                      <div className="block pl-4">
+                        <span className="inline-block px-2.5 py-1 rounded-lg bg-white/70 dark:bg-zinc-800/70 text-[10px] text-zinc-400 border border-zinc-200/60">PDF</span>
+                      </div>
+                      <div className="block pl-8">
+                        <span className="inline-block px-2.5 py-1 rounded-lg bg-white/50 dark:bg-zinc-800/50 text-[10px] text-zinc-400 border border-zinc-200/40">Multi-URL</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right QR Code mockup */}
+                  <div className="w-28 h-28 bg-white dark:bg-zinc-800 p-2 rounded-2xl shadow-sm border border-zinc-200/80 dark:border-zinc-700/70 flex items-center justify-center shrink-0">
+                    <svg className="w-full h-full" viewBox="0 0 40 40" fill="currentColor">
+                      {/* Corner 1 */}
+                      <rect x="4" y="4" width="10" height="10" rx="1.5" />
+                      <rect x="6" y="6" width="6" height="6" fill="white" />
+                      <rect x="7.5" y="7.5" width="3" height="3" />
+                      {/* Corner 2 */}
+                      <rect x="26" y="4" width="10" height="10" rx="1.5" />
+                      <rect x="28" y="6" width="6" height="6" fill="white" />
+                      <rect x="29.5" y="7.5" width="3" height="3" />
+                      {/* Corner 3 */}
+                      <rect x="4" y="26" width="10" height="10" rx="1.5" />
+                      <rect x="6" y="28" width="6" height="6" fill="white" />
+                      <rect x="7.5" y="29.5" width="3" height="3" />
+                      {/* Matrix dots */}
+                      <rect x="18" y="6" width="3" height="3" />
+                      <rect x="18" y="12" width="3" height="3" />
+                      <rect x="6" y="18" width="3" height="3" />
+                      <rect x="12" y="18" width="3" height="3" />
+                      <rect x="18" y="18" width="4" height="4" />
+                      <rect x="26" y="18" width="3" height="3" />
+                      <rect x="32" y="18" width="3" height="3" />
+                      <rect x="18" y="26" width="3" height="3" />
+                      <rect x="24" y="26" width="4" height="4" />
+                      <rect x="30" y="26" width="3" height="3" />
+                      <rect x="18" y="32" width="3" height="3" />
+                      <rect x="26" y="32" width="3" height="3" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Description 1 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-sm">
+                    1
+                  </div>
+                  <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
+                    Choose your QR Code type
+                  </h3>
+                </div>
+                <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
+                  Choose your QR Code type based on what you want it to do: open a URL, share WiFi credentials, display contact details (vCard), launch an email, or send phone numbers.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 2 Row (Alternating matching user screenshot) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Left Description 2 */}
+              <div className="space-y-3 order-2 md:order-1">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-sm">
+                    2
+                  </div>
+                  <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
+                    Customize it your way
+                  </h3>
+                </div>
+                <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
+                  Add your details, change the color, style your QR Code, add a logo in the center, and test it in real time before downloading.
+                </p>
+              </div>
+
+              {/* Right Visual Card 2: Custom color QR, swatches, Logo.png tag, style pills */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-purple-50/60 via-zinc-50 to-blue-50/40 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm order-1 md:order-2">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-4">
+                    {/* QR with purple eyes & center logo */}
+                    <div className="w-24 h-24 bg-white dark:bg-zinc-800 p-2 rounded-2xl shadow-sm border border-zinc-200/80 dark:border-zinc-700/70 relative shrink-0">
+                      <svg className="w-full h-full" viewBox="0 0 40 40" fill="currentColor">
+                        {/* Purple eye corners */}
+                        <rect x="4" y="4" width="10" height="10" rx="3" fill="#8b5cf6" />
+                        <rect x="6" y="6" width="6" height="6" fill="white" />
+                        <circle cx="9" cy="9" r="2" fill="#8b5cf6" />
+
+                        <rect x="26" y="4" width="10" height="10" rx="3" fill="#8b5cf6" />
+                        <rect x="28" y="6" width="6" height="6" fill="white" />
+                        <circle cx="31" cy="9" r="2" fill="#8b5cf6" />
+
+                        <rect x="4" y="26" width="10" height="10" rx="3" fill="#8b5cf6" />
+                        <rect x="6" y="28" width="6" height="6" fill="white" />
+                        <circle cx="9" cy="31" r="2" fill="#8b5cf6" />
+
+                        {/* Dots */}
+                        <circle cx="19" cy="7" r="1.2" fill="#18181b" />
+                        <circle cx="19" cy="13" r="1.2" fill="#18181b" />
+                        <circle cx="7" cy="19" r="1.2" fill="#18181b" />
+                        <circle cx="33" cy="19" r="1.2" fill="#18181b" />
+                        <circle cx="21" cy="27" r="1.2" fill="#18181b" />
+                        <circle cx="27" cy="33" r="1.2" fill="#18181b" />
+                      </svg>
+                      {/* Logo cake/brand center overlay */}
+                      <div className="absolute inset-0 m-auto w-7 h-7 rounded-lg bg-white dark:bg-zinc-900 border border-purple-300 shadow-xs flex items-center justify-center text-xs">
+                        🧁
+                      </div>
+                    </div>
+
+                    {/* Swatches & Logo tag */}
+                    <div className="flex-1 space-y-3">
+                      {/* Color swatches */}
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-md bg-zinc-900 shadow-xs"></span>
+                        <span className="w-5 h-5 rounded-md bg-purple-600 ring-2 ring-purple-400 shadow-xs"></span>
+                        <span className="w-5 h-5 rounded-md bg-amber-500 shadow-xs"></span>
+                      </div>
+
+                      {/* Logo.png pill */}
+                      <div className="p-2 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-xs flex items-center justify-between text-xs">
+                        <span className="flex items-center gap-1.5 font-medium text-zinc-800 dark:text-zinc-200 text-[11px]">
+                          <ImageIcon className="w-3.5 h-3.5 text-purple-600" /> Logo.png
+                        </span>
+                        <X className="w-3.5 h-3.5 text-zinc-400" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Style presets row (Classic, Rounded, Thin, Smooth) */}
+                  <div className="grid grid-cols-4 gap-1.5 pt-1 text-center">
+                    <div className="p-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-[10px] font-medium text-zinc-600 dark:text-zinc-400">
+                      Classic
+                    </div>
+                    <div className="p-1.5 rounded-lg bg-purple-50 dark:bg-purple-950/40 border border-purple-400 text-[10px] font-bold text-purple-600 dark:text-purple-300 shadow-xs">
+                      Rounded
+                    </div>
+                    <div className="p-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-[10px] font-medium text-zinc-600 dark:text-zinc-400">
+                      Thin
+                    </div>
+                    <div className="p-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-[10px] font-medium text-zinc-600 dark:text-zinc-400">
+                      Smooth
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3 Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Left Visual Card 3: Download formats */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-50/60 to-zinc-50 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
+                <div className="bg-white dark:bg-zinc-800/90 rounded-2xl p-5 shadow-sm border border-zinc-200/70 dark:border-zinc-700/60 text-center space-y-3">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+                    <ShieldCheck className="w-4 h-4" /> 100% Static & Permanent
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40">
+                      <p className="font-bold text-xs text-blue-900 dark:text-blue-200">SVG Vector</p>
+                      <p className="text-[10px] text-blue-600/80 mt-0.5">Infinite Scale for Print</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40">
+                      <p className="font-bold text-xs text-emerald-900 dark:text-emerald-200">PNG Format</p>
+                      <p className="text-[10px] text-emerald-600/80 mt-0.5">High-Res for Screens</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Description 3 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-sm">
+                    3
+                  </div>
+                  <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
+                    Instant Download — No Expiry
+                  </h3>
+                </div>
+                <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
+                  Download as PNG (for digital use) or vector SVG (for print, posters, and flyers that scale infinitely). Sensitive information like Wi-Fi passwords never touches an external server.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reusable Client-Side Trust & Privacy Section */}
+      <ClientSideTrustSection />
+
+      {/* FAQs Section with SSR-friendly DOM rendering */}
+      <FaqSection
+        title="QR Generator FAQs"
+        subtitle="Answers to common questions about our free client-side QR generator"
+        faqs={qrGeneratorFaqs}
+      />
 
       {/* Cross-Tool Internal Linking */}
       <RelatedTools currentTool="qr-generator" />

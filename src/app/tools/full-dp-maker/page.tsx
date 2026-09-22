@@ -38,6 +38,8 @@ import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import RelatedTools from '@/components/RelatedTools';
+import ClientSideTrustSection from '@/components/ClientSideTrustSection';
+import FaqSection from '@/components/FaqSection';
 import { fullDpMakerFaqs } from '@/data/faqs';
 import { WhatsAppIcon, InstagramIcon, FacebookIcon, TelegramIcon, TwitterXIcon, LinkedInIcon, YouTubeIcon } from '@/components/SocialIcons';
 
@@ -185,8 +187,6 @@ const platformSizes = [
   { platform: 'Discord', size: '128 × 128 px', minSize: '512 × 512 px recommended', shape: 'Circle', notes: 'Supports animated GIF or static DP' },
 ];
 
-const faqs = fullDpMakerFaqs;
-
 export default function FullDpMakerPage() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [naturalSize, setNaturalSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
@@ -227,8 +227,6 @@ export default function FullDpMakerPage() {
 
   // Social platform selection
   const [selectedPlatform, setSelectedPlatform] = useState<SocialPlatform>('whatsapp');
-
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   // Canvases & refs
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -679,6 +677,45 @@ export default function FullDpMakerPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        {/* Hero Section Before/After Comparison Illustration */}
+        <div className="mx-auto max-w-md mb-6 p-4 rounded-3xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/80 shadow-xs">
+          <div className="flex items-center justify-center gap-6">
+            {/* Left: Cut off crop preview */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-24 h-24 rounded-2xl bg-white dark:bg-zinc-800 border-2 border-dashed border-red-400 relative overflow-hidden flex items-center justify-center shadow-inner">
+                {/* Rectangular photo with red cut-off lines */}
+                <div className="w-14 h-22 bg-zinc-200 dark:bg-zinc-700 rounded-sm relative flex flex-col items-center justify-start pt-1">
+                  <div className="w-6 h-6 rounded-full bg-zinc-400"></div>
+                  <div className="w-10 h-12 bg-zinc-400 rounded-t-lg mt-1"></div>
+                  {/* Red crop lines cutting off edges */}
+                  <div className="absolute inset-x-0 top-3 h-0.5 bg-red-500"></div>
+                  <div className="absolute inset-x-0 bottom-3 h-0.5 bg-red-500"></div>
+                  <div className="absolute top-1 right-1 text-[8px] font-black text-red-500">✕ Crop</div>
+                </div>
+              </div>
+              <span className="text-[11px] font-semibold text-red-600 dark:text-red-400">Cropped Out</span>
+            </div>
+
+            <div className="text-zinc-400 font-black text-lg">&rarr;</div>
+
+            {/* Right: Full DP with blurred background */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-brand-500/30 to-blue-600/30 border-2 border-brand-500 relative overflow-hidden flex items-center justify-center p-1.5 shadow-sm">
+                {/* Full photo intact with blurred margins */}
+                <div className="w-full h-full rounded-xl bg-white/60 dark:bg-zinc-800/80 backdrop-blur-xs flex items-center justify-center">
+                  <div className="w-11 h-18 bg-brand-500/20 rounded border border-brand-500/40 flex flex-col items-center justify-start pt-1">
+                    <div className="w-5 h-5 rounded-full bg-brand-500"></div>
+                    <div className="w-8 h-10 bg-brand-500 rounded-t-lg mt-1"></div>
+                  </div>
+                </div>
+                {/* Subtle safe circle overlay */}
+                <div className="absolute inset-1 rounded-full border border-dashed border-white/70 pointer-events-none"></div>
+              </div>
+              <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">100% Full Photo</span>
+            </div>
+          </div>
+        </div>
+
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4">
           <Sparkles className="w-3.5 h-3.5" />
           No Crop Profile Picture Maker
@@ -686,10 +723,27 @@ export default function FullDpMakerPage() {
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
           No-Crop DP Maker for WhatsApp, Instagram & Facebook
         </h1>
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
+        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 mb-5">
           Create full-size profile pictures for WhatsApp, Instagram, Facebook, and Telegram without cropping anything out.
           Fit whole portraits or landscape shots with aesthetic blur, color, gradient, and mirror backgrounds.
         </p>
+
+        {/* Platform Icons Row */}
+        <div className="flex items-center justify-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-center p-2 shadow-xs" title="WhatsApp">
+            <WhatsAppIcon className="w-full h-full text-[#25D366]" />
+          </div>
+          <div className="w-9 h-9 rounded-full bg-[#E1306C]/10 border border-[#E1306C]/30 flex items-center justify-center p-2 shadow-xs" title="Instagram">
+            <InstagramIcon className="w-full h-full text-[#E1306C]" />
+          </div>
+          <div className="w-9 h-9 rounded-full bg-[#1877F2]/10 border border-[#1877F2]/30 flex items-center justify-center p-2 shadow-xs" title="Facebook">
+            <FacebookIcon className="w-full h-full text-[#1877F2]" />
+          </div>
+          <div className="w-9 h-9 rounded-full bg-[#229ED9]/10 border border-[#229ED9]/30 flex items-center justify-center p-2 shadow-xs" title="Telegram">
+            <TelegramIcon className="w-full h-full text-[#229ED9]" />
+          </div>
+          <span className="text-xs text-zinc-400 font-medium ml-1">Official 1:1 Sizes</span>
+        </div>
       </motion.div>
 
       {/* Main App Workspace */}
@@ -1360,49 +1414,214 @@ export default function FullDpMakerPage() {
         </motion.div>
       </div>
 
-      {/* Section 1: How It Works & Why Social Media Crops */}
-      <section className="mt-20">
-        <div className="glass-card p-8 rounded-3xl space-y-8">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-bold font-display text-zinc-900 dark:text-white mb-2">
-              Why Social Media Cuts Off Your Photos (And How to Fix It)
+      {/* Feature Highlights Grid */}
+      <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Feature 1: No Crop */}
+        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+          <div>
+            {/* Simple flat icon of a square frame with a full photo inside and a 'no' symbol over scissors */}
+            <div className="w-12 h-12 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 p-2.5 flex items-center justify-center mb-4 border border-red-500/20">
+              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="24" height="24" rx="4" className="stroke-blue-600 dark:stroke-blue-400" strokeWidth="2" fill="none" />
+                <circle cx="12" cy="12" r="3" className="fill-blue-500/40" />
+                <path d="M7 23L13 17L18 22M16 20L19 17L25 23" className="stroke-blue-600 dark:stroke-blue-400" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                {/* No symbol over scissors */}
+                <circle cx="21" cy="11" r="7" className="fill-red-500/20 stroke-red-500" strokeWidth="1.5" />
+                <line x1="16" y1="6" x2="26" y2="16" className="stroke-red-500" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
+              Zero Edge Cropping
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Preserve friends in group photos, full outfits, and scenic backgrounds without cutting away vital edges.
+            </p>
+          </div>
+        </div>
+
+        {/* Feature 2: 4 Background Fill Modes */}
+        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+          <div>
+            {/* Simple flat icon set of 4 square thumbnails representing: blurred background, solid color, gradient, mirrored */}
+            <div className="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 p-2 flex items-center justify-center mb-4 border border-brand-500/20">
+              <div className="grid grid-cols-2 gap-1 w-full h-full">
+                <div className="rounded-xs bg-brand-500/40 border border-brand-500/60" title="Blur" />
+                <div className="rounded-xs bg-zinc-800 dark:bg-zinc-200" title="Color" />
+                <div className="rounded-xs bg-gradient-to-br from-purple-500 to-pink-500" title="Gradient" />
+                <div className="rounded-xs bg-cyan-500/40 border-dashed border border-cyan-500" title="Mirror" />
+              </div>
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
+              4 Intelligent Fill Modes
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Switch in real time between soft Gaussian Blur, clean studio colors, creator gradients, and mirror reflections.
+            </p>
+          </div>
+        </div>
+
+        {/* Feature 3: Safe Area Guide */}
+        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+          <div>
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 p-2.5 flex items-center justify-center mb-4 border border-emerald-500/20">
+              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="24" height="24" rx="4" className="stroke-zinc-300 dark:stroke-zinc-700" strokeWidth="1.5" />
+                <circle cx="16" cy="16" r="10" className="stroke-emerald-500" strokeWidth="2" strokeDasharray="3 3" />
+                <circle cx="16" cy="13" r="3" className="fill-emerald-500" />
+                <path d="M11 22C11 19.5 13 18 16 18C19 18 21 19.5 21 22" className="stroke-emerald-500" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
+              Circular Safe Mask
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Ensure faces and text fall comfortably inside avatar circles before you upload to WhatsApp or Instagram.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works & Visual Step-by-Step Cards */}
+      <section className="mt-16 p-6 sm:p-8 rounded-3xl glass-card border border-zinc-200/80 dark:border-zinc-800/80">
+        <div className="max-w-4xl mx-auto space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-zinc-900 dark:text-white">
+              Why Full DP Maker Instead of Manual Cropping
             </h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              When you take photos with your smartphone camera, they are naturally shot in <strong>3:4, 9:16 portrait</strong>, or <strong>16:9 landscape</strong> ratios.
-              However, WhatsApp, Instagram, Telegram, and Facebook only accept <strong>1:1 square profile photos</strong>, forcing you to crop out the edges.
-              Full DP Maker intelligently fits your whole photo inside a square canvas without stretching or cropping, filling the empty borders with an aesthetic blur or color background.
+            <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
+              Manually cropping a photo to fit a square before uploading it means sacrificing part of the image — usually the edges. Full DP Maker keeps your entire original photo intact.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60 space-y-2">
-              <span className="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-black text-sm">
-                1
-              </span>
-              <h3 className="font-bold text-sm text-zinc-900 dark:text-white">Upload or Paste Photo</h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                Drag and drop your full body portrait, group shot, or landscape picture. You can even press Ctrl+V to paste from clipboard.
-              </p>
+          {/* Visual Step-by-Step Cards (Matching requested UI illustration layout) */}
+          <div className="space-y-12">
+            {/* Step 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Visual Card 1 */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-blue-50/80 to-zinc-50 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm relative overflow-hidden">
+                <div className="bg-white dark:bg-zinc-800/90 rounded-2xl p-4 shadow-sm border border-zinc-200/70 dark:border-zinc-700/60 space-y-3">
+                  <div className="flex items-center justify-between text-xs font-semibold text-zinc-500">
+                    <span className="flex items-center gap-1.5 text-zinc-800 dark:text-zinc-200">
+                      <Copy className="w-3.5 h-3.5 text-brand-500" />
+                      Clipboard / File Drop
+                    </span>
+                    <span className="text-[11px] bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-300 px-2 py-0.5 rounded-md font-mono">9:16 Portrait</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/50 dark:border-zinc-700/40 flex items-center justify-around">
+                    <div className="text-center">
+                      <div className="w-12 h-16 rounded bg-red-100 dark:bg-red-950/40 border border-red-300 dark:border-red-800 mx-auto flex items-center justify-center text-[10px] text-red-500 font-bold">
+                        Crop Cut
+                      </div>
+                      <span className="text-[10px] text-zinc-400 mt-1 block">Default App</span>
+                    </div>
+                    <div className="text-zinc-400 font-bold">&rarr;</div>
+                    <div className="text-center">
+                      <div className="w-16 h-16 rounded bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 mx-auto flex items-center justify-center text-[10px] text-emerald-600 font-bold">
+                        1:1 Square
+                      </div>
+                      <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">Full DP Maker</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Text for Step 1 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-sm">
+                    1
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    Drop or Paste Any Photo Format
+                  </h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
+                  Upload portrait (3:4, 9:16) or landscape (16:9) photos, or press Ctrl+V to paste directly from your clipboard. Full DP Maker fits your entire photo inside a 1:1 square canvas without stretching or cropping.
+                </p>
+              </div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60 space-y-2">
-              <span className="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-black text-sm">
-                2
-              </span>
-              <h3 className="font-bold text-sm text-zinc-900 dark:text-white">Choose Background Fill</h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                Select from Gaussian Blur, solid colors, smooth 2-color gradients, or outward mirror reflections.
-              </p>
+            {/* Step 2 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Text for Step 2 */}
+              <div className="space-y-3 order-2 md:order-1">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-sm">
+                    2
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    Choose Background Fill Style
+                  </h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
+                  Instead of harsh black borders, customize the margin fill. Gaussian Blur naturally extends the shot, solid colors provide studio cleanliness, and gradients give a vibrant creator aesthetic.
+                </p>
+              </div>
+
+              {/* Visual Card 2 */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-brand-50/80 to-zinc-50 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm order-1 md:order-2">
+                <div className="bg-white dark:bg-zinc-800/90 rounded-2xl p-4 shadow-sm border border-zinc-200/70 dark:border-zinc-700/60 space-y-3">
+                  <p className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                    <Palette className="w-4 h-4 text-brand-500" />
+                    Intelligent Background Presets
+                  </p>
+                  <div className="grid grid-cols-4 gap-2 pt-1 text-center">
+                    <div className="p-2 rounded-xl bg-brand-500/10 border border-brand-500/30">
+                      <div className="w-8 h-8 rounded-lg bg-brand-500/30 mx-auto mb-1"></div>
+                      <span className="text-[10px] font-bold text-brand-600">Blur</span>
+                    </div>
+                    <div className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-700/40 border border-zinc-200 dark:border-zinc-600">
+                      <div className="w-8 h-8 rounded-lg bg-zinc-800 mx-auto mb-1"></div>
+                      <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300">Studio</span>
+                    </div>
+                    <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/30">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 mx-auto mb-1"></div>
+                      <span className="text-[10px] font-semibold text-purple-600">Gradient</span>
+                    </div>
+                    <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30">
+                      <div className="w-8 h-8 rounded-lg bg-cyan-500/30 mx-auto mb-1"></div>
+                      <span className="text-[10px] font-semibold text-cyan-600">Mirror</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60 space-y-2">
-              <span className="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-black text-sm">
-                3
-              </span>
-              <h3 className="font-bold text-sm text-zinc-900 dark:text-white">Check Circle & Download</h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                Use the dashed circle guide to ensure faces and text stay visible, then download in high-res 1024px or 4K.
-              </p>
+            {/* Step 3 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* Visual Card 3 */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-50/80 to-zinc-50 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
+                <div className="bg-white dark:bg-zinc-800/90 rounded-2xl p-4 shadow-sm border border-zinc-200/70 dark:border-zinc-700/60 space-y-3 text-center">
+                  <div className="relative w-20 h-20 mx-auto rounded-2xl bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center overflow-hidden">
+                    <div className="w-10 h-14 bg-brand-500/30 rounded"></div>
+                    <div className="absolute inset-1 rounded-full border-2 border-dashed border-brand-500"></div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-zinc-900 dark:text-white">Circular Safe Area Verified</h4>
+                    <p className="text-xs text-zinc-500 mt-0.5">Dashed guide never appears in final file</p>
+                  </div>
+                  <div className="pt-1">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-600 text-white text-xs font-semibold shadow-xs">
+                      <Download className="w-3.5 h-3.5" /> Download Crisp Square DP
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Text for Step 3 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-sm">
+                    3
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    Check Safe Circle & Download
+                  </h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
+                  Verify your face is centered inside the dashed circular preview. The guide itself is never rendered into the download — your exported image is a clean, sharp 1:1 square ready to set as your DP.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -1461,49 +1680,15 @@ export default function FullDpMakerPage() {
         </div>
       </section>
 
-      {/* Section 3: Frequently Asked Questions */}
-      <section className="mt-16 pt-12 border-t border-zinc-200 dark:border-zinc-800 max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Everything you need to know about creating full-size DPs without cropping
-          </p>
-        </div>
+      {/* Reusable Client-Side Trust & Privacy Section */}
+      <ClientSideTrustSection />
 
-        <div className="space-y-4">
-          {faqs.map((faq, idx) => {
-            const isOpen = activeFaq === idx;
-            return (
-              <div
-                key={idx}
-                className="glass-card rounded-xl overflow-hidden transition"
-              >
-                <button
-                  onClick={() => setActiveFaq(isOpen ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-zinc-900 dark:text-white"
-                >
-                  <span className="flex items-center gap-3">
-                    <HelpCircle className="w-4 h-4 text-brand-500 shrink-0" />
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 pt-3">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
+      {/* FAQs Section with SSR-friendly DOM rendering */}
+      <FaqSection
+        title="Full DP Maker FAQs"
+        subtitle="Common questions about creating no-crop square profile photos"
+        faqs={fullDpMakerFaqs}
+      />
 
       {/* Cross-Tool Internal Linking */}
       <RelatedTools currentTool="full-dp-maker" />

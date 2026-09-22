@@ -22,34 +22,34 @@ export const homeFaqs: FaqItem[] = [
 export const pdfCompressorFaqs: FaqItem[] = [
   {
     q: 'How does the Native PDF optimizer preserve vector text?',
-    a: 'Compixor operates directly on the PDF internal stream dictionary structure using native stream compression, metadata stripping, unreferenced object removal, and embedded raster photo optimization. Fonts, curves, vector text, and hyperlinks are never converted to raster images or blurry pixels.',
+    a: "Compixor's PDF Compressor works directly with the PDF's internal content streams instead of converting pages into flattened images (rasterizing). It identifies and removes redundant object data, compresses embedded fonts and streams, and strips unused metadata — while leaving vector paths, text outlines, and form fields fully intact. This means your PDF stays crisp at any zoom level, unlike tools that shrink file size by turning pages into low-resolution images.",
   },
   {
     q: 'Will my text still be selectable (Ctrl+F) and sharp?',
-    a: 'Yes! All vector text, fonts, links, and form fields remain 100% vector without any rasterization. Text stays razor-sharp, searchable, and selectable at any zoom level across all compression tiers.',
+    a: "Yes. Because compression happens at the stream level and not through rasterization, all text remains fully selectable, searchable (Ctrl+F), and copy-pasteable after compression. Fonts are optimized but never converted to images, so there's no blur or pixelation at any zoom level.",
   },
   {
     q: 'What happens if my PDF is already compressed?',
-    a: 'Compixor includes an automated size inflation guard: if compressing a document would make it larger or equal (common with pure-text or already-compacted files), Compixor automatically preserves your original pristine file and notifies you: "This PDF is already highly compressed and cannot be reduced further."',
+    a: "Compixor's Size Inflation Guard automatically detects when a PDF is already optimized. If running compression again would increase the file size (which can happen with some compression algorithms on already-dense files), the tool automatically returns your original file untouched — so you never end up with a larger file than you started with.",
   },
   {
     q: 'Can I upload multiple PDFs at once?',
-    a: 'Yes! You can upload up to 5 PDFs simultaneously. Each document displays its own live progress bar and individual download button, plus a one-click "Download All (ZIP)" button to export all compressed documents in a single bundle.',
+    a: 'Yes. You can drop or select up to 5 PDF files at once (each up to 100MB). All files are compressed concurrently in your browser with live progress tracking, and you can download them individually or as a single ZIP archive — all without any file ever leaving your device.',
   },
 ];
 
 export const wordCompressorFaqs: FaqItem[] = [
   {
     q: 'How does DOCX compression work in the browser?',
-    a: 'A .docx file is actually a zip archive containing XML structures and a media folder of embedded pictures. We unpack the archive in memory, re-encode embedded JPEG/PNG images with optimized compression, and re-pack the document with identical formatting.',
+    a: "A .docx file is actually a ZIP archive containing XML files and embedded media (usually images). Compixor's Word Compressor unzips the document entirely inside your browser, finds embedded images, re-encodes them at an optimized quality/size ratio, repacks the XML structure efficiently, and rebuilds the .docx — all without uploading anything to a server.",
   },
   {
     q: 'Will my fonts, tables, margins, or formulas change?',
-    a: 'Not at all. The underlying WordprocessingML document XML is untouched. Only the binary payload size of images inside the document is optimized.',
+    a: "No. Compression only targets embedded images — fonts, tables, margins, headers/footers, styles, and any formulas or embedded objects (like Excel tables) are left completely untouched. Your document's structure and formatting remain identical; only the file size shrinks.",
   },
   {
     q: 'What if my Word document has no images?',
-    a: 'Documents consisting purely of text and tables are already tiny (usually under 50KB). The compression tool will re-archive the XML streams, but the most dramatic reductions (50–90%) happen when documents contain camera photos, screenshots, or pasted illustrations.',
+    a: "If your document contains no embedded images (or only vector-based content like WordArt or shapes), there's very little to compress — text and XML markup are already extremely lightweight. In this case, Compixor will return your file with minimal or no size change, since further compression would provide no real benefit.",
   },
 ];
 
@@ -132,41 +132,41 @@ export const passportPhotoFaqs: FaqItem[] = [
 export const fullDpMakerFaqs: FaqItem[] = [
   {
     q: 'Why do WhatsApp and Instagram cut off my profile pictures?',
-    a: 'WhatsApp, Instagram, and Facebook mandate a strict 1:1 square ratio for profile pictures, and then display them inside a circular mask. If your photo is a portrait (tall) or landscape (wide), the app forces you to crop out friends, scenery, or your full outfit. Full DP Maker fits your whole photo inside a square and fills the empty margins with aesthetic blur, color, or gradient backgrounds.',
+    a: "Phone cameras shoot photos in 3:4, 9:16, or 16:9 ratios, but WhatsApp, Instagram, Telegram, and Facebook all require a 1:1 square profile photo. When you upload a non-square photo directly through the app, it automatically crops the image to fit the square — which often cuts off faces, group members, or important parts of the shot. Full DP Maker fits your entire photo inside a square canvas first, so no cropping happens on the platform's end.",
   },
   {
     q: 'Does the circular guide appear on the downloaded image?',
-    a: 'No! The circular dashed guide is strictly a preview aid inside the tool to help you ensure faces and text stay safely inside the avatar boundary. The exported file is a clean, crisp square image.',
+    a: 'No. The dashed circle guide shown in the live preview is only a visual aid to help you position faces and important details within the area that will actually display as a circle on WhatsApp, Instagram, and other apps. It never appears in your final downloaded image — the exported file is always a clean square.',
   },
   {
     q: 'What is the best background fill mode?',
-    a: 'The "Blur" mode is the most popular choice used by influencers and creators: it scales your photo into the background with a soft Gaussian blur, making your profile picture feel expansive and natural. For clean minimal aesthetics, the "Color" (White or Black) and "Gradient" modes are also favorites.',
+    a: 'It depends on your photo. Gaussian Blur works well for most photos since it extends the existing background naturally. Solid colors or gradients work best for portraits with simple or plain backgrounds, giving a clean, modern look. Mirror reflection works well for symmetrical or scenic shots where you want the fill to feel intentional rather than blurred. We recommend trying 2-3 modes in the live preview before downloading, since it only takes a second to switch.',
   },
   {
     q: 'Is my photo uploaded to any server?',
-    a: 'Never. Compixor processes all image manipulations, Gaussian blurs, gradients, and exports 100% client-side in your web browser memory sandbox. Your personal photos never leave your device.',
+    a: "No. Full DP Maker runs entirely inside your browser using client-side image processing. Your photo is never uploaded, transmitted, or stored anywhere — it exists only in your device's memory while you're editing it, and is discarded the moment you close or refresh the tab.",
   },
   {
     q: 'Can I paste an image directly from my clipboard?',
-    a: 'Yes! Just take a screenshot or copy any image and press Ctrl+V (or Cmd+V on Mac) anywhere on this page to load it instantly.',
+    a: 'Yes. Press Ctrl+V (or Cmd+V on Mac) anywhere on the page after copying an image, and it will be loaded directly into the tool — no need to save the file first or use the file browser.',
   },
 ];
 
 export const qrGeneratorFaqs: FaqItem[] = [
   {
     q: 'Do the generated QR codes ever expire or require a subscription?',
-    a: 'Never! Our QR codes are 100% static, client-side encoded, and permanent. They embed the direct target data without passing through any redirect servers.',
+    a: 'No. Every QR code you create with Compixor is a static QR code — the data (URL, WiFi credentials, contact info, etc.) is encoded directly into the QR pattern itself, not linked to an external redirect service. This means it will scan correctly forever, with no subscription, no expiry date, and no risk of it stopping working if a service shuts down.',
   },
   {
     q: 'How does logo embedding work?',
-    a: 'When you upload a logo, it is drawn directly in the center of the QR matrix. We automatically configure high error correction (Level H) so the QR code scans reliably across all devices.',
+    a: "When you upload a logo, Compixor automatically increases the QR code's error correction level (to High) before placing your logo in the center. QR codes are designed to remain scannable even with a portion of the pattern obscured — high error correction allows for a logo overlay without breaking the code's ability to be read by a scanner.",
   },
   {
     q: 'Which format should I download for printing?',
-    a: 'For print materials (flyers, menus, business cards, billboards), choose vector SVG format because it scales infinitely without pixelation. For social media or websites, PNG is ideal.',
+    a: "For printing, download the SVG (vector) format. SVGs scale to any size — from a business card to a large poster — without losing sharpness or becoming pixelated, since they're built from mathematical paths rather than a fixed pixel grid. Use PNG for digital use (websites, social media, presentations) where a vector format isn't needed.",
   },
   {
     q: 'Are Wi-Fi passwords or sensitive contact cards sent to any cloud server?',
-    a: 'No. CompixorAi runs 100% locally in your browser memory. No data is stored, cached, or transmitted over the network.',
+    a: 'No. All QR code generation happens entirely in your browser. When you create a WiFi QR code or a vCard with contact details, that information is encoded directly into the QR pattern locally — it is never transmitted to, or stored on, any server. This is especially important for WiFi passwords, which many other QR generators process server-side.',
   },
 ];

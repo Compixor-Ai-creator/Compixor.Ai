@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
 import { wordCompressorFaqs } from '@/data/faqs';
 
-const TITLE = 'Free Word Document Compressor - Reduce DOCX File Size | Compixor AI';
+const TITLE = 'Free Word Document Compressor Online - Reduce DOCX Size | Compixor AI';
 const DESCRIPTION =
-  'Shrink large Word (.docx) files by compressing embedded images without losing formatting or quality. 100% private, browser-based.';
+  'Compress Word (.docx) files online free — shrink embedded images without losing formatting, fonts, tables, or layout. 100% private, browser-based, zero uploads.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/word-compressor';
 
 export const metadata: Metadata = {
@@ -14,12 +14,13 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   keywords: [
     'word compressor',
-    'compress docx online',
+    'compress docx online free',
     'reduce word file size',
-    'shrink word document',
-    'word document docx compressor',
-    'compress word images',
-    'docx size reducer',
+    'shrink word document online',
+    'docx image compressor',
+    'compress word document without losing quality',
+    'private word compressor',
+    'client side docx compressor',
   ],
   alternates: {
     canonical: CANONICAL_URL,
