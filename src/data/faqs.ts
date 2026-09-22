@@ -30,7 +30,7 @@ export const pdfCompressorFaqs: FaqItem[] = [
   },
   {
     q: 'What happens if my PDF is already compressed?',
-    a: "Compixor's Size Inflation Guard automatically detects when a PDF is already optimized. If running compression again would increase the file size (which can happen with some compression algorithms on already-dense files), the tool automatically returns your original file untouched — so you never end up with a larger file than you started with.",
+    a: "Compixor's Size Inflation Guard automatically detects when a PDF is already optimized. If running compression again would increase the file size, the tool automatically returns your original file untouched — so you never end up with a larger file than you started with.",
   },
   {
     q: 'Can I upload multiple PDFs at once?',
@@ -45,11 +45,11 @@ export const wordCompressorFaqs: FaqItem[] = [
   },
   {
     q: 'Will my fonts, tables, margins, or formulas change?',
-    a: "No. Compression only targets embedded images — fonts, tables, margins, headers/footers, styles, and any formulas or embedded objects (like Excel tables) are left completely untouched. Your document's structure and formatting remain identical; only the file size shrinks.",
+    a: "No. Compression only targets embedded images — fonts, tables, margins, headers/footers, styles, and any formulas or embedded objects are left completely untouched. Your document's structure and formatting remain identical; only the file size shrinks.",
   },
   {
     q: 'What if my Word document has no images?',
-    a: "If your document contains no embedded images (or only vector-based content like WordArt or shapes), there's very little to compress — text and XML markup are already extremely lightweight. In this case, Compixor will return your file with minimal or no size change, since further compression would provide no real benefit.",
+    a: "If your document contains no embedded images, there's very little to compress — text and XML markup are already extremely lightweight. In this case, Compixor will return your file with minimal or no size change, since further compression would provide no real benefit.",
   },
 ];
 
@@ -140,7 +140,7 @@ export const fullDpMakerFaqs: FaqItem[] = [
   },
   {
     q: 'What is the best background fill mode?',
-    a: 'It depends on your photo. Gaussian Blur works well for most photos since it extends the existing background naturally. Solid colors or gradients work best for portraits with simple or plain backgrounds, giving a clean, modern look. Mirror reflection works well for symmetrical or scenic shots where you want the fill to feel intentional rather than blurred. We recommend trying 2-3 modes in the live preview before downloading, since it only takes a second to switch.',
+    a: 'It depends on your photo. Gaussian Blur works well for most photos since it extends the existing background naturally. Solid colors or gradients work best for portraits with simple or plain backgrounds. Mirror reflection works well for symmetrical or scenic shots. We recommend trying 2-3 modes in the live preview before downloading, since it only takes a second to switch.',
   },
   {
     q: 'Is my photo uploaded to any server?',
@@ -155,18 +155,18 @@ export const fullDpMakerFaqs: FaqItem[] = [
 export const qrGeneratorFaqs: FaqItem[] = [
   {
     q: 'Do the generated QR codes ever expire or require a subscription?',
-    a: 'No. Every QR code you create with Compixor is a static QR code — the data (URL, WiFi credentials, contact info, etc.) is encoded directly into the QR pattern itself, not linked to an external redirect service. This means it will scan correctly forever, with no subscription, no expiry date, and no risk of it stopping working if a service shuts down.',
+    a: 'No. Every QR code you create with Compixor is a static QR code — the data is encoded directly into the QR pattern itself, not linked to an external redirect service. This means it will scan correctly forever, with no subscription, no expiry date, and no risk of it stopping working if a service shuts down.',
   },
   {
     q: 'How does logo embedding work?',
-    a: "When you upload a logo, Compixor automatically increases the QR code's error correction level (to High) before placing your logo in the center. QR codes are designed to remain scannable even with a portion of the pattern obscured — high error correction allows for a logo overlay without breaking the code's ability to be read by a scanner.",
+    a: "When you upload a logo, Compixor automatically increases the QR code's error correction level (to High) before placing your logo in the center. QR codes are designed to remain scannable even with a portion of the pattern obscured — high error correction allows for a logo overlay without breaking the code's ability to be read.",
   },
   {
     q: 'Which format should I download for printing?',
-    a: "For printing, download the SVG (vector) format. SVGs scale to any size — from a business card to a large poster — without losing sharpness or becoming pixelated, since they're built from mathematical paths rather than a fixed pixel grid. Use PNG for digital use (websites, social media, presentations) where a vector format isn't needed.",
+    a: "For printing, download the SVG (vector) format. SVGs scale to any size without losing sharpness. Use PNG for digital use (websites, social media, presentations) where a vector format isn't needed.",
   },
   {
     q: 'Are Wi-Fi passwords or sensitive contact cards sent to any cloud server?',
-    a: 'No. All QR code generation happens entirely in your browser. When you create a WiFi QR code or a vCard with contact details, that information is encoded directly into the QR pattern locally — it is never transmitted to, or stored on, any server. This is especially important for WiFi passwords, which many other QR generators process server-side.',
+    a: 'No. All QR code generation happens entirely in your browser. When you create a WiFi QR code or a vCard with contact details, that information is encoded directly into the QR pattern locally — it is never transmitted to, or stored on, any server.',
   },
 ];
