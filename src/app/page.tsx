@@ -30,73 +30,6 @@ import {
 import { WhatsAppIcon } from '@/components/SocialIcons';
 import { FaqJsonLd } from '@/components/JsonLd';
 
-const heroFeatures = [
-  {
-    href: '/tools/add-watermark',
-    icon: Stamp,
-    title: 'Add Watermark to PDF',
-    description: 'Add vector text/image watermarks with opacity and rotation controls',
-    color: 'from-rose-500 to-pink-600',
-    badge: 'New',
-  },
-  {
-    href: '/tools/remove-watermark',
-    icon: Eraser,
-    title: 'Remove Watermark from PDF',
-    description: 'Detect, strip text watermarks or erase stamps losslessly with zero uploads',
-    color: 'from-amber-500 to-rose-600',
-    badge: 'Featured',
-  },
-  {
-    href: '/tools/pdf-organizer',
-    icon: Files,
-    title: 'PDF Merge & Split Organizer',
-    description: 'Combine multiple PDFs or extract exact page ranges',
-    color: 'from-cyan-500 to-indigo-600',
-    badge: 'Popular',
-  },
-  {
-    href: '/tools/passport-photo',
-    icon: Camera,
-    title: 'Biometric Passport Photo Maker',
-    description: 'NADRA, US Visa & Schengen ready',
-    color: 'from-emerald-500 to-teal-500',
-    badge: 'Popular',
-  },
-  {
-    href: '/tools/pdf-compressor',
-    icon: FileDown,
-    title: 'Smart Document Compressor',
-    description: 'Reduce PDF & Word size without quality loss',
-    color: 'from-brand-500 to-indigo-600',
-    badge: 'Fast',
-  },
-  {
-    href: '/tools/full-dp-maker',
-    icon: Crop,
-    title: 'All Social Media DP Resizer',
-    description: 'No-crop square fit for WhatsApp, Instagram & Facebook with blur background',
-    color: 'from-violet-500 to-purple-600',
-    badge: 'Trending',
-  },
-  {
-    href: '/tools/qr-generator',
-    icon: QrCode,
-    title: 'High-Res QR Code Generator',
-    description: 'Custom styles, instant download',
-    color: 'from-amber-500 to-rose-500',
-    badge: 'Instant',
-  },
-  {
-    href: '#tools',
-    icon: ShieldCheck,
-    title: '100% Client-Side Privacy',
-    description: 'Zero uploads to servers, instant browser-level processing',
-    color: 'from-cyan-500 to-blue-600',
-    badge: '100% Private',
-  },
-];
-
 const tools = [
   {
     href: '/tools/add-watermark',
@@ -396,8 +329,9 @@ export default function HomePage() {
               {isLoading ? (
                 <HeroFeaturesSkeleton />
               ) : (
-                <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/60 dark:border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-                  <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-zinc-200/60 dark:border-zinc-800/60">
+                <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/60 dark:border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden flex flex-col">
+                  {/* Header Row with dynamic tool count */}
+                  <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
                     <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                       <span className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
@@ -405,17 +339,18 @@ export default function HomePage() {
                       </span>
                     </div>
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-500/15 text-brand-600 dark:text-brand-300">
-                      8 Essential Tools
+                      {tools.length} Tools Available
                     </span>
                   </div>
 
-                  <div className="space-y-2">
-                    {heroFeatures.map((feat, idx) => {
+                  {/* Scrollable list with fixed max height so height does NOT stretch when new tools are added */}
+                  <div className="space-y-1.5 max-h-[460px] overflow-y-auto pr-1.5 overscroll-contain custom-scrollbar">
+                    {tools.map((feat) => {
                       const Icon = feat.icon;
                       const isAnchor = feat.href.startsWith('#');
                       return (
                         <Link
-                          key={idx}
+                          key={feat.href}
                           href={feat.href}
                           onClick={
                             isAnchor

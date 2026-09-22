@@ -70,7 +70,7 @@ export function HeroFeaturesSkeleton({ className = '' }: { className?: string })
       </div>
 
       {/* Feature rows */}
-      <div className="space-y-2">
+      <div className="space-y-2 max-h-[460px] overflow-hidden pr-1.5">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="flex items-center gap-3.5 p-2.5 sm:p-3 rounded-2xl">
             <div className="w-10 h-10 rounded-xl bg-zinc-200/80 dark:bg-zinc-700/80 shrink-0" />

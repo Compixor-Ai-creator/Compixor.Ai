@@ -64,6 +64,29 @@
     -ms-overflow-style: none !important;
     scrollbar-width: none !important;
   }
+
+  /* Sleek Scrollbar for Scrollable Hero / Feature Containers */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124, 58, 237, 0.35) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.3);
+    border-radius: 9999px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 58, 237, 0.55);
+  }
 }
 
 @layer components {
