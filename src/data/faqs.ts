@@ -112,6 +112,18 @@ export const pdfOrganizerFaqs: FaqItem[] = [
 
 export const passportPhotoFaqs: FaqItem[] = [
   {
+    q: 'Are these passport photos officially compliant with government standards?',
+    a: 'Yes, our tool follows exact official mm/inch dimensions and biometric ratios for 9+ regions (including Pakistan NADRA, US, UK, EU/Schengen, India). However, always double-check local authority guidelines before final submission.',
+  },
+  {
+    q: 'Do I need to pay or create an account to download my passport photo?',
+    a: 'No. Compixor AI is 100% free, runs entirely client-side in your browser, and requires no registration or payment gateways.',
+  },
+  {
+    q: 'How does the biometric alignment guide work?',
+    a: 'Our live visual overlay checks head-height, eye-level percentage, and framing requirements instantly before you crop.',
+  },
+  {
     q: 'How does the remove.bg-grade background removal work?',
     a: 'We use the high-precision IS-Net neural matting model (IS-Net FP16) executing 100% client-side via WebAssembly & WebGPU. It features an intermediate canvas smoothing pipeline with alpha boundary choke (to eliminate outer fringing), 1.2px Gaussian edge feathering (to eradicate jagged contours and aliasing along hair and shoulders), and color de-spill to neutralize residual wall color halos.',
   },
@@ -170,3 +182,54 @@ export const qrGeneratorFaqs: FaqItem[] = [
     a: 'No. All QR code generation happens entirely in your browser. When you create a WiFi QR code or a vCard with contact details, that information is encoded directly into the QR pattern locally — it is never transmitted to, or stored on, any server.',
   },
 ];
+
+export const protectPdfFaqs: FaqItem[] = [
+  {
+    q: 'Can I unlock a PDF if I completely forgot the password?',
+    a: 'No. This tool removes permission/restriction passwords (such as printing or editing blocks) instantly if you know the password. It cannot bypass or guess strong document-open encryptions (where you do not have the password), maintaining strict security boundaries.',
+  },
+  {
+    q: 'Is it legal to unlock my PDF?',
+    a: 'Yes, it is generally legal to unlock documents that you own or have explicit administrative permission to manage.',
+  },
+  {
+    q: 'Are my password-protected documents safe?',
+    a: 'Unlike Smallpdf, iLovePDF, or Adobe which decrypt files on their remote servers, Compixor AI processes everything locally in your browser memory via WebAssembly/JS — ensuring maximum confidentiality for sensitive legal and financial documents.',
+  },
+  {
+    q: 'How does Protect PDF secure my files?',
+    a: 'Protect PDF encrypts your document using AES-256 encryption directly inside your browser. Your file is never uploaded to any cloud server.',
+  },
+  {
+    q: 'What is the difference between Open Password and Owner Password?',
+    a: 'Open Password (User Password) prevents anyone from opening the file without the password. Owner Password controls permissions like printing, copying, or editing. You can set one or both — or use Owner Password alone to allow viewing but block editing.',
+  },
+  {
+    q: 'Will password protected PDFs open on any device?',
+    a: 'Yes. AES-256 encrypted PDFs are standard ISO-compliant documents that open on Adobe Acrobat, Apple Preview, Google Chrome, mobile PDF readers, and all standard viewers.',
+  },
+];
+
+export const unlockPdfFaqs: FaqItem[] = [
+  {
+    q: 'Can I unlock a PDF if I completely forgot the password?',
+    a: 'No. This tool removes permission/restriction passwords (such as printing or editing blocks) instantly if you know the password. It cannot bypass or guess strong document-open encryptions (where you do not have the password), maintaining strict security boundaries.',
+  },
+  {
+    q: 'Is it legal to unlock my PDF?',
+    a: 'Yes, it is generally legal to unlock documents that you own or have explicit administrative permission to manage.',
+  },
+  {
+    q: 'Are my password-protected documents safe?',
+    a: 'Unlike Smallpdf, iLovePDF, or Adobe which decrypt files on their remote servers, Compixor AI processes everything locally in your browser memory via WebAssembly/JS — ensuring maximum confidentiality for sensitive legal and financial documents.',
+  },
+  {
+    q: 'Will unlocking a PDF remove all restrictions?',
+    a: 'Yes. The Unlock PDF tool removes both the open password and any permission restrictions, saving a fully unrestricted PDF to download.',
+  },
+  {
+    q: 'What happens if I enter the wrong unlock password?',
+    a: 'The tool will show a clear error message. The encryption library validates the password before decrypting, so no output file is generated with a wrong password.',
+  },
+];
+

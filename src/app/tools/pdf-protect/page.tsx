@@ -24,8 +24,10 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import RelatedPdfTools from '@/components/RelatedPdfTools';
-import StaticToolSkeleton from '@/components/StaticToolSkeleton';
 import DropAnywhere from '@/components/DropAnywhere';
+import FaqSection from '@/components/FaqSection';
+import PdfSecurityIllustration from '@/components/PdfSecurityIllustration';
+import { protectPdfFaqs, unlockPdfFaqs } from '@/data/faqs';
 
 // ─── Lazy imports ──────────────────────────────────────────────────────────────
 async function getPdfLib() {
@@ -54,34 +56,6 @@ interface ProcessResult {
   processedSize: number;
   fileName: string;
 }
-
-// ─── FAQ Data ─────────────────────────────────────────────────────────────────
-const faqs = [
-  {
-    q: 'Is my PDF file uploaded to any server?',
-    a: 'No. Everything happens 100% in your browser using WebAssembly and JavaScript. Your PDF never leaves your device — no uploads, no cloud processing, total privacy.',
-  },
-  {
-    q: 'What type of encryption does Protect PDF use?',
-    a: 'Protect PDF uses AES-256 encryption (PDF 2.0 standard, V5/R6), which is supported by Adobe Acrobat X and above, as well as all modern PDF viewers.',
-  },
-  {
-    q: 'What is the difference between Open Password and Owner Password?',
-    a: 'Open Password (User Password) prevents anyone from opening the file without the password. Owner Password controls permissions like printing, copying, or editing. You can set one or both — or use Owner Password alone to allow viewing but block editing.',
-  },
-  {
-    q: 'Can I unlock a PDF without knowing the password?',
-    a: 'No. The unlock tool requires the correct password. It is designed for users who own the PDF and want to remove restrictions. We cannot and do not support bypassing unknown passwords.',
-  },
-  {
-    q: 'Will unlocking a PDF remove all restrictions?',
-    a: 'Yes. The Unlock PDF tool removes both the open password and any permission restrictions, saving a fully unrestricted PDF to download.',
-  },
-  {
-    q: 'What happens if I enter the wrong unlock password?',
-    a: 'The tool will show a clear error message. The encryption library validates the password before decrypting, so no output file is generated with a wrong password.',
-  },
-];
 
 // ─── Password Input Component ─────────────────────────────────────────────────
 function PasswordInput({
@@ -133,7 +107,6 @@ function PasswordInput({
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: ActiveMode }) {
-  const [isLoading, setIsLoading] = useState(true);
   const [activeMode, setActiveMode] = useState<ActiveMode>(initialMode);
 
   // File state
@@ -152,14 +125,6 @@ export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: Ac
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<ProcessResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  // FAQ
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
-
-  useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 600);
-    return () => clearTimeout(t);
-  }, []);
 
   // Cleanup blob URLs on unmount
   const resultUrlRef = useRef<string | null>(null);
@@ -346,9 +311,6 @@ export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: Ac
     toast.success('Download started!');
   }, [result]);
 
-  // ── Skeleton ───────────────────────────────────────────────────────────────
-  if (isLoading) return <StaticToolSkeleton />;
-
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
@@ -379,10 +341,21 @@ export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: Ac
           transition={{ delay: 0.05 }}
           className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-4"
         >
-          PDF{' '}
-          <span className="bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
-            Protect &amp; Unlock
-          </span>
+          {activeMode === 'protect' ? (
+            <>
+              Protect PDF{' '}
+              <span className="bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+                With AES-256
+              </span>
+            </>
+          ) : (
+            <>
+              Unlock PDF{' '}
+              <span className="bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+                &amp; Remove Password
+              </span>
+            </>
+          )}
         </motion.h1>
 
         <motion.p
@@ -391,8 +364,9 @@ export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: Ac
           transition={{ delay: 0.1 }}
           className="text-base sm:text-lg text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto"
         >
-          Add AES-256 password protection or remove PDF password restrictions — all processed
-          locally in your browser.
+          {activeMode === 'protect'
+            ? 'Add strong AES-256 open and permission passwords to your PDF directly in your browser. 100% private with zero cloud uploads.'
+            : 'Remove permission restrictions and passwords locally in browser memory. Instant decryption with zero server uploads.'}
         </motion.p>
 
         {/* Feature pills */}
@@ -714,6 +688,9 @@ export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: Ac
         )}
       </AnimatePresence>
 
+      {/* ── Security Graphic Illustration ── */}
+      <PdfSecurityIllustration mode={activeMode} />
+
       {/* ── How It Works ── */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold font-display text-zinc-900 dark:text-white mb-2 text-center">
@@ -767,46 +744,13 @@ export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: Ac
         </div>
       </section>
 
-      {/* ── FAQ ── */}
-      <section className="mb-12">
-        <div className="text-center mb-7">
-          <h2 className="text-2xl font-bold font-display text-zinc-900 dark:text-white mb-2">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
-            Common questions about PDF protection and unlocking
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          {faqs.map((faq, idx) => {
-            const isOpen = activeFaq === idx;
-            return (
-              <div key={idx} className="glass-card rounded-xl overflow-hidden transition">
-                <button
-                  onClick={() => setActiveFaq(isOpen ? null : idx)}
-                  className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm text-zinc-900 dark:text-white"
-                >
-                  <span className="flex items-center gap-2.5">
-                    <HelpCircle className="w-4 h-4 text-indigo-500 shrink-0" />
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 pt-3">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
+      {/* ── FAQ Section (Accessible, DOM-preserved for crawlers) ── */}
+      <FaqSection
+        title={activeMode === 'protect' ? 'Protect PDF Frequently Asked Questions' : 'Unlock PDF Frequently Asked Questions'}
+        subtitle="Everything you need to know about in-browser PDF encryption and password removal"
+        faqs={activeMode === 'protect' ? protectPdfFaqs : unlockPdfFaqs}
+        includeJsonLd={false}
+      />
 
       {/* ── Related Tools ── */}
       <RelatedPdfTools currentTool="pdf-protect" />

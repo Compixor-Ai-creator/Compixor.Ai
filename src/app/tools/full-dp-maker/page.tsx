@@ -40,6 +40,7 @@ import DropAnywhere from '@/components/DropAnywhere';
 import RelatedTools from '@/components/RelatedTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
 import FaqSection from '@/components/FaqSection';
+import { DpMakerPreviewMockup } from '@/components/VisualProofMockup';
 import { fullDpMakerFaqs } from '@/data/faqs';
 import { WhatsAppIcon, InstagramIcon, FacebookIcon, TelegramIcon, TwitterXIcon, LinkedInIcon, YouTubeIcon } from '@/components/SocialIcons';
 
@@ -1679,6 +1680,9 @@ export default function FullDpMakerPage() {
           </div>
         </div>
       </section>
+
+      {/* Visual Proof Output Mockup */}
+      <DpMakerPreviewMockup />
 
       {/* Reusable Client-Side Trust & Privacy Section */}
       <ClientSideTrustSection />

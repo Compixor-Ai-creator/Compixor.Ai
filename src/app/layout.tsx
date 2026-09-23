@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -25,8 +25,23 @@ const outfit = Outfit({
 
 const BASE_URL = 'https://compixor-ai.vercel.app';
 
+export const viewport: Viewport = {
+  themeColor: '#ffffff',
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
+  applicationName: 'Compixor AI',
+  appleWebApp: {
+    capable: true,
+    title: 'Compixor AI',
+    statusBarStyle: 'default',
+  },
+  formatDetection: {
+    telephone: false,
+  },
   title: {
     default: 'Compixor AI — Free Online Privacy-First Media & Document Tools',
     template: '%s | Compixor AI — Client-Side Privacy Tools',
@@ -311,6 +326,13 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=4" />
         <link rel="shortcut icon" href="/favicon.ico?v=4" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4" />
+        {/* Mobile & PWA Meta Tags */}
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="apple-mobile-web-app-title" content="Compixor AI" />
+        <meta name="application-name" content="Compixor AI" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         {/* WebSite Schema (Compixor.Ai by Haroon Ali) */}
         <script
           type="application/ld+json"

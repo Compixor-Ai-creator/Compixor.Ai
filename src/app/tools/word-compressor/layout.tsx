@@ -62,8 +62,6 @@ export default function WordCompressorLayout({
         operatingSystem="Any/Web"
         price="0"
         priceCurrency="USD"
-        ratingValue="4.9"
-        reviewCount="1280"
         featureList={[
           '100% Client-Side In-Browser DOCX Processing',
           'Embedded Image Downsampling & Re-encoding',

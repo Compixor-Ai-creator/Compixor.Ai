@@ -8,8 +8,6 @@ export interface SoftwareAppSchemaProps {
   operatingSystem?: string;
   price?: string;
   priceCurrency?: string;
-  ratingValue?: string;
-  reviewCount?: string;
   featureList?: string[];
 }
 
@@ -21,8 +19,6 @@ export function SoftwareAppJsonLd({
   operatingSystem = 'Any/Web',
   price = '0',
   priceCurrency = 'USD',
-  ratingValue = '4.9',
-  reviewCount = '1280',
   featureList,
 }: SoftwareAppSchemaProps) {
   const schema: Record<string, any> = {
@@ -37,13 +33,6 @@ export function SoftwareAppJsonLd({
       '@type': 'Offer',
       price,
       priceCurrency,
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue,
-      reviewCount,
-      bestRating: '5',
-      worstRating: '1',
     },
     author: {
       '@type': 'Person',
@@ -60,6 +49,58 @@ export function SoftwareAppJsonLd({
 
   if (featureList && featureList.length > 0) {
     schema.featureList = featureList;
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+export interface HowToStepItem {
+  name: string;
+  text: string;
+  url?: string;
+  image?: string;
+}
+
+export interface HowToSchemaProps {
+  name: string;
+  description: string;
+  steps: HowToStepItem[];
+  totalTime?: string;
+  imageUrl?: string;
+}
+
+export function HowToJsonLd({
+  name,
+  description,
+  steps,
+  totalTime = 'PT1M',
+  imageUrl,
+}: HowToSchemaProps) {
+  if (!steps || steps.length === 0) return null;
+
+  const schema: Record<string, any> = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name,
+    description,
+    totalTime,
+    step: steps.map((s, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: s.name,
+      text: s.text,
+      ...(s.url ? { url: s.url } : {}),
+      ...(s.image ? { image: s.image } : {}),
+    })),
+  };
+
+  if (imageUrl) {
+    schema.image = imageUrl;
   }
 
   return (

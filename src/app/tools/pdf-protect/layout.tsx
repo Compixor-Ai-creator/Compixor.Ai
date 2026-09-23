@@ -84,8 +84,6 @@ export default function PdfProtectLayout({
         operatingSystem="Any/Web"
         price="0"
         priceCurrency="USD"
-        ratingValue="4.9"
-        reviewCount="856"
         featureList={[
           '100% Client-Side Browser Processing',
           'AES-128 Password Encryption',

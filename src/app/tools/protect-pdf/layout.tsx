@@ -1,25 +1,11 @@
 import type { Metadata } from 'next';
-import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
+import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd } from '@/components/JsonLd';
+import { protectPdfFaqs } from '@/data/faqs';
 
 const TITLE = 'Protect PDF Online - Add Password & AES-256 Encryption Free | Compixor AI';
 const DESCRIPTION =
   'Password protect your PDF files online for free. Add AES-256 open passwords and permission restrictions with 100% client-side privacy. Zero server uploads.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/protect-pdf';
-
-const faqs = [
-  {
-    q: 'How does Protect PDF secure my files?',
-    a: 'Protect PDF encrypts your document using AES-256 encryption directly inside your browser. Your file is never uploaded to any cloud server.',
-  },
-  {
-    q: 'Can I set both Open and Permission passwords?',
-    a: 'Yes. You can configure an Open Password (required to view the PDF) and an Owner Password (required to change permissions like copying, editing, or printing).',
-  },
-  {
-    q: 'Will password protected PDFs open on any device?',
-    a: 'Yes. AES-256 encrypted PDFs are standard ISO-compliant documents that open on Adobe Acrobat, Apple Preview, Google Chrome, mobile PDF readers, and all standard viewers.',
-  },
-];
 
 export const metadata: Metadata = {
   title: {
@@ -60,6 +46,25 @@ export const metadata: Metadata = {
   },
 };
 
+const protectPdfHowToSteps = [
+  {
+    name: 'Select or Drop PDF',
+    text: 'Select your PDF document or drag and drop it into the secure browser canvas.',
+  },
+  {
+    name: 'Set Open and Owner Passwords',
+    text: 'Enter a strong open password to prevent unauthorized viewing, and optionally set an owner password to block printing, editing, or copying.',
+  },
+  {
+    name: 'Encrypt in Memory',
+    text: 'Click Protect PDF. The document is encrypted client-side using industry-standard AES-256 cipher without uploading to any server.',
+  },
+  {
+    name: 'Download Protected PDF',
+    text: 'Save your password-protected PDF file instantly. The file opens securely on all standard PDF viewers.',
+  },
+];
+
 export default function ProtectPdfLayout({
   children,
 }: {
@@ -75,8 +80,6 @@ export default function ProtectPdfLayout({
         operatingSystem="Any/Web"
         price="0"
         priceCurrency="USD"
-        ratingValue="4.9"
-        reviewCount="870"
         featureList={[
           '100% Client-Side In-Browser Encryption',
           'Standard AES-256 PDF Security',
@@ -92,7 +95,13 @@ export default function ProtectPdfLayout({
           { name: 'Protect PDF', url: CANONICAL_URL },
         ]}
       />
-      <FaqJsonLd faqs={faqs} />
+      <HowToJsonLd
+        name="How to Password Protect a PDF File for Free"
+        description="Step-by-step instructions to encrypt and add password protection to any PDF document in your browser."
+        steps={protectPdfHowToSteps}
+        totalTime="PT30S"
+      />
+      <FaqJsonLd faqs={protectPdfFaqs} />
       {children}
     </>
   );

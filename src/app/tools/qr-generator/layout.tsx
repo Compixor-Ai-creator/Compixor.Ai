@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
+import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd } from '@/components/JsonLd';
 import { qrGeneratorFaqs } from '@/data/faqs';
 
 const TITLE = 'Free QR Code Generator Online - Custom Colors, Logo & SVG | Compixor AI';
@@ -48,6 +48,25 @@ export const metadata: Metadata = {
   },
 };
 
+const qrGeneratorHowToSteps = [
+  {
+    name: 'Choose QR Data Type',
+    text: 'Select URL link, Wi-Fi network credentials, vCard contact information, email, or plain text.',
+  },
+  {
+    name: 'Customize Colors and Shapes',
+    text: 'Pick gradient or solid brand colors, adjust dot styles to rounded modules, and customize corner eye markers.',
+  },
+  {
+    name: 'Embed Center Logo (Optional)',
+    text: 'Upload your company icon or select a preset emblem. Error correction automatically adjusts to High.',
+  },
+  {
+    name: 'Export Vector SVG or PNG',
+    text: 'Download an infinitely scalable SVG for printing or high-DPI PNG for digital screens. All generated codes never expire.',
+  },
+];
+
 export default function QrGeneratorLayout({
   children,
 }: {
@@ -63,8 +82,6 @@ export default function QrGeneratorLayout({
         operatingSystem="Any/Web"
         price="0"
         priceCurrency="USD"
-        ratingValue="4.9"
-        reviewCount="1280"
         featureList={[
           'Permanent Static QR Codes (Zero Redirects or Expirations)',
           'Custom Center Logo & Image Embedding',
@@ -79,6 +96,12 @@ export default function QrGeneratorLayout({
           { name: 'Tools', url: 'https://compixor-ai.vercel.app/#tools' },
           { name: 'QR Code Generator', url: CANONICAL_URL },
         ]}
+      />
+      <HowToJsonLd
+        name="How to Create a Custom Branded QR Code for Free"
+        description="Step-by-step instructions to create, style, and download permanent vector QR codes."
+        steps={qrGeneratorHowToSteps}
+        totalTime="PT30S"
       />
       <FaqJsonLd faqs={qrGeneratorFaqs} />
       {children}

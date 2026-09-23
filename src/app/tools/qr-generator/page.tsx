@@ -30,6 +30,7 @@ import { toast } from 'sonner';
 import RelatedTools from '@/components/RelatedTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
 import FaqSection from '@/components/FaqSection';
+import { QrGeneratorPreviewMockup } from '@/components/VisualProofMockup';
 import { qrGeneratorFaqs } from '@/data/faqs';
 
 type TabType = 'url' | 'text' | 'wifi' | 'contact' | 'email' | 'phone';
@@ -1553,6 +1554,9 @@ export default function QrGeneratorPage() {
           </div>
         </div>
       </section>
+
+      {/* Visual Proof Output Mockup */}
+      <QrGeneratorPreviewMockup />
 
       {/* Reusable Client-Side Trust & Privacy Section */}
       <ClientSideTrustSection />

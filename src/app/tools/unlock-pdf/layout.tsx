@@ -1,25 +1,11 @@
 import type { Metadata } from 'next';
-import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
+import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd } from '@/components/JsonLd';
+import { unlockPdfFaqs } from '@/data/faqs';
 
 const TITLE = 'Unlock PDF Online - Remove PDF Password & Restrictions Free | Compixor AI';
 const DESCRIPTION =
   'Unlock password protected PDF files online. Remove passwords and permissions locally in seconds with 100% client-side privacy. Zero server uploads.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/unlock-pdf';
-
-const faqs = [
-  {
-    q: 'How does Unlock PDF remove passwords?',
-    a: 'Unlock PDF decrypts the document in your browser memory using your provided password, removing all encryption dictionaries and saving an unrestricted PDF.',
-  },
-  {
-    q: 'Can I unlock a PDF without knowing the password?',
-    a: 'No. The correct password is required to decrypt the file. This tool is intended for legitimate PDF owners who want to remove restrictions.',
-  },
-  {
-    q: 'Is my unlocked PDF stored on any server?',
-    a: 'No. Decryption happens 100% locally in your browser. No files or passwords are ever transmitted to any remote servers.',
-  },
-];
 
 export const metadata: Metadata = {
   title: {
@@ -60,6 +46,25 @@ export const metadata: Metadata = {
   },
 };
 
+const unlockPdfHowToSteps = [
+  {
+    name: 'Select Password-Protected PDF',
+    text: 'Drop or select your encrypted PDF document into the browser.',
+  },
+  {
+    name: 'Enter Document Password',
+    text: 'Type the valid password to unlock permission restrictions or open locks.',
+  },
+  {
+    name: 'Decrypt Client-Side',
+    text: 'Click Unlock PDF. The encryption dictionaries are stripped locally in browser RAM with zero server communication.',
+  },
+  {
+    name: 'Download Unrestricted PDF',
+    text: 'Save your unlocked, completely editable and printable PDF document instantly.',
+  },
+];
+
 export default function UnlockPdfLayout({
   children,
 }: {
@@ -75,8 +80,6 @@ export default function UnlockPdfLayout({
         operatingSystem="Any/Web"
         price="0"
         priceCurrency="USD"
-        ratingValue="4.9"
-        reviewCount="810"
         featureList={[
           '100% Client-Side In-Browser Decryption',
           'Instant Password Removal',
@@ -91,7 +94,13 @@ export default function UnlockPdfLayout({
           { name: 'Unlock PDF', url: CANONICAL_URL },
         ]}
       />
-      <FaqJsonLd faqs={faqs} />
+      <HowToJsonLd
+        name="How to Unlock and Remove Password from PDF for Free"
+        description="Step-by-step guide to removing passwords and permission restrictions from PDF files in memory."
+        steps={unlockPdfHowToSteps}
+        totalTime="PT30S"
+      />
+      <FaqJsonLd faqs={unlockPdfFaqs} />
       {children}
     </>
   );

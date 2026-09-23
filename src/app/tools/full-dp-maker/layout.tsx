@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
+import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd } from '@/components/JsonLd';
 import { fullDpMakerFaqs } from '@/data/faqs';
 
 const TITLE = 'No-Crop DP Maker for WhatsApp, Instagram & Facebook Free | Compixor AI';
@@ -48,6 +48,25 @@ export const metadata: Metadata = {
   },
 };
 
+const fullDpHowToSteps = [
+  {
+    name: 'Select or Paste Photo',
+    text: 'Drop, browse, or paste (Ctrl+V) your portrait or horizontal photo into the canvas.',
+  },
+  {
+    name: 'Choose Social Platform Preset',
+    text: 'Pick your destination such as WhatsApp (500×500), Instagram (1080×1080), or Facebook.',
+  },
+  {
+    name: 'Configure Background Fill',
+    text: 'Select Gaussian blur mirroring your photo colors, stylish gradient, or solid minimal color to fill the 1:1 canvas.',
+  },
+  {
+    name: 'Check Circular Safety Guide & Export',
+    text: 'Inspect the live dashed circle to verify your face will not be cut off, then download high-resolution PNG or JPG.',
+  },
+];
+
 export default function FullDpMakerLayout({
   children,
 }: {
@@ -63,8 +82,6 @@ export default function FullDpMakerLayout({
         operatingSystem="Any/Web"
         price="0"
         priceCurrency="USD"
-        ratingValue="4.9"
-        reviewCount="1280"
         featureList={[
           'No-Crop 1:1 Square Profile Picture Fitting',
           'Aesthetic Gaussian Blur Margin Backgrounds',
@@ -79,6 +96,12 @@ export default function FullDpMakerLayout({
           { name: 'Tools', url: 'https://compixor-ai.vercel.app/#tools' },
           { name: 'No-Crop DP Maker', url: CANONICAL_URL },
         ]}
+      />
+      <HowToJsonLd
+        name="How to Create a Full Uncropped DP for WhatsApp and Instagram"
+        description="Step-by-step tutorial on making a no-crop profile picture with ambient blur backgrounds."
+        steps={fullDpHowToSteps}
+        totalTime="PT30S"
       />
       <FaqJsonLd faqs={fullDpMakerFaqs} />
       {children}

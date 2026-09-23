@@ -29,6 +29,7 @@ import DropAnywhere from '@/components/DropAnywhere';
 import RelatedPdfTools from '@/components/RelatedPdfTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
 import FaqSection from '@/components/FaqSection';
+import { PdfCompressorPreviewMockup } from '@/components/VisualProofMockup';
 import { pdfCompressorFaqs } from '@/data/faqs';
 
 async function getPdfLib() {
@@ -1492,6 +1493,9 @@ export default function PdfCompressorPage() {
           </div>
         </div>
       </section>
+
+      {/* Visual Proof Benchmark Mockup */}
+      <PdfCompressorPreviewMockup />
 
       {/* Reusable Client-Side Trust & Privacy Section */}
       <ClientSideTrustSection />

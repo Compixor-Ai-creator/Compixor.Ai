@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
+import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd } from '@/components/JsonLd';
 import { passportPhotoFaqs } from '@/data/faqs';
 
 const TITLE = 'Passport Size Photo Maker Online Free - NADRA & US Visa | Compixor AI';
 const DESCRIPTION =
-  'Create passport size photos online free with a white background — NADRA, US Visa & Schengen compliant. No signup, 300 DPI printable sheet.';
+  'Create passport size photos online free with a white background — NADRA, US Visa & Schengen compliant. True zero-server privacy, no signup, 300 DPI printable sheet.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/passport-photo';
 
 export const metadata: Metadata = {
@@ -52,6 +52,29 @@ export const metadata: Metadata = {
   },
 };
 
+const passportHowToSteps = [
+  {
+    name: 'Upload Portrait Image',
+    text: 'Drop or select your portrait photo or smartphone selfie. All processing runs locally in browser RAM.',
+  },
+  {
+    name: 'Select Country Preset',
+    text: 'Choose your official document format such as Pakistan NADRA (35×45mm), US Visa (2×2 inch), UK/EU Schengen, or enter custom millimeters.',
+  },
+  {
+    name: 'Align with Biometric Guides',
+    text: 'Use the interactive face overlay to align crown, eye axis, and chin level within official 70-80% height parameters.',
+  },
+  {
+    name: 'Automatic Background Matting & Formal Attire',
+    text: 'Our IS-Net FP16 engine removes messy backdrops instantly to solid white or blue, and allows adding formal suit overlays.',
+  },
+  {
+    name: 'Download Photo or Print Sheet',
+    text: 'Export an official single photo or a high-res 300 DPI multi-photo printable sheet with cutting guides.',
+  },
+];
+
 export default function PassportPhotoLayout({
   children,
 }: {
@@ -67,8 +90,6 @@ export default function PassportPhotoLayout({
         operatingSystem="Any/Web"
         price="0"
         priceCurrency="USD"
-        ratingValue="4.9"
-        reviewCount="1280"
         featureList={[
           'AI-Powered Background Removal & Replacement',
           'Official Biometric Presets for Pakistan NADRA, US Visa, UK/EU 35x45mm',
@@ -83,6 +104,12 @@ export default function PassportPhotoLayout({
           { name: 'Tools', url: 'https://compixor-ai.vercel.app/#tools' },
           { name: 'Passport Photo Maker', url: CANONICAL_URL },
         ]}
+      />
+      <HowToJsonLd
+        name="How to Make Official Passport Size Photos Online for Free"
+        description="Step-by-step guide to create government-compliant passport and visa photos with zero server uploads."
+        steps={passportHowToSteps}
+        totalTime="PT1M"
       />
       <FaqJsonLd faqs={passportPhotoFaqs} />
       {children}

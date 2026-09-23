@@ -43,6 +43,7 @@ import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import RelatedTools from '@/components/RelatedTools';
+import PassportBeforeAfter from '@/components/PassportBeforeAfter';
 import { passportPhotoFaqs } from '@/data/faqs';
 import {
   removeBackgroundISNet,
@@ -1476,7 +1477,7 @@ export default function PassportPhotoPage() {
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           {currentStep === 'edit'
-            ? 'Create official passport, visa, and ID photos with remove.bg-grade hair matting, instant solid color backgrounds, and biometric face guidelines.'
+            ? 'True zero-server privacy — your sensitive ID/passport photo never touches any cloud server, unlike PhotoGov or PhotoAiD. Create official NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
             : 'Your biometric photo is processed and print-ready. Download a single image for online portal submissions or a high-res tiled print sheet with cutting guides.'}
         </p>
       </motion.div>
@@ -2466,8 +2467,11 @@ export default function PassportPhotoPage() {
         </div>
       )}
 
+      {/* Before / After Visual Proof Mockup */}
+      <PassportBeforeAfter />
+
       {/* Official Compliance Standards */}
-      <section className="mt-20">
+      <section className="mt-14">
         <div className="glass-card p-8 rounded-3xl">
           <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white mb-6">
             Official Biometric Compliance Standards

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
+import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd } from '@/components/JsonLd';
 import { pdfCompressorFaqs } from '@/data/faqs';
 
 const TITLE = 'Free PDF Compressor Online - Reduce File Size Up to 75% | Compixor AI';
@@ -49,6 +49,25 @@ export const metadata: Metadata = {
   },
 };
 
+const pdfCompressorHowToSteps = [
+  {
+    name: 'Upload PDF Document(s)',
+    text: 'Drop or select up to 5 PDF files at once. All processing takes place locally in your browser memory.',
+  },
+  {
+    name: 'Select Compression Level',
+    text: 'Choose Balanced (recommended for emails and portals), Extreme (maximum size reduction), or High Quality Print.',
+  },
+  {
+    name: 'Optimize in Browser',
+    text: 'Compixor strips redundant objects and optimizes image streams without converting text pages into blurry raster images.',
+  },
+  {
+    name: 'Download Compressed Files',
+    text: 'Save your compressed PDF or download a single ZIP archive containing all optimized files.',
+  },
+];
+
 export default function PdfCompressorLayout({
   children,
 }: {
@@ -64,8 +83,6 @@ export default function PdfCompressorLayout({
         operatingSystem="Any/Web"
         price="0"
         priceCurrency="USD"
-        ratingValue="4.9"
-        reviewCount="1280"
         featureList={[
           '100% Client-Side In-Browser Compression',
           'Native Stream Optimization & Vector Text Preservation',
@@ -80,6 +97,12 @@ export default function PdfCompressorLayout({
           { name: 'Tools', url: 'https://compixor-ai.vercel.app/#tools' },
           { name: 'Free PDF Compressor', url: CANONICAL_URL },
         ]}
+      />
+      <HowToJsonLd
+        name="How to Compress PDF Files Online Without Quality Loss"
+        description="Step-by-step instructions on reducing PDF file sizes with local vector stream optimization."
+        steps={pdfCompressorHowToSteps}
+        totalTime="PT30S"
       />
       <FaqJsonLd faqs={pdfCompressorFaqs} />
       {children}
