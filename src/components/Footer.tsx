@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, ShieldCheck, Heart, ArrowUpRight } from 'lucide-react';
+import { Sparkles, ShieldCheck, Heart, ArrowUpRight, MessageSquarePlus } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -148,6 +148,37 @@ export default function Footer() {
                 >
                   Terms of Service
                 </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.dispatchEvent(
+                        new CustomEvent('compixor:open-feedback', { detail: { category: 'request' } })
+                      );
+                    }
+                  }}
+                  className="text-sm text-brand-600 dark:text-brand-400 hover:underline inline-flex items-center gap-1.5"
+                >
+                  <MessageSquarePlus className="w-3.5 h-3.5" />
+                  <span>Request a Tool</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.dispatchEvent(
+                        new CustomEvent('compixor:open-feedback', { detail: { category: 'feedback' } })
+                      );
+                    }
+                  }}
+                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                >
+                  Give Feedback
+                </button>
               </li>
             </ul>
           </div>

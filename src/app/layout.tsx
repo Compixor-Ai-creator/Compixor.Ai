@@ -4,6 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import FeedbackWidget from '@/components/FeedbackWidget';
 import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -374,6 +375,7 @@ export default function RootLayout({
 
             <Footer />
           </div>
+          <FeedbackWidget />
           <Toaster
             position="bottom-right"
             toastOptions={{
