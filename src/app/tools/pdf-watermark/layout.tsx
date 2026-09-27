@@ -13,6 +13,13 @@ export const metadata: Metadata = {
     'vector pdf watermark',
     'image watermark pdf',
     'private pdf watermarking',
+    'add logo to pdf online free',
+    'pdf confidential stamp online',
+    'remove text watermark from pdf online',
+    'batch add watermark to pdf',
+    'erase draft stamp from pdf free',
+    'transparent watermark for pdf online',
+    'watermark pdf pages without adobe acrobat',
   ],
   alternates: {
     canonical: 'https://compixor-ai.vercel.app/tools/pdf-watermark',

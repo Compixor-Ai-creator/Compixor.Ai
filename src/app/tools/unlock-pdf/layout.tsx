@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     'remove owner password pdf',
     'pdf password remover no upload',
     'unlock protected pdf free',
+    'remove password security from pdf online',
+    'how to unlock pdf file without adobe acrobat',
+    'enable printing on locked pdf online free',
+    'decrypt password protected pdf in browser',
+    'pdf permission remover online free',
+    'unrestrict locked pdf file online',
   ],
   alternates: {
     canonical: CANONICAL_URL,

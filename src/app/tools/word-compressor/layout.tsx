@@ -21,6 +21,13 @@ export const metadata: Metadata = {
     'compress word document without losing quality',
     'private word compressor',
     'client side docx compressor',
+    'compress word file to 100kb online free',
+    'reduce docx size for email attachment',
+    'compress large word document online free',
+    'how to make word file size smaller without losing images',
+    'compress docx without word software',
+    'batch compress word files online free',
+    'online docx file size reducer free',
   ],
   alternates: {
     canonical: CANONICAL_URL,

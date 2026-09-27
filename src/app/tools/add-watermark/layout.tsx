@@ -22,6 +22,13 @@ export const metadata: Metadata = {
     'watermark pdf no signup',
     'private pdf watermark tool',
     'batch watermark pdf',
+    'how to put logo on pdf online free',
+    'add confidential watermark to pdf free',
+    'watermark pdf pages online without acrobat',
+    'custom watermark generator for pdf',
+    'protect pdf with watermark online',
+    'add draft stamp to pdf free',
+    'transparent png logo watermark pdf',
   ],
   alternates: {
     canonical: CANONICAL_URL,

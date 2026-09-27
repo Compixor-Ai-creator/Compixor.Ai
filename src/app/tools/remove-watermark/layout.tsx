@@ -21,6 +21,13 @@ export const metadata: Metadata = {
     'free pdf watermark eraser',
     'remove stamp from pdf',
     'no upload watermark remover',
+    'remove text watermark from pdf online free',
+    'remove camscanner watermark from pdf free',
+    'online pdf watermark cleaner without registration',
+    'erase draft stamp from pdf file',
+    'how to remove background watermark from pdf',
+    'delete watermark from downloaded pdf',
+    'remove watermark from scanned pdf online',
   ],
   alternates: {
     canonical: CANONICAL_URL,

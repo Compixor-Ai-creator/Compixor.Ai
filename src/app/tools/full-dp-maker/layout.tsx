@@ -22,6 +22,13 @@ export const metadata: Metadata = {
     'square dp maker online',
     'whatsapp full dp free',
     'crop-free profile picture maker',
+    'whatsapp profile picture full size online',
+    'instagram dp without cropping online free',
+    'fit entire photo in whatsapp dp',
+    'make square photo for instagram online free',
+    'blur background photo frame for whatsapp dp',
+    'post full size photo on instagram without crop',
+    'profile picture maker with blur background free',
   ],
   alternates: {
     canonical: CANONICAL_URL,

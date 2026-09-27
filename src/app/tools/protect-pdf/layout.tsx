@@ -21,6 +21,12 @@ export const metadata: Metadata = {
     'secure pdf online no upload',
     'pdf permission password',
     'lock pdf file online free',
+    'set password to pdf file online free',
+    'how to lock pdf without adobe acrobat',
+    'prevent copying from pdf file online',
+    'secure confidential pdf online',
+    'offline client side pdf encryptor',
+    'block printing and editing pdf online free',
   ],
   alternates: {
     canonical: CANONICAL_URL,
