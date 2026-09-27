@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd } from '@/components/JsonLd';
 import { passportPhotoFaqs } from '@/data/faqs';
 
-const TITLE = 'Passport Size Photo Maker Online Free - NADRA & US Visa | Compixor AI';
+const TITLE = 'Free Passport Photo Maker Online - 9 Countries, Auto Background | Compixor AI';
 const DESCRIPTION =
-  'Create passport size photos online free with a white background — NADRA, US Visa & Schengen compliant. True zero-server privacy, no signup, 300 DPI printable sheet.';
+  'Create compliant passport & ID photos online free — auto background removal, biometric alignment, printable sheet with cut marks. Supports US, UK, Pakistan NADRA, India, Canada & more. 100% private, no uploads.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/passport-photo';
 
 export const metadata: Metadata = {
@@ -13,19 +13,17 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   keywords: [
+    'passport photo maker',
+    'passport photo online free',
+    'id photo maker online',
     'passport size photo maker',
-    'passport size photo maker online free',
-    'passport size photo maker free',
-    'passport size photo maker with white background',
-    'best free online passport photo maker',
-    'create passport size photo online free',
-    'online passport size photo maker',
-    'passport size photo size in cm',
-    'nadra passport photo maker',
-    'cnic photo online',
-    'nicop photo online',
-    '35x45mm photo maker',
-    'pakistan passport photo online',
+    'nadra photo requirements',
+    'passport photo background remover',
+    'visa photo maker free',
+    'printable passport photo',
+    'biometric photo maker',
+    'passport photo size checker',
+    'id photo background remover free',
   ],
   alternates: {
     canonical: CANONICAL_URL,
@@ -40,7 +38,7 @@ export const metadata: Metadata = {
         url: '/images/og-banner.png',
         width: 1200,
         height: 630,
-        alt: 'Passport Size Photo Maker Online Free - Compixor AI',
+        alt: 'Free Passport Photo Maker Online - Compixor AI',
       },
     ],
   },

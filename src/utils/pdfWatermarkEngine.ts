@@ -1121,7 +1121,8 @@ export async function stripDigitalWatermarks(
   // many pages it appears on. Tokens seen on ≥3 pages (or all pages in short PDFs)
   // are flagged as watermark candidates and targeted for removal below.
   const textPageCount = new Map<string, number>(); // token → page count
-  const minRepeatPages = Math.max(2, Math.min(3, pages.length)); // 2 for 2-page, 3 for 3+
+  // Tokens must appear on at least 2 pages to be considered repeating watermarks
+  const minRepeatPages = Math.max(2, Math.min(3, pages.length));
 
   for (const pg of pages) {
     const pgContents = pg.node.get(PDFName.of('Contents'));
@@ -1526,8 +1527,11 @@ export async function stripDigitalWatermarks(
 
       // Strip invocations of candidate watermark XObjects
       for (const wmKey of Array.from(watermarkXObjKeys)) {
+        // Escape wmKey before using in RegExp — prevents ReDoS if PDF has
+        // maliciously crafted XObject names with regex metacharacters (e.g. "+++*?")
+        const safeWmKey = wmKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const doRegex = new RegExp(
-          `(?:q\\s*)?(?:[0-9.-]+\\s+){6}cm\\s*\\/${wmKey}\\s+Do(?:\\s*Q)?|\\/${wmKey}\\s+Do`,
+          `(?:q\\s*)?(?:[0-9.-]+\\s+){6}cm\\s*\\/${safeWmKey}\\s+Do(?:\\s*Q)?|\\/${safeWmKey}\\s+Do`,
           'g'
         );
         if (doRegex.test(modifiedText)) {
@@ -1573,10 +1577,11 @@ export async function stripDigitalWatermarks(
       });
 
       // ── SAFE INLINE WATERMARK REMOVAL ─────────────────────────────────────
-      // Only surgically remove small isolated watermark blocks (<300 chars)
-      // that are explicitly angled or low-opacity.
+      // Surgically remove small isolated watermark blocks (<400 chars)
+      // that are explicitly angled, low-opacity, or contain watermark keywords.
       // NEVER delete large BT..ET blocks (>400 chars) as they contain page content/tables!
-      if (lowOpacityGsKeys.size > 0 || hasAngledText(modifiedText)) {
+      const hasWatermarkKw = /watermark|confidential|sample|draft|copy|compixor/i.test(modifiedText);
+      if (lowOpacityGsKeys.size > 0 || hasAngledText(modifiedText) || hasWatermarkKw) {
         modifiedText = modifiedText.replace(/BT[\s\S]*?ET/g, (block) => {
           // Safety 1: Never touch any block longer than 400 characters (real page content)
           if (block.length > 400) return block;
@@ -1584,13 +1589,30 @@ export async function stripDigitalWatermarks(
           const tjCount = (block.match(/Tj|TJ/g) || []).length;
           if (tjCount > 3) return block; // Real content has many text items, watermarks have 1-2
 
-          // Only remove if this specific small block is angled OR uses a low-opacity gs
+          // Only remove if this specific small block is angled, uses low-opacity gs, or matches watermark keywords
           const blockIsAngled = hasAngledText(block);
           const blockUsesLowOpacity = Array.from(lowOpacityGsKeys).some((k) =>
             new RegExp(`\\/${k}\\s+gs`).test(block)
           );
 
-          if (blockIsAngled || blockUsesLowOpacity) {
+          let blockHasKw = false;
+          if (/watermark|confidential|sample|draft|compixor/i.test(block)) {
+            blockHasKw = true;
+          } else {
+            const { blocks: textTokens } = extractTextFromStream(block);
+            for (const token of textTokens) {
+              if (
+                /^(confidential|draft|sample|watermark|copy|do not copy|for review only|not for sale)$/i.test(
+                  token.trim()
+                )
+              ) {
+                blockHasKw = true;
+                break;
+              }
+            }
+          }
+
+          if (blockIsAngled || blockUsesLowOpacity || blockHasKw) {
             removedCount++;
             streamModified = true;
             return '';

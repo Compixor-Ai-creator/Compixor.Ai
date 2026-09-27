@@ -29,24 +29,8 @@ import FaqSection from '@/components/FaqSection';
 import PdfSecurityIllustration from '@/components/PdfSecurityIllustration';
 import { protectPdfFaqs, unlockPdfFaqs } from '@/data/faqs';
 
-// ─── Lazy imports ──────────────────────────────────────────────────────────────
-async function getPdfLib() {
-  return await import('pdf-lib');
-}
-
-async function getPdfEncrypt() {
-  // pdf-lib-encrypt: configure(pdfLib), lock(bytes, pw), unlockInPlace(pdfDoc, pw)
-  return await import('pdf-lib-encrypt');
-}
-
-// ─── Helpers ───────────────────────────────────────────────────────────────────
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
-}
+import { formatFileSize, validatePdfFile, isPdfPasswordError } from '@/utils/fileHelpers';
+import { getPdfLib, getPdfEncrypt } from '@/utils/pdfLoader';
 
 type ActiveMode = 'protect' | 'unlock';
 
@@ -136,8 +120,9 @@ export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: Ac
 
   // ── File handlers ──────────────────────────────────────────────────────────
   const acceptFile = useCallback((incoming: File) => {
-    if (!incoming.name.toLowerCase().endsWith('.pdf') && incoming.type !== 'application/pdf') {
-      toast.error('Please select a valid PDF file.');
+    const validationError = validatePdfFile(incoming, 100);
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
     setFile(incoming);
@@ -289,8 +274,8 @@ export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: Ac
       const errMsg = err instanceof Error ? err.message : 'Failed to unlock PDF.';
       // User-friendly messages
       let displayMsg = errMsg;
-      if (errMsg.toLowerCase().includes('wrong password') || errMsg.toLowerCase().includes('incorrect')) {
-        displayMsg = 'Incorrect password. Please check and try again.';
+      if (isPdfPasswordError(err) || errMsg.toLowerCase().includes('wrong password') || errMsg.toLowerCase().includes('incorrect')) {
+        displayMsg = 'Incorrect password or decryption failed. Please check and try again.';
       } else if (errMsg.toLowerCase().includes('not encrypted')) {
         displayMsg = 'This PDF does not appear to be password-protected.';
       }

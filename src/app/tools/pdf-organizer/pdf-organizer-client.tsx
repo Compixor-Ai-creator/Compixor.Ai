@@ -42,18 +42,9 @@ import { toast } from 'sonner';
 import RelatedPdfTools from '@/components/RelatedPdfTools';
 import { pdfOrganizerFaqs } from '@/data/faqs';
 
-async function getPdfLib() {
-  return await import('pdf-lib');
-}
+import { formatFileSize, validatePdfFile } from '@/utils/fileHelpers';
+import { getPdfLib, getPdfJs } from '@/utils/pdfLoader';
 
-// Helper to format bytes
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
-}
 
 // Types
 interface MergeFileItem {
@@ -184,14 +175,6 @@ interface RangeValidation {
   warning?: string;
 }
 
-// PDF.js loader with CDN worker
-async function getPdfJs() {
-  const pdfjs = await import('pdfjs-dist');
-  if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-  }
-  return pdfjs;
-}
 
 // Render first page thumbnail for Merge list
 async function renderFirstPageThumbnail(arrayBuffer: ArrayBuffer): Promise<{ thumbnailUrl: string | null; pageCount: number }> {
@@ -492,6 +475,8 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
     e.stopPropagation();
     mergeDragCounterRef.current = 0;
     setIsMergeDragOver(false);
+    dragCounterRef.current = 0;
+    setIsDraggingGlobal(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       processNewMergeFiles(Array.from(e.dataTransfer.files));
     }

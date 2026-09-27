@@ -133,7 +133,7 @@ export default function FeedbackWidget() {
       `User Agent: ${typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A'}`,
     ].join('\n');
 
-    return `mailto:support@compixor.ai?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `mailto:support@compixor-ai.online?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }, [activeCategoryConfig, pathname, email, message]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -457,6 +457,16 @@ export default function FeedbackWidget() {
                           )}
                         </button>
                       </div>
+
+                      <p className="text-[11px] text-zinc-500 dark:text-zinc-400 text-center sm:text-left">
+                        Direct email:{' '}
+                        <a
+                          href="mailto:support@compixor-ai.online"
+                          className="text-brand-600 dark:text-brand-400 font-mono hover:underline font-medium"
+                        >
+                          support@compixor-ai.online
+                        </a>
+                      </p>
                     </div>
 
                     {/* Modal Footer Controls */}

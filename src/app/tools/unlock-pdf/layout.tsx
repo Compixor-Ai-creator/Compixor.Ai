@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd } from '@/components/JsonLd';
 import { unlockPdfFaqs } from '@/data/faqs';
 
-const TITLE = 'Unlock PDF Online - Remove PDF Password & Restrictions Free | Compixor AI';
+const TITLE = 'Unlock PDF Online Free - Remove Password & Restrictions | Compixor AI';
 const DESCRIPTION =
-  'Unlock password protected PDF files online. Remove passwords and permissions locally in seconds with 100% client-side privacy. Zero server uploads.';
+  'Remove password protection and restrictions from your PDF online free — instant, private, no server upload. Note: you must know the existing password to unlock.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/unlock-pdf';
 
 export const metadata: Metadata = {
@@ -13,13 +13,13 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   keywords: [
-    'unlock pdf',
-    'remove pdf password',
+    'unlock pdf online free',
+    'remove pdf password online',
+    'remove pdf restrictions free',
     'decrypt pdf online',
-    'free pdf unlocker',
-    'remove restrictions from pdf',
-    'pdf password remover',
-    'client-side pdf decrypt',
+    'remove owner password pdf',
+    'pdf password remover no upload',
+    'unlock protected pdf free',
   ],
   alternates: {
     canonical: CANONICAL_URL,
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
         url: '/images/og-banner.png',
         width: 1200,
         height: 630,
-        alt: 'Unlock PDF Online - Compixor AI',
+        alt: 'Unlock PDF Online Free - Compixor AI',
       },
     ],
   },

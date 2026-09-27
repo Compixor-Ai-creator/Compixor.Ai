@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
 import { addWatermarkFaqs } from '@/data/faqs';
 
-const TITLE = 'Add Watermark to PDF Online Free - Text & Image Watermark | Compixor AI';
+const TITLE = 'Add Watermark to PDF Online Free - Text & Logo Stamp | Compixor AI';
 const DESCRIPTION =
-  'Add custom text or image watermarks to your PDF with opacity and rotation controls. Free, fast, 100% client-side — no uploads.';
+  'Add a text or logo watermark to your PDF online free — control opacity, rotation & position. 100% client-side, vector-sharp, no upload, no signup required.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/add-watermark';
 
 export const metadata: Metadata = {
@@ -14,12 +14,14 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   keywords: [
     'add watermark to pdf',
-    'pdf watermark online',
-    'add text watermark pdf',
-    'add logo to pdf free',
-    'stamp pdf watermark',
-    'vector watermark pdf',
+    'pdf watermark online free',
+    'add logo watermark pdf',
+    'stamp pdf online',
     'confidential stamp pdf',
+    'add text watermark to pdf free',
+    'watermark pdf no signup',
+    'private pdf watermark tool',
+    'batch watermark pdf',
   ],
   alternates: {
     canonical: CANONICAL_URL,

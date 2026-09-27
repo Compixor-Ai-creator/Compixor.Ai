@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
 import { removeWatermarkFaqs } from '@/data/faqs';
 
-const TITLE = 'PDF Watermark Remover Online Free - No Login Required | Compixor AI';
+const TITLE = 'Remove Watermark from PDF Online Free - Lossless | Compixor AI';
 const DESCRIPTION =
-  'Remove watermarks, logos, and stamps from PDF files free online. No login, no upload, no software — 100% private and instant.';
+  'Remove watermarks from PDF files online free — lossless removal, no quality loss, no server upload. Works on text and image watermarks. 100% private and browser-based.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/remove-watermark';
 
 export const metadata: Metadata = {
@@ -13,15 +13,14 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   keywords: [
-    'pdf watermark remover',
-    'pdf watermark remover online',
-    'pdf watermark remover free',
-    'pdf watermark remover online free',
-    'pdf watermark remover online free without login',
-    'remove watermark from pdf online',
-    'pdf file watermark remover',
-    'pdf background watermark remover',
-    'delete pdf watermark online',
+    'remove watermark from pdf',
+    'pdf watermark remover free online',
+    'delete watermark pdf',
+    'erase watermark from pdf',
+    'remove watermark without losing quality',
+    'free pdf watermark eraser',
+    'remove stamp from pdf',
+    'no upload watermark remover',
   ],
   alternates: {
     canonical: CANONICAL_URL,
@@ -36,7 +35,7 @@ export const metadata: Metadata = {
         url: '/images/og-banner.png',
         width: 1200,
         height: 630,
-        alt: 'PDF Watermark Remover Online Free - Compixor AI',
+        alt: 'Remove Watermark from PDF Online Free - Compixor AI',
       },
     ],
   },
@@ -56,7 +55,7 @@ export default function RemoveWatermarkLayout({
   return (
     <>
       <SoftwareAppJsonLd
-        name="PDF Watermark Remover Online Free"
+        name="Remove Watermark from PDF Online Free"
         description={DESCRIPTION}
         url={CANONICAL_URL}
         applicationCategory="Utility"

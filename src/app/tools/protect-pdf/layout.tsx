@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { SoftwareAppJsonLd, BreadcrumbJsonLd, FaqJsonLd, HowToJsonLd } from '@/components/JsonLd';
 import { protectPdfFaqs } from '@/data/faqs';
 
-const TITLE = 'Protect PDF Online - Add Password & AES-256 Encryption Free | Compixor AI';
+const TITLE = 'Password Protect PDF Online Free - AES-256 Encryption | Compixor AI';
 const DESCRIPTION =
-  'Password protect your PDF files online for free. Add AES-256 open passwords and permission restrictions with 100% client-side privacy. Zero server uploads.';
+  'Password protect your PDF online free with AES-256 encryption — restrict printing, copying & editing separately. 100% client-side, your password never leaves your browser.';
 const CANONICAL_URL = 'https://compixor-ai.vercel.app/tools/protect-pdf';
 
 export const metadata: Metadata = {
@@ -13,13 +13,14 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   keywords: [
-    'protect pdf',
-    'password protect pdf',
+    'password protect pdf online free',
     'encrypt pdf online',
-    'free pdf protector',
-    'add password to pdf',
-    'pdf security online',
-    'client-side pdf encryption',
+    'aes 256 pdf encryption',
+    'add password to pdf free',
+    'restrict pdf editing',
+    'secure pdf online no upload',
+    'pdf permission password',
+    'lock pdf file online free',
   ],
   alternates: {
     canonical: CANONICAL_URL,
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
         url: '/images/og-banner.png',
         width: 1200,
         height: 630,
-        alt: 'Protect PDF Online - Compixor AI',
+        alt: 'Password Protect PDF Online Free - Compixor AI',
       },
     ],
   },

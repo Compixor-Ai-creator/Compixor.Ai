@@ -61,23 +61,9 @@ import {
   calculateImagePositions,
 } from '@/utils/pdfWatermarkEngine';
 
-// PDF.js dynamic loader
-async function getPdfJs() {
-  const pdfjs = await import('pdfjs-dist');
-  if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-  }
-  return pdfjs;
-}
+import { formatFileSize, validatePdfFile } from '@/utils/fileHelpers';
+import { getPdfJs } from '@/utils/pdfLoader';
 
-// Helper to format file sizes
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
-}
 
 const STORAGE_KEY = 'compixor_watermark_settings_v2';
 
@@ -244,10 +230,20 @@ export default function PdfWatermarkClient({
     });
   }, []);
 
+  // Cleanup image preview object URL to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
+    };
+  }, [imagePreviewUrl]);
+
   // Handle PDF file upload
   const handlePdfUpload = useCallback(async (file: File) => {
-    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-      toast.error('Please upload a valid PDF document.');
+    const validationError = validatePdfFile(file, 150);
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
 
@@ -620,9 +616,12 @@ export default function PdfWatermarkClient({
     setZoomMode((prev) => (prev === 'fit-page' ? '100' : 'fit-page'));
   };
 
-  // Re-render canvas when parameters change
+  // Re-render canvas when parameters change (debounced 150ms to keep slider interactions responsive)
   useEffect(() => {
-    renderCanvasPreview();
+    const timer = setTimeout(() => {
+      renderCanvasPreview();
+    }, 150);
+    return () => clearTimeout(timer);
   }, [renderCanvasPreview]);
 
   // Apply Text or Image Watermark
