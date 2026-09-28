@@ -179,6 +179,7 @@ export default function PdfWatermarkClient({
 
   // Generic Removal State
   const [searchString, setSearchString] = useState<string>('');
+  const [detectedWatermarks, setDetectedWatermarks] = useState<string[]>([]);
   const [manualToolMode, setManualToolMode] = useState<'pointer' | 'draw-box'>('pointer');
   const [selectionBox, setSelectionBox] = useState<{
     startX: number;
@@ -264,26 +265,59 @@ export default function PdfWatermarkClient({
       setSelectionBox(null);
 
       // In Remove mode, auto-strip digital watermarks on upload (True 1-Click removal like DPDF)
+      let currentBytes: Uint8Array = uint8;
+      let currentDoc = doc;
+
       if (activeMode === 'remove') {
         try {
-          setStatusMessage('Auto-detecting and stripping watermarks...');
+          setStatusMessage('Auto-detecting and stripping digital watermarks...');
           const { pdfBytes: cleaned, removedCount } = await stripDigitalWatermarks(uint8);
           if (removedCount > 0) {
-            setPdfBytes(cleaned);
+            currentBytes = cleaned;
             const cleanedTask = pdfjs.getDocument({ data: cleaned.slice(0) });
-            const cleanedDoc = await cleanedTask.promise;
-            setPdfDocProxy(cleanedDoc);
+            currentDoc = await cleanedTask.promise;
             toast.success(`1-Click Auto-Strip: Removed ${removedCount} watermark layer(s)!`);
-            return;
           }
         } catch (stripErr) {
           console.warn('Auto-strip on upload skipped:', stripErr);
         }
       }
 
-      setPdfBytes(uint8);
-      setPdfDocProxy(doc);
-      toast.success(`Loaded "${file.name}" (${doc.numPages} pages)`);
+      // Scan for any remaining diagonal watermark text using PDF.js text layer
+      try {
+        const foundTokens = new Set<string>();
+        const scanPages = Math.min(3, currentDoc.numPages);
+        for (let p = 1; p <= scanPages; p++) {
+          const page = await currentDoc.getPage(p);
+          const textContent = await page.getTextContent();
+          for (const item of textContent.items as any[]) {
+            const str = (item.str || '').trim();
+            if (str.length < 3) continue;
+            const t = item.transform;
+            if (t && t.length >= 4) {
+              const a = t[0];
+              const b = t[1];
+              const rad = Math.atan2(b, a);
+              const deg = ((rad * 180) / Math.PI + 360) % 360;
+              const absAngle = deg <= 180 ? deg : 360 - deg;
+              if ((absAngle >= 10 && absAngle <= 80) || (absAngle >= 100 && absAngle <= 170)) {
+                foundTokens.add(str);
+              }
+            }
+          }
+        }
+        const detected = Array.from(foundTokens);
+        setDetectedWatermarks(detected);
+        if (detected.length > 0 && !searchString) {
+          setSearchString(detected[0]);
+        }
+      } catch (scanErr) {
+        console.warn('Watermark scan error:', scanErr);
+      }
+
+      setPdfBytes(currentBytes);
+      setPdfDocProxy(currentDoc);
+      toast.success(`Loaded "${file.name}" (${currentDoc.numPages} pages)`);
     } catch (err: any) {
       console.error('Error loading PDF:', err);
       toast.error(err.message || 'Failed to open PDF document.');
@@ -730,25 +764,26 @@ export default function PdfWatermarkClient({
   };
 
   // Remove Generic Watermark by Matching Search String
-  const handleRemoveGenericText = async () => {
+  const handleRemoveGenericText = async (targetOverride?: string) => {
     if (!pdfBytes) return;
-    if (!searchString.trim()) {
+    const target = (typeof targetOverride === 'string' ? targetOverride : searchString).trim();
+    if (!target) {
       toast.error('Please enter the watermark text to search and remove.');
       return;
     }
 
     try {
       setIsProcessing(true);
-      setStatusMessage(`Scanning content streams for "${searchString}"...`);
+      setStatusMessage(`Scanning content streams for "${target}"...`);
 
       const { pdfBytes: cleaned, matchesRemoved } = await removeGenericTextWatermark(
         pdfBytes,
-        searchString
+        target
       );
 
       if (matchesRemoved === 0) {
         toast.warning(
-          `No vector text matching "${searchString}" found. The text might be encoded as an image or scanned bitmap.`
+          `No vector text matching "${target}" found. The text might be encoded as an image or scanned bitmap.`
         );
       } else {
         setPdfBytes(cleaned);
@@ -756,7 +791,8 @@ export default function PdfWatermarkClient({
         const loadingTask = pdfjs.getDocument({ data: cleaned.slice(0) });
         const updatedDoc = await loadingTask.promise;
         setPdfDocProxy(updatedDoc);
-        toast.success(`Removed ${matchesRemoved} matching text block(s)!`);
+        setDetectedWatermarks((prev) => prev.filter((w) => w.toLowerCase() !== target.toLowerCase()));
+        toast.success(`Removed ${matchesRemoved} matching text block(s) for "${target}"!`);
       }
     } catch (err: any) {
       toast.error('Failed to remove text: ' + err.message);
@@ -929,6 +965,8 @@ export default function PdfWatermarkClient({
     setPageCount(0);
     setCurrentPage(1);
     setSelectionBox(null);
+    setDetectedWatermarks([]);
+    setSearchString('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -2014,8 +2052,8 @@ export default function PdfWatermarkClient({
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-                          Lossless structural stripping: removes /Stamp annotations, /Watermark subtypes,
-                          transparent overlay images (SMask), low-opacity /ExtGState, /Artifact streams, and Compixor tags.
+                          Lossless structural stripping: eliminates diagonal &amp; red-ink overlays, /Stamp annotations,
+                          transparent Form XObjects, low-opacity /ExtGState, /Artifact streams, and repeat watermarks.
                         </p>
                       </div>
                     </div>
@@ -2042,16 +2080,47 @@ export default function PdfWatermarkClient({
                       </p>
                     </div>
 
+                    {detectedWatermarks.length > 0 && (
+                      <div className="p-3 bg-brand-500/10 dark:bg-brand-500/15 border border-brand-500/30 rounded-xl flex flex-col gap-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-bold text-brand-600 dark:text-brand-400 flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>Detected Watermark Candidate:</span>
+                          </span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400">1-Click Auto-Erase</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {detectedWatermarks.map((wm, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => {
+                                setSearchString(wm);
+                                handleRemoveGenericText(wm);
+                              }}
+                              disabled={isProcessing}
+                              className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white dark:bg-slate-800 border border-brand-500/40 text-brand-600 dark:text-brand-300 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center gap-2 shadow-2xs cursor-pointer group disabled:opacity-50"
+                            >
+                              <span className="text-slate-900 dark:text-white font-mono">&ldquo;{wm}&rdquo;</span>
+                              <span className="px-1.5 py-0.5 rounded text-[10px] bg-brand-500 text-white font-semibold group-hover:bg-brand-600 transition">
+                                Erase
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex gap-2">
                       <input
                         type="text"
                         value={searchString}
                         onChange={(e) => setSearchString(e.target.value)}
-                        placeholder="e.g. DRAFT or CONFIDENTIAL"
+                        placeholder="e.g. FARAZ TAHIR or CONFIDENTIAL"
                         className="flex-1 text-xs px-3.5 py-2.5 bg-slate-50/90 dark:bg-slate-850/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-900 dark:text-white placeholder:text-slate-400 shadow-2xs"
                       />
                       <button
-                        onClick={handleRemoveGenericText}
+                        onClick={() => handleRemoveGenericText()}
                         disabled={isProcessing || !searchString.trim()}
                         className="px-4 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white rounded-xl disabled:opacity-50 transition cursor-pointer shadow-2xs"
                       >

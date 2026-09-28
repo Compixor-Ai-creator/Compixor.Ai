@@ -756,6 +756,116 @@ export async function removeCompixorWatermarks(
  * Mode A: Remove text blocks matching a specific string from content stream.
  * Mode B: Redact / erase bounding box (clean vector patch).
  */
+/**
+ * Helper to decode PDF hex string (<464152415A...> or <00460041...>) into readable ASCII
+ */
+function decodePdfHexString(hex: string): string {
+  hex = hex.trim();
+  // Check UTF-16BE (2 bytes per char: 0046 0041 ...)
+  if (hex.length >= 4 && hex.length % 4 === 0) {
+    let s = '';
+    for (let i = 0; i < hex.length; i += 4) {
+      const charCode = parseInt(hex.substring(i, i + 4), 16);
+      if (charCode >= 32 && charCode <= 126) {
+        s += String.fromCharCode(charCode);
+      }
+    }
+    if (s.length > 0) return s;
+  }
+  // Standard 1-byte hex (46 41 52 ...)
+  let s = '';
+  for (let i = 0; i < hex.length; i += 2) {
+    const charCode = parseInt(hex.substring(i, i + 2), 16);
+    if (charCode >= 32 && charCode <= 126) {
+      s += String.fromCharCode(charCode);
+    }
+  }
+  return s;
+}
+
+/**
+ * Extracts all plain text tokens from a PDF block (joining TJ arrays, hex strings, and literals)
+ */
+function extractFullTextFromBlock(block: string): string {
+  const parts: string[] = [];
+  // Literal strings: (Hello World)
+  const litRegex = /\(([^)]*)\)/g;
+  let m: RegExpExecArray | null;
+  while ((m = litRegex.exec(block)) !== null) {
+    parts.push(m[1].replace(/\\(.)/g, '$1'));
+  }
+  // Hex strings: <4641...>
+  const hexRegex = /<([0-9a-fA-F]+)>/g;
+  while ((m = hexRegex.exec(block)) !== null) {
+    parts.push(decodePdfHexString(m[1]));
+  }
+  return parts.join(' ').trim();
+}
+
+/**
+ * Clean a content stream string by stripping any q...Q or BT...ET block that matches searchTarget
+ */
+export function stripTargetFromStreamText(
+  streamText: string,
+  searchTarget: string
+): { modifiedText: string; removed: number } {
+  const cleanTarget = searchTarget.toLowerCase().replace(/[\s\-_]+/g, '');
+  if (!cleanTarget) return { modifiedText: streamText, removed: 0 };
+
+  const targetWords = searchTarget
+    .toLowerCase()
+    .split(/[\s\-_]+/)
+    .filter((w) => w.length >= 3);
+
+  let removed = 0;
+
+  // 1. Check isolated q ... Q graphic state blocks first (< 2000 chars)
+  let modifiedText = streamText.replace(/q[\s\S]*?Q/g, (qBlock) => {
+    if (qBlock.length > 2000) return qBlock;
+    const extracted = extractFullTextFromBlock(qBlock).toLowerCase().replace(/[\s\-_]+/g, '');
+    const rawTokens = qBlock.toLowerCase().replace(/[\s\-_]+/g, '');
+
+    const matchesClean = extracted.includes(cleanTarget) || rawTokens.includes(cleanTarget);
+    const matchesAllWords =
+      targetWords.length > 1 &&
+      targetWords.every((w) => extracted.includes(w) || rawTokens.includes(w));
+
+    if (matchesClean || matchesAllWords) {
+      removed++;
+      return '';
+    }
+    return qBlock;
+  });
+
+  // 2. Next check any remaining BT ... ET text blocks (< 1500 chars)
+  modifiedText = modifiedText.replace(/BT[\s\S]*?ET/g, (btBlock) => {
+    if (btBlock.length > 1500) return btBlock;
+    const extracted = extractFullTextFromBlock(btBlock).toLowerCase().replace(/[\s\-_]+/g, '');
+    const rawTokens = btBlock.toLowerCase().replace(/[\s\-_]+/g, '');
+
+    const matchesClean = extracted.includes(cleanTarget) || rawTokens.includes(cleanTarget);
+    const matchesAllWords =
+      targetWords.length > 1 &&
+      targetWords.every((w) => extracted.includes(w) || rawTokens.includes(w));
+
+    if (matchesClean || matchesAllWords) {
+      removed++;
+      return '';
+    }
+    return btBlock;
+  });
+
+  // 3. Fallback check for unbracketed or standalone Tj / TJ lines
+  const escaped = searchTarget.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const tjRegex = new RegExp(`\\([^)]*${escaped}[^)]*\\)\\s*Tj`, 'gi');
+  modifiedText = modifiedText.replace(tjRegex, () => {
+    removed++;
+    return '() Tj';
+  });
+
+  return { modifiedText, removed };
+}
+
 export async function removeGenericTextWatermark(
   pdfBytes: ArrayBuffer | Uint8Array,
   searchString: string,
@@ -773,10 +883,10 @@ export async function removeGenericTextWatermark(
   for (const pageIdx of targetPages) {
     if (pageIdx < 0 || pageIdx >= pages.length) continue;
     const page = pages[pageIdx];
+
+    // Collect all content stream refs
     const contentsKey = PDFName.of('Contents');
     const contents = page.node.get(contentsKey);
-    if (!contents) continue;
-
     const streamRefs: PDFRef[] = [];
     if (contents instanceof PDFRef) {
       const deref = doc.context.lookup(contents);
@@ -795,6 +905,7 @@ export async function removeGenericTextWatermark(
       }
     }
 
+    // 1. Process page /Contents streams
     for (const ref of streamRefs) {
       const obj = doc.context.lookup(ref);
       if (!(obj instanceof PDFStream || obj instanceof PDFRawStream)) continue;
@@ -807,107 +918,97 @@ export async function removeGenericTextWatermark(
       }
       if (!rawBytes) continue;
 
-      const isFlate = obj.dict.get(PDFName.of('Filter')) === PDFName.of('FlateDecode');
+      const isFlate = obj.dict.get(PDFName.of('Filter'))?.toString() === '/FlateDecode';
       let streamText = '';
       try {
-        if (isFlate) {
-          const inflated = pako.inflate(rawBytes);
-          streamText = new TextDecoder().decode(inflated);
-        } else {
-          streamText = new TextDecoder().decode(rawBytes);
-        }
+        streamText = isFlate ? new TextDecoder().decode(pako.inflate(rawBytes)) : new TextDecoder().decode(rawBytes);
       } catch {
         continue;
       }
 
-      // Check if searchString appears in stream (either literal or hex-encoded)
-      const searchLower = searchString.trim().toLowerCase();
-      const hexSearch = Array.from(new TextEncoder().encode(searchString.trim()))
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('')
-        .toLowerCase();
+      const { modifiedText, removed } = stripTargetFromStreamText(streamText, searchString);
+      if (removed > 0) {
+        matchesRemoved += removed;
+        const modifiedBytes = new TextEncoder().encode(modifiedText);
+        const newStream = isFlate
+          ? doc.context.stream(pako.deflate(modifiedBytes), { Filter: 'FlateDecode' })
+          : doc.context.stream(modifiedBytes);
+        doc.context.assign(ref, newStream);
+      }
+    }
 
-      // Decode hex strings like <436F6E66...> or <004C002F...> into readable ASCII for inspection
-      const decodedInspectionText = streamText.replace(/<([0-9a-fA-F]+)>/g, (_, hex) => {
-        let ascii2 = '';
-        if (hex.length >= 4 && hex.length % 4 === 0) {
-          for (let i = 0; i < hex.length; i += 4) {
-            const charCode = parseInt(hex.substring(i, i + 4), 16);
-            if (charCode >= 32 && charCode <= 126) {
-              ascii2 += String.fromCharCode(charCode);
-            }
-          }
-        }
-        let ascii1 = '';
-        for (let i = 0; i < hex.length; i += 2) {
-          const byte = parseInt(hex.substring(i, i + 2), 16);
-          if (byte >= 32 && byte <= 126) {
-            ascii1 += String.fromCharCode(byte);
-          }
-        }
-        return `(${ascii2} ${ascii1})`;
-      });
+    // 2. Process /Resources /XObject (Form XObjects)
+    const resources = page.node.get(PDFName.of('Resources'));
+    let resDict: PDFDict | null = null;
+    if (resources instanceof PDFRef) {
+      const deref = doc.context.lookup(resources);
+      if (deref instanceof PDFDict) resDict = deref;
+    } else if (resources instanceof PDFDict) {
+      resDict = resources;
+    }
 
-      const containsSearch =
-        streamText.toLowerCase().includes(searchLower) ||
-        streamText.toLowerCase().includes(hexSearch) ||
-        decodedInspectionText.toLowerCase().includes(searchLower) ||
-        decodedInspectionText.toLowerCase().replace(/\s+/g, '').includes(searchLower.replace(/\s+/g, ''));
+    if (resDict) {
+      const xObjVal = resDict.get(PDFName.of('XObject'));
+      let xObjDict: PDFDict | null = null;
+      if (xObjVal instanceof PDFRef) {
+        const deref = doc.context.lookup(xObjVal);
+        if (deref instanceof PDFDict) xObjDict = deref;
+      } else if (xObjVal instanceof PDFDict) {
+        xObjDict = xObjVal;
+      }
 
-      if (containsSearch) {
-        // Strategy: Parse BT ... ET text blocks
-        const btEtRegex = /BT[\s\S]*?ET/g;
-        let modifiedText = streamText.replace(btEtRegex, (match) => {
-          const blockDecoded = match.replace(/<([0-9a-fA-F]+)>/g, (_, hex) => {
-            let ascii2 = '';
-            if (hex.length >= 4 && hex.length % 4 === 0) {
-              for (let i = 0; i < hex.length; i += 4) {
-                const charCode = parseInt(hex.substring(i, i + 4), 16);
-                if (charCode >= 32 && charCode <= 126) {
-                  ascii2 += String.fromCharCode(charCode);
+      if (xObjDict) {
+        for (const [key, val] of xObjDict.entries()) {
+          const xName = key.asString().replace(/^\//, '');
+          const xObj = val instanceof PDFRef ? doc.context.lookup(val) : val;
+
+          if (xObj && (xObj instanceof PDFStream || xObj instanceof PDFRawStream)) {
+            const subtype = xObj.dict.get(PDFName.of('Subtype'));
+            if (subtype?.toString() === '/Form') {
+              let formText = '';
+              const raw = xObj instanceof PDFRawStream ? xObj.contents : (xObj as any).contents;
+              const filter = xObj.dict.get(PDFName.of('Filter'))?.toString() || '';
+              const isFlate = filter.includes('FlateDecode');
+              try {
+                formText = isFlate ? new TextDecoder().decode(pako.inflate(raw)) : new TextDecoder().decode(raw);
+              } catch {}
+
+              const { modifiedText: cleanedForm, removed: formRemoved } = stripTargetFromStreamText(formText, searchString);
+              if (formRemoved > 0) {
+                matchesRemoved += formRemoved;
+                const encoded = new TextEncoder().encode(cleanedForm);
+                const newStream = isFlate
+                  ? doc.context.stream(pako.deflate(encoded), { Filter: 'FlateDecode', Subtype: 'Form' })
+                  : doc.context.stream(encoded, { Subtype: 'Form' });
+                if (val instanceof PDFRef) {
+                  doc.context.assign(val, newStream);
+                }
+
+                // Also strip /xName Do invocation from page content streams!
+                for (const cRef of streamRefs) {
+                  const sObj = doc.context.lookup(cRef);
+                  if (sObj instanceof PDFStream || sObj instanceof PDFRawStream) {
+                    const sRaw = sObj instanceof PDFRawStream ? sObj.contents : (sObj as any).contents;
+                    const sFilter = sObj.dict.get(PDFName.of('Filter'))?.toString() || '';
+                    const sFlate = sFilter.includes('FlateDecode');
+                    try {
+                      let sText = sFlate ? new TextDecoder().decode(pako.inflate(sRaw)) : new TextDecoder().decode(sRaw);
+                      const safeXName = xName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                      const doRegex = new RegExp(`(?:q\\s*)?(?:[0-9.-]+\\s+){6}cm\\s*\\/${safeXName}\\s+Do(?:\\s*Q)?|\\/${safeXName}\\s+Do`, 'g');
+                      if (doRegex.test(sText)) {
+                        sText = sText.replace(doRegex, '');
+                        const sEncoded = new TextEncoder().encode(sText);
+                        const newS = sFlate
+                          ? doc.context.stream(pako.deflate(sEncoded), { Filter: 'FlateDecode' })
+                          : doc.context.stream(sEncoded);
+                        doc.context.assign(cRef, newS);
+                      }
+                    } catch {}
+                  }
                 }
               }
             }
-            let ascii1 = '';
-            for (let i = 0; i < hex.length; i += 2) {
-              const byte = parseInt(hex.substring(i, i + 2), 16);
-              if (byte >= 32 && byte <= 126) {
-                ascii1 += String.fromCharCode(byte);
-              }
-            }
-            return `(${ascii2} ${ascii1})`;
-          });
-
-          if (
-            match.toLowerCase().includes(searchLower) ||
-            match.toLowerCase().includes(hexSearch) ||
-            blockDecoded.toLowerCase().includes(searchLower) ||
-            blockDecoded.toLowerCase().replace(/\s+/g, '').includes(searchLower.replace(/\s+/g, ''))
-          ) {
-            matchesRemoved++;
-            return ''; // Remove matching text block
           }
-          return match;
-        });
-
-        // Also check standalone Tj / TJ lines in case not wrapped strictly
-        const escapedSearch = searchString.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const tjRegex = new RegExp(`\\([^)]*${escapedSearch}[^)]*\\)\\s*Tj`, 'gi');
-        modifiedText = modifiedText.replace(tjRegex, () => {
-          matchesRemoved++;
-          return '() Tj';
-        });
-
-        const modifiedBytes = new TextEncoder().encode(modifiedText);
-        if (isFlate) {
-          const deflated = pako.deflate(modifiedBytes);
-          const newStream = doc.context.stream(deflated, {
-            Filter: 'FlateDecode',
-          });
-          doc.context.assign(ref, newStream);
-        } else {
-          const newStream = doc.context.stream(modifiedBytes);
-          doc.context.assign(ref, newStream);
         }
       }
     }
@@ -1021,7 +1122,7 @@ function extractTextFromStream(streamText: string): { full: string; blocks: stri
   }
 
   // Literal PDF strings: (Hello World)
-  const litRegex = /\(([^)\\]*(?:\\.[^)\\]*)*)\)/g;
+  const litRegex = /\(([^)]*)\)/g;
   while ((m = litRegex.exec(streamText)) !== null) {
     const raw = m[1].replace(/\\(.)/g, '$1');
     if (raw.trim().length > 0) blocks.push(raw.trim());
@@ -1045,6 +1146,39 @@ function getRotationFromMatrix(a: number, b: number): number {
  * (20°–70° or 110°–160°), which is characteristic of overlay watermarks.
  * Checks both Tm (text matrix) and cm (concat matrix) operators.
  */
+/**
+ * Detects red, pink, or reddish stamp colors in PDF operator blocks.
+ * Accounting / invoice watermarks (like "FARAZ TAHIR") almost always use red or pink
+ * ink (e.g. 1 0 0 rg, 0.8 0.2 0.2 rg, 0.9 0.3 0.3 rg) to stand out over black text.
+ */
+function hasRedOrPinkColor(streamText: string): boolean {
+  const rgRegex = /(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(?:rg|RG)/g;
+  let m: RegExpExecArray | null;
+  while ((m = rgRegex.exec(streamText)) !== null) {
+    const r = parseFloat(m[1]);
+    const g = parseFloat(m[2]);
+    const b = parseFloat(m[3]);
+    if (r >= 0.55 && g <= 0.45 && b <= 0.45 && r > g + 0.2) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Asserts the presence of table grid lines, cell dividers, or invoice borders.
+ * Protects table graphics from accidental removal during watermark stripping.
+ */
+function hasTableGridOrPaths(block: string): boolean {
+  const pathOps = (block.match(/(?:\s|\n|^)(?:re|m|l|c|S|s|f|F|B|b)(?:\s|\n|$)/g) || []).length;
+  return pathOps > 5;
+}
+
+/**
+ * Returns true if a PDF content stream contains text rendered at a diagonal angle
+ * (10°–80° or 100°–170°), which is characteristic of overlay watermarks.
+ * Checks both Tm (text matrix) and cm (concat matrix) operators.
+ */
 function hasAngledText(streamText: string): boolean {
   // Check Tm operator: a b c d e f Tm
   const tmRegex = /(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+Tm/g;
@@ -1054,22 +1188,67 @@ function hasAngledText(streamText: string): boolean {
     const b = parseFloat(m[2]);
     const angle = getRotationFromMatrix(a, b);
     const absAngle = angle <= 180 ? angle : 360 - angle;
-    if ((absAngle >= 20 && absAngle <= 70) || (absAngle >= 110 && absAngle <= 160)) {
+    if ((absAngle >= 10 && absAngle <= 80) || (absAngle >= 100 && absAngle <= 170)) {
       return true;
     }
   }
-  // Check cm operator: a b c d e f cm (only when b is non-zero, indicating rotation)
+  // Check cm operator: a b c d e f cm (when b or c is non-zero, indicating rotation/skew)
   const cmRegex = /(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+cm/g;
   while ((m = cmRegex.exec(streamText)) !== null) {
     const a = parseFloat(m[1]);
     const b = parseFloat(m[2]);
-    if (Math.abs(b) < 0.01) continue; // Skip pure scale/translate (no rotation)
+    const c = parseFloat(m[3]);
+    if (Math.abs(b) < 0.01 && Math.abs(c) < 0.01) continue; // Skip pure scale/translate
     const angle = getRotationFromMatrix(a, b);
     const absAngle = angle <= 180 ? angle : 360 - angle;
-    if ((absAngle >= 20 && absAngle <= 70) || (absAngle >= 110 && absAngle <= 160)) {
+    if ((absAngle >= 10 && absAngle <= 80) || (absAngle >= 100 && absAngle <= 170)) {
       return true;
     }
   }
+  return false;
+}
+
+/**
+ * Evaluates whether an isolated graphic state block (q ... Q) is an overlay watermark.
+ * Watermark q...Q blocks contain rotation (cm), optional color (rg), and text (BT...ET)
+ * with no dense table paths.
+ */
+function isWatermarkQBlock(
+  qBlock: string,
+  lowOpacityGsKeys: Set<string>,
+  repeatTokens?: Set<string>
+): boolean {
+  if (qBlock.length > 2000) return false;
+  if (!/BT[\s\S]*?ET/.test(qBlock)) return false;
+  if (hasTableGridOrPaths(qBlock)) return false;
+
+  const tjCount = (qBlock.match(/Tj|TJ/g) || []).length;
+  if (tjCount > 6) return false;
+
+  const isAngled = hasAngledText(qBlock);
+  const isRed = hasRedOrPinkColor(qBlock);
+  const hasLowOpacity = Array.from(lowOpacityGsKeys).some((k) =>
+    new RegExp(`\\/${k}\\s+gs`).test(qBlock)
+  );
+  const hasKw = /watermark|confidential|sample|draft|compixor|copy/i.test(qBlock);
+
+  let hasRepeat = false;
+  if (repeatTokens && repeatTokens.size > 0) {
+    const { blocks } = extractTextFromStream(qBlock);
+    for (const b of blocks) {
+      if (repeatTokens.has(b.toLowerCase().trim().replace(/\s+/g, ' '))) {
+        hasRepeat = true;
+        break;
+      }
+    }
+  }
+
+  if (isAngled && (isRed || hasLowOpacity || hasKw || tjCount <= 3)) return true;
+  if (isRed && isAngled) return true;
+  if (hasKw) return true;
+  if (hasLowOpacity && tjCount <= 3) return true;
+  if (hasRepeat && (isAngled || isRed || hasLowOpacity)) return true;
+
   return false;
 }
 
@@ -1231,18 +1410,25 @@ export async function stripDigitalWatermarks(
         } else if (subtypeName === '/Form') {
           let formContent = '';
           try {
-            if (typeof xObj.getContents === 'function') {
-              const raw = xObj.getContents();
-              const filter = xObj.dict.get(PDFName.of('Filter'));
-              if (filter === PDFName.of('FlateDecode')) {
-                formContent = new TextDecoder().decode(pako.inflate(raw));
-              } else {
-                formContent = new TextDecoder().decode(raw);
-              }
+            const raw = xObj instanceof PDFRawStream ? xObj.contents : (xObj as any).contents;
+            if (raw) {
+              const filter = xObj.dict.get(PDFName.of('Filter'))?.toString() || '';
+              const isFlate = filter.includes('FlateDecode');
+              formContent = isFlate ? new TextDecoder().decode(pako.inflate(raw)) : new TextDecoder().decode(raw);
             }
           } catch {}
 
-          if (isNamedWm || /watermark|confidential|draft|sample|compixor/i.test(formContent)) {
+          const formHasAngle = hasAngledText(formContent);
+          const formHasRed = hasRedOrPinkColor(formContent);
+          const formHasSafety = !hasTableGridOrPaths(formContent);
+          const formHasKw = /watermark|confidential|draft|sample|compixor|copy/i.test(formContent);
+
+          if (
+            isNamedWm ||
+            formHasKw ||
+            (formHasAngle && formHasSafety && formContent.length < 3500) ||
+            (formHasRed && formHasAngle && formHasSafety)
+          ) {
             globalWatermarkXObjKeys.add(xName);
             if (refObj) globalWatermarkXObjRefs.add(refObj);
           }
@@ -1577,34 +1763,45 @@ export async function stripDigitalWatermarks(
       });
 
       // ── SAFE INLINE WATERMARK REMOVAL ─────────────────────────────────────
-      // Surgically remove small isolated watermark blocks (<400 chars)
-      // that are explicitly angled, low-opacity, or contain watermark keywords.
-      // NEVER delete large BT..ET blocks (>400 chars) as they contain page content/tables!
-      const hasWatermarkKw = /watermark|confidential|sample|draft|copy|compixor/i.test(modifiedText);
-      if (lowOpacityGsKeys.size > 0 || hasAngledText(modifiedText) || hasWatermarkKw) {
-        modifiedText = modifiedText.replace(/BT[\s\S]*?ET/g, (block) => {
-          // Safety 1: Never touch any block longer than 400 characters (real page content)
-          if (block.length > 400) return block;
-          // Safety 2: Never touch blocks containing table lines or multiple text commands
-          const tjCount = (block.match(/Tj|TJ/g) || []).length;
-          if (tjCount > 3) return block; // Real content has many text items, watermarks have 1-2
+      // 1. Surgically remove isolated watermark graphic state blocks (q ... Q)
+      //    Watermarks with rotation (cm) and color (rg) wrap the transform and text inside q...Q
+      modifiedText = modifiedText.replace(/q[\s\S]*?Q/g, (qBlock) => {
+        if (isWatermarkQBlock(qBlock, lowOpacityGsKeys, repeatWatermarkTokens)) {
+          removedCount++;
+          streamModified = true;
+          return '';
+        }
+        return qBlock;
+      });
 
-          // Only remove if this specific small block is angled, uses low-opacity gs, or matches watermark keywords
+      // 2. Surgically remove small isolated watermark text blocks (<500 chars)
+      //    For generators that set rotation via Tm inside BT...ET or direct low-opacity/keyword blocks
+      const hasWatermarkKw = /watermark|confidential|sample|draft|copy|compixor/i.test(modifiedText);
+      if (lowOpacityGsKeys.size > 0 || hasAngledText(modifiedText) || hasRedOrPinkColor(modifiedText) || hasWatermarkKw) {
+        modifiedText = modifiedText.replace(/BT[\s\S]*?ET/g, (block) => {
+          if (block.length > 500) return block;
+          if (hasTableGridOrPaths(block)) return block;
+          const tjCount = (block.match(/Tj|TJ/g) || []).length;
+          if (tjCount > 4) return block;
+
           const blockIsAngled = hasAngledText(block);
+          const blockIsRed = hasRedOrPinkColor(block);
           const blockUsesLowOpacity = Array.from(lowOpacityGsKeys).some((k) =>
             new RegExp(`\\/${k}\\s+gs`).test(block)
           );
 
           let blockHasKw = false;
-          if (/watermark|confidential|sample|draft|compixor/i.test(block)) {
+          if (/watermark|confidential|sample|draft|compixor|copy/i.test(block)) {
             blockHasKw = true;
           } else {
             const { blocks: textTokens } = extractTextFromStream(block);
             for (const token of textTokens) {
+              const cleanToken = token.trim().toLowerCase();
               if (
                 /^(confidential|draft|sample|watermark|copy|do not copy|for review only|not for sale)$/i.test(
-                  token.trim()
-                )
+                  cleanToken
+                ) ||
+                (repeatWatermarkTokens.size > 0 && repeatWatermarkTokens.has(cleanToken))
               ) {
                 blockHasKw = true;
                 break;
@@ -1612,7 +1809,7 @@ export async function stripDigitalWatermarks(
             }
           }
 
-          if (blockIsAngled || blockUsesLowOpacity || blockHasKw) {
+          if (blockIsAngled || (blockIsRed && (blockIsAngled || tjCount <= 2)) || blockUsesLowOpacity || blockHasKw) {
             removedCount++;
             streamModified = true;
             return '';
