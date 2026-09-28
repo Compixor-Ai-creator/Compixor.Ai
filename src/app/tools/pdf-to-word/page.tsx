@@ -76,6 +76,7 @@ export default function PdfToWordPage() {
   const [error, setError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const converterRef = useRef<HTMLDivElement>(null);
 
   const handleFileSelect = useCallback((incomingFile: File) => {
     const validationError = validatePdfFile(incomingFile, 100);
@@ -87,6 +88,10 @@ export default function PdfToWordPage() {
     setResult(null);
     setError(null);
     setProgress(0);
+    toast.success(`PDF Loaded: ${incomingFile.name}`);
+    setTimeout(() => {
+      converterRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 120);
   }, []);
 
   const handleConvert = useCallback(async () => {
@@ -407,7 +412,7 @@ export default function PdfToWordPage() {
         <h2 id="converter-heading" className="sr-only">
           PDF to Word Converter Tool
         </h2>
-        <div className="glass-card p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-[#0c1222]/90 border border-gray-200/80 dark:border-white/10 shadow-sm">
+        <div ref={converterRef} className="glass-card p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-[#0c1222]/90 border border-gray-200/80 dark:border-white/10 shadow-sm">
           <AnimatePresence mode="wait">
             {!file ? (
               /* ── Upload State ── */

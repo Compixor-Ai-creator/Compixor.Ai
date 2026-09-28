@@ -81,6 +81,7 @@ export default function WordCompressorPage() {
     setResult(null);
     setError(null);
     setProgress(0);
+    toast.success(`Word Document Loaded: ${f.name}`);
   }, []);
 
   const handleCompress = useCallback(async () => {
