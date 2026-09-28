@@ -211,6 +211,13 @@ export function PdfProtectClient({ initialMode = 'protect' }: { initialMode?: Ac
 
       // Load and re-save to normalise the PDF first
       const doc = await pdfLib.PDFDocument.load(bytes, { ignoreEncryption: true });
+
+      if (doc.isEncrypted) {
+        throw new Error(
+          'This PDF is already password-protected. Please unlock it using Unlock PDF first before setting a new password.'
+        );
+      }
+
       const plainBytes = await doc.save();
 
       // Lock with AES-256 (default in pdf-lib-encrypt)

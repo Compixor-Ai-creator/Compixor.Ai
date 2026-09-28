@@ -96,6 +96,7 @@ export async function convertPdfToDocx(
     ShadingType,
     AlignmentType,
     PageOrientation,
+    ImageRun,
   } = await import('docx');
 
   const docChildren: (Paragraph | Table)[] = [];
@@ -152,18 +153,70 @@ export async function convertPdfToDocx(
     }
 
     if (rawItems.length === 0) {
-      // Empty or scanned page
-      docChildren.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: `[Page ${pageNum}: Image or empty content]`,
-              italics: true,
-              color: '888888',
-            }),
-          ],
-        })
-      );
+      // Scanned page, receipt, certificate, or image-only page:
+      // Render canvas and embed as crisp high-resolution Word image so nothing is lost!
+      let embeddedImage = false;
+      if (typeof document !== 'undefined') {
+        try {
+          const renderScale = 1.6;
+          const renderViewport = page.getViewport({ scale: renderScale });
+          const canvas = document.createElement('canvas');
+          canvas.width = renderViewport.width;
+          canvas.height = renderViewport.height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            await page.render({ canvasContext: ctx, viewport: renderViewport }).promise;
+            const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.88));
+            if (blob) {
+              const arrayBuf = await blob.arrayBuffer();
+              const imgBytes = new Uint8Array(arrayBuf);
+              const pageLandscape = viewport.width > viewport.height;
+              const maxDocWidth = pageLandscape ? 700 : 500;
+              const maxDocHeight = pageLandscape ? 480 : 680;
+              const aspect = viewport.width / viewport.height;
+              let imgWidth = maxDocWidth;
+              let imgHeight = maxDocWidth / aspect;
+              if (imgHeight > maxDocHeight) {
+                imgHeight = maxDocHeight;
+                imgWidth = maxDocHeight * aspect;
+              }
+
+              docChildren.push(
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new ImageRun({
+                      data: imgBytes,
+                      transformation: {
+                        width: Math.round(imgWidth),
+                        height: Math.round(imgHeight),
+                      },
+                      type: 'jpg',
+                    }),
+                  ],
+                })
+              );
+              embeddedImage = true;
+            }
+          }
+        } catch (renderErr) {
+          console.warn(`Page ${pageNum} canvas image embed fallback error:`, renderErr);
+        }
+      }
+
+      if (!embeddedImage) {
+        docChildren.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `[Page ${pageNum}: Graphical or scanned content]`,
+                italics: true,
+                color: '888888',
+              }),
+            ],
+          })
+        );
+      }
     } else {
       // Sort items top-to-bottom, then left-to-right
       rawItems.sort((a, b) => {

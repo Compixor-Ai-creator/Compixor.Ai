@@ -66,12 +66,20 @@ export default function WordCompressorPage() {
   const [quality, setQuality] = useState(0.6);
 
   const handleFileDrop = useCallback((f: File) => {
+    const ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+
+    if (ext === '.doc' || f.type === 'application/msword') {
+      toast.error(
+        'Legacy .doc (Word 97-2003) is a binary format. Please save it as modern .docx in Word or Google Docs, then compress it here.',
+        { duration: 6000 }
+      );
+      return;
+    }
+
     const validTypes = [
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/msword',
     ];
-    const validExts = ['.docx', '.doc'];
-    const ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+    const validExts = ['.docx'];
 
     if (!validTypes.includes(f.type) && !validExts.includes(ext)) {
       toast.error('Please upload a Word document (.docx).');
@@ -222,7 +230,7 @@ export default function WordCompressorPage() {
       {/* Fullscreen Drop Anywhere Drag & Drop Overlay */}
       <DropAnywhere
         onFileDrop={handleFileDrop}
-        accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.docx,.doc"
+        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         title="Drop Word document anywhere"
         subtitle="to optimize embedded images instantly"
       />
@@ -260,7 +268,7 @@ export default function WordCompressorPage() {
       >
         {!file && (
           <FileDropZone
-            accept=".docx,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
+            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             onFileDrop={handleFileDrop}
             plainIcon={true}
             icon={<WordIcon size={80} withBackdropSheet={true} />}

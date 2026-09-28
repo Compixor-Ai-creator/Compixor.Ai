@@ -385,6 +385,12 @@ export default function PdfCompressorPage() {
         updateMetadata: false,
       });
 
+      if (pdfDoc.isEncrypted) {
+        throw new Error(
+          'This PDF is password-protected. Please unlock it using Compixor Unlock PDF before compressing.'
+        );
+      }
+
       const pageCount = pdfDoc.getPageCount();
       const context = pdfDoc.context;
 
