@@ -19,6 +19,9 @@ import {
   ArrowUpRight,
   Trophy,
   Star,
+  Mail,
+  MessageSquarePlus,
+  LayoutGrid,
 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -177,6 +180,174 @@ export default function PdfToWordPage() {
           <strong className="text-zinc-800 dark:text-zinc-200">OCR mode</strong> for scanned documents —
           100% private, no signup required.
         </motion.p>
+
+        {/* ── Visual Conversion Flow Illustration (inspired by dpdf) ── */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1, duration: 0.4 }}
+          className="w-full flex flex-col items-center justify-center pt-2 select-none pointer-events-none"
+        >
+          <div className="w-full max-w-sm h-32 sm:h-40 flex items-center justify-center drop-shadow-sm">
+            <svg
+              viewBox="0 0 400 170"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-full max-w-[360px]"
+              aria-hidden="true"
+            >
+              <defs>
+                <filter id="soft-shadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
+                  <feOffset dx="0" dy="6" result="offsetblur" />
+                  <feComponentTransfer>
+                    <feFuncA type="linear" slope="0.08" />
+                  </feComponentTransfer>
+                  <feMerge>
+                    <feMergeNode />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <filter id="shadow-sm" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+                  <feOffset dx="0" dy="2" result="offsetblur" />
+                  <feComponentTransfer>
+                    <feFuncA type="linear" slope="0.05" />
+                  </feComponentTransfer>
+                  <feMerge>
+                    <feMergeNode />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <linearGradient id="sheet-gradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#F8FAFC" />
+                </linearGradient>
+                <linearGradient id="word-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#3B82F6" />
+                  <stop offset="100%" stopColor="#2563EB" />
+                </linearGradient>
+                <linearGradient id="pdf-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#EF4444" />
+                  <stop offset="100%" stopColor="#DC2626" />
+                </linearGradient>
+              </defs>
+
+              {/* Connecting Track with Pulsing Arrow */}
+              <g transform="translate(200, 85)">
+                <path
+                  d="M -36 0 L 36 0"
+                  stroke="#CBD5E1"
+                  strokeWidth="2"
+                  strokeDasharray="4 4"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+                <circle cx="0" cy="0" r="14" fill="#FFFFFF" filter="url(#shadow-sm)" stroke="#E2E8F0" strokeWidth="1.5" />
+                <path
+                  d="M -2 -4.5 L 3.5 0 L -2 4.5"
+                  fill="none"
+                  stroke="#2563EB"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </g>
+
+              {/* Left Sheet: PDF Document */}
+              <g transform="translate(130, 85) rotate(-4)">
+                <g filter="url(#soft-shadow)">
+                  <rect
+                    x="-42"
+                    y="-55"
+                    width="84"
+                    height="110"
+                    rx="12"
+                    fill="url(#sheet-gradient)"
+                    stroke="#E2E8F0"
+                    strokeWidth="1.5"
+                  />
+                </g>
+                <rect x="-30" y="-41" width="32" height="15" rx="4" fill="url(#pdf-grad)" />
+                <text
+                  x="-14"
+                  y="-30.5"
+                  textAnchor="middle"
+                  fill="#FFFFFF"
+                  fontSize="7.5"
+                  fontWeight="bold"
+                  fontFamily="system-ui, sans-serif"
+                  letterSpacing="0.5"
+                >
+                  PDF
+                </text>
+                <rect x="8" y="-36.5" width="22" height="6" rx="3" fill="#E2E8F0" />
+                <rect x="-30" y="-12" width="60" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-30" y="0" width="46" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-30" y="12" width="54" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-30" y="24" width="38" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-30" y="36" width="60" height="9" rx="2.5" fill="#FEE2E2" />
+              </g>
+
+              {/* Right Sheet: DOC Document */}
+              <g transform="translate(270, 85) rotate(4)">
+                <g filter="url(#soft-shadow)">
+                  <rect
+                    x="-42"
+                    y="-55"
+                    width="84"
+                    height="110"
+                    rx="12"
+                    fill="url(#sheet-gradient)"
+                    stroke="#BFDBFE"
+                    strokeWidth="1.5"
+                  />
+                </g>
+                <rect x="-30" y="-41" width="32" height="15" rx="4" fill="url(#word-grad)" />
+                <text
+                  x="-14"
+                  y="-30.5"
+                  textAnchor="middle"
+                  fill="#FFFFFF"
+                  fontSize="7.5"
+                  fontWeight="bold"
+                  fontFamily="system-ui, sans-serif"
+                  letterSpacing="0.5"
+                >
+                  DOC
+                </text>
+                <rect x="8" y="-36.5" width="22" height="6" rx="3" fill="#E2E8F0" />
+                <rect x="-30" y="-12" width="60" height="5" rx="2.5" fill="#DBEAFE" />
+                <rect x="-28" y="-12" width="36" height="5" rx="2.5" fill="#3B82F6" />
+                <rect x="10" y="-14" width="1.5" height="9" rx="0.5" fill="#2563EB" />
+                <rect x="-30" y="2" width="50" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-30" y="14" width="56" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-30" y="26" width="40" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-30" y="37" width="60" height="10" rx="2" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="0.8" />
+              </g>
+            </svg>
+          </div>
+
+          {/* High-Intent SEO Keyword Badges / Tags */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mt-1">
+            {[
+              '#PDFtoWord',
+              '#EditableDOCX',
+              '#TablePreserved',
+              '#OCRScannedPDF',
+              '#100%InBrowser',
+              '#ZeroCloudUploads',
+              '#FreeUnlimited',
+            ].map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-850 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </motion.div>
       </div>
 
       {/* ── H2: Choose Mode ─────────────────────────────────────────────────── */}
@@ -437,28 +608,35 @@ export default function PdfToWordPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
+            {
+              icon: LayoutGrid,
+              color: 'text-indigo-500',
+              bg: 'bg-indigo-500/10',
+              title: 'Smart Table & Layout Detection',
+              desc: 'Reconstructs accounting tables, ledger columns, and cell borders into real editable Word tables (<w:tbl>) with right-aligned numbers.',
+            },
             {
               icon: ShieldCheck,
               color: 'text-emerald-500',
               bg: 'bg-emerald-500/10',
               title: '100% Private — Zero Uploads',
-              desc: 'Your PDF is processed in browser RAM. Nothing is sent to any server, ever. Perfect for confidential documents.',
+              desc: 'Your PDF is processed inside device RAM. Zero bytes are uploaded to any server, ever. Perfect for confidential financial reports.',
             },
             {
               icon: Globe,
               color: 'text-blue-500',
               bg: 'bg-blue-500/10',
               title: '80+ Language OCR Support',
-              desc: 'OCR mode reads English, Urdu, Arabic, French, German, Chinese, and 75+ other languages from scanned PDFs.',
+              desc: 'OCR mode reads English, Urdu, Arabic, Chinese, and 75+ other languages from scanned PDFs into editable DOCX text.',
             },
             {
-              icon: Zap,
-              color: 'text-amber-500',
-              bg: 'bg-amber-500/10',
-              title: 'No OCR = Instant Conversion',
-              desc: 'Digital PDFs convert in seconds — no queue, no wait, no signup. Just upload and download your .docx.',
+              icon: RotateCcw,
+              color: 'text-purple-500',
+              bg: 'bg-purple-500/10',
+              title: 'Full Round-Trip Editing Loop',
+              desc: 'Edit your Word document in Microsoft Office or Google Docs, then re-compress or password-protect it right back with Compixor.',
             },
           ].map((item, i) => {
             const Icon = item.icon;
@@ -468,7 +646,7 @@ export default function PdfToWordPage() {
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.08 }}
                 className="glass-card rounded-2xl p-5 border border-zinc-200/70 dark:border-zinc-800/70"
               >
                 <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center mb-4`}>
@@ -549,6 +727,61 @@ export default function PdfToWordPage() {
         >
           Word Compressor <ArrowUpRight className="w-3.5 h-3.5" />
         </Link>
+      </section>
+
+      {/* ── Contact & Direct Support Section (inspired by dpdf) ────────────── */}
+      <section className="rounded-3xl glass-card border border-zinc-200/80 dark:border-zinc-800/80 p-6 sm:p-8 bg-white/70 dark:bg-[#0c1222]/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+        <div className="space-y-2 max-w-xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20">
+            <Mail className="w-3.5 h-3.5" />
+            Direct Support & Feature Requests
+          </div>
+          <h3 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+            Need Help or Have a Complex Document?
+          </h3>
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            Have an intricate accounting ledger, multi-column bank statement, or scanned Urdu/Arabic document that needs special formatting? Reach out directly — we continuously train and improve the conversion engine for user requests.
+          </p>
+          <div className="pt-1 flex items-center gap-4 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            <span>
+              Direct Email:{' '}
+              <a
+                href="mailto:support@compixor-ai.online"
+                className="text-brand-600 dark:text-brand-400 font-semibold underline underline-offset-2"
+              >
+                support@compixor-ai.online
+              </a>
+            </span>
+            <span>•</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+              100% Client-Side Privacy Guaranteed
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row md:flex-col gap-2.5 w-full md:w-auto shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(
+                  new CustomEvent('compixor:open-feedback', { detail: { category: 'request' } })
+                );
+              }
+            }}
+            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-semibold shadow-md shadow-brand-500/20 transition cursor-pointer"
+          >
+            <MessageSquarePlus className="w-4 h-4" />
+            <span>Send Feedback / Request</span>
+          </button>
+          <a
+            href="mailto:support@compixor-ai.online?subject=PDF%20to%20Word%20Assistance%20Request"
+            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 text-xs sm:text-sm font-semibold transition"
+          >
+            <Mail className="w-4 h-4 text-zinc-500" />
+            <span>Open Email Client</span>
+          </a>
+        </div>
       </section>
 
       {/* ── FAQs — SEO skill: FAQ schema + featured snippets ─────────────── */}

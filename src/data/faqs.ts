@@ -255,12 +255,16 @@ export const pdfToWordFaqs: FaqItem[] = [
     a: 'Never. All conversion — whether No OCR or OCR mode — happens entirely on your device. No bytes of your document are transmitted to any external server, cloud storage, or third party. Your sensitive documents stay 100% private.',
   },
   {
-    q: 'Is there a file size or page count limit?',
-    a: 'No OCR mode handles PDFs up to 100MB instantly with no page limit. OCR mode processes each page individually so very large scanned documents may take a few minutes — but there is still no hard size or page limit.',
+    q: 'Does the converter preserve tables, borders, and multi-column invoices?',
+    a: 'Yes! Unlike basic converters that dump words into a single sentence, Compixor\'s intelligent engine performs geometric X-coordinate analysis to detect columns and table boundaries. It generates native Microsoft Word tables (<w:tbl>) with borders, proper cell padding, and right-aligned numerical values.',
   },
   {
-    q: 'Is the PDF to Word converter completely free?',
-    a: 'Yes — 100% free with no registration, no email, no subscription, and no watermarks on your downloaded Word document. Both No OCR and OCR modes are completely free.',
+    q: 'Can I convert my edited Word document back to PDF?',
+    a: 'Yes. Once you finish editing your .docx file in Microsoft Word or Google Docs, you can re-export to PDF or use Compixor\'s PDF tools to compress, watermark, or password-protect your final PDF document with zero data leakage.',
+  },
+  {
+    q: 'Are there hidden fees, daily credit limits, or signup requirements?',
+    a: 'Zero. While services like Dpdf or Adobe restrict daily free usage and charge for credit packs, Compixor runs 100% client-side in your browser RAM. There are no credits to buy, no daily quotas, no account registration, and no paywalls.',
   },
 ];
 

@@ -32,6 +32,11 @@ export const metadata: Metadata = {
     'best free pdf to word converter',
     'pdf to word with ocr free',
     'image pdf to word converter',
+    'pdf to doc',
+    'pdf to docx',
+    'convert pdf to editable word online',
+    'pdf table to word converter',
+    'dpdf alternative free',
   ],
   alternates: {
     canonical: CANONICAL_URL,
