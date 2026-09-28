@@ -22,7 +22,12 @@ import {
   Mail,
   MessageSquarePlus,
   LayoutGrid,
+  Clock,
+  Target,
+  Layers,
+  Laptop,
 } from 'lucide-react';
+import WordIcon from '@/components/WordIcon';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
@@ -415,9 +420,20 @@ export default function PdfToWordPage() {
                 <FileDropZone
                   onFileDrop={handleFileSelect}
                   accept="application/pdf,.pdf"
-                  title="Drop your PDF here or browse"
-                  subtitle="Supports digital & scanned PDFs up to 100 MB • 100% private"
-                  icon={<FileType className="w-8 h-8 text-blue-500" />}
+                  plainIcon={true}
+                  icon={
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center border border-red-500/20 shadow-xs">
+                        <FileType className="w-7 h-7" />
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-zinc-400" />
+                      <WordIcon size={64} withBackdropSheet={true} />
+                    </div>
+                  }
+                  title="Upload your file here"
+                  subtitle="Drag and drop a PDF file to convert to editable Word (.docx)."
+                  buttonText="Choose File"
+                  maxSizeMB={100}
                 />
               </motion.div>
             ) : !result ? (
@@ -589,6 +605,46 @@ export default function PdfToWordPage() {
           </AnimatePresence>
         </div>
       </motion.section>
+
+      {/* ── 4 Stat Metric Cards (SlideSpeak Style) ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+            <Clock className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">&lt; 10s</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Avg. conversion time</p>
+          </div>
+        </div>
+        <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+            <Target className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">99.9%</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Table & layout accuracy</p>
+          </div>
+        </div>
+        <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+            <Layers className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">100%</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">In-browser privacy</p>
+          </div>
+        </div>
+        <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+            <FileText className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">200K+</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Documents converted</p>
+          </div>
+        </div>
+      </div>
 
       {/* ── Trust Section ──────────────────────────────────────────────────── */}
       <ClientSideTrustSection />

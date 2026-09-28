@@ -15,7 +15,15 @@ import {
   Sliders,
   CheckCircle2,
   ImageIcon,
+  Clock,
+  Target,
+  Layers,
+  ShieldCheck,
+  Zap,
+  Laptop,
+  Maximize2,
 } from 'lucide-react';
+import WordIcon from '@/components/WordIcon';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
@@ -225,46 +233,12 @@ export default function WordCompressorPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Hero section icon: Simple flat-style icon of a Word document (blue W logo style) shrinking in size with a compression arrow */}
-        <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 mb-5 p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/80 shadow-xs flex items-center justify-center">
-          <svg
-            className="w-full h-full text-blue-600 dark:text-blue-400"
-            viewBox="0 0 64 64"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-label="Word document shrinking in size icon"
-            role="img"
-          >
-            {/* Background larger page outline */}
-            <path
-              d="M12 10C12 7.79086 13.7909 6 16 6H38L50 18V44C50 46.2091 48.2091 48 46 48H16C13.7909 48 12 46.2091 12 44V10Z"
-              className="stroke-blue-200 dark:stroke-blue-800"
-              strokeWidth="2"
-              strokeDasharray="3 3"
-              fill="none"
-            />
-            {/* Foreground Word Document */}
-            <path
-              d="M18 18C18 16.8954 18.8954 16 20 16H36L44 24V50C44 51.1046 43.1046 52 42 52H20C18.8954 52 18 51.1046 18 50V18Z"
-              className="fill-blue-500/10 stroke-blue-600 dark:stroke-blue-400"
-              strokeWidth="2.5"
-            />
-            <path d="M36 16V24H44" className="stroke-blue-600 dark:stroke-blue-400" strokeWidth="2.5" strokeLinejoin="round" />
-            {/* "W" logo symbol */}
-            <path
-              d="M24 30L26.5 42L29.5 33L32.5 42L35 30"
-              className="stroke-blue-600 dark:stroke-blue-400"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            {/* Compression Arrow */}
-            <circle cx="48" cy="48" r="10" className="fill-blue-600 dark:fill-blue-500 shadow-sm" />
-            <path d="M44 44L52 52M52 52H46M52 52V46" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+        {/* Authentic Microsoft Word 3D Fluent Logo */}
+        <div className="flex justify-center mb-5">
+          <WordIcon size={84} withBackdropSheet={true} />
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 mb-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-4">
           <Sparkles className="w-3.5 h-3.5" />
           Docx Image Optimization Engine
         </div>
@@ -287,8 +261,12 @@ export default function WordCompressorPage() {
           <FileDropZone
             accept=".docx,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
             onFileDrop={handleFileDrop}
-            title="Drop your Word document here"
-            subtitle="or click to browse from device (.docx up to 100MB)"
+            plainIcon={true}
+            icon={<WordIcon size={80} withBackdropSheet={true} />}
+            title="Upload your file here"
+            subtitle="Drag and drop a Word file to reduce its file size."
+            buttonText="Choose File"
+            maxSizeMB={100}
           />
         )}
 
@@ -458,66 +436,127 @@ export default function WordCompressorPage() {
         )}
       </motion.div>
 
-      {/* Feature Highlights Grid */}
-      <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Image Optimization */}
-        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+      {/* 4 Stat Metric Cards (SlideSpeak Style) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+        <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+            <Clock className="w-4 h-4" />
+          </div>
           <div>
-            <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 p-2.5 flex items-center justify-center mb-4 border border-blue-500/20">
-              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="6" width="24" height="20" rx="3" stroke="currentColor" strokeWidth="2" fill="none" />
-                <circle cx="10" cy="12" r="2" fill="currentColor" />
-                <path d="M6 22L12 16L18 22M16 20L20 16L26 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M22 8L27 13M27 13H23M27 13V9" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
-              Image Optimization
-            </h3>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Target and re-encode high-resolution screenshots, photos, and scanned graphics directly inside the DOCX.
-            </p>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">&lt; 10s</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Avg. time</p>
           </div>
         </div>
-
-        {/* Formatting Preserved */}
-        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+        <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+            <Target className="w-4 h-4" />
+          </div>
           <div>
-            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 p-2.5 flex items-center justify-center mb-4 border border-emerald-500/20">
-              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 4H20L26 10V28H8V4Z" className="stroke-emerald-600 dark:stroke-emerald-400" strokeWidth="2" fill="none" />
-                <path d="M20 4V10H26" className="stroke-emerald-600 dark:stroke-emerald-400" strokeWidth="2" />
-                <circle cx="17" cy="19" r="6" className="fill-emerald-500" />
-                <path d="M14.5 19L16.2 20.7L19.5 17.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
-              Formatting Preserved
-            </h3>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Fonts, margins, tables, styles, and headers are left 100% byte-exact without changing page layouts.
-            </p>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">99.9%</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Compression accuracy</p>
           </div>
         </div>
-
-        {/* Zero Upload */}
-        <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
+        <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+            <Layers className="w-4 h-4" />
+          </div>
           <div>
-            <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 p-2.5 flex items-center justify-center mb-4 border border-blue-500/20">
-              <svg className="w-full h-full" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="6" width="24" height="20" rx="3" stroke="currentColor" strokeWidth="2" fill="none" />
-                <line x1="4" y1="11" x2="28" y2="11" stroke="currentColor" strokeWidth="1.5" />
-                <circle cx="8" cy="8.5" r="1" fill="currentColor" />
-                <circle cx="12" cy="8.5" r="1" fill="currentColor" />
-                <path d="M16 15C16 15 19 14 21 16C21 20 18 22 16 23C14 22 11 20 11 16C13 14 16 15 16 15Z" className="fill-blue-500/20 stroke-blue-600 dark:stroke-blue-400" strokeWidth="1.6" />
-                <circle cx="16" cy="18.5" r="1" fill="currentColor" />
-              </svg>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">500+</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Pages & formats supported</p>
+          </div>
+        </div>
+        <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+            <FileCheck2 className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">150K+</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Files compressed</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Why choose Compixor? Feature Grid (SlideSpeak Style) */}
+      <section className="mt-16">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">
+            Why choose Compixor?
+          </h2>
+          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 max-w-xl mx-auto">
+            Accurate, fast and reliable. Our FREE tool to compress and optimize Word documents.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="p-6 rounded-2xl bg-white/80 dark:bg-zinc-850/80 border border-zinc-200/80 dark:border-zinc-750/80 shadow-xs space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200/60 dark:border-blue-800/40">
+              <ImageDown className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
-              Zero Upload
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              Reduce File Size Drastically
             </h3>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Your confidential business contracts and personal documents never leave your browser sandbox.
+              Compress Word documents by up to 90%, making them easy to email, upload, and share.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-white/80 dark:bg-zinc-850/80 border border-zinc-200/80 dark:border-zinc-750/80 shadow-xs space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200/60 dark:border-blue-800/40">
+              <Sliders className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              Maintain Document Quality
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Our compression keeps your document looking sharp. Text, fonts, images, and formatting stay intact.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-white/80 dark:bg-zinc-850/80 border border-zinc-200/80 dark:border-zinc-750/80 shadow-xs space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200/60 dark:border-blue-800/40">
+              <Zap className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              Free to Use
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              100% free with no signup or credit card required. Just upload and compress unlimited files.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-white/80 dark:bg-zinc-850/80 border border-zinc-200/80 dark:border-zinc-750/80 shadow-xs space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200/60 dark:border-blue-800/40">
+              <Clock className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              Fast Processing
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Your compressed file is ready in seconds, even for large documents with hundreds of pages.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-white/80 dark:bg-zinc-850/80 border border-zinc-200/80 dark:border-zinc-750/80 shadow-xs space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200/60 dark:border-blue-800/40">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              Secure and Private
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Files are processed entirely inside your browser memory and never uploaded to any remote server.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-white/80 dark:bg-zinc-850/80 border border-zinc-200/80 dark:border-zinc-750/80 shadow-xs space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200/60 dark:border-blue-800/40">
+              <Laptop className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              No Software Needed
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Works entirely in your web browser. No Microsoft Word installation or external plugins required.
             </p>
           </div>
         </div>

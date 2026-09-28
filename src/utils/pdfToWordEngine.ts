@@ -111,8 +111,9 @@ export async function convertPdfToDocx(
 
   // Calculate page and content dimensions in DXA (1440 DXA = 1 inch)
   const pageWidthDxa = detectedLandscape ? 15840 : 12240;
-  const marginDxa = 1080; // 0.75 inch margins for better tabular space
-  const contentWidthDxa = pageWidthDxa - marginDxa * 2; // e.g. 13680 for landscape, 10080 for portrait
+  // Narrow margins (0.25in = 360 DXA) for landscape to maximize tabular space for 15+ columns
+  const marginDxa = detectedLandscape ? 360 : 720;
+  const contentWidthDxa = pageWidthDxa - marginDxa * 2; // 15120 DXA for landscape
 
   for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
     const pageProgress = 20 + Math.round((pageNum / pageCount) * 60);
@@ -207,7 +208,8 @@ export async function convertPdfToDocx(
           if (!cleanStr) continue;
 
           // Gap threshold to distinguish between words in same cell vs separate columns
-          const gapThreshold = Math.max(10, item.fontSize * 0.95);
+          // Accounting tables have narrow column spacing (~5-8pt)
+          const gapThreshold = Math.max(4.5, item.fontSize * 0.45);
 
           if (!currentCell) {
             currentCell = {
@@ -353,10 +355,10 @@ export async function convertPdfToDocx(
           }
           allStarts.sort((a, b) => a - b);
 
-          // Cluster anchor points within 14pt of each other
+          // Cluster anchor points within 4.5pt of each other (prevents merging adjacent ledger columns)
           const colAnchors: number[] = [];
           for (const s of allStarts) {
-            const found = colAnchors.find((anchor) => Math.abs(anchor - s) <= 14);
+            const found = colAnchors.find((anchor) => Math.abs(anchor - s) <= 4.5);
             if (found === undefined) {
               colAnchors.push(s);
             }
@@ -364,20 +366,23 @@ export async function convertPdfToDocx(
           colAnchors.sort((a, b) => a - b);
 
           const colCount = Math.max(1, colAnchors.length);
+          const isWideTable = colCount >= 8;
+          const isVeryWideTable = colCount >= 12;
 
           // 2. Compute column widths in DXA
           const rawColWidths: number[] = [];
           for (let i = 0; i < colCount; i++) {
             if (i < colCount - 1) {
-              rawColWidths.push(Math.max(25, colAnchors[i + 1] - colAnchors[i]));
+              rawColWidths.push(Math.max(15, colAnchors[i + 1] - colAnchors[i]));
             } else {
-              rawColWidths.push(50); // Default last column span
+              rawColWidths.push(35); // Default last column span
             }
           }
 
           const sumRaw = rawColWidths.reduce((acc, w) => acc + w, 0);
+          const minColDxa = isVeryWideTable ? 240 : isWideTable ? 350 : 450;
           const colWidthsDxa: number[] = rawColWidths.map((w) =>
-            Math.max(400, Math.round((w / sumRaw) * contentWidthDxa))
+            Math.max(minColDxa, Math.round((w / sumRaw) * contentWidthDxa))
           );
 
           // Adjust last column to ensure exact sum equals contentWidthDxa
@@ -385,13 +390,10 @@ export async function convertPdfToDocx(
           colWidthsDxa[colWidthsDxa.length - 1] += contentWidthDxa - currentSum;
 
           // 3. Build Table Rows & Cells
-          const tableBorder = { style: BorderStyle.SINGLE, size: 1, color: 'D1D5DB' };
-          const cellBorders = {
-            top: tableBorder,
-            bottom: tableBorder,
-            left: tableBorder,
-            right: tableBorder,
-          };
+          // Clean accounting ledger style: horizontal lines only (NO vertical borders, matching dpdf style)
+          const noBorder = { style: BorderStyle.NONE };
+          const darkLine = { style: BorderStyle.SINGLE, size: 4, color: '111827' };
+          const lightLine = { style: BorderStyle.SINGLE, size: 1, color: 'E5E7EB' };
 
           const docxRows: TableRow[] = [];
 
@@ -402,6 +404,7 @@ export async function convertPdfToDocx(
               /sr\.?\s*no|date|sum|type|invoice|salesman|net\s*amt|amount|balance/i.test(
                 rowData.fullText
               );
+            const isLastRow = rIdx === rows.length - 1;
 
             // Map this row's cells into column slots
             const rowCellsText: string[] = new Array(colCount).fill('');
@@ -425,6 +428,34 @@ export async function convertPdfToDocx(
               }
             }
 
+            // Cell borders: Accounting reports only use clean horizontal lines
+            const cellBorders = isWideTable
+              ? {
+                  top: isHeaderRow ? darkLine : noBorder,
+                  bottom: isHeaderRow ? darkLine : isLastRow ? darkLine : lightLine,
+                  left: noBorder,
+                  right: noBorder,
+                }
+              : {
+                  top: lightLine,
+                  bottom: lightLine,
+                  left: lightLine,
+                  right: lightLine,
+                };
+
+            // Adaptive cell margins & font sizes for multi-column density
+            const cellMargins = isVeryWideTable
+              ? { top: 25, bottom: 25, left: 30, right: 30 }
+              : isWideTable
+              ? { top: 35, bottom: 35, left: 45, right: 45 }
+              : { top: 70, bottom: 70, left: 90, right: 90 };
+
+            const fontSizeHalfPt = isVeryWideTable
+              ? isHeaderRow ? 14 : 13 // 6.5pt - 7pt
+              : isWideTable
+              ? isHeaderRow ? 16 : 15 // 7.5pt - 8pt
+              : isHeaderRow ? 19 : 18; // 9pt - 9.5pt
+
             const docxCells = rowCellsText.map((cellText, cIdx) => {
               const trimmed = cellText.trim();
               const isNumeric = isNumericOrCurrency(trimmed);
@@ -432,19 +463,19 @@ export async function convertPdfToDocx(
               return new TableCell({
                 width: { size: colWidthsDxa[cIdx], type: WidthType.DXA },
                 borders: cellBorders,
-                shading: isHeaderRow
+                shading: isHeaderRow && !isWideTable
                   ? { fill: 'F3F4F6', type: ShadingType.CLEAR }
                   : undefined,
-                margins: { top: 70, bottom: 70, left: 90, right: 90 },
+                margins: cellMargins,
                 children: [
                   new Paragraph({
                     alignment: isNumeric ? AlignmentType.RIGHT : AlignmentType.LEFT,
-                    spacing: { before: 0, after: 0, line: 220 },
+                    spacing: { before: 0, after: 0, line: isVeryWideTable ? 190 : 220 },
                     children: [
                       new TextRun({
                         text: trimmed || ' ',
                         bold: isHeaderRow,
-                        size: isHeaderRow ? 19 : 18, // 9pt - 9.5pt crisp table typography
+                        size: fontSizeHalfPt,
                         color: isHeaderRow ? '111827' : '374151',
                       }),
                     ],

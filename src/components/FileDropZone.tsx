@@ -8,8 +8,10 @@ interface FileDropZoneProps {
   accept?: string;
   maxSizeMB?: number;
   icon?: React.ReactNode;
+  plainIcon?: boolean;
   title?: string;
   subtitle?: string;
+  buttonText?: string;
   className?: string;
 }
 
@@ -18,8 +20,10 @@ export default function FileDropZone({
   accept = '*',
   maxSizeMB = 50,
   icon,
+  plainIcon = false,
   title = 'Drop your file here',
   subtitle = 'or click to browse',
+  buttonText,
   className = '',
 }: FileDropZoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -122,23 +126,42 @@ export default function FileDropZone({
         </div>
       ) : (
         <div className="flex flex-col items-center gap-4 pointer-events-none">
-          <div
-            className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-              isDragOver
-                ? 'bg-brand-500 text-white scale-110 shadow-glow-lg animate-bounce'
-                : 'bg-brand-500/10 text-brand-500'
-            }`}
-          >
-            {icon || <Upload className="w-8 h-8" />}
-          </div>
+          {plainIcon && icon ? (
+            <div
+              className={`transition-all duration-300 ${
+                isDragOver ? 'scale-110 drop-shadow-xl animate-bounce' : 'hover:scale-105'
+              }`}
+            >
+              {icon}
+            </div>
+          ) : (
+            <div
+              className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                isDragOver
+                  ? 'bg-brand-500 text-white scale-110 shadow-glow-lg animate-bounce'
+                  : 'bg-brand-500/10 text-brand-500'
+              }`}
+            >
+              {icon || <Upload className="w-8 h-8" />}
+            </div>
+          )}
           <div>
-            <p className="text-base font-semibold text-zinc-800 dark:text-zinc-200">
+            <p className="text-lg font-bold text-zinc-900 dark:text-white">
               {isDragOver ? 'Release to upload file' : title}
             </p>
-            <p className="text-sm text-zinc-500 mt-1">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm">
               {isDragOver ? 'Drop your document now' : subtitle}
             </p>
           </div>
+
+          {buttonText && (
+            <div className="mt-1">
+              <span className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-semibold bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 shadow-xs hover:bg-zinc-50 dark:hover:bg-zinc-750 transition-all">
+                {buttonText}
+              </span>
+            </div>
+          )}
+
           <p className="text-xs text-zinc-400">
             Max file size: {maxSizeMB}MB
           </p>
