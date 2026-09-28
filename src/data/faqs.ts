@@ -233,3 +233,34 @@ export const unlockPdfFaqs: FaqItem[] = [
   },
 ];
 
+export const pdfToWordFaqs: FaqItem[] = [
+  {
+    q: 'What is the difference between "No OCR" and "OCR" mode?',
+    a: '"No OCR" mode is best for digital PDFs where the text is already selectable (you can Ctrl+C copy it). It directly extracts the text layer at near-instant speed with high formatting accuracy. "OCR" mode is for scanned documents or image-based PDFs where the text is embedded in a photograph — it uses Optical Character Recognition to read characters from image pixels and convert them into editable text.',
+  },
+  {
+    q: 'How do I know if my PDF needs OCR mode?',
+    a: 'Open your PDF in any viewer and try to select and copy some text. If you can highlight and copy text normally, use "No OCR" — it will be faster and more accurate. If you cannot select any text (cursor turns into a crosshair or arrow), your PDF is scanned and you need "OCR" mode.',
+  },
+  {
+    q: 'Will the converted Word document be editable in Microsoft Word?',
+    a: 'Yes. The output is a standard ISO/IEC 29500 compliant .docx file — fully editable in Microsoft Word, Google Docs, Apple Pages, and LibreOffice Writer. Headings, paragraphs, and text formatting are preserved as much as possible.',
+  },
+  {
+    q: 'How accurate is OCR for Urdu, Arabic, or other languages?',
+    a: 'The OCR engine supports 80+ languages. For Urdu and Arabic (right-to-left scripts), select the appropriate language before converting. Accuracy depends on scan quality — clean, high-resolution scans (200 DPI+) yield the best results.',
+  },
+  {
+    q: 'Does Compixor upload my PDF to any server?',
+    a: 'Never. All conversion — whether No OCR or OCR mode — happens entirely on your device. No bytes of your document are transmitted to any external server, cloud storage, or third party. Your sensitive documents stay 100% private.',
+  },
+  {
+    q: 'Is there a file size or page count limit?',
+    a: 'No OCR mode handles PDFs up to 100MB instantly with no page limit. OCR mode processes each page individually so very large scanned documents may take a few minutes — but there is still no hard size or page limit.',
+  },
+  {
+    q: 'Is the PDF to Word converter completely free?',
+    a: 'Yes — 100% free with no registration, no email, no subscription, and no watermarks on your downloaded Word document. Both No OCR and OCR modes are completely free.',
+  },
+];
+
