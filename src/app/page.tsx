@@ -102,6 +102,16 @@ const tools = [
     badge: 'Fast',
   },
   {
+    href: '/tools/pdf-to-word',
+    icon: FileText,
+    title: 'PDF to Word Converter',
+    tagline: '100% Client-Side Privacy',
+    description: 'Convert PDF files into fully editable Microsoft Word (.docx) documents in browser RAM with zero cloud uploads.',
+    color: 'from-blue-600 to-indigo-600',
+    stats: 'Editable DOCX',
+    badge: 'New',
+  },
+  {
     href: '/tools/passport-photo',
     icon: Camera,
     title: 'Biometric Passport Photo Maker',

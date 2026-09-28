@@ -14,6 +14,7 @@ import {
   LucideIcon,
   Lock,
   Unlock,
+  FileText,
 } from 'lucide-react';
 
 export type PdfToolId =
@@ -24,7 +25,8 @@ export type PdfToolId =
   | 'pdf-watermark'
   | 'pdf-protect'
   | 'protect-pdf'
-  | 'unlock-pdf';
+  | 'unlock-pdf'
+  | 'pdf-to-word';
 
 export interface PdfToolConfig {
   id: PdfToolId;
@@ -104,6 +106,17 @@ export const PDF_TOOLS: PdfToolConfig[] = [
     color: 'from-purple-500 to-pink-600',
     tagline: '100% Client-Side Privacy',
     description: 'Instantly remove passwords and security restrictions from PDF files you own without cloud uploads.',
+  },
+  {
+    id: 'pdf-to-word',
+    name: 'PDF to Word',
+    badge: 'New',
+    stat: '100% Editable DOCX',
+    href: '/tools/pdf-to-word',
+    icon: FileText,
+    color: 'from-blue-600 to-indigo-600',
+    tagline: '100% Client-Side Privacy',
+    description: 'Convert PDF documents into editable Word (.docx) files locally in browser RAM with zero server uploads.',
   },
 ];
 

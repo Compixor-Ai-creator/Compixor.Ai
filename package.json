@@ -13,6 +13,7 @@
     "@mediapipe/selfie_segmentation": "^0.1.1675465747",
     "@types/pako": "^1.0.7",
     "@vercel/analytics": "^2.0.1",
+    "docx": "^9.7.2",
     "file-saver": "^2.0.5",
     "framer-motion": "^11.11.0",
     "jszip": "^3.10.1",

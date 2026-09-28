@@ -60,6 +60,14 @@ export const pdfCategories: PdfCategoryGroup[] = [
         icon: Files,
         gradient: 'from-blue-500 to-indigo-600',
       },
+      {
+        href: '/tools/pdf-to-word',
+        label: 'PDF to Word',
+        subtitle: 'Convert to editable Word (.docx)',
+        icon: FileText,
+        gradient: 'from-blue-600 to-indigo-600',
+        badge: 'New',
+      },
     ],
   },
   {
@@ -106,8 +114,34 @@ export const pdfCategories: PdfCategoryGroup[] = [
 
 export const pdfToolsList: PdfToolItem[] = pdfCategories.flatMap((c) => c.tools);
 
+// ── Word Tools ─────────────────────────────────────────────────────────────────
+export const wordCategories: PdfCategoryGroup[] = [
+  {
+    category: 'Word & Document Processing',
+    tools: [
+      {
+        href: '/tools/word-compressor',
+        label: 'Word Compressor',
+        subtitle: 'Shrink DOCX size without losing layout',
+        icon: FileDown,
+        gradient: 'from-blue-500 to-indigo-600',
+        badge: 'Popular',
+      },
+      {
+        href: '/tools/pdf-to-word',
+        label: 'PDF to Word Converter',
+        subtitle: 'Convert PDF to editable .docx document',
+        icon: FileText,
+        gradient: 'from-violet-500 to-purple-600',
+        badge: 'New',
+      },
+    ],
+  },
+];
+
+export const wordToolsList: PdfToolItem[] = wordCategories.flatMap((c) => c.tools);
+
 const topLevelNavLinks = [
-  { href: '/tools/word-compressor', label: 'Word Compressor', icon: FileText },
   { href: '/tools/passport-photo', label: 'Passport Photo Maker', icon: Camera },
   { href: '/tools/full-dp-maker', label: 'Full DP Maker', icon: WhatsAppIcon },
   { href: '/tools/qr-generator', label: 'QR Generator', icon: QrCode },
@@ -121,9 +155,13 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [pdfDropdownOpen, setPdfDropdownOpen] = useState(false);
   const [mobilePdfAccordionOpen, setMobilePdfAccordionOpen] = useState(true);
+  const [wordDropdownOpen, setWordDropdownOpen] = useState(false);
+  const [mobileWordAccordionOpen, setMobileWordAccordionOpen] = useState(true);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const wordDropdownRef = useRef<HTMLDivElement>(null);
+  const wordHoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Check if any PDF tool is the current active route
   const isPdfRouteActive =
@@ -132,6 +170,9 @@ export default function Navbar() {
     pathname === '/tools/remove-watermark' ||
     pathname === '/tools/protect-pdf' ||
     pathname === '/tools/unlock-pdf';
+
+  const isWordRouteActive =
+    pathname === '/tools/word-compressor' || pathname === '/tools/pdf-to-word';
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -145,6 +186,9 @@ export default function Navbar() {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setPdfDropdownOpen(false);
       }
+      if (wordDropdownRef.current && !wordDropdownRef.current.contains(event.target as Node)) {
+        setWordDropdownOpen(false);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -154,6 +198,7 @@ export default function Navbar() {
   useEffect(() => {
     setMobileOpen(false);
     setPdfDropdownOpen(false);
+    setWordDropdownOpen(false);
   }, [pathname]);
 
   const handleMouseEnter = () => {
@@ -164,6 +209,17 @@ export default function Navbar() {
   const handleMouseLeave = () => {
     hoverTimeoutRef.current = setTimeout(() => {
       setPdfDropdownOpen(false);
+    }, 180);
+  };
+
+  const handleWordMouseEnter = () => {
+    if (wordHoverTimeoutRef.current) clearTimeout(wordHoverTimeoutRef.current);
+    setWordDropdownOpen(true);
+  };
+
+  const handleWordMouseLeave = () => {
+    wordHoverTimeoutRef.current = setTimeout(() => {
+      setWordDropdownOpen(false);
     }, 180);
   };
 
@@ -377,6 +433,124 @@ export default function Navbar() {
                 </AnimatePresence>
               </div>
 
+              {/* Word Tools Unified Dropdown */}
+              <div
+                ref={wordDropdownRef}
+                className="relative"
+                onMouseEnter={handleWordMouseEnter}
+                onMouseLeave={handleWordMouseLeave}
+              >
+                <button
+                  type="button"
+                  onClick={() => setWordDropdownOpen((prev) => !prev)}
+                  aria-expanded={wordDropdownOpen}
+                  aria-haspopup="true"
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                    isWordRouteActive || wordDropdownOpen
+                      ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 shadow-xs'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-brand-500/5'
+                  }`}
+                >
+                  <FileText className="w-4 h-4 text-brand-500 shrink-0" />
+                  <span>Word Tools</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                      wordDropdownOpen ? 'rotate-180 text-brand-500' : 'text-zinc-400'
+                    }`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {wordDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                      className="absolute left-0 mt-2.5 w-[380px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-zinc-700/60 shadow-2xl shadow-purple-950/15 dark:shadow-black/70"
+                    >
+                      {/* Top Header Tag */}
+                      <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/80">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
+                            Word & DOCX Tools
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300">
+                          2 Fast Tools
+                        </span>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        {wordToolsList.map((item) => {
+                          const isCurrent = pathname === item.href;
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setWordDropdownOpen(false)}
+                              className={`group flex items-start gap-3 p-3 rounded-2xl transition duration-150 cursor-pointer ${
+                                isCurrent
+                                  ? 'bg-brand-500 text-white shadow-glow'
+                                  : 'hover:bg-brand-500/10 text-zinc-700 dark:text-zinc-300'
+                              }`}
+                            >
+                              <div
+                                className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shrink-0 shadow-xs group-hover:scale-105 transition-transform`}
+                              >
+                                <Icon className="w-4 h-4" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5">
+                                  <span
+                                    className={`text-xs font-bold leading-tight ${
+                                      isCurrent
+                                        ? 'text-white'
+                                        : 'text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors'
+                                    }`}
+                                  >
+                                    {item.label}
+                                  </span>
+                                  {item.badge && (
+                                    <span
+                                      className={`text-[9px] font-black px-1.5 py-0.2 rounded-full leading-tight uppercase ${
+                                        isCurrent
+                                          ? 'bg-white/20 text-white'
+                                          : 'bg-brand-500/15 text-brand-600 dark:text-brand-300'
+                                      }`}
+                                    >
+                                      {item.badge}
+                                    </span>
+                                  )}
+                                </div>
+                                <p
+                                  className={`text-[11px] mt-0.5 line-clamp-1 ${
+                                    isCurrent ? 'text-white/80' : 'text-zinc-500 dark:text-zinc-400'
+                                  }`}
+                                >
+                                  {item.subtitle}
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+
+                      {/* Client Side Guarantee Footer */}
+                      <div className="mt-3 pt-2.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400">
+                        <span className="flex items-center gap-1.5">
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                          100% Client-Side Privacy
+                        </span>
+                        <span className="font-semibold text-brand-600 dark:text-brand-400">Zero Server Uploads</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               {/* Remaining Top-Level Nav Links */}
               {topLevelNavLinks.map((link) => {
                 const isActive = pathname === link.href;
@@ -518,6 +692,74 @@ export default function Navbar() {
                             </div>
                           </div>
                         ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Mobile Word Tools Accordion */}
+              <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-surface-900/40 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setMobileWordAccordionOpen((prev) => !prev)}
+                  className="w-full flex items-center justify-between p-3.5 text-base font-bold text-zinc-900 dark:text-white"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-500">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <span>Word Tools</span>
+                  </div>
+                  <ChevronDown
+                    className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
+                      mobileWordAccordionOpen ? 'rotate-180 text-brand-500' : ''
+                    }`}
+                  />
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {mobileWordAccordionOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden border-t border-zinc-200/60 dark:border-zinc-800/60 px-2 py-2 space-y-1"
+                    >
+                      <div className="space-y-1 py-1">
+                        {wordToolsList.map((item) => {
+                          const isCurrent = pathname === item.href;
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setMobileOpen(false)}
+                              className={`flex items-center gap-3 p-2.5 rounded-xl transition ${
+                                isCurrent
+                                  ? 'bg-brand-500 text-white shadow-glow'
+                                  : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5'
+                              }`}
+                            >
+                              <div
+                                className={`w-8 h-8 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shrink-0 shadow-xs`}
+                              >
+                                <Icon className="w-4 h-4" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-semibold leading-tight">{item.label}</p>
+                                <p
+                                  className={`text-xs mt-0.5 ${
+                                    isCurrent ? 'text-white/80' : 'text-zinc-500 dark:text-zinc-400'
+                                  }`}
+                                >
+                                  {item.subtitle}
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })}
                       </div>
                     </motion.div>
                   )}
