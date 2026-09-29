@@ -23,7 +23,7 @@ const testimonials: Testimonial[] = [
     name: 'Sarah Jenkins',
     role: 'Senior Corporate Counsel',
     location: 'Horizon Law · London, UK',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=150&auto=format&fit=crop&q=80',
     initials: 'SJ',
     avatarColor: 'from-violet-500 to-purple-600',
     rating: 5.0,
@@ -36,7 +36,7 @@ const testimonials: Testimonial[] = [
     name: 'Zeeshan Ahmed',
     role: 'Full Stack Engineer',
     location: 'Lahore, Pakistan',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
     initials: 'ZA',
     avatarColor: 'from-emerald-500 to-teal-600',
     rating: 4.9,
@@ -49,7 +49,7 @@ const testimonials: Testimonial[] = [
     name: 'Elena Rostova',
     role: 'Lead Visual Designer',
     location: 'Studio Bloom · Berlin, Germany',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
     initials: 'ER',
     avatarColor: 'from-rose-500 to-pink-600',
     rating: 5.0,
@@ -62,7 +62,7 @@ const testimonials: Testimonial[] = [
     name: 'Dr. Marcus Vance',
     role: 'Academic Researcher & Lecturer',
     location: 'MIT · Boston, USA',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
     initials: 'MV',
     avatarColor: 'from-blue-500 to-indigo-600',
     rating: 4.8,
@@ -75,7 +75,7 @@ const testimonials: Testimonial[] = [
     name: 'Ayesha Noor',
     role: 'Digital Content Creator',
     location: 'Dubai, UAE',
-    avatar: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
     initials: 'AN',
     avatarColor: 'from-amber-500 to-orange-600',
     rating: 5.0,
@@ -88,7 +88,7 @@ const testimonials: Testimonial[] = [
     name: 'David Miller',
     role: 'Operations Director',
     location: 'BluePeak Logistics · Austin, TX',
-    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     initials: 'DM',
     avatarColor: 'from-cyan-500 to-blue-600',
     rating: 4.9,
@@ -101,7 +101,7 @@ const testimonials: Testimonial[] = [
     name: 'Maya Patel',
     role: 'Creative Agency Director',
     location: 'Mumbai, India',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
     initials: 'MP',
     avatarColor: 'from-fuchsia-500 to-violet-600',
     rating: 5.0,
@@ -114,7 +114,7 @@ const testimonials: Testimonial[] = [
     name: 'Tariq Mansoor',
     role: 'Fintech Security Specialist',
     location: 'Riyadh, Saudi Arabia',
-    avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
     initials: 'TM',
     avatarColor: 'from-green-500 to-emerald-600',
     rating: 4.9,
@@ -125,55 +125,55 @@ const testimonials: Testimonial[] = [
   },
 ];
 
-// Individual Testimonial Card Component
+// Compact Individual Testimonial Card Component
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <div className="glass-card p-5 sm:p-6 flex flex-col justify-between rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 hover:border-brand-500/30 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 group w-[300px] sm:w-[340px] shrink-0">
+    <div className="glass-card p-4 sm:p-4.5 flex flex-col justify-between rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 hover:border-brand-500/30 hover:shadow-lg hover:shadow-brand-500/10 transition-all duration-300 group w-[270px] sm:w-[310px] shrink-0 select-none">
       <div>
-        {/* Top Row: Stars + Quote */}
-        <div className="flex items-center justify-between gap-2 mb-3">
+        {/* Top Row: Stars + Rating + Quote */}
+        <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center gap-0.5">
             {[1, 2, 3, 4, 5].map((star) => (
               <Star
                 key={star}
-                className={`w-3.5 h-3.5 ${
+                className={`w-3 h-3 ${
                   star <= Math.floor(t.rating)
                     ? 'fill-amber-400 text-amber-400'
                     : 'fill-amber-400/50 text-amber-400/50'
                 }`}
               />
             ))}
-            <span className="ml-1.5 text-[11px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300">
+            <span className="ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300">
               {t.rating.toFixed(1)}
             </span>
           </div>
-          <Quote className="w-5 h-5 text-brand-500/25 group-hover:text-brand-500/50 transition-colors shrink-0" />
+          <Quote className="w-4 h-4 text-brand-500/25 group-hover:text-brand-500/50 transition-colors shrink-0" />
         </div>
 
         {/* Highlight Tag */}
-        <p className="text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-2">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-1.5 truncate">
           &ldquo;{t.highlight}&rdquo;
         </p>
 
-        {/* Review Body */}
-        <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed line-clamp-4">
+        {/* Review Body (Compact 3 lines) */}
+        <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed line-clamp-3">
           {t.review}
         </p>
       </div>
 
       {/* Footer: User Details + Tool Tag */}
-      <div className="pt-4 mt-4 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2.5 min-w-0">
+      <div className="pt-3 mt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           {/* Avatar with fallback */}
-          <div className="relative w-9 h-9 rounded-full shrink-0 overflow-hidden ring-2 ring-brand-500/20 group-hover:ring-brand-500/50 transition-all">
-            <div className={`absolute inset-0 bg-gradient-to-br ${t.avatarColor} flex items-center justify-center text-white text-xs font-bold`}>
+          <div className="relative w-8 h-8 rounded-full shrink-0 overflow-hidden ring-1.5 ring-brand-500/25 group-hover:ring-brand-500/60 transition-all">
+            <div className={`absolute inset-0 bg-gradient-to-br ${t.avatarColor} flex items-center justify-center text-white text-[10px] font-bold`}>
               {t.initials}
             </div>
             <Image
               src={t.avatar}
               alt={t.name}
-              width={36}
-              height={36}
+              width={32}
+              height={32}
               className="absolute inset-0 w-full h-full object-cover"
               loading="lazy"
             />
@@ -188,7 +188,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
             <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">{t.role}</p>
           </div>
         </div>
-        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 shrink-0 whitespace-nowrap">
+        <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 shrink-0 whitespace-nowrap">
           {t.toolUsed}
         </span>
       </div>
@@ -198,75 +198,75 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 
 export default function CustomerTestimonials() {
   return (
-    <section className="relative py-20 overflow-hidden">
+    <section className="relative py-12 sm:py-16 overflow-hidden">
       {/* Background Glow */}
       <div
         aria-hidden="true"
-        className="hidden md:block pointer-events-none absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[360px] rounded-full opacity-20 dark:opacity-15"
+        className="hidden md:block pointer-events-none absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full opacity-20 dark:opacity-15"
         style={{
           background: 'radial-gradient(ellipse at center, #7c3aed 0%, #06b6d4 45%, transparent 70%)',
-          filter: 'blur(100px)',
+          filter: 'blur(90px)',
         }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
         <motion.div
-          className="text-center mb-14"
-          initial={{ opacity: 0, y: 20 }}
+          className="text-center mb-8 sm:mb-10"
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
         >
           {/* Rating Pill Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/25 backdrop-blur-sm shadow-xs mb-4 animate-float-subtle">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/25 backdrop-blur-sm shadow-xs mb-3 animate-float-subtle">
             <div className="flex items-center gap-0.5">
               {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />
               ))}
             </div>
             <span className="font-bold">4.9 / 5.0 Rating</span>
             <span className="text-zinc-400 dark:text-zinc-500">•</span>
-            <span>Based on 12,000+ Reviews</span>
+            <span>12,000+ Reviews</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-zinc-900 dark:text-white mb-2 tracking-tight">
             Loved by Professionals &amp;{' '}
             <span className="bg-gradient-to-r from-brand-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
               Creators Worldwide
             </span>
           </h2>
-          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
             See why thousands of developers, researchers, lawyers, and students rely on Compixor AI every day for zero-server file privacy and instantaneous transforms.
           </p>
 
           {/* Quick Metrics Bar */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm font-semibold text-zinc-600 dark:text-zinc-300">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs font-semibold text-zinc-600 dark:text-zinc-300">
             <span className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
               Zero Cloud Uploads
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
               100% Free &amp; Unlimited
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Heart className="w-4 h-4 text-rose-500 fill-rose-500/30 shrink-0" />
+              <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500/30 shrink-0" />
               99.8% Customer Satisfaction
             </span>
           </div>
         </motion.div>
       </div>
 
-      {/* ── Marquee Row 1: Left to Right (Side-Scrolling Infinite Animation) ── */}
-      <div className="relative mb-5 overflow-hidden">
+      {/* ── Marquee Row 1: Left to Right ── */}
+      <div className="relative mb-3.5 overflow-hidden">
         {/* Soft edge blur fades */}
-        <div className="pointer-events-none absolute left-0 top-0 h-full w-16 sm:w-28 z-10 bg-gradient-to-r from-white dark:from-[#0a0e1a] to-transparent" />
-        <div className="pointer-events-none absolute right-0 top-0 h-full w-16 sm:w-28 z-10 bg-gradient-to-l from-white dark:from-[#0a0e1a] to-transparent" />
+        <div className="pointer-events-none absolute left-0 top-0 h-full w-14 sm:w-24 z-10 bg-gradient-to-r from-white dark:from-[#0a0e1a] to-transparent" />
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-14 sm:w-24 z-10 bg-gradient-to-l from-white dark:from-[#0a0e1a] to-transparent" />
 
         <div
-          className="flex gap-4 w-max marquee-track hover:[animation-play-state:paused]"
-          style={{ animation: 'marquee-ltr 38s linear infinite' }}
+          className="flex gap-3 w-max marquee-track hover:[animation-play-state:paused]"
+          style={{ animation: 'marquee-ltr 36s linear infinite' }}
         >
           {/* First set */}
           {testimonials.slice(0, 4).map((t, i) => (
@@ -279,15 +279,15 @@ export default function CustomerTestimonials() {
         </div>
       </div>
 
-      {/* ── Marquee Row 2: Right to Left (Opposite Direction Side-Scrolling) ── */}
+      {/* ── Marquee Row 2: Right to Left ── */}
       <div className="relative overflow-hidden">
         {/* Soft edge blur fades */}
-        <div className="pointer-events-none absolute left-0 top-0 h-full w-16 sm:w-28 z-10 bg-gradient-to-r from-white dark:from-[#0a0e1a] to-transparent" />
-        <div className="pointer-events-none absolute right-0 top-0 h-full w-16 sm:w-28 z-10 bg-gradient-to-l from-white dark:from-[#0a0e1a] to-transparent" />
+        <div className="pointer-events-none absolute left-0 top-0 h-full w-14 sm:w-24 z-10 bg-gradient-to-r from-white dark:from-[#0a0e1a] to-transparent" />
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-14 sm:w-24 z-10 bg-gradient-to-l from-white dark:from-[#0a0e1a] to-transparent" />
 
         <div
-          className="flex gap-4 w-max marquee-track hover:[animation-play-state:paused]"
-          style={{ animation: 'marquee-rtl 42s linear infinite' }}
+          className="flex gap-3 w-max marquee-track hover:[animation-play-state:paused]"
+          style={{ animation: 'marquee-rtl 40s linear infinite' }}
         >
           {/* First set */}
           {testimonials.slice(4).map((t, i) => (
