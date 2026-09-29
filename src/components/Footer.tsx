@@ -32,9 +32,9 @@ export default function Footer() {
 
           {/* Tools */}
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
+            <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
               Tools Suite
-            </h4>
+            </p>
             <ul className="space-y-2.5">
               <li>
                 <Link
@@ -121,9 +121,9 @@ export default function Footer() {
 
           {/* Company & Architecture */}
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
+            <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
               Company
-            </h4>
+            </p>
             <ul className="space-y-2.5">
               <li>
                 <Link
@@ -185,9 +185,9 @@ export default function Footer() {
 
           {/* Guarantee */}
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
+            <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
               Privacy Promise
-            </h4>
+            </p>
             <div className="glass-card p-4 rounded-2xl space-y-2 border-emerald-500/20">
               <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="w-4 h-4" />
