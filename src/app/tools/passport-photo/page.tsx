@@ -1473,7 +1473,10 @@ export default function PassportPhotoPage() {
           AI Portrait Matting & Biometric Studio
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Passport Size Photo Maker Online Free
+          <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 bg-clip-text text-transparent">
+            Passport Size Photo
+          </span>{''}
+          Maker Online Free
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           {currentStep === 'edit'

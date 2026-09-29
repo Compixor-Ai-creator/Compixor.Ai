@@ -929,12 +929,78 @@ export default function PdfCompressorPage() {
           Native Vector PDF Optimizer & Batch Compactor
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Free PDF Compressor Online
+          Free{' '}
+          <span className="bg-gradient-to-r from-brand-600 via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+            PDF Compressor
+          </span>{' '}
+          Online
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
           Reduce PDF file sizes with intelligent native stream optimization.
           Preserves 100% crisp vector text, sharp fonts, and embedded layouts — zero blurry pixels, zero uploads.
         </p>
+
+        {/* ── Compression Flow Illustration ── */}
+        <div className="w-full flex flex-col items-center justify-center pt-3 select-none pointer-events-none">
+          <div className="w-full max-w-sm h-32 sm:h-40 flex items-center justify-center drop-shadow-sm">
+            <svg
+              viewBox="0 0 400 160"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-full max-w-[360px]"
+              aria-hidden="true"
+            >
+              <defs>
+                <filter id="comp-shadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
+                  <feOffset dx="0" dy="6" result="offsetblur" />
+                  <feComponentTransfer><feFuncA type="linear" slope="0.08" /></feComponentTransfer>
+                  <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+                </filter>
+                <linearGradient id="comp-brand" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#7c3aed" /><stop offset="100%" stopColor="#06b6d4" />
+                </linearGradient>
+                <linearGradient id="comp-pdf-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#EF4444" /><stop offset="100%" stopColor="#DC2626" />
+                </linearGradient>
+              </defs>
+              {/* Large PDF (before) */}
+              <g transform="translate(110, 80) rotate(-4)" filter="url(#comp-shadow)">
+                <rect x="-46" y="-60" width="92" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+                <rect x="-34" y="-46" width="36" height="16" rx="4" fill="url(#comp-pdf-grad)" />
+                <text x="-16" y="-35" textAnchor="middle" fill="#FFFFFF" fontSize="8" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="0.5">PDF</text>
+                <rect x="8" y="-42" width="24" height="7" rx="3" fill="#E2E8F0" />
+                <rect x="-34" y="-16" width="68" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-34" y="-4" width="54" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-34" y="8" width="62" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-34" y="20" width="42" height="4" rx="2" fill="#E2E8F0" />
+                <rect x="-34" y="32" width="68" height="10" rx="2.5" fill="#FEE2E2" />
+                <text x="0" y="41" textAnchor="middle" fill="#EF4444" fontSize="7" fontWeight="bold" fontFamily="system-ui, sans-serif">12.4 MB</text>
+              </g>
+              {/* Arrow with compress indicator */}
+              <g transform="translate(200, 80)">
+                <path d="M -40 0 L 40 0" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 4" strokeLinecap="round" fill="none" />
+                <circle cx="0" cy="0" r="16" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" filter="url(#comp-shadow)" />
+                <path d="M -4.5 -2.5 L 0 2.5 L 4.5 -2.5" fill="none" stroke="url(#comp-brand)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M -5 0 L 5 0" fill="none" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
+              </g>
+              {/* Small PDF (after - compressed) */}
+              <g transform="translate(290, 80) rotate(4)" filter="url(#comp-shadow)">
+                <rect x="-32" y="-42" width="64" height="84" rx="10" fill="#FFFFFF" stroke="#BFDBFE" strokeWidth="1.5" />
+                <rect x="-22" y="-32" width="26" height="12" rx="3" fill="url(#comp-brand)" />
+                <text x="-9" y="-23.5" textAnchor="middle" fill="#FFFFFF" fontSize="6.5" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="0.5">PDF</text>
+                <rect x="9" y="-29" width="14" height="5" rx="2.5" fill="#E2E8F0" />
+                <rect x="-22" y="-8" width="44" height="3.5" rx="1.5" fill="#E2E8F0" />
+                <rect x="-22" y="0" width="34" height="3.5" rx="1.5" fill="#E2E8F0" />
+                <rect x="-22" y="8" width="40" height="3.5" rx="1.5" fill="#E2E8F0" />
+                <rect x="-22" y="20" width="44" height="8" rx="2" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="0.8" />
+                <text x="0" y="28" textAnchor="middle" fill="#2563EB" fontSize="6" fontWeight="bold" fontFamily="system-ui, sans-serif">3.2 MB</text>
+                <circle cx="22" cy="-38" r="8" fill="#22C55E" />
+                <path d="M18 -38 L21 -35 L26 -41" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </g>
+            </svg>
+          </div>
+        </div>
       </motion.div>
 
       {/* Main Workspace */}

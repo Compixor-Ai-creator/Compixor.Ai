@@ -6,26 +6,7 @@ import { Stamp, Shield, Layers, Sliders, CheckCircle2, Cpu } from 'lucide-react'
 export default function AddWatermarkPage() {
   return (
     <div className="relative">
-      {/* ── Semantic Server-Rendered Hero for SEO & Crawlers ── */}
-      <header className="pt-8 pb-4 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="inline-flex items-center gap-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-800/40 rounded-full px-4 py-1.5 mb-4">
-          <Stamp className="w-3.5 h-3.5 text-rose-500" />
-          <span className="text-xs font-semibold text-rose-600 dark:text-rose-400 tracking-wide uppercase">
-            100% Client-Side · Text &amp; Logo Stamping
-          </span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-4">
-          Add Watermark to PDF{' '}
-          <span className="bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
-            Online Free
-          </span>
-        </h1>
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-          Add custom vector text stamps or transparent PNG logo watermarks across all pages or custom page ranges. Full control over opacity, rotation, font style, and precise positioning with zero server uploads.
-        </p>
-      </header>
-
-      {/* ── Interactive Client Tool ── */}
+      {/* ── Interactive Client Tool (has its own hero header built-in) ── */}
       <main>
         <PdfWatermarkClient initialMode="add" />
       </main>

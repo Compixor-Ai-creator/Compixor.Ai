@@ -252,11 +252,71 @@ export default function WordCompressorPage() {
           Docx Image Optimization Engine
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Free Word Document Compressor
+          Free{' '}
+          <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-brand-600 bg-clip-text text-transparent">
+            Word Document Compressor
+          </span>
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
           Shrink bulky Microsoft Word files by optimizing embedded graphics and re-packing XML structures.
         </p>
+        {/* ── Word Compression Illustration ── */}
+        <div className="w-full flex flex-col items-center justify-center pt-3 select-none pointer-events-none">
+          <div className="w-full max-w-sm h-28 sm:h-36 flex items-center justify-center drop-shadow-sm">
+            <svg viewBox="0 0 400 150" fill="none" xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-full max-w-[360px]" aria-hidden="true">
+              <defs>
+                <filter id="word-shad" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+                  <feOffset dx="0" dy="5" result="offsetblur" />
+                  <feComponentTransfer><feFuncA type="linear" slope="0.08" /></feComponentTransfer>
+                  <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+                </filter>
+                <linearGradient id="word-blue" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#2563EB" /><stop offset="100%" stopColor="#1d4ed8" />
+                </linearGradient>
+                <linearGradient id="word-brand" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#7c3aed" /><stop offset="100%" stopColor="#3b82f6" />
+                </linearGradient>
+              </defs>
+              {/* Large DOCX (before) */}
+              <g transform="translate(110, 75) rotate(-3)" filter="url(#word-shad)">
+                <rect x="-44" y="-55" width="88" height="110" rx="10" fill="#FFFFFF" stroke="#BFDBFE" strokeWidth="1.5" />
+                <rect x="-32" y="-42" width="32" height="14" rx="3" fill="url(#word-blue)" />
+                <text x="-16" y="-32" textAnchor="middle" fill="#FFFFFF" fontSize="7" fontWeight="bold" fontFamily="system-ui, sans-serif">DOCX</text>
+                <rect x="5" y="-39" width="20" height="5" rx="2" fill="#E2E8F0" />
+                <rect x="-32" y="-18" width="30" height="5" rx="2.5" fill="#DBEAFE" />
+                <rect x="-30" y="-18" width="18" height="5" rx="2.5" fill="#3B82F6" />
+                <rect x="-32" y="-5" width="64" height="3.5" rx="1.5" fill="#E2E8F0" />
+                <rect x="-32" y="5" width="50" height="3.5" rx="1.5" fill="#E2E8F0" />
+                <rect x="-32" y="15" width="58" height="3.5" rx="1.5" fill="#E2E8F0" />
+                <rect x="-32" y="28" width="64" height="8" rx="2" fill="#FEE2E2" />
+                <text x="0" y="36" textAnchor="middle" fill="#EF4444" fontSize="6.5" fontWeight="bold" fontFamily="system-ui">8.3 MB</text>
+              </g>
+              {/* Arrow */}
+              <g transform="translate(200, 75)">
+                <path d="M -38 0 L 38 0" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 4" strokeLinecap="round" fill="none" />
+                <circle cx="0" cy="0" r="15" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" filter="url(#word-shad)" />
+                <path d="M -4 -2 L 0 2 L 4 -2" fill="none" stroke="url(#word-brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M -4.5 0 L 4.5 0" fill="none" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
+              </g>
+              {/* Small DOCX (after) */}
+              <g transform="translate(290, 75) rotate(3)" filter="url(#word-shad)">
+                <rect x="-30" y="-40" width="60" height="80" rx="9" fill="#FFFFFF" stroke="#BFDBFE" strokeWidth="1.5" />
+                <rect x="-20" y="-30" width="22" height="11" rx="3" fill="url(#word-brand)" />
+                <text x="-9" y="-22" textAnchor="middle" fill="#FFFFFF" fontSize="6" fontWeight="bold" fontFamily="system-ui">DOCX</text>
+                <rect x="6" y="-28" width="14" height="5" rx="2" fill="#E2E8F0" />
+                <rect x="-20" y="-8" width="40" height="3" rx="1.5" fill="#E2E8F0" />
+                <rect x="-20" y="0" width="30" height="3" rx="1.5" fill="#E2E8F0" />
+                <rect x="-20" y="8" width="36" height="3" rx="1.5" fill="#E2E8F0" />
+                <rect x="-20" y="18" width="40" height="7" rx="2" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="0.8" />
+                <text x="0" y="25" textAnchor="middle" fill="#2563EB" fontSize="5.5" fontWeight="bold" fontFamily="system-ui">1.8 MB</text>
+                <circle cx="20" cy="-36" r="7" fill="#22C55E" />
+                <path d="M16.5 -36 L19 -33 L23.5 -39" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </g>
+            </svg>
+          </div>
+        </div>
       </motion.div>
 
       {/* Main Workspace */}

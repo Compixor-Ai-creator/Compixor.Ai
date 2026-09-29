@@ -722,7 +722,10 @@ export default function FullDpMakerPage() {
           No Crop Profile Picture Maker
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          No-Crop DP Maker for WhatsApp, Instagram & Facebook
+          <span className="bg-gradient-to-r from-[#25D366] via-brand-500 to-[#E1306C] bg-clip-text text-transparent">
+            No-Crop DP Maker
+          </span>{' '}
+          for WhatsApp, Instagram &amp; Facebook
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 mb-5">
           Create full-size profile pictures for WhatsApp, Instagram, Facebook, and Telegram without cropping anything out.

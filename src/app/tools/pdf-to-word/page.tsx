@@ -341,13 +341,13 @@ export default function PdfToWordPage() {
           {/* High-Intent SEO Keyword Badges / Tags */}
           <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mt-1">
             {[
-              '#PDFtoWord',
-              '#EditableDOCX',
-              '#TablePreserved',
-              '#OCRScannedPDF',
-              '#100%InBrowser',
-              '#ZeroCloudUploads',
-              '#FreeUnlimited',
+              'PDF to Word',
+              'Editable DOCX',
+              'Table Preserved',
+              'OCR Scanned PDF',
+              '100% In-Browser',
+              'Zero Cloud Uploads',
+              'Free Unlimited',
             ].map((tag) => (
               <span
                 key={tag}

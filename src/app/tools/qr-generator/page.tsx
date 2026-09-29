@@ -670,7 +670,11 @@ export default function QrGeneratorPage() {
           Pro Customizer • Logo Embedding • Unlimited Free
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Free QR Code Generator Online
+          Free{' '}
+          <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+            QR Code Generator
+          </span>{' '}
+          Online
         </h1>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 mb-6">
           Create high-resolution, branded QR codes for websites, Wi-Fi networks, vCards, and emails.

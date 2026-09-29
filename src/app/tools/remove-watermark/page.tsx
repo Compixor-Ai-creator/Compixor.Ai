@@ -6,26 +6,7 @@ import { Eraser, Shield, Layers, Sliders, CheckCircle2, Cpu } from 'lucide-react
 export default function RemoveWatermarkPage() {
   return (
     <div className="relative">
-      {/* ── Semantic Server-Rendered Hero for SEO & Crawlers ── */}
-      <header className="pt-8 pb-4 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="inline-flex items-center gap-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40 rounded-full px-4 py-1.5 mb-4">
-          <Eraser className="w-3.5 h-3.5 text-amber-500" />
-          <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 tracking-wide uppercase">
-            100% Client-Side · Smart Watermark Stripping &amp; Vector Redaction
-          </span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-4">
-          Remove Watermark from PDF{' '}
-          <span className="bg-gradient-to-r from-amber-500 to-rose-600 bg-clip-text text-transparent">
-            Online Free
-          </span>
-        </h1>
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-          Erase watermarks, logos, and stamps cleanly with intelligent text stream stripping and interactive vector redaction. Remove background stamps from single pages or entire documents with zero server uploads.
-        </p>
-      </header>
-
-      {/* ── Interactive Client Tool ── */}
+      {/* ── Interactive Client Tool (has its own hero header built-in) ── */}
       <main>
         <PdfWatermarkClient initialMode="remove" />
       </main>
