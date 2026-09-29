@@ -118,23 +118,59 @@ export default function FeedbackWidget() {
 
   const activeCategoryConfig = CATEGORIES.find((c) => c.id === category) || CATEGORIES[0];
 
-  const buildMailtoUrl = useCallback(() => {
+  const getEmailContent = useCallback(() => {
     const subject = `[Compixor AI - ${activeCategoryConfig.badge}] from ${pathname}`;
     const body = [
-      `Category: ${activeCategoryConfig.label}`,
-      `Page URL: ${typeof window !== 'undefined' ? window.location.href : pathname}`,
-      `User Email: ${email.trim() || 'Not provided'}`,
+      `Hi Compixor AI Team,`,
       '',
-      '--- Message ---',
+      `Category: ${activeCategoryConfig.label}`,
+      `Current Page: ${typeof window !== 'undefined' ? window.location.href : pathname}`,
+      `My Email: ${email.trim() || 'Not specified'}`,
+      '',
+      '--- Feedback / Request Details ---',
       message.trim(),
       '',
-      '--- Client Info ---',
-      `Date: ${new Date().toISOString()}`,
-      `User Agent: ${typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A'}`,
+      '--- System Info ---',
+      `Date: ${new Date().toLocaleString()}`,
+      `Browser: ${typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A'}`,
     ].join('\n');
 
-    return `mailto:support@compixor-ai.online?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return { subject, body };
   }, [activeCategoryConfig, pathname, email, message]);
+
+  const getGmailComposeUrl = useCallback(() => {
+    const { subject, body } = getEmailContent();
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=support@compixor-ai.online&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }, [getEmailContent]);
+
+  const getOutlookComposeUrl = useCallback(() => {
+    const { subject, body } = getEmailContent();
+    return `https://outlook.live.com/mail/0/deeplink/compose?to=support@compixor-ai.online&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }, [getEmailContent]);
+
+  const getMailtoUrl = useCallback(() => {
+    const { subject, body } = getEmailContent();
+    return `mailto:support@compixor-ai.online?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }, [getEmailContent]);
+
+  const saveFeedbackLocally = useCallback(() => {
+    try {
+      const submission: FeedbackSubmission = {
+        id: `fb_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        category,
+        message: message.trim(),
+        email: email.trim() || undefined,
+        pathname,
+        submittedAt: new Date().toISOString(),
+      };
+      if (typeof window !== 'undefined') {
+        const existingRaw = localStorage.getItem('compixor_user_feedback');
+        const list: FeedbackSubmission[] = existingRaw ? JSON.parse(existingRaw) : [];
+        list.unshift(submission);
+        localStorage.setItem('compixor_user_feedback', JSON.stringify(list.slice(0, 30)));
+      }
+    } catch {}
+  }, [category, message, email, pathname]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,38 +181,32 @@ export default function FeedbackWidget() {
     }
 
     setIsSubmitting(true);
+    saveFeedbackLocally();
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+    toast.success('Thank you! Your feedback has been noted.');
+  };
 
-    try {
-      const submission: FeedbackSubmission = {
-        id: `fb_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-        category,
-        message: message.trim(),
-        email: email.trim() || undefined,
-        pathname,
-        submittedAt: new Date().toISOString(),
-      };
+  const handleSendViaGmail = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
 
-      // Store locally in browser storage for zero-server persistence
-      if (typeof window !== 'undefined') {
-        const existingRaw = localStorage.getItem('compixor_user_feedback');
-        const list: FeedbackSubmission[] = existingRaw ? JSON.parse(existingRaw) : [];
-        list.unshift(submission);
-        // Keep last 30 feedback items
-        localStorage.setItem('compixor_user_feedback', JSON.stringify(list.slice(0, 30)));
-      }
-
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      toast.success('Thank you! Your feedback has been noted.');
-    } catch {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      toast.success('Thank you! Your feedback has been received.');
+    if (!message.trim() || message.trim().length < 5) {
+      toast.error('Please enter at least 5 characters for your message.');
+      return;
     }
+
+    saveFeedbackLocally();
+    const url = getGmailComposeUrl();
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+    setIsSubmitted(true);
+    toast.success('Opening Gmail Web with pre-filled message...');
   };
 
   const handleCopy = async () => {
-    const textToCopy = `[Compixor AI - ${activeCategoryConfig.badge}]\nPage: ${pathname}\nEmail: ${email || 'None'}\n\nMessage:\n${message}`;
+    const { subject, body } = getEmailContent();
+    const textToCopy = `Subject: ${subject}\n\n${body}`;
     try {
       await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
@@ -381,24 +411,25 @@ export default function FeedbackWidget() {
                       </span>
                     </div>
 
-                    {/* Submit Button */}
-                    <div className="pt-2">
+                    {/* Submit Buttons */}
+                    <div className="pt-2 space-y-2">
+                      <button
+                        type="button"
+                        onClick={handleSendViaGmail}
+                        disabled={isSubmitting || message.trim().length < 5}
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-red-500 hover:from-red-500 hover:to-rose-500 text-white shadow-md shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                      >
+                        <GmailIcon className="w-4 h-4" />
+                        <span>Open &amp; Send in Gmail Web (Pre-Filled)</span>
+                      </button>
+
                       <button
                         type="submit"
                         disabled={isSubmitting || message.trim().length < 5}
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white shadow-md shadow-brand-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+                        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                       >
-                        {isSubmitting ? (
-                          <>
-                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            <span>Processing...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Send className="w-4 h-4" />
-                            <span>Send Feedback</span>
-                          </>
-                        )}
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Save Locally Only (Zero Cloud Upload)</span>
                       </button>
                     </div>
                   </form>
@@ -407,7 +438,7 @@ export default function FeedbackWidget() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="py-4 text-center space-y-5"
+                    className="py-3 text-center space-y-4"
                   >
                     <div className="w-14 h-14 mx-auto rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center ring-8 ring-emerald-500/5">
                       <CheckCircle2 className="w-8 h-8" />
@@ -423,46 +454,74 @@ export default function FeedbackWidget() {
                     </div>
 
                     {/* Direct Contact & Fallback Card */}
-                    <div className="p-4 rounded-xl bg-zinc-50 dark:bg-surface-850 border border-zinc-200 dark:border-zinc-800 text-left space-y-3">
-                      <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                        Want an immediate direct reply or need to attach files?
-                      </p>
+                    <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-surface-850 border border-zinc-200 dark:border-zinc-800 text-left space-y-3.5">
+                      <div>
+                        <p className="text-xs font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-brand-500" />
+                          <span>Open in your Web Mailbox:</span>
+                        </p>
+                        <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+                          To, Subject, and your message are 100% pre-written. Just click &quot;Send&quot;!
+                        </p>
+                      </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {/* Mailto button */}
+                      {/* Primary Gmail Web Button */}
+                      <a
+                        href={getGmailComposeUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-red-500 hover:from-red-500 hover:to-rose-500 text-white shadow-md shadow-red-500/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+                      >
+                        <GmailIcon className="w-4 h-4 shrink-0" />
+                        <span>Open in Gmail (Web) — Pre-Written</span>
+                      </a>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-0.5">
+                        {/* Outlook Web Button */}
                         <a
-                          href={buildMailtoUrl()}
-                          className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-brand-500/10 hover:bg-brand-500/20 text-brand-600 dark:text-brand-300 border border-brand-500/20 transition-colors"
+                          href={getOutlookComposeUrl()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/20 transition-colors"
                         >
-                          <Mail className="w-3.5 h-3.5" />
-                          <span>Open in Email App</span>
+                          <OutlookIcon className="w-3.5 h-3.5 shrink-0" />
+                          <span>Outlook Web</span>
                         </a>
 
-                        {/* Copy to clipboard */}
+                        {/* Default Mailto Button */}
+                        <a
+                          href={getMailtoUrl()}
+                          className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 transition-colors"
+                        >
+                          <Mail className="w-3.5 h-3.5 shrink-0" />
+                          <span>Default App</span>
+                        </a>
+
+                        {/* Copy Request Text */}
                         <button
                           type="button"
                           onClick={handleCopy}
-                          className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 transition-colors"
+                          className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 transition-colors"
                         >
                           {copied ? (
                             <>
-                              <Check className="w-3.5 h-3.5 text-emerald-500" />
-                              <span className="text-emerald-500">Copied!</span>
+                              <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                              <span className="text-emerald-500 font-bold">Copied!</span>
                             </>
                           ) : (
                             <>
-                              <Copy className="w-3.5 h-3.5" />
-                              <span>Copy Request Text</span>
+                              <Copy className="w-3.5 h-3.5 shrink-0" />
+                              <span>Copy Text</span>
                             </>
                           )}
                         </button>
                       </div>
 
-                      <p className="text-[11px] text-zinc-500 dark:text-zinc-400 text-center sm:text-left">
-                        Direct email:{' '}
+                      <p className="text-[11px] text-zinc-500 dark:text-zinc-400 text-center sm:text-left pt-1 border-t border-zinc-200/60 dark:border-zinc-800/60">
+                        Direct email address:{' '}
                         <a
                           href="mailto:support@compixor-ai.online"
-                          className="text-brand-600 dark:text-brand-400 font-mono hover:underline font-medium"
+                          className="text-brand-600 dark:text-brand-400 font-mono hover:underline font-semibold"
                         >
                           support@compixor-ai.online
                         </a>
@@ -496,5 +555,21 @@ export default function FeedbackWidget() {
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+function GmailIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.545l8.073-6.052C21.691 2.28 24 3.434 24 5.457z" />
+    </svg>
+  );
+}
+
+function OutlookIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M7.88 12.04q0 .45-.11.87-.1.41-.33.74-.22.33-.58.52-.35.19-.86.19-.45 0-.8-.17-.34-.18-.58-.5-.23-.33-.35-.78-.11-.46-.11-.99 0-.47.12-.92.12-.45.36-.79.24-.35.6-.53.37-.19.86-.19.46 0 .81.18.36.18.59.51.24.33.36.77.13.44.13.96zm-1.12.03q0-.36-.06-.67-.06-.32-.2-.54-.13-.23-.34-.35-.2-.12-.48-.12-.29 0-.5.12-.2.12-.34.35-.13.22-.2.53-.06.31-.06.68 0 .38.06.7.07.31.2.53.14.22.34.34.21.11.49.11.28 0 .49-.12.2-.12.34-.35.14-.23.2-.54.06-.32.06-.68zm17.24-4.82v10.5q0 .8-.56 1.36-.57.57-1.37.57H8.94q-.74 0-1.28-.5-.54-.52-.61-1.25l-.01-.18v-.87l10.9-7.25q.18-.12.3-.3.13-.19.13-.4 0-.44-.31-.75-.3-.31-.75-.31-.19 0-.37.07-.18.06-.32.18L7.04 15.02v-7.8q0-.8.57-1.36.56-.56 1.37-.56h13.11q.8 0 1.37.56.56.56.56 1.36z" />
+    </svg>
   );
 }
