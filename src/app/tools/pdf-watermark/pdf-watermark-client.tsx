@@ -145,8 +145,10 @@ const FAQS = [
 
 export default function PdfWatermarkClient({
   initialMode = 'add',
+  hideHeader = false,
 }: {
   initialMode?: 'add' | 'remove';
+  hideHeader?: boolean;
 }) {
   // Mode: Add Watermark vs Remove Watermark
   const [activeMode, setActiveMode] = useState<'add' | 'remove'>(initialMode);
@@ -1055,58 +1057,60 @@ export default function PdfWatermarkClient({
         )}
       </AnimatePresence>
 
-      {/* Hero Header */}
-      <motion.div
-        className="text-center mb-10"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4 shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 text-brand-500" />
-          <span>Document Security • 100% In-Browser Engine</span>
-        </div>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
-          {activeMode === 'add' ? (
-            <>
-              Add Watermark to PDF Online Free{' '}
-              <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-rose-500 via-pink-400 to-indigo-500 block sm:inline">
-                - Text & Image Watermark
-              </span>
-            </>
-          ) : (
-            <>
-              PDF Watermark Remover Online Free{' '}
-              <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-rose-400 to-indigo-500 block sm:inline">
-                - No Login Required
-              </span>
-            </>
-          )}
-        </h1>
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-          Add custom stamps, logos, or remove watermarks seamlessly with zero cloud uploads and instantaneous client-side processing.
-        </p>
+      {/* Hero Header (hidden when page has its own dedicated hero) */}
+      {!hideHeader && (
+        <motion.div
+          className="text-center mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4 shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-brand-500" />
+            <span>Document Security • 100% In-Browser Engine</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
+            {activeMode === 'add' ? (
+              <>
+                Add Watermark to PDF Online Free{' '}
+                <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-rose-500 via-pink-400 to-indigo-500 block sm:inline">
+                  - Text &amp; Image Watermark
+                </span>
+              </>
+            ) : (
+              <>
+                PDF Watermark Remover Online Free{' '}
+                <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-rose-400 to-indigo-500 block sm:inline">
+                  - No Login Required
+                </span>
+              </>
+            )}
+          </h1>
+          <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+            Add custom stamps, logos, or remove watermarks seamlessly with zero cloud uploads and instantaneous client-side processing.
+          </p>
 
-        {/* 4 Feature Pills Row */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mt-6">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            ✓ 100% Free
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            ✓ Instant Processing
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            ✓ Zero Data Leaks
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            ✓ No Sign-Up Required
-          </span>
-        </div>
-      </motion.div>
+          {/* 4 Feature Pills Row */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mt-6">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              ✓ 100% Free
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              ✓ Instant Processing
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              ✓ Zero Data Leaks
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              ✓ No Sign-Up Required
+            </span>
+          </div>
+        </motion.div>
+      )}
 
       {/* Interactive Floating Tab Switcher */}
       <div className="flex justify-center mb-8">

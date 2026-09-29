@@ -299,9 +299,9 @@ export default function HomePage() {
               </motion.div>
             </motion.div>
 
-            {/* Right Column: Core Tools Feature Highlight Card */}
+            {/* Right Column: Core Tools Feature Highlight Card (desktop only) */}
             <motion.div
-              className="lg:col-span-5"
+              className="lg:col-span-5 hidden lg:block"
               initial={{ opacity: 0, x: 25 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}

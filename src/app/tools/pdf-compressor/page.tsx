@@ -924,17 +924,23 @@ export default function PdfCompressorPage() {
           </svg>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4">
-          <Sparkles className="w-3.5 h-3.5" />
-          Native Vector PDF Optimizer & Batch Compactor
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/25 mb-4 animate-float-subtle shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-spin-slow" />
+          Native Vector PDF Optimizer &amp; Batch Compactor
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Free{' '}
-          <span className="bg-gradient-to-r from-brand-600 via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-            PDF Compressor
-          </span>{' '}
-          Online
-        </h1>
+        <div className="relative inline-block mb-4">
+          <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-amber-400/80 animate-pulse" />
+          <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-rose-500/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-orange-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
+          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-amber-400/70 animate-spin-slow" />
+          <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white">
+            Free{' '}
+            <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-rose-600 bg-clip-text text-transparent">
+              PDF Compressor
+            </span>{' '}
+            Online
+          </h1>
+        </div>
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
           Reduce PDF file sizes with intelligent native stream optimization.
           Preserves 100% crisp vector text, sharp fonts, and embedded layouts — zero blurry pixels, zero uploads.
@@ -999,6 +1005,25 @@ export default function PdfCompressorPage() {
                 <path d="M18 -38 L21 -35 L26 -41" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </g>
             </svg>
+          </div>
+
+          {/* Clean Keyword Badges / Tags (No '#' prefix) */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mt-2">
+            {[
+              'Compress PDF',
+              'Reduce PDF Size',
+              'Vector Text Preserved',
+              'Portal Compliant',
+              '100% In-Browser',
+              'Zero Cloud Uploads',
+            ].map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-850 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </motion.div>
