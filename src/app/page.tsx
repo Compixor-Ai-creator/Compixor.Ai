@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import {
   FileDown,
   FileText,
@@ -176,6 +179,22 @@ const homeFaqs = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.08 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 22 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
 export default function HomePage() {
   return (
     <div className="relative">
@@ -212,17 +231,22 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-20 pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            {/* Left Column: Hero Copy & CTA */}
-            <div className="lg:col-span-7 text-left">
+            {/* Left Column: Hero Copy & CTA with smooth stagger */}
+            <motion.div
+              className="lg:col-span-7 text-left"
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+            >
               {/* Badge */}
-              <div className="mb-6">
+              <motion.div variants={itemVariants} className="mb-6">
                 <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/25 dark:border-brand-400/30 backdrop-blur-sm shadow-sm shadow-brand-500/10 animate-float-subtle">
                   <Sparkles className="w-3.5 h-3.5 text-brand-500 animate-spin-slow" />
                   All-in-One Client-Side Document & Media Toolkit
                 </span>
-              </div>
+              </motion.div>
 
-              {/* Headline */}
+              {/* Headline (Instant paint at opacity 1 — NO element render delay for LCP) */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-display leading-[1.02] tracking-tight mb-6">
                 <span className="text-zinc-900 dark:text-white">Transform{' '}</span>
                 <span className="text-gradient">Your Files.</span>
@@ -230,14 +254,17 @@ export default function HomePage() {
                 <span className="text-zinc-900 dark:text-white">Zero Server Uploads.</span>
               </h1>
 
-              {/* Subheadline */}
+              {/* Subheadline (Instant paint at opacity 1 — ZERO delay for Google Lighthouse LCP) */}
               <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mb-8 leading-relaxed">
                 High-performance biometric passport photos, document compression, social media DP resizer,
                 and vector QR codes — executed <span className="font-semibold text-brand-500 dark:text-brand-300">100% locally</span> in your browser.
               </p>
 
-              {/* Primary CTA */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
+              {/* Primary CTA with smooth spring entrance */}
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6"
+              >
                 <a
                   href="#tools"
                   className="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 text-base sm:text-lg px-8 py-4 font-bold shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:-translate-y-1 active:translate-y-0 transition-all duration-300 group cursor-pointer"
@@ -245,10 +272,13 @@ export default function HomePage() {
                   <span>Start Now — Make Your Life Easy</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
                 </a>
-              </div>
+              </motion.div>
 
-              {/* Sub-tags / Badges */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-1">
+              {/* Sub-tags / Badges with smooth stagger */}
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-1"
+              >
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/60 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                   100% Free
@@ -265,12 +295,17 @@ export default function HomePage() {
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                   No Sign-Up Required
                 </span>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Right Column: Core Tools Feature Highlight Card */}
-            <div className="lg:col-span-5">
-              <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/60 dark:border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden flex flex-col">
+            <motion.div
+              className="lg:col-span-5"
+              initial={{ opacity: 0, x: 25 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/60 dark:border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden flex flex-col hover:shadow-brand-500/15 transition-all duration-300">
                 {/* Header Row with dynamic tool count */}
                 <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
                   <div className="flex items-center gap-2">
@@ -313,7 +348,7 @@ export default function HomePage() {
                   })}
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -321,20 +356,32 @@ export default function HomePage() {
       {/* ============ TOOLS SUITE GRID ============ */}
       <section id="tools" className="relative py-16 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <motion.div
+            className="text-center mb-14"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
             <h2 className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
               Precision Productivity Tools
             </h2>
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
               Every tool is engineered for lightning execution, maximum file fidelity, and absolute privacy.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.05 }}
+            variants={containerVariants}
+          >
             {tools.map((tool) => {
               const Icon = tool.icon;
               return (
-                <div key={tool.href}>
+                <motion.div key={tool.href} variants={itemVariants}>
                   <Link href={tool.href} className="block group h-full">
                     <div className="glass-card p-7 sm:p-8 h-full flex flex-col justify-between rounded-3xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/10 hover:border-brand-500/30">
                       <div>
@@ -367,31 +414,44 @@ export default function HomePage() {
                       </div>
                     </div>
                   </Link>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ============ TRUST ARCHITECTURE ============ */}
       <section className="relative py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <motion.div
+            className="text-center mb-14"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
             <h2 className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
               Engineered with Zero Compromise
             </h2>
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
               How CompixorAi redefines privacy and performance for online utilities.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
             {trustSignals.map((signal, i) => {
               const Icon = signal.icon;
               return (
-                <div
+                <motion.div
                   key={i}
+                  variants={itemVariants}
                   className="glass-card p-6 text-center rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-brand-500/30 group"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-500 group-hover:scale-110 transition-transform duration-300">
@@ -403,10 +463,10 @@ export default function HomePage() {
                   <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
                     {signal.description}
                   </p>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -441,7 +501,13 @@ export default function HomePage() {
         </div>
 
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="glow-border p-10 sm:p-14 rounded-3xl">
+          <motion.div
+            className="glow-border p-10 sm:p-14 rounded-3xl"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
             <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-3">
               Ready to Transform Your Workflow?
             </h2>
@@ -455,7 +521,7 @@ export default function HomePage() {
               <span>Start Now — Make Your Life Easy</span>
               <ArrowRight className="w-5 h-5" />
             </a>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>
