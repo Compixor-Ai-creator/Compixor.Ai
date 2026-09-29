@@ -10,6 +10,16 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
   },
 
+  // Images remote patterns for testimonials
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
+  },
+
   // Optimize package imports to reduce bundle size (tree-shaking)
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion', 'sonner'],

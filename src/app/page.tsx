@@ -23,6 +23,7 @@ import {
 import { WhatsAppIcon } from '@/components/SocialIcons';
 import { FaqJsonLd } from '@/components/JsonLd';
 import HomeFaqAccordion from '@/components/HomeFaqAccordion';
+import CustomerTestimonials from '@/components/CustomerTestimonials';
 
 const tools = [
   {
@@ -469,6 +470,9 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* ============ CUSTOMER FEEDBACK & TESTIMONIALS ============ */}
+      <CustomerTestimonials />
 
       {/* ============ FAQ ACCORDION ============ */}
       <section className="py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
