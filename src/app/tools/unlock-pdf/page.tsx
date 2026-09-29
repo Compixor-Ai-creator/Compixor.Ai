@@ -7,7 +7,52 @@ export default function UnlockPdfPage() {
   return (
     <div className="relative">
       {/* ── Semantic Server-Rendered Hero for SEO & Crawlers ── */}
+            {/* ── Semantic Server-Rendered Hero with Image 2 style Transformation Card & Animations ── */}
       <header className="pt-8 pb-4 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Victory / Transformation Preview Card (Password-Locked PDF → Unlocked PDF) */}
+        <div className="w-full flex justify-center mb-6 select-none pointer-events-none">
+          <div className="p-3 sm:p-4 rounded-3xl bg-white/60 dark:bg-zinc-900/60 border border-emerald-500/20 dark:border-emerald-500/30 shadow-lg backdrop-blur-md flex items-center justify-center gap-4 sm:gap-6">
+            {/* Left: Password Locked PDF (Problem) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-red-500/10 border-2 border-dashed border-red-400 relative flex flex-col items-center justify-center p-2">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-red-200 dark:border-red-900/50 flex flex-col items-center justify-between p-1.5 relative">
+                  <span className="text-[7.5px] font-bold text-red-500">PDF</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-4/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-3/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                  </div>
+                  <span className="text-[6.5px] font-bold text-red-600 bg-red-100 dark:bg-red-950/60 px-1 rounded">Locked</span>
+                  <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-500 text-white flex items-center justify-center text-[7px] font-black shadow-xs">🔒</div>
+                </div>
+              </div>
+              <span className="text-[10px] font-semibold text-red-500">Password Locked</span>
+            </div>
+
+            {/* Center Arrow */}
+            <div className="w-7 h-7 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 flex items-center justify-center font-black text-sm">
+              &rarr;
+            </div>
+
+            {/* Right: 100% Unlocked PDF (Victory) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-teal-500/20 to-cyan-500/20 border-2 border-emerald-500 relative flex flex-col items-center justify-center p-2 shadow-md">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-emerald-500/40 flex flex-col items-center justify-between p-1.5 relative">
+                  <span className="text-[7.5px] font-bold text-emerald-600">PDF</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-emerald-400/60 rounded" />
+                    <div className="w-4/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-3/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                  </div>
+                  <span className="text-[6.5px] font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-950/60 px-1 rounded">Unlocked</span>
+                  <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[7px] font-black shadow-xs">✓</div>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">100% Unlocked</span>
+            </div>
+          </div>
+        </div>
+
         <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/60 dark:border-emerald-800/40 rounded-full px-4 py-1.5 mb-4 animate-float-subtle shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-emerald-500 animate-spin-slow" />
           <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 tracking-wide uppercase">
@@ -30,84 +75,28 @@ export default function UnlockPdfPage() {
           </h1>
         </div>
 
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-5">
           Remove password security and permission restrictions from your encrypted PDF documents. Decrypt your files instantly in your browser without transmitting any sensitive data over the internet.
         </p>
-        {/* ── Unlock Flow Illustration ── */}
-        <div className="w-full flex flex-col items-center justify-center pt-3 pb-2 select-none pointer-events-none">
-          <div className="w-full max-w-sm h-28 sm:h-36 flex items-center justify-center drop-shadow-sm">
-            <svg viewBox="0 0 400 150" fill="none" xmlns="http://www.w3.org/2000/svg"
-              className="w-full h-full max-w-[360px]" aria-hidden="true">
-              <defs>
-                <filter id="unlock-shad" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
-                  <feOffset dx="0" dy="5" result="offsetblur" />
-                  <feComponentTransfer><feFuncA type="linear" slope="0.08" /></feComponentTransfer>
-                  <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
-                </filter>
-                <linearGradient id="unlock-purple" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#8B5CF6" /><stop offset="100%" stopColor="#6366F1" />
-                </linearGradient>
-                <linearGradient id="unlock-pdf" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#EF4444" /><stop offset="100%" stopColor="#DC2626" />
-                </linearGradient>
-              </defs>
-              {/* Locked PDF (before) */}
-              <g transform="translate(110, 75) rotate(-3)" filter="url(#unlock-shad)">
-                <rect x="-44" y="-58" width="88" height="116" rx="11" fill="#FFFFFF" stroke="#DDD6FE" strokeWidth="1.5" />
-                <rect x="-32" y="-44" width="34" height="15" rx="3" fill="url(#unlock-pdf)" />
-                <text x="-15" y="-33" textAnchor="middle" fill="#FFFFFF" fontSize="7.5" fontWeight="bold" fontFamily="system-ui">PDF</text>
-                <rect x="-32" y="-18" width="64" height="4" rx="2" fill="#EEE" />
-                <rect x="-32" y="-6" width="50" height="4" rx="2" fill="#EEE" />
-                <rect x="-32" y="6" width="58" height="4" rx="2" fill="#EEE" />
-                <rect x="-32" y="28" width="64" height="12" rx="3" fill="#F3F0FF" stroke="#C4B5FD" strokeWidth="1" />
-                <rect x="-9" y="31" width="18" height="8" rx="2" fill="url(#unlock-purple)" />
-                <path d="M -5 31 L -5 28 C -5 25.5 5 25.5 5 28 L 5 31" fill="none" stroke="url(#unlock-purple)" strokeWidth="1.8" strokeLinecap="round" />
-              </g>
-              {/* Arrow with key */}
-              <g transform="translate(200, 75)">
-                <path d="M -38 0 L 38 0" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 4" strokeLinecap="round" fill="none" />
-                <circle cx="0" cy="0" r="16" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" filter="url(#unlock-shad)" />
-                <circle cx="-2" cy="-1" r="4" fill="none" stroke="url(#unlock-purple)" strokeWidth="2" />
-                <path d="M 2 -1 L 8 -1 M 7 -1 L 7 2 M 5 -1 L 5 1.5" fill="none" stroke="url(#unlock-purple)" strokeWidth="1.8" strokeLinecap="round" />
-              </g>
-              {/* Unlocked PDF (after) */}
-              <g transform="translate(290, 75) rotate(3)" filter="url(#unlock-shad)">
-                <rect x="-44" y="-58" width="88" height="116" rx="11" fill="#FFFFFF" stroke="#BBF7D0" strokeWidth="1.5" />
-                <rect x="-32" y="-44" width="34" height="15" rx="3" fill="url(#unlock-purple)" />
-                <text x="-15" y="-33" textAnchor="middle" fill="#FFFFFF" fontSize="7.5" fontWeight="bold" fontFamily="system-ui">PDF</text>
-                <rect x="7" y="-41" width="22" height="6" rx="3" fill="#E2E8F0" />
-                <rect x="-32" y="-18" width="64" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-32" y="-6" width="50" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-32" y="6" width="58" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-32" y="18" width="40" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-32" y="29" width="64" height="12" rx="3" fill="#DCFCE7" stroke="#86EFAC" strokeWidth="1" />
-                <text x="0" y="39" textAnchor="middle" fill="#16A34A" fontSize="6.5" fontWeight="bold" fontFamily="system-ui">UNLOCKED ✓</text>
-                <circle cx="22" cy="-52" r="8" fill="#22C55E" />
-                <path d="M18.5 -52 L21 -49 L25.5 -55" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </g>
-            </svg>
-          </div>
 
-          {/* Clean Keyword Badges / Tags (No '#' prefix) */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto mt-2">
-            {[
-              'Unlock PDF',
-              'Remove Restrictions',
-              'Strip Password',
-              'Local Decryption',
-              '100% In-Browser',
-              'Zero Cloud Uploads',
-            ].map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                {tag}
-              </span>
-            ))}
-          </div>
+        {/* Clean Keyword Badges / Tags */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto">
+          {[
+            'Unlock PDF',
+            'Remove Restrictions',
+            'Strip Password',
+            'Local Decryption',
+            '100% In-Browser',
+            'Zero Cloud Uploads',
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              {tag}
+            </span>
+          ))}
         </div>
       </header>
 

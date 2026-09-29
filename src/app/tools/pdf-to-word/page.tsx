@@ -152,8 +152,51 @@ export default function PdfToWordPage() {
         subtitle="to convert to editable Word (.docx) instantly"
       />
 
-      {/* ── H1 + SEO Badge ──────────────────────────────────────────────────── */}
+            {/* ── H1 + SEO Badge + Image 2 Transformation Card ──────────────────────────────────────────────────── */}
       <div className="text-center space-y-4">
+        {/* Victory / Transformation Preview Card (Static PDF → Editable DOCX) */}
+        <div className="w-full flex justify-center mb-6 select-none pointer-events-none">
+          <div className="p-3 sm:p-4 rounded-3xl bg-white/60 dark:bg-zinc-900/60 border border-blue-500/20 dark:border-blue-500/30 shadow-lg backdrop-blur-md flex items-center justify-center gap-4 sm:gap-6">
+            {/* Left: Static PDF (Problem) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-red-500/10 border-2 border-dashed border-red-400 relative flex flex-col items-center justify-center p-2">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-red-200 dark:border-red-900/50 flex flex-col items-center justify-between p-1.5">
+                  <span className="text-[7.5px] font-bold text-red-500">PDF</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-4/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-3/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                  </div>
+                  <span className="text-[6.5px] font-bold text-zinc-500 bg-zinc-100 dark:bg-zinc-700 px-1 rounded">Locked</span>
+                </div>
+              </div>
+              <span className="text-[10px] font-semibold text-red-500">Static / Locked</span>
+            </div>
+
+            {/* Center Arrow */}
+            <div className="w-7 h-7 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-300 flex items-center justify-center font-black text-sm">
+              &rarr;
+            </div>
+
+            {/* Right: Editable DOCX (Victory) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-gradient-to-br from-blue-600/20 via-indigo-600/20 to-purple-600/20 border-2 border-blue-500 relative flex flex-col items-center justify-center p-2 shadow-md">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-blue-500/40 flex flex-col items-center justify-between p-1.5 relative">
+                  <span className="text-[7.5px] font-bold text-blue-600">DOCX</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-blue-500/60 rounded" />
+                    <div className="w-4/5 h-0.5 bg-indigo-500/60 rounded" />
+                    <div className="w-3/5 h-0.5 bg-purple-500/60 rounded" />
+                  </div>
+                  <span className="text-[6.5px] font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-950/60 px-1 rounded">Editable</span>
+                  <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[7px] font-black shadow-xs">✓</div>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400">100% Editable</span>
+            </div>
+          </div>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -198,174 +241,25 @@ export default function PdfToWordPage() {
           100% private, no signup required.
         </motion.p>
 
-        {/* ── Visual Conversion Flow Illustration (inspired by dpdf) ── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1, duration: 0.4 }}
-          className="w-full flex flex-col items-center justify-center pt-2 select-none pointer-events-none"
-        >
-          <div className="w-full max-w-sm h-32 sm:h-40 flex items-center justify-center drop-shadow-sm">
-            <svg
-              viewBox="0 0 400 170"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-full h-full max-w-[360px]"
-              aria-hidden="true"
+        {/* Clean Keyword Badges / Tags */}
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 max-w-2xl mx-auto pt-2">
+          {[
+            'PDF to Word',
+            'Editable DOCX',
+            'Table Preserved',
+            'OCR Scanned PDF',
+            '100% In-Browser',
+            'Zero Cloud Uploads',
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
             >
-              <defs>
-                <filter id="soft-shadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
-                  <feOffset dx="0" dy="6" result="offsetblur" />
-                  <feComponentTransfer>
-                    <feFuncA type="linear" slope="0.08" />
-                  </feComponentTransfer>
-                  <feMerge>
-                    <feMergeNode />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <filter id="shadow-sm" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-                  <feOffset dx="0" dy="2" result="offsetblur" />
-                  <feComponentTransfer>
-                    <feFuncA type="linear" slope="0.05" />
-                  </feComponentTransfer>
-                  <feMerge>
-                    <feMergeNode />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <linearGradient id="sheet-gradient" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#FFFFFF" />
-                  <stop offset="100%" stopColor="#F8FAFC" />
-                </linearGradient>
-                <linearGradient id="word-grad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#3B82F6" />
-                  <stop offset="100%" stopColor="#2563EB" />
-                </linearGradient>
-                <linearGradient id="pdf-grad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#EF4444" />
-                  <stop offset="100%" stopColor="#DC2626" />
-                </linearGradient>
-              </defs>
-
-              {/* Connecting Track with Pulsing Arrow */}
-              <g transform="translate(200, 85)">
-                <path
-                  d="M -36 0 L 36 0"
-                  stroke="#CBD5E1"
-                  strokeWidth="2"
-                  strokeDasharray="4 4"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <circle cx="0" cy="0" r="14" fill="#FFFFFF" filter="url(#shadow-sm)" stroke="#E2E8F0" strokeWidth="1.5" />
-                <path
-                  d="M -2 -4.5 L 3.5 0 L -2 4.5"
-                  fill="none"
-                  stroke="#2563EB"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </g>
-
-              {/* Left Sheet: PDF Document */}
-              <g transform="translate(130, 85) rotate(-4)">
-                <g filter="url(#soft-shadow)">
-                  <rect
-                    x="-42"
-                    y="-55"
-                    width="84"
-                    height="110"
-                    rx="12"
-                    fill="url(#sheet-gradient)"
-                    stroke="#E2E8F0"
-                    strokeWidth="1.5"
-                  />
-                </g>
-                <rect x="-30" y="-41" width="32" height="15" rx="4" fill="url(#pdf-grad)" />
-                <text
-                  x="-14"
-                  y="-30.5"
-                  textAnchor="middle"
-                  fill="#FFFFFF"
-                  fontSize="7.5"
-                  fontWeight="bold"
-                  fontFamily="system-ui, sans-serif"
-                  letterSpacing="0.5"
-                >
-                  PDF
-                </text>
-                <rect x="8" y="-36.5" width="22" height="6" rx="3" fill="#E2E8F0" />
-                <rect x="-30" y="-12" width="60" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="0" width="46" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="12" width="54" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="24" width="38" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="36" width="60" height="9" rx="2.5" fill="#FEE2E2" />
-              </g>
-
-              {/* Right Sheet: DOC Document */}
-              <g transform="translate(270, 85) rotate(4)">
-                <g filter="url(#soft-shadow)">
-                  <rect
-                    x="-42"
-                    y="-55"
-                    width="84"
-                    height="110"
-                    rx="12"
-                    fill="url(#sheet-gradient)"
-                    stroke="#BFDBFE"
-                    strokeWidth="1.5"
-                  />
-                </g>
-                <rect x="-30" y="-41" width="32" height="15" rx="4" fill="url(#word-grad)" />
-                <text
-                  x="-14"
-                  y="-30.5"
-                  textAnchor="middle"
-                  fill="#FFFFFF"
-                  fontSize="7.5"
-                  fontWeight="bold"
-                  fontFamily="system-ui, sans-serif"
-                  letterSpacing="0.5"
-                >
-                  DOC
-                </text>
-                <rect x="8" y="-36.5" width="22" height="6" rx="3" fill="#E2E8F0" />
-                <rect x="-30" y="-12" width="60" height="5" rx="2.5" fill="#DBEAFE" />
-                <rect x="-28" y="-12" width="36" height="5" rx="2.5" fill="#3B82F6" />
-                <rect x="10" y="-14" width="1.5" height="9" rx="0.5" fill="#2563EB" />
-                <rect x="-30" y="2" width="50" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="14" width="56" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="26" width="40" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="37" width="60" height="10" rx="2" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="0.8" />
-              </g>
-            </svg>
-          </div>
-
-          {/* High-Intent SEO Keyword Badges / Tags */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 max-w-2xl mt-3">
-            {[
-              'PDF to Word',
-              'Editable DOCX',
-              'Table Preserved',
-              'OCR Scanned PDF',
-              '100% In-Browser',
-              'Zero Cloud Uploads',
-              'Free Unlimited',
-            ].map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                {tag}
-              </span>
-            ))}
-          </div>
-        </motion.div>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* ── H2: Choose Mode ─────────────────────────────────────────────────── */}

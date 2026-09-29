@@ -894,39 +894,56 @@ export default function PdfCompressorPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Hero section icon: Simple flat-style icon of a PDF document shrinking in size, arrow pointing down-right */}
-        <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 mb-5 p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/80 shadow-xs flex items-center justify-center">
-          <svg
-            className="w-full h-full text-brand-500"
-            viewBox="0 0 64 64"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-label="PDF document shrinking in size icon"
-            role="img"
-          >
-            <path
-              d="M12 10C12 7.79086 13.7909 6 16 6H38L50 18V44C50 46.2091 48.2091 48 46 48H16C13.7909 48 12 46.2091 12 44V10Z"
-              className="stroke-blue-200 dark:stroke-blue-800"
-              strokeWidth="2"
-              strokeDasharray="3 3"
-              fill="none"
-            />
-            <path
-              d="M20 20C20 18.8954 20.8954 18 22 18H38L46 26V52C46 53.1046 45.1046 54 44 54H22C20.8954 54 20 53.1046 20 52V20Z"
-              className="fill-blue-500/10 stroke-brand-500 dark:stroke-brand-400"
-              strokeWidth="2.5"
-            />
-            <path d="M38 18V26H46" className="stroke-brand-500 dark:stroke-brand-400" strokeWidth="2.5" strokeLinejoin="round" />
-            <path d="M26 34H40M26 40H36M26 46H32" className="stroke-brand-400/80 dark:stroke-brand-300/80" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="48" cy="48" r="10" className="fill-brand-600 dark:fill-brand-500 shadow-sm" />
-            <path d="M44 44L52 52M52 52H46M52 52V46" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+        {/* Victory / Transformation Preview Card (Heavy 12.4MB PDF → Compact 3.2MB PDF) */}
+        <div className="w-full flex justify-center mb-6 select-none pointer-events-none">
+          <div className="p-3 sm:p-4 rounded-3xl bg-white/60 dark:bg-zinc-900/60 border border-amber-500/20 dark:border-amber-500/30 shadow-lg backdrop-blur-md flex items-center justify-center gap-4 sm:gap-6">
+            {/* Left: Heavy Bulky PDF (Problem) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-red-500/10 border-2 border-dashed border-red-400 relative flex flex-col items-center justify-center p-2">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-red-200 dark:border-red-900/50 flex flex-col items-center justify-between p-1.5">
+                  <span className="text-[7.5px] font-bold text-red-500">PDF</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-4/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-3/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                  </div>
+                  <span className="text-[7px] font-bold text-red-600 bg-red-100 dark:bg-red-950/60 px-1 rounded">12.4 MB</span>
+                </div>
+              </div>
+              <span className="text-[10px] font-semibold text-red-500">Heavy (12.4MB)</span>
+            </div>
+
+            {/* Center Arrow */}
+            <div className="w-7 h-7 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-300 flex items-center justify-center font-black text-sm">
+              &rarr;
+            </div>
+
+            {/* Right: Compressed Stream-Optimized PDF (Victory) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-gradient-to-br from-amber-500/20 via-orange-500/20 to-rose-500/20 border-2 border-amber-500 relative flex flex-col items-center justify-center p-2 shadow-md">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-amber-500/40 flex flex-col items-center justify-between p-1.5 relative">
+                  <span className="text-[7.5px] font-bold text-amber-600 dark:text-amber-400">PDF</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-amber-400/60 rounded" />
+                    <div className="w-4/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-3/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                  </div>
+                  <span className="text-[7px] font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-950/60 px-1 rounded">3.2 MB</span>
+                  <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[7px] font-black shadow-xs">✓</div>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">75% Smaller</span>
+            </div>
+          </div>
         </div>
 
+        {/* Animated Badge Pill */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/25 mb-4 animate-float-subtle shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-spin-slow" />
           Native Vector PDF Optimizer &amp; Batch Compactor
         </div>
+
+        {/* H1 with Vibrant Amber-Orange-Rose Gradient + Floating Particles */}
         <div className="relative inline-block mb-4">
           <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-amber-400/80 animate-pulse" />
           <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-rose-500/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
@@ -940,91 +957,30 @@ export default function PdfCompressorPage() {
             Online
           </h1>
         </div>
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
+
+        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto mb-5">
           Reduce PDF file sizes with intelligent native stream optimization.
           Preserves 100% crisp vector text, sharp fonts, and embedded layouts — zero blurry pixels, zero uploads.
         </p>
 
-        {/* ── Compression Flow Illustration ── */}
-        <div className="w-full flex flex-col items-center justify-center pt-3 select-none pointer-events-none">
-          <div className="w-full max-w-sm h-32 sm:h-40 flex items-center justify-center drop-shadow-sm">
-            <svg
-              viewBox="0 0 400 160"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-full h-full max-w-[360px]"
-              aria-hidden="true"
+        {/* Clean Keyword Badges / Tags */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto">
+          {[
+            'Compress PDF',
+            'Reduce PDF Size',
+            'Vector Text Preserved',
+            'Portal Compliant',
+            '100% In-Browser',
+            'Zero Cloud Uploads',
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
             >
-              <defs>
-                <filter id="comp-shadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
-                  <feOffset dx="0" dy="6" result="offsetblur" />
-                  <feComponentTransfer><feFuncA type="linear" slope="0.08" /></feComponentTransfer>
-                  <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
-                </filter>
-                <linearGradient id="comp-brand" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#7c3aed" /><stop offset="100%" stopColor="#06b6d4" />
-                </linearGradient>
-                <linearGradient id="comp-pdf-grad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#EF4444" /><stop offset="100%" stopColor="#DC2626" />
-                </linearGradient>
-              </defs>
-              {/* Large PDF (before) */}
-              <g transform="translate(110, 80) rotate(-4)" filter="url(#comp-shadow)">
-                <rect x="-46" y="-60" width="92" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
-                <rect x="-34" y="-46" width="36" height="16" rx="4" fill="url(#comp-pdf-grad)" />
-                <text x="-16" y="-35" textAnchor="middle" fill="#FFFFFF" fontSize="8" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="0.5">PDF</text>
-                <rect x="8" y="-42" width="24" height="7" rx="3" fill="#E2E8F0" />
-                <rect x="-34" y="-16" width="68" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-34" y="-4" width="54" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-34" y="8" width="62" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-34" y="20" width="42" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-34" y="32" width="68" height="10" rx="2.5" fill="#FEE2E2" />
-                <text x="0" y="41" textAnchor="middle" fill="#EF4444" fontSize="7" fontWeight="bold" fontFamily="system-ui, sans-serif">12.4 MB</text>
-              </g>
-              {/* Arrow with compress indicator */}
-              <g transform="translate(200, 80)">
-                <path d="M -40 0 L 40 0" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 4" strokeLinecap="round" fill="none" />
-                <circle cx="0" cy="0" r="16" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" filter="url(#comp-shadow)" />
-                <path d="M -4.5 -2.5 L 0 2.5 L 4.5 -2.5" fill="none" stroke="url(#comp-brand)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M -5 0 L 5 0" fill="none" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
-              </g>
-              {/* Small PDF (after - compressed) */}
-              <g transform="translate(290, 80) rotate(4)" filter="url(#comp-shadow)">
-                <rect x="-32" y="-42" width="64" height="84" rx="10" fill="#FFFFFF" stroke="#BFDBFE" strokeWidth="1.5" />
-                <rect x="-22" y="-32" width="26" height="12" rx="3" fill="url(#comp-brand)" />
-                <text x="-9" y="-23.5" textAnchor="middle" fill="#FFFFFF" fontSize="6.5" fontWeight="bold" fontFamily="system-ui, sans-serif" letterSpacing="0.5">PDF</text>
-                <rect x="9" y="-29" width="14" height="5" rx="2.5" fill="#E2E8F0" />
-                <rect x="-22" y="-8" width="44" height="3.5" rx="1.5" fill="#E2E8F0" />
-                <rect x="-22" y="0" width="34" height="3.5" rx="1.5" fill="#E2E8F0" />
-                <rect x="-22" y="8" width="40" height="3.5" rx="1.5" fill="#E2E8F0" />
-                <rect x="-22" y="20" width="44" height="8" rx="2" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="0.8" />
-                <text x="0" y="28" textAnchor="middle" fill="#2563EB" fontSize="6" fontWeight="bold" fontFamily="system-ui, sans-serif">3.2 MB</text>
-                <circle cx="22" cy="-38" r="8" fill="#22C55E" />
-                <path d="M18 -38 L21 -35 L26 -41" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </g>
-            </svg>
-          </div>
-
-          {/* Clean Keyword Badges / Tags (No '#' prefix) */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mt-2">
-            {[
-              'Compress PDF',
-              'Reduce PDF Size',
-              'Vector Text Preserved',
-              'Portal Compliant',
-              '100% In-Browser',
-              'Zero Cloud Uploads',
-            ].map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                {tag}
-              </span>
-            ))}
-          </div>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              {tag}
+            </span>
+          ))}
         </div>
       </motion.div>
 

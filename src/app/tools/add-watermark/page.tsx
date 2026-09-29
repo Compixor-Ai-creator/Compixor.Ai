@@ -7,7 +7,51 @@ export default function AddWatermarkPage() {
   return (
     <div className="relative">
       {/* ── Semantic Server-Rendered Hero with Themed SVG Illustration & Animations ── */}
+            {/* ── Semantic Server-Rendered Hero with Image 2 style Transformation Card & Animations ── */}
       <header className="pt-8 pb-4 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+        {/* Victory / Transformation Preview Card (Plain PDF → Branded Stamped PDF) */}
+        <div className="w-full flex justify-center mb-6 select-none pointer-events-none">
+          <div className="p-3 sm:p-4 rounded-3xl bg-white/60 dark:bg-zinc-900/60 border border-rose-500/20 dark:border-rose-500/30 shadow-lg backdrop-blur-md flex items-center justify-center gap-4 sm:gap-6">
+            {/* Left: Plain PDF (Before) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 border-2 border-dashed border-zinc-300 dark:border-zinc-700 relative flex flex-col items-center justify-center p-2">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-zinc-200 dark:border-zinc-700 flex flex-col items-center justify-between p-1.5">
+                  <span className="text-[7.5px] font-bold text-zinc-500">PDF</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-4/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-3/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                  </div>
+                  <span className="text-[6.5px] font-semibold text-zinc-400">Plain</span>
+                </div>
+              </div>
+              <span className="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400">Unbranded</span>
+            </div>
+
+            {/* Center Arrow */}
+            <div className="w-7 h-7 rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-300 flex items-center justify-center font-black text-sm">
+              &rarr;
+            </div>
+
+            {/* Right: Branded Stamped PDF (Victory) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-gradient-to-br from-rose-500/20 via-pink-500/20 to-amber-500/20 border-2 border-rose-500 relative flex flex-col items-center justify-center p-2 shadow-md">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-rose-500/40 flex flex-col items-center justify-between p-1.5 relative overflow-hidden">
+                  <span className="text-[7.5px] font-bold text-rose-600">PDF</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-rose-400/60 rounded" />
+                    <div className="w-4/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-3/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                  </div>
+                  <span className="text-[5.5px] font-black text-rose-600 -rotate-30 uppercase tracking-widest border border-rose-400 px-0.5">STAMP</span>
+                  <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-rose-500 text-white flex items-center justify-center text-[7px] font-black shadow-xs">✓</div>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400">100% Branded</span>
+            </div>
+          </div>
+        </div>
+
         {/* Animated Badge Pill */}
         <div className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-50 to-pink-50 dark:from-rose-950/40 dark:to-pink-950/40 border border-rose-200/60 dark:border-rose-800/40 rounded-full px-4 py-1.5 animate-float-subtle shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-rose-500 animate-spin-slow" />
@@ -18,7 +62,6 @@ export default function AddWatermarkPage() {
 
         {/* H1 with Vibrant Rose & Sunset Amber Gradient + Floating Decorative Elements */}
         <div className="relative inline-block">
-          {/* Animated floating particles around title */}
           <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-rose-500/80 animate-pulse" />
           <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-amber-400/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
           <div className="absolute -bottom-1 left-1/4 w-1.5 h-1.5 rounded-full bg-pink-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
@@ -37,163 +80,24 @@ export default function AddWatermarkPage() {
           Full control over opacity, rotation, font style, and precise positioning with zero server uploads.
         </p>
 
-        {/* ── Visual Conversion Flow Illustration (Clean PDF → Stamp → Watermarked PDF) ── */}
-        <div className="w-full flex flex-col items-center justify-center pt-2 select-none pointer-events-none">
-          <div className="w-full max-w-sm h-32 sm:h-40 flex items-center justify-center drop-shadow-sm">
-            <svg
-              viewBox="0 0 400 170"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-full h-full max-w-[360px]"
-              aria-hidden="true"
+        {/* Clean Keyword Badges / Tags */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto pt-2">
+          {[
+            'Add Watermark',
+            'PDF Text Stamp',
+            'Logo Watermark',
+            'Opacity Control',
+            '100% In-Browser',
+            'Zero Cloud Uploads',
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
             >
-              <defs>
-                <filter id="addwm-shadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
-                  <feOffset dx="0" dy="6" result="offsetblur" />
-                  <feComponentTransfer>
-                    <feFuncA type="linear" slope="0.08" />
-                  </feComponentTransfer>
-                  <feMerge>
-                    <feMergeNode />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <linearGradient id="addwm-rose" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#F43F5E" />
-                  <stop offset="100%" stopColor="#E11D48" />
-                </linearGradient>
-                <linearGradient id="addwm-gold" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#FB7185" />
-                  <stop offset="100%" stopColor="#F59E0B" />
-                </linearGradient>
-              </defs>
-
-              {/* Left Sheet: Plain PDF */}
-              <g transform="translate(130, 85) rotate(-4)">
-                <g filter="url(#addwm-shadow)">
-                  <rect
-                    x="-42"
-                    y="-55"
-                    width="84"
-                    height="110"
-                    rx="12"
-                    fill="#FFFFFF"
-                    stroke="#E2E8F0"
-                    strokeWidth="1.5"
-                  />
-                </g>
-                <rect x="-30" y="-41" width="32" height="15" rx="4" fill="#94A3B8" />
-                <text
-                  x="-14"
-                  y="-30.5"
-                  textAnchor="middle"
-                  fill="#FFFFFF"
-                  fontSize="7.5"
-                  fontWeight="bold"
-                  fontFamily="system-ui, sans-serif"
-                >
-                  PDF
-                </text>
-                <rect x="8" y="-36.5" width="22" height="6" rx="3" fill="#E2E8F0" />
-                <rect x="-30" y="-12" width="60" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="0" width="46" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="12" width="54" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="24" width="38" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="36" width="60" height="9" rx="2.5" fill="#F1F5F9" />
-              </g>
-
-              {/* Connecting Track with Stamp Icon */}
-              <g transform="translate(200, 85)">
-                <path
-                  d="M -36 0 L 36 0"
-                  stroke="#CBD5E1"
-                  strokeWidth="2"
-                  strokeDasharray="4 4"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <circle cx="0" cy="0" r="15" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
-                <rect x="-6" y="-6" width="12" height="6" rx="2" fill="url(#addwm-rose)" />
-                <rect x="-4" y="0" width="8" height="4" rx="1" fill="#E2E8F0" />
-                <rect x="-7" y="4" width="14" height="3" rx="1" fill="url(#addwm-rose)" />
-              </g>
-
-              {/* Right Sheet: Stamped / Watermarked PDF */}
-              <g transform="translate(270, 85) rotate(4)">
-                <g filter="url(#addwm-shadow)">
-                  <rect
-                    x="-42"
-                    y="-55"
-                    width="84"
-                    height="110"
-                    rx="12"
-                    fill="#FFFFFF"
-                    stroke="#FECDD3"
-                    strokeWidth="1.5"
-                  />
-                </g>
-                <rect x="-30" y="-41" width="32" height="15" rx="4" fill="url(#addwm-rose)" />
-                <text
-                  x="-14"
-                  y="-30.5"
-                  textAnchor="middle"
-                  fill="#FFFFFF"
-                  fontSize="7.5"
-                  fontWeight="bold"
-                  fontFamily="system-ui, sans-serif"
-                >
-                  PDF
-                </text>
-                <rect x="8" y="-36.5" width="22" height="6" rx="3" fill="#E2E8F0" />
-                <rect x="-30" y="-12" width="60" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="0" width="50" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="12" width="56" height="4" rx="2" fill="#E2E8F0" />
-                <rect x="-30" y="24" width="40" height="4" rx="2" fill="#E2E8F0" />
-
-                {/* Diagonal Branded Stamp Overlay */}
-                <g transform="rotate(-30)">
-                  <rect x="-32" y="-7" width="64" height="14" rx="3" fill="#FFE4E6" stroke="#F43F5E" strokeWidth="0.8" />
-                  <text
-                    x="0"
-                    y="3"
-                    textAnchor="middle"
-                    fill="#F43F5E"
-                    fontSize="7"
-                    fontWeight="black"
-                    letterSpacing="0.8"
-                    fontFamily="system-ui, sans-serif"
-                  >
-                    CONFIDENTIAL
-                  </text>
-                </g>
-
-                {/* Stamped Badge */}
-                <circle cx="28" cy="-48" r="8" fill="#F43F5E" />
-                <path d="M24.5 -48 L27 -45.5 L31.5 -50.5" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </g>
-            </svg>
-          </div>
-
-          {/* Clean Keyword Badges / Tags (No '#' prefix) */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mt-1">
-            {[
-              'Add Watermark',
-              'PDF Text Stamp',
-              'Logo Watermark',
-              'Opacity Control',
-              '100% In-Browser',
-              'Zero Cloud Uploads',
-            ].map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                {tag}
-              </span>
-            ))}
-          </div>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              {tag}
+            </span>
+          ))}
         </div>
       </header>
 

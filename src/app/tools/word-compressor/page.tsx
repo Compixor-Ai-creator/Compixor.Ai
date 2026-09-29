@@ -236,17 +236,57 @@ export default function WordCompressorPage() {
       />
 
       {/* Header */}
+            {/* Hero Header with Image 2 style Transformation Card & Animations */}
       <motion.div
         className="text-center mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Authentic Microsoft Word 3D Fluent Logo */}
-        <div className="flex justify-center mb-5">
-          <WordIcon size={84} withBackdropSheet={true} />
+        {/* Victory / Transformation Preview Card (Bulky 8.3MB DOCX → Lightweight 1.8MB DOCX) */}
+        <div className="w-full flex justify-center mb-6 select-none pointer-events-none">
+          <div className="p-3 sm:p-4 rounded-3xl bg-white/60 dark:bg-zinc-900/60 border border-blue-500/20 dark:border-blue-500/30 shadow-lg backdrop-blur-md flex items-center justify-center gap-4 sm:gap-6">
+            {/* Left: Bulky DOCX (Problem) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-red-500/10 border-2 border-dashed border-red-400 relative flex flex-col items-center justify-center p-2">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-red-200 dark:border-red-900/50 flex flex-col items-center justify-between p-1.5">
+                  <span className="text-[7.5px] font-bold text-blue-600">DOCX</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-4/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-3/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                  </div>
+                  <span className="text-[7px] font-bold text-red-600 bg-red-100 dark:bg-red-950/60 px-1 rounded">8.3 MB</span>
+                </div>
+              </div>
+              <span className="text-[10px] font-semibold text-red-500">Bulky (8.3MB)</span>
+            </div>
+
+            {/* Center Arrow */}
+            <div className="w-7 h-7 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-300 flex items-center justify-center font-black text-sm">
+              &rarr;
+            </div>
+
+            {/* Right: Optimized DOCX (Victory) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 via-cyan-500/20 to-teal-500/20 border-2 border-blue-500 relative flex flex-col items-center justify-center p-2 shadow-md">
+                <div className="w-10 h-13 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-blue-500/40 flex flex-col items-center justify-between p-1.5 relative">
+                  <span className="text-[7.5px] font-bold text-blue-600">DOCX</span>
+                  <div className="w-full space-y-0.5">
+                    <div className="w-full h-0.5 bg-blue-400/60 rounded" />
+                    <div className="w-4/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                    <div className="w-3/5 h-0.5 bg-zinc-300 dark:bg-zinc-600 rounded" />
+                  </div>
+                  <span className="text-[7px] font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-950/60 px-1 rounded">1.8 MB</span>
+                  <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[7px] font-black shadow-xs">✓</div>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">78% Smaller</span>
+            </div>
+          </div>
         </div>
 
+        {/* Animated Badge Pill */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/25 mb-4 animate-float-subtle shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-blue-500 animate-spin-slow" />
           Docx Image Optimization Engine
@@ -267,85 +307,28 @@ export default function WordCompressorPage() {
           </h1>
         </div>
 
-        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
+        <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto mb-5">
           Shrink bulky Microsoft Word files by optimizing embedded graphics and re-packing XML structures.
         </p>
-        {/* ── Word Compression Illustration ── */}
-        <div className="w-full flex flex-col items-center justify-center pt-3 select-none pointer-events-none">
-          <div className="w-full max-w-sm h-28 sm:h-36 flex items-center justify-center drop-shadow-sm">
-            <svg viewBox="0 0 400 150" fill="none" xmlns="http://www.w3.org/2000/svg"
-              className="w-full h-full max-w-[360px]" aria-hidden="true">
-              <defs>
-                <filter id="word-shad" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
-                  <feOffset dx="0" dy="5" result="offsetblur" />
-                  <feComponentTransfer><feFuncA type="linear" slope="0.08" /></feComponentTransfer>
-                  <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
-                </filter>
-                <linearGradient id="word-blue" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#2563EB" /><stop offset="100%" stopColor="#1d4ed8" />
-                </linearGradient>
-                <linearGradient id="word-brand" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#7c3aed" /><stop offset="100%" stopColor="#3b82f6" />
-                </linearGradient>
-              </defs>
-              {/* Large DOCX (before) */}
-              <g transform="translate(110, 75) rotate(-3)" filter="url(#word-shad)">
-                <rect x="-44" y="-55" width="88" height="110" rx="10" fill="#FFFFFF" stroke="#BFDBFE" strokeWidth="1.5" />
-                <rect x="-32" y="-42" width="32" height="14" rx="3" fill="url(#word-blue)" />
-                <text x="-16" y="-32" textAnchor="middle" fill="#FFFFFF" fontSize="7" fontWeight="bold" fontFamily="system-ui, sans-serif">DOCX</text>
-                <rect x="5" y="-39" width="20" height="5" rx="2" fill="#E2E8F0" />
-                <rect x="-32" y="-18" width="30" height="5" rx="2.5" fill="#DBEAFE" />
-                <rect x="-30" y="-18" width="18" height="5" rx="2.5" fill="#3B82F6" />
-                <rect x="-32" y="-5" width="64" height="3.5" rx="1.5" fill="#E2E8F0" />
-                <rect x="-32" y="5" width="50" height="3.5" rx="1.5" fill="#E2E8F0" />
-                <rect x="-32" y="15" width="58" height="3.5" rx="1.5" fill="#E2E8F0" />
-                <rect x="-32" y="28" width="64" height="8" rx="2" fill="#FEE2E2" />
-                <text x="0" y="36" textAnchor="middle" fill="#EF4444" fontSize="6.5" fontWeight="bold" fontFamily="system-ui">8.3 MB</text>
-              </g>
-              {/* Arrow */}
-              <g transform="translate(200, 75)">
-                <path d="M -38 0 L 38 0" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 4" strokeLinecap="round" fill="none" />
-                <circle cx="0" cy="0" r="15" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" filter="url(#word-shad)" />
-                <path d="M -4 -2 L 0 2 L 4 -2" fill="none" stroke="url(#word-brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M -4.5 0 L 4.5 0" fill="none" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
-              </g>
-              {/* Small DOCX (after) */}
-              <g transform="translate(290, 75) rotate(3)" filter="url(#word-shad)">
-                <rect x="-30" y="-40" width="60" height="80" rx="9" fill="#FFFFFF" stroke="#BFDBFE" strokeWidth="1.5" />
-                <rect x="-20" y="-30" width="22" height="11" rx="3" fill="url(#word-brand)" />
-                <text x="-9" y="-22" textAnchor="middle" fill="#FFFFFF" fontSize="6" fontWeight="bold" fontFamily="system-ui">DOCX</text>
-                <rect x="6" y="-28" width="14" height="5" rx="2" fill="#E2E8F0" />
-                <rect x="-20" y="-8" width="40" height="3" rx="1.5" fill="#E2E8F0" />
-                <rect x="-20" y="0" width="30" height="3" rx="1.5" fill="#E2E8F0" />
-                <rect x="-20" y="8" width="36" height="3" rx="1.5" fill="#E2E8F0" />
-                <rect x="-20" y="18" width="40" height="7" rx="2" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="0.8" />
-                <text x="0" y="25" textAnchor="middle" fill="#2563EB" fontSize="5.5" fontWeight="bold" fontFamily="system-ui">1.8 MB</text>
-                <circle cx="20" cy="-36" r="7" fill="#22C55E" />
-                <path d="M16.5 -36 L19 -33 L23.5 -39" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </g>
-            </svg>
-          </div>
 
-          {/* Clean Keyword Badges / Tags (No '#' prefix) */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto mt-2">
-            {[
-              'Compress Word',
-              'Shrink DOCX',
-              'Optimize Images',
-              'Preserve Layout',
-              '100% In-Browser',
-              'Zero Cloud Uploads',
-            ].map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                {tag}
-              </span>
-            ))}
-          </div>
+        {/* Clean Keyword Badges / Tags */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto">
+          {[
+            'Compress Word',
+            'Shrink DOCX',
+            'Optimize Images',
+            'Preserve Layout',
+            '100% In-Browser',
+            'Zero Cloud Uploads',
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              {tag}
+            </span>
+          ))}
         </div>
       </motion.div>
 
