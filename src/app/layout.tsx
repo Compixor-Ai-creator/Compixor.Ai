@@ -7,7 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
-import { homepageSeoData, getHomepageSchemas, AUTHOR_NAME, BASE_URL } from '@/lib/seo-config';
+import { homepageSeoData, getHomepageSchemas, AUTHOR_NAME, BASE_URL, OG_IMAGE_URL } from '@/lib/seo-config';
 
 const FeedbackWidget = dynamic(() => import('@/components/FeedbackWidget'), {
   ssr: false,
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/images/og-banner.png',
+        url: OG_IMAGE_URL,
         width: 1200,
         height: 630,
         alt: homepageSeoData.title,
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: homepageSeoData.title,
     description: homepageSeoData.description,
-    images: ['/images/og-banner.png'],
+    images: [OG_IMAGE_URL],
   },
   icons: {
     icon: [

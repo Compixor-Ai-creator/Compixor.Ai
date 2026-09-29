@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/images/og-banner.png',
+        url: 'https://compixor-ai.vercel.app/images/og-banner.png',
         width: 1200,
         height: 630,
         alt: 'Free PDF to Word Converter — No OCR & OCR Modes — Compixor AI',
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
-    images: ['/images/og-banner.png'],
+    images: ['https://compixor-ai.vercel.app/images/og-banner.png'],
   },
 };
 

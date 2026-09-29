@@ -61,6 +61,7 @@ export interface HomepageSeoData {
 
 export const BASE_URL = 'https://compixor-ai.vercel.app';
 export const AUTHOR_NAME = 'Haroon Ali';
+export const OG_IMAGE_URL = `${BASE_URL}/images/og-banner.png`;
 
 export const homepageSeoData: HomepageSeoData = {
   title: 'Free Online PDF Tools No Upload - Privacy First | Compixor',
@@ -1112,7 +1113,7 @@ export function getToolMetadata(slug: ToolSlug): Metadata {
       siteName: 'Compixor AI',
       images: [
         {
-          url: '/images/og-banner.png',
+          url: OG_IMAGE_URL,
           width: 1200,
           height: 630,
           alt: `${tool.name} — Compixor AI`,
@@ -1123,7 +1124,7 @@ export function getToolMetadata(slug: ToolSlug): Metadata {
       card: 'summary_large_image',
       title: tool.title,
       description: tool.description,
-      images: ['/images/og-banner.png'],
+      images: [OG_IMAGE_URL],
     },
   };
 }
@@ -1145,6 +1146,7 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
     name: tool.name,
     url: tool.canonicalUrl,
     description: tool.description,
+    image: OG_IMAGE_URL,
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     browserRequirements: 'Requires a modern web browser with HTML5 and WebAssembly support',
@@ -1248,6 +1250,7 @@ export function getHomepageSchemas(): Record<string, any>[] {
       url: BASE_URL,
       logo: `${BASE_URL}/icon.png`,
     },
+    image: OG_IMAGE_URL,
   };
 
   const organizationSchema = {

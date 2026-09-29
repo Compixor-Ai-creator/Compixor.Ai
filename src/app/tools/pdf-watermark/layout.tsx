@@ -30,12 +30,21 @@ export const metadata: Metadata = {
       'Add custom text or image watermarks to PDF files or remove existing watermarks losslessly in your browser. 100% client-side, zero server uploads.',
     url: 'https://compixor-ai.vercel.app/tools/pdf-watermark',
     type: 'website',
+    images: [
+      {
+        url: 'https://compixor-ai.vercel.app/images/og-banner.png',
+        width: 1200,
+        height: 630,
+        alt: 'Free PDF Watermark & Remover Online — Compixor.Ai',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Free PDF Watermark & Remover Online — 100% Private | Compixor.Ai',
     description:
       'Add custom text or image watermarks to PDF files or remove existing watermarks losslessly in your browser. 100% client-side, zero server uploads.',
+    images: ['https://compixor-ai.vercel.app/images/og-banner.png'],
   },
 };
 
