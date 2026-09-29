@@ -60,7 +60,8 @@ export function FacebookIcon({ className }: IconProps) {
       aria-hidden="true"
     >
       <rect x="2" y="2" width="20" height="20" rx="5" />
-      <path d="M15 8h-2a1 1 0 0 0-1 1v2h3l-.5 3H12v7" />
+      <path d="M16 8h-2a2 2 0 0 0-2 2v10" />
+      <line x1="9" y1="13" x2="15" y2="13" />
     </svg>
   );
 }
