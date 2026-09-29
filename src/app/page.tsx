@@ -216,8 +216,8 @@ export default function HomePage() {
             <div className="lg:col-span-7 text-left">
               {/* Badge */}
               <div className="mb-6">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/25 dark:border-brand-400/30 backdrop-blur-sm shadow-sm shadow-brand-500/10">
-                  <Sparkles className="w-3.5 h-3.5 text-brand-500" />
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/25 dark:border-brand-400/30 backdrop-blur-sm shadow-sm shadow-brand-500/10 animate-float-subtle">
+                  <Sparkles className="w-3.5 h-3.5 text-brand-500 animate-spin-slow" />
                   All-in-One Client-Side Document & Media Toolkit
                 </span>
               </div>
@@ -240,10 +240,10 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
                 <a
                   href="#tools"
-                  className="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 text-base sm:text-lg px-8 py-4 font-bold shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer"
+                  className="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2.5 text-base sm:text-lg px-8 py-4 font-bold shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:-translate-y-1 active:translate-y-0 transition-all duration-300 group cursor-pointer"
                 >
                   <span>Start Now — Make Your Life Easy</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
                 </a>
               </div>
 
@@ -336,20 +336,20 @@ export default function HomePage() {
               return (
                 <div key={tool.href}>
                   <Link href={tool.href} className="block group h-full">
-                    <div className="glass-card p-7 sm:p-8 h-full flex flex-col justify-between rounded-3xl">
+                    <div className="glass-card p-7 sm:p-8 h-full flex flex-col justify-between rounded-3xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/10 hover:border-brand-500/30">
                       <div>
                         <div className="flex items-start justify-between gap-4 mb-6">
-                          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-md`}>
+                          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-1 transition-all duration-300 shadow-md`}>
                             <Icon className="w-7 h-7 text-white" />
                           </div>
-                          <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
+                          <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors group-hover:bg-brand-500/10 group-hover:text-brand-600 dark:group-hover:text-brand-300">
                             {tool.badge}
                           </span>
                         </div>
 
                         <h3 className="text-xl font-bold font-display text-zinc-900 dark:text-white mb-1.5 flex items-center gap-2">
                           {tool.title}
-                          <ArrowRight className="w-4 h-4 text-brand-500 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                          <ArrowRight className="w-4 h-4 text-brand-500 opacity-0 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-300" />
                         </h3>
                         <p className="text-xs font-semibold text-brand-600 dark:text-brand-400 mb-3">
                           {tool.tagline}
@@ -361,7 +361,7 @@ export default function HomePage() {
 
                       <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                         <span>{tool.stats}</span>
-                        <span className="text-brand-500 group-hover:underline flex items-center gap-1">
+                        <span className="text-brand-500 group-hover:underline flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-200">
                           Launch Tool &rarr;
                         </span>
                       </div>
@@ -392,9 +392,9 @@ export default function HomePage() {
               return (
                 <div
                   key={i}
-                  className="glass-card p-6 text-center rounded-2xl"
+                  className="glass-card p-6 text-center rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-brand-500/30 group"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-500">
+                  <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-500 group-hover:scale-110 transition-transform duration-300">
                     <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="font-bold font-display text-zinc-900 dark:text-white mb-2 text-base">
