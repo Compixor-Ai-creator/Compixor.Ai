@@ -202,27 +202,38 @@ export default function HomePage() {
       <FaqJsonLd faqs={homeFaqs} />
       {/* ============ HERO SECTION ============ */}
       <section className="relative">
-        {/* Premium Atmospheric Ambient Aurora (Unified, Smooth & Zero Patchy Blobs) */}
+        {/* Premium Atmospheric Ambient Aurora (Multi-Hue Lite Luxury Mesh) */}
         <div
           aria-hidden="true"
           className="hidden md:block pointer-events-none absolute -z-10 inset-0 overflow-hidden"
         >
-          {/* Centered Top Atmosphere Bloom */}
+          {/* Left: Regal Violet & Indigo Atmosphere */}
           <div
-            className="absolute -top-28 left-1/2 -translate-x-1/2 w-[920px] h-[520px] rounded-full opacity-35 dark:opacity-20 pointer-events-none"
+            className="absolute -top-16 -left-20 w-[680px] h-[520px] rounded-full opacity-35 dark:opacity-20 pointer-events-none"
             style={{
               background:
-                'radial-gradient(ellipse at 50% 35%, rgba(124, 58, 237, 0.28) 0%, rgba(99, 102, 241, 0.16) 42%, rgba(6, 182, 212, 0.08) 68%, transparent 80%)',
+                'radial-gradient(ellipse at 40% 40%, rgba(124, 58, 237, 0.24) 0%, rgba(99, 102, 241, 0.14) 45%, transparent 75%)',
               filter: 'blur(110px)',
             }}
           />
-          {/* Soft Secondary Glow behind Card (Feathered, Harmonious Indigo-Cyan) */}
+
+          {/* Center-Top: Feathered Sky Atmosphere */}
           <div
-            className="absolute top-1/4 -right-16 w-[480px] h-[440px] rounded-full opacity-20 dark:opacity-15 pointer-events-none"
+            className="absolute -top-24 left-1/2 -translate-x-1/2 w-[860px] h-[480px] rounded-full opacity-30 dark:opacity-18 pointer-events-none"
             style={{
               background:
-                'radial-gradient(ellipse at center, rgba(6, 182, 212, 0.22) 0%, rgba(124, 58, 237, 0.10) 50%, transparent 75%)',
+                'radial-gradient(ellipse at 50% 30%, rgba(99, 102, 241, 0.18) 0%, rgba(124, 58, 237, 0.10) 50%, transparent 80%)',
               filter: 'blur(120px)',
+            }}
+          />
+
+          {/* Right Behind Card: Lite Luxury Champagne Rose & Warm Sunset Amber (Feathered, Soft & Zero Harsh Rings) */}
+          <div
+            className="absolute top-6 -right-14 w-[620px] h-[520px] rounded-full opacity-30 dark:opacity-20 pointer-events-none"
+            style={{
+              background:
+                'radial-gradient(ellipse 70% 60% at 55% 45%, rgba(251, 113, 133, 0.16) 0%, rgba(251, 146, 60, 0.09) 38%, rgba(168, 85, 247, 0.06) 65%, transparent 85%)',
+              filter: 'blur(130px)',
             }}
           />
         </div>
@@ -304,8 +315,10 @@ export default function HomePage() {
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/80 dark:border-white/10 shadow-[0_20px_50px_rgba(124,58,237,0.08)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl relative overflow-hidden flex flex-col hover:shadow-brand-500/15 transition-all duration-300">
-                {/* Top Border Luxury Highlight Beam */}
-                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-brand-500/40 dark:via-brand-400/50 to-transparent pointer-events-none" />
+                {/* Top Border Luxury Dual-Tone Highlight Beam */}
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-brand-500/45 via-rose-400/35 dark:via-brand-400/50 dark:via-rose-400/30 to-transparent pointer-events-none" />
+                {/* Subtle Inner Glass Warm Sheen */}
+                <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-gradient-to-br from-rose-500/10 via-amber-400/6 to-transparent blur-2xl pointer-events-none" />
                 {/* Header Row with dynamic tool count */}
                 <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
                   <div className="flex items-center gap-2">
