@@ -717,20 +717,49 @@ export default function FullDpMakerPage() {
           </div>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4">
-          <Sparkles className="w-3.5 h-3.5" />
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/25 mb-4 animate-float-subtle shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-brand-500 animate-spin-slow" />
           No Crop Profile Picture Maker
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          <span className="bg-gradient-to-r from-[#25D366] via-brand-500 to-[#E1306C] bg-clip-text text-transparent">
-            No-Crop DP Maker
-          </span>{' '}
-          for WhatsApp, Instagram &amp; Facebook
-        </h1>
+
+        {/* H1 with Floating Particles */}
+        <div className="relative inline-block mb-4">
+          <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-[#25D366]/80 animate-pulse" />
+          <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-[#E1306C]/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-brand-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
+          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-brand-400/70 animate-spin-slow" />
+
+          <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white">
+            <span className="bg-gradient-to-r from-[#25D366] via-brand-500 to-[#E1306C] bg-clip-text text-transparent">
+              No-Crop DP Maker
+            </span>{' '}
+            for WhatsApp, Instagram &amp; Facebook
+          </h1>
+        </div>
+
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 mb-5">
           Create full-size profile pictures for WhatsApp, Instagram, Facebook, and Telegram without cropping anything out.
           Fit whole portraits or landscape shots with aesthetic blur, color, gradient, and mirror backgrounds.
         </p>
+
+        {/* Clean Keyword Badges / Tags (No '#' prefix) */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto mb-5">
+          {[
+            'No Crop DP',
+            'WhatsApp 1:1',
+            'Instagram Square',
+            'HD Blur Background',
+            '100% In-Browser',
+            'Zero Cloud Uploads',
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-850 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
 
         {/* Platform Icons Row */}
         <div className="flex items-center justify-center gap-3">

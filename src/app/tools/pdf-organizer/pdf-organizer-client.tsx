@@ -1262,44 +1262,100 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
         )}
       </AnimatePresence>
 
-      {/* Hero Header */}
+      {/* Hero Header with Transformation Illustration & Animations */}
       <motion.div
         className="text-center mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4 shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 text-brand-500" />
-          <span>Document Toolkit • 100% In-Browser Engine</span>
+        {/* Victory / Transformation Preview Card (Separate PDFs → Merged Master PDF) */}
+        <div className="w-full flex justify-center mb-6 select-none pointer-events-none">
+          <div className="p-3 sm:p-4 rounded-3xl bg-white/60 dark:bg-zinc-900/60 border border-cyan-500/20 dark:border-cyan-500/30 shadow-lg backdrop-blur-md flex items-center justify-center gap-4 sm:gap-6">
+            {/* Left: 2 Separate Loose PDFs */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-cyan-500/10 border-2 border-dashed border-cyan-500/40 relative flex items-center justify-center p-2">
+                <div className="w-8 h-10 rounded-md bg-white dark:bg-zinc-800 shadow-sm border border-zinc-200 dark:border-zinc-700 flex flex-col items-center justify-center -mr-3 -rotate-6">
+                  <span className="text-[8px] font-bold text-red-500">PDF 1</span>
+                  <div className="w-5 h-0.5 bg-zinc-300 dark:bg-zinc-600 mt-1" />
+                  <div className="w-4 h-0.5 bg-zinc-300 dark:bg-zinc-600 mt-0.5" />
+                </div>
+                <div className="w-8 h-10 rounded-md bg-white dark:bg-zinc-800 shadow-sm border border-zinc-200 dark:border-zinc-700 flex flex-col items-center justify-center rotate-6">
+                  <span className="text-[8px] font-bold text-red-500">PDF 2</span>
+                  <div className="w-5 h-0.5 bg-zinc-300 dark:bg-zinc-600 mt-1" />
+                  <div className="w-4 h-0.5 bg-zinc-300 dark:bg-zinc-600 mt-0.5" />
+                </div>
+              </div>
+              <span className="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400">Separate Files</span>
+            </div>
+
+            {/* Center Arrow */}
+            <div className="w-7 h-7 rounded-full bg-cyan-500/15 text-cyan-600 dark:text-cyan-300 flex items-center justify-center font-black text-sm">
+              &rarr;
+            </div>
+
+            {/* Right: Combined Master Document (Victory) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-gradient-to-br from-cyan-500/20 via-blue-600/20 to-violet-600/20 border-2 border-cyan-500 relative flex items-center justify-center p-2 shadow-md">
+                <div className="w-11 h-14 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-cyan-500/40 flex flex-col items-center justify-start pt-1 px-1 relative">
+                  <div className="w-full flex items-center justify-between pb-1 border-b border-zinc-100 dark:border-zinc-700">
+                    <span className="text-[7px] font-black text-cyan-600 dark:text-cyan-400">MERGED</span>
+                    <span className="text-[6px] font-bold text-emerald-500">✓ 8p</span>
+                  </div>
+                  <div className="w-full h-1 bg-cyan-100 dark:bg-cyan-950/60 rounded mt-1" />
+                  <div className="w-full h-1 bg-zinc-100 dark:bg-zinc-700 rounded mt-0.5" />
+                  <div className="w-full h-1 bg-zinc-100 dark:bg-zinc-700 rounded mt-0.5" />
+                  <div className="w-2/3 h-1 bg-zinc-100 dark:bg-zinc-700 rounded mt-0.5 self-start" />
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400">100% Combined</span>
+            </div>
+          </div>
         </div>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
-          Merge & Split PDF Online Free{' '}
-          <span className="text-gradient block sm:inline">- Combine or Extract Pages</span>
-        </h1>
+
+        {/* Animated Badge Pill */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/25 mb-4 animate-float-subtle shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-cyan-500 animate-spin-slow" />
+          <span>Document Organizer • 100% In-Browser Engine</span>
+        </div>
+
+        {/* H1 with Cyan-Blue-Violet Gradient + Floating Particles */}
+        <div className="relative inline-block mb-4">
+          <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-cyan-400/80 animate-pulse" />
+          <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-violet-500/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-blue-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
+          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-cyan-400/70 animate-spin-slow" />
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black font-display text-zinc-900 dark:text-white tracking-tight">
+            <span className="bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 bg-clip-text text-transparent">
+              Merge &amp; Split PDF
+            </span>{' '}
+            Online Free
+          </h1>
+        </div>
+
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
           Combine multiple documents into one or extract exact page ranges seamlessly with zero cloud uploads
           and instantaneous client-side WebAssembly execution.
         </p>
 
-        {/* Trust Badges Row */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mt-6">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            100% Free
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            Instant Processing
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            Zero Data Leaks
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            No Sign-Up Required
-          </span>
+        {/* Clean Keyword Badges / Tags (No '#' prefix) */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto mt-4">
+          {[
+            'Merge PDF',
+            'Split PDF by Range',
+            'Reorder Pages',
+            'Visual Thumbnail Grid',
+            '100% In-Browser',
+            'Zero Cloud Uploads',
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-850 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
+            >
+              {tag}
+            </span>
+          ))}
         </div>
       </motion.div>
 

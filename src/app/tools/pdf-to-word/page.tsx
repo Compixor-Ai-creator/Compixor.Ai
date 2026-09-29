@@ -157,27 +157,34 @@ export default function PdfToWordPage() {
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 border border-blue-200/60 dark:border-blue-800/40 rounded-full px-4 py-1.5"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 border border-blue-200/60 dark:border-blue-800/40 rounded-full px-4 py-1.5 animate-float-subtle shadow-xs"
         >
-          <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 animate-spin-slow" />
           <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
-            100% In-Browser • No OCR & OCR Modes • Zero Cloud Uploads
+            100% In-Browser • No OCR &amp; OCR Modes • Zero Cloud Uploads
           </span>
         </motion.div>
 
-        {/* H1 — primary keyword first per SEO skill */}
-        <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-zinc-900 dark:text-white"
-        >
-          Convert{' '}
-          <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            PDF to Word
-          </span>{' '}
-          Free Online
-        </motion.h1>
+        {/* H1 with Floating Particles */}
+        <div className="relative inline-block">
+          <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-blue-400/80 animate-pulse" />
+          <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-purple-500/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-indigo-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
+          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-blue-400/70 animate-spin-slow" />
+
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-zinc-900 dark:text-white"
+          >
+            Convert{' '}
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              PDF to Word
+            </span>{' '}
+            Free Online
+          </motion.h1>
+        </div>
 
         <motion.p
           initial={{ opacity: 0, y: 10 }}

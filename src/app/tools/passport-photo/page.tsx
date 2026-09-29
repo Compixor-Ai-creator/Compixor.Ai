@@ -1468,21 +1468,89 @@ export default function PassportPhotoPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-          <Sparkles className="w-3.5 h-3.5" />
-          AI Portrait Matting & Biometric Studio
+        {/* Victory / Transformation Preview Card (Messy Selfie → Official Biometric ID) */}
+        <div className="w-full flex justify-center mb-6 select-none pointer-events-none">
+          <div className="p-3 sm:p-4 rounded-3xl bg-white/60 dark:bg-zinc-900/60 border border-emerald-500/20 dark:border-emerald-500/30 shadow-lg backdrop-blur-md flex items-center justify-center gap-4 sm:gap-6">
+            {/* Left: Messy Casual Selfie (Problem) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-red-500/10 border-2 border-dashed border-red-400 relative overflow-hidden flex flex-col items-center justify-center p-1.5">
+                <div className="w-12 h-14 bg-zinc-300 dark:bg-zinc-700 rounded-t-lg relative flex flex-col items-center justify-start pt-1.5 overflow-hidden">
+                  <div className="w-5 h-5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+                  <div className="w-9 h-7 bg-zinc-400 dark:bg-zinc-500 rounded-t-lg mt-1" />
+                  {/* Bad crop indicator */}
+                  <div className="absolute inset-x-0 top-1 h-0.5 bg-red-500/80" />
+                  <div className="absolute inset-x-0 bottom-2 h-0.5 bg-red-500/80" />
+                </div>
+              </div>
+              <span className="text-[10px] font-semibold text-red-500">Uncalibrated</span>
+            </div>
+
+            {/* Center Arrow */}
+            <div className="w-7 h-7 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 flex items-center justify-center font-black text-sm">
+              &rarr;
+            </div>
+
+            {/* Right: Official Biometric 35x45mm Clean Studio Photo (Victory) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-teal-500/20 to-blue-500/20 border-2 border-emerald-500 relative flex items-center justify-center p-1.5 shadow-md">
+                <div className="w-12 h-15 rounded-md bg-white shadow-sm border border-emerald-500/40 relative flex flex-col items-center justify-start pt-1.5 overflow-hidden">
+                  {/* Studio blue gradient shirt + calibrated head */}
+                  <div className="w-5 h-5 rounded-full bg-zinc-800" />
+                  <div className="w-9 h-7 bg-emerald-700 rounded-t-lg mt-1" />
+                  {/* Biometric head guidelines */}
+                  <div className="absolute inset-1 rounded-full border border-dashed border-emerald-500/50 pointer-events-none" />
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">100% Compliant</span>
+            </div>
+          </div>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 bg-clip-text text-transparent">
-            Passport Size Photo
-          </span>{''}
-          Maker Online Free
-        </h1>
+
+        {/* Animated Badge Pill */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25 mb-4 animate-float-subtle shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-emerald-500 animate-spin-slow" />
+          AI Portrait Matting &amp; Biometric Studio
+        </div>
+
+        {/* H1 with Emerald-Teal-Blue Gradient + Floating Particles */}
+        <div className="relative inline-block mb-4">
+          <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-emerald-400/80 animate-pulse" />
+          <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-teal-400/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-blue-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
+          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-emerald-400/70 animate-spin-slow" />
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white">
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-500 to-blue-500 bg-clip-text text-transparent">
+              Passport Size Photo
+            </span>{' '}
+            Maker Online Free
+          </h1>
+        </div>
+
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           {currentStep === 'edit'
             ? 'True zero-server privacy — your sensitive ID/passport photo never touches any cloud server, unlike PhotoGov or PhotoAiD. Create official NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
             : 'Your biometric photo is processed and print-ready. Download a single image for online portal submissions or a high-res tiled print sheet with cutting guides.'}
         </p>
+
+        {/* Clean Keyword Badges / Tags (No '#' prefix) */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto mt-4">
+          {[
+            'NADRA 35x45mm',
+            'US Visa 2x2"',
+            'AI Background Removal',
+            '300 DPI Print Sheet',
+            '100% In-Browser',
+            'Zero Cloud Uploads',
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-850 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       </motion.div>
 
       {/* STEP 1: STUDIO EDITOR VIEW */}

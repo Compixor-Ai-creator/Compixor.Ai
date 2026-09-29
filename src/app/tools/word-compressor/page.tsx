@@ -247,16 +247,26 @@ export default function WordCompressorPage() {
           <WordIcon size={84} withBackdropSheet={true} />
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-4">
-          <Sparkles className="w-3.5 h-3.5" />
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/25 mb-4 animate-float-subtle shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-blue-500 animate-spin-slow" />
           Docx Image Optimization Engine
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Free{' '}
-          <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-brand-600 bg-clip-text text-transparent">
-            Word Document Compressor
-          </span>
-        </h1>
+
+        {/* H1 with Vibrant Blue-Cyan-Teal Gradient + Floating Particles */}
+        <div className="relative inline-block mb-4">
+          <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-blue-400/80 animate-pulse" />
+          <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-cyan-400/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-teal-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
+          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-blue-400/70 animate-spin-slow" />
+
+          <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white">
+            Free{' '}
+            <span className="bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 bg-clip-text text-transparent">
+              Word Document Compressor
+            </span>
+          </h1>
+        </div>
+
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
           Shrink bulky Microsoft Word files by optimizing embedded graphics and re-packing XML structures.
         </p>
@@ -315,6 +325,25 @@ export default function WordCompressorPage() {
                 <path d="M16.5 -36 L19 -33 L23.5 -39" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </g>
             </svg>
+          </div>
+
+          {/* Clean Keyword Badges / Tags (No '#' prefix) */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto mt-2">
+            {[
+              'Compress Word',
+              'Shrink DOCX',
+              'Optimize Images',
+              'Preserve Layout',
+              '100% In-Browser',
+              'Zero Cloud Uploads',
+            ].map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-850 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </motion.div>

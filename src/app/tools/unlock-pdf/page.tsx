@@ -1,34 +1,35 @@
 import React from 'react';
 import UnlockPdfClient from '@/components/UnlockPdfClient';
 import { unlockPdfFaqs } from '@/data/faqs';
-import { Shield, Unlock, FileCheck, KeyRound, Cpu, Lock } from 'lucide-react';
+import { Shield, Unlock, FileCheck, KeyRound, Cpu, Lock, Sparkles } from 'lucide-react';
 
 export default function UnlockPdfPage() {
   return (
     <div className="relative">
       {/* ── Semantic Server-Rendered Hero for SEO & Crawlers ── */}
       <header className="pt-8 pb-4 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="inline-flex items-center gap-2 bg-purple-50 dark:bg-purple-950/40 border border-purple-200/60 dark:border-purple-800/40 rounded-full px-4 py-1.5 mb-4">
-          <Shield className="w-3.5 h-3.5 text-purple-500" />
-          <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 tracking-wide uppercase">
+        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/60 dark:border-emerald-800/40 rounded-full px-4 py-1.5 mb-4 animate-float-subtle shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-emerald-500 animate-spin-slow" />
+          <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 tracking-wide uppercase">
             100% Client-Side · Private In-Browser Decryption
           </span>
         </div>
-        {/* Decorative floating elements */}
-        <div className="relative inline-block mb-2" aria-hidden="true">
-          <div className="absolute -top-3 -left-4 w-2 h-2 rounded-full bg-purple-400/60 animate-pulse" style={{animationDelay: '0.3s'}} />
-          <div className="absolute -top-1 -right-3 w-1.5 h-1.5 rounded-full bg-indigo-400/70 animate-pulse" style={{animationDelay: '0.8s'}} />
-          <div className="absolute -bottom-2 left-1/4 w-1.5 h-1.5 rounded-full bg-purple-300/60 animate-pulse" style={{animationDelay: '1.3s'}} />
-          <svg className="absolute -top-5 right-0 w-4 h-4 text-purple-400/60 animate-spin" style={{animationDuration:'8s'}} viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L13.09 8.26L19 7L15.45 12L19 17L13.09 15.74L12 22L10.91 15.74L5 17L8.55 12L5 7L10.91 8.26L12 2Z" />
-          </svg>
+
+        {/* H1 with Vibrant Emerald-Teal-Cyan Gradient + Floating Particles */}
+        <div className="relative inline-block mb-4">
+          <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-emerald-400/80 animate-pulse" />
+          <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-cyan-400/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-teal-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
+          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-emerald-400/70 animate-spin-slow" />
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white tracking-tight">
+            Unlock PDF{' '}
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
+              &amp; Remove Password
+            </span>
+          </h1>
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-4">
-          Unlock PDF{' '}
-          <span className="bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">
-            &amp; Remove Password
-          </span>
-        </h1>
+
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
           Remove password security and permission restrictions from your encrypted PDF documents. Decrypt your files instantly in your browser without transmitting any sensitive data over the internet.
         </p>
@@ -86,6 +87,25 @@ export default function UnlockPdfPage() {
                 <path d="M18.5 -52 L21 -49 L25.5 -55" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </g>
             </svg>
+          </div>
+
+          {/* Clean Keyword Badges / Tags (No '#' prefix) */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto mt-2">
+            {[
+              'Unlock PDF',
+              'Remove Restrictions',
+              'Strip Password',
+              'Local Decryption',
+              '100% In-Browser',
+              'Zero Cloud Uploads',
+            ].map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-850 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </header>

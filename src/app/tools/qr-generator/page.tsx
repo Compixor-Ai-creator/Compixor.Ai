@@ -642,44 +642,102 @@ export default function QrGeneratorPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
-        {/* Hero Section Illustration: Smartphone camera scanning colorful QR code with sparkle/checkmark */}
-        <div className="mx-auto w-24 h-24 mb-6 p-4 rounded-3xl bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-brand-500/20 shadow-xs flex items-center justify-center relative">
-          <svg className="w-full h-full" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* Phone outline */}
-            <rect x="18" y="8" width="28" height="48" rx="5" className="stroke-zinc-700 dark:stroke-zinc-300" strokeWidth="2.5" fill="none" />
-            <line x1="28" y1="12" x2="36" y2="12" className="stroke-zinc-400" strokeWidth="2" strokeLinecap="round" />
-            {/* Phone Screen with QR pattern */}
-            <rect x="22" y="16" width="20" height="20" rx="2" className="fill-brand-500/10" />
-            <rect x="24" y="18" width="6" height="6" className="fill-blue-600" />
-            <rect x="34" y="18" width="6" height="6" className="fill-purple-600" />
-            <rect x="24" y="28" width="6" height="6" className="fill-indigo-600" />
-            <rect x="32" y="28" width="3" height="3" className="fill-brand-500" />
-            <rect x="37" y="31" width="3" height="3" className="fill-purple-500" />
-            {/* Camera Viewfinder Crosshairs */}
-            <path d="M15 15H12V18M49 15H52V18M15 49H12V46M49 49H52V46" stroke="#2563eb" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            {/* Laser scan bar */}
-            <line x1="14" y1="32" x2="50" y2="32" stroke="#ec4899" strokeWidth="2" strokeDasharray="3 2" />
-            {/* Sparkle checkmark badge */}
-            <circle cx="48" cy="46" r="9" className="fill-emerald-500 shadow-sm" />
-            <path d="M44 46L47 49L52 43" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+        {/* Victory / Transformation Preview Card (Plain Link → Branded Vector QR) */}
+        <div className="w-full flex justify-center mb-6 select-none pointer-events-none">
+          <div className="p-3 sm:p-4 rounded-3xl bg-white/60 dark:bg-zinc-900/60 border border-purple-500/20 dark:border-purple-500/30 shadow-lg backdrop-blur-md flex items-center justify-center gap-4 sm:gap-6">
+            {/* Left: Plain Boring Link (Problem) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 border-2 border-dashed border-zinc-300 dark:border-zinc-700 relative flex flex-col items-center justify-center p-2">
+                <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 truncate max-w-[70px]">https://...</span>
+                <div className="w-12 h-1 bg-zinc-300 dark:bg-zinc-600 rounded mt-2" />
+                <div className="w-8 h-1 bg-zinc-200 dark:bg-zinc-700 rounded mt-1" />
+              </div>
+              <span className="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400">Plain Link</span>
+            </div>
+
+            {/* Center Arrow */}
+            <div className="w-7 h-7 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-300 flex items-center justify-center font-black text-sm">
+              &rarr;
+            </div>
+
+            {/* Right: High-Res Branded QR Code (Victory) */}
+            <div className="flex flex-col items-center space-y-1">
+              <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-amber-500/20 border-2 border-purple-500 relative flex items-center justify-center p-2 shadow-md">
+                <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
+                  {/* Outer corner markers */}
+                  <rect x="4" y="4" width="14" height="14" rx="3" stroke="#8B5CF6" strokeWidth="2.5" fill="none" />
+                  <rect x="7.5" y="7.5" width="7" height="7" rx="1.5" fill="#8B5CF6" />
+                  <rect x="30" y="4" width="14" height="14" rx="3" stroke="#EC4899" strokeWidth="2.5" fill="none" />
+                  <rect x="33.5" y="7.5" width="7" height="7" rx="1.5" fill="#EC4899" />
+                  <rect x="4" y="30" width="14" height="14" rx="3" stroke="#F59E0B" strokeWidth="2.5" fill="none" />
+                  <rect x="7.5" y="33.5" width="7" height="7" rx="1.5" fill="#F59E0B" />
+                  {/* Data blocks */}
+                  <rect x="22" y="6" width="4" height="4" rx="1" fill="#8B5CF6" />
+                  <rect x="22" y="14" width="4" height="4" rx="1" fill="#EC4899" />
+                  <rect x="30" y="22" width="4" height="4" rx="1" fill="#EC4899" />
+                  <rect x="38" y="22" width="4" height="4" rx="1" fill="#F59E0B" />
+                  <rect x="22" y="30" width="4" height="4" rx="1" fill="#F59E0B" />
+                  <rect x="30" y="38" width="4" height="4" rx="1" fill="#8B5CF6" />
+                  <rect x="38" y="38" width="4" height="4" rx="1" fill="#EC4899" />
+                  {/* Center Brand Icon */}
+                  <circle cx="24" cy="24" r="5" fill="#8B5CF6" />
+                  <path d="M22 24 L23.5 25.5 L26.5 22.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {/* Verified scan badge */}
+                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold shadow-sm">
+                  ✓
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400">100% Vector SVG</span>
+            </div>
+          </div>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-4">
-          <Sparkles className="w-3.5 h-3.5" />
+        {/* Animated Badge Pill */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/25 mb-4 animate-float-subtle shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-purple-500 animate-spin-slow" />
           Pro Customizer • Logo Embedding • Unlimited Free
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-          Free{' '}
-          <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
-            QR Code Generator
-          </span>{' '}
-          Online
-        </h1>
+
+        {/* H1 with Vibrant Purple-Pink-Amber Gradient + Floating Particles */}
+        <div className="relative inline-block mb-4">
+          <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-purple-400/80 animate-pulse" />
+          <div className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-pink-500/80 animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-amber-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
+          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-purple-400/70 animate-spin-slow" />
+
+          <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white">
+            Free{' '}
+            <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-amber-400 bg-clip-text text-transparent">
+              QR Code Generator
+            </span>{' '}
+            Online
+          </h1>
+        </div>
+
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 mb-6">
           Create high-resolution, branded QR codes for websites, Wi-Fi networks, vCards, and emails.
           Embed custom logos, choose themes, and export print-ready vector SVGs.
         </p>
+
+        {/* Clean Keyword Badges / Tags (No '#' prefix) */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto mb-6">
+          {[
+            'Branded QR Code',
+            'Embed Logo',
+            'Wi-Fi QR',
+            'vCard Contact',
+            'Print-Ready SVG',
+            '100% In-Browser',
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-850 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
 
         {/* Content Type Icons Row (6 items) */}
         <div className="flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto">
