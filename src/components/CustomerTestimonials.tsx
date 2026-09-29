@@ -23,7 +23,7 @@ const testimonials: Testimonial[] = [
     name: 'Sarah Jenkins',
     role: 'Senior Corporate Counsel',
     location: 'Horizon Law · London, UK',
-    avatar: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=256&h=256&fit=crop&crop=face&auto=format&q=95',
     initials: 'SJ',
     avatarColor: 'from-violet-500 to-purple-600',
     rating: 5.0,
@@ -36,7 +36,7 @@ const testimonials: Testimonial[] = [
     name: 'Zeeshan Ahmed',
     role: 'Full Stack Engineer',
     location: 'Lahore, Pakistan',
-    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=256&h=256&fit=crop&crop=face&auto=format&q=95',
     initials: 'ZA',
     avatarColor: 'from-emerald-500 to-teal-600',
     rating: 4.9,
@@ -49,7 +49,7 @@ const testimonials: Testimonial[] = [
     name: 'Elena Rostova',
     role: 'Lead Visual Designer',
     location: 'Studio Bloom · Berlin, Germany',
-    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=256&h=256&fit=crop&crop=face&auto=format&q=95',
     initials: 'ER',
     avatarColor: 'from-rose-500 to-pink-600',
     rating: 5.0,
@@ -62,7 +62,7 @@ const testimonials: Testimonial[] = [
     name: 'Dr. Marcus Vance',
     role: 'Academic Researcher & Lecturer',
     location: 'MIT · Boston, USA',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=256&h=256&fit=crop&crop=face&auto=format&q=95',
     initials: 'MV',
     avatarColor: 'from-blue-500 to-indigo-600',
     rating: 4.8,
@@ -75,7 +75,7 @@ const testimonials: Testimonial[] = [
     name: 'Ayesha Noor',
     role: 'Digital Content Creator',
     location: 'Dubai, UAE',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=256&h=256&fit=crop&crop=face&auto=format&q=95',
     initials: 'AN',
     avatarColor: 'from-amber-500 to-orange-600',
     rating: 5.0,
@@ -88,7 +88,7 @@ const testimonials: Testimonial[] = [
     name: 'David Miller',
     role: 'Operations Director',
     location: 'BluePeak Logistics · Austin, TX',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=256&h=256&fit=crop&crop=face&auto=format&q=95',
     initials: 'DM',
     avatarColor: 'from-cyan-500 to-blue-600',
     rating: 4.9,
@@ -101,7 +101,7 @@ const testimonials: Testimonial[] = [
     name: 'Maya Patel',
     role: 'Creative Agency Director',
     location: 'Mumbai, India',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=256&h=256&fit=crop&crop=face&auto=format&q=95',
     initials: 'MP',
     avatarColor: 'from-fuchsia-500 to-violet-600',
     rating: 5.0,
@@ -114,7 +114,7 @@ const testimonials: Testimonial[] = [
     name: 'Tariq Mansoor',
     role: 'Fintech Security Specialist',
     location: 'Riyadh, Saudi Arabia',
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=256&h=256&fit=crop&crop=face&auto=format&q=95',
     initials: 'TM',
     avatarColor: 'from-green-500 to-emerald-600',
     rating: 4.9,
@@ -165,16 +165,18 @@ function TestimonialCard({ t }: { t: Testimonial }) {
       <div className="pt-3 mt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           {/* Avatar with fallback */}
-          <div className="relative w-8 h-8 rounded-full shrink-0 overflow-hidden ring-1.5 ring-brand-500/25 group-hover:ring-brand-500/60 transition-all">
+          <div className="relative w-9 h-9 rounded-full shrink-0 overflow-hidden ring-2 ring-brand-500/25 group-hover:ring-brand-500/60 shadow-sm transition-all">
             <div className={`absolute inset-0 bg-gradient-to-br ${t.avatarColor} flex items-center justify-center text-white text-[10px] font-bold`}>
               {t.initials}
             </div>
             <Image
               src={t.avatar}
               alt={t.name}
-              width={32}
-              height={32}
-              className="absolute inset-0 w-full h-full object-cover"
+              width={72}
+              height={72}
+              quality={95}
+              unoptimized
+              className="absolute inset-0 w-full h-full object-cover object-center"
               loading="lazy"
             />
           </div>
