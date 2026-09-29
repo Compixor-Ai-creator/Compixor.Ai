@@ -753,11 +753,12 @@ export default function FullDpMakerPage() {
             'Zero Cloud Uploads',
           ].map((tag) => (
             <span
-              key={tag}
-              className="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-850 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
-            >
-              {tag}
-            </span>
+                key={tag}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                {tag}
+              </span>
           ))}
         </div>
 
