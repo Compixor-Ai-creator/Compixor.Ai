@@ -64,7 +64,7 @@ export default function AboutPage() {
           The Mission Behind <span className="text-gradient">CompixorAi</span>
         </h1>
         <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300 leading-relaxed">
-          We believe professional file transformation shouldn't require clunky software subscriptions,
+          We believe professional file transformation shouldn&apos;t require clunky software subscriptions,
           creepy cloud uploads, or tedious workflows. We bring clinical precision and instantaneous
           client-side computing to everyone.
         </p>

@@ -507,7 +507,7 @@ export default function HomePage() {
             Frequently Asked Questions
           </h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Got questions? We've got answers.
+            Got questions? We&apos;ve got answers.
           </p>
         </div>
 

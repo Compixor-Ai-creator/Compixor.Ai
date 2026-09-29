@@ -4,6 +4,7 @@ declare module 'pdf-lib-encrypt' {
   export interface LockOptions {
     ownerPassword?: string;
     algo?: 'aes' | 'rc4';
+    permissions?: number;
   }
 
   export function configure(pdfLib: unknown): void;

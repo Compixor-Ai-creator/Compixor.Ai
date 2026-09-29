@@ -150,10 +150,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => {
+                <a
+                  href="mailto:support@compixor-ai.online?subject=Feature%20Request%20-%20Compixor%20AI&body=Describe%20the%20tool%20or%20feature%20you%20would%20like%20to%20see%3A"
+                  onClick={(e) => {
                     if (typeof window !== 'undefined') {
+                      e.preventDefault();
                       window.dispatchEvent(
                         new CustomEvent('compixor:open-feedback', { detail: { category: 'request' } })
                       );
@@ -163,13 +164,14 @@ export default function Footer() {
                 >
                   <MessageSquarePlus className="w-3.5 h-3.5" />
                   <span>Request a Tool</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => {
+                <a
+                  href="mailto:support@compixor-ai.online?subject=General%20Feedback%20-%20Compixor%20AI&body=Your%20feedback%20or%20suggestions%3A"
+                  onClick={(e) => {
                     if (typeof window !== 'undefined') {
+                      e.preventDefault();
                       window.dispatchEvent(
                         new CustomEvent('compixor:open-feedback', { detail: { category: 'feedback' } })
                       );
@@ -178,7 +180,7 @@ export default function Footer() {
                   className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
                   Give Feedback
-                </button>
+                </a>
               </li>
             </ul>
           </div>

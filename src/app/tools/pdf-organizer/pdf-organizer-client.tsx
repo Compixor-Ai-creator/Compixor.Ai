@@ -1471,7 +1471,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
                     <div>
                       <p className="font-bold">Large file volume detected ({formatFileSize(totalMergeSize)})</p>
                       <p className="opacity-90">
-                        Because merging happens inside your browser's local sandbox memory, processing
+                        Because merging happens inside your browser&apos;s local sandbox memory, processing
                         documents over 50MB may take a few moments.
                       </p>
                     </div>

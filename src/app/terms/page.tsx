@@ -43,7 +43,7 @@ export default function TermsPage() {
             3. Disclaimer of Warranties
           </h2>
           <p>
-            CompixorAi is provided on an "as is" and "as available" basis without warranties of any kind, whether express or implied. While we strive for absolute precision and standard biometric compliance, you are solely responsible for ensuring your passport or official documentation meets specific local embassy guidelines before submission.
+            CompixorAi is provided on an &quot;as is&quot; and &quot;as available&quot; basis without warranties of any kind, whether express or implied. While we strive for absolute precision and standard biometric compliance, you are solely responsible for ensuring your passport or official documentation meets specific local embassy guidelines before submission.
           </p>
         </section>
 

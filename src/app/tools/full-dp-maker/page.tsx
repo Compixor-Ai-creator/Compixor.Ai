@@ -1028,7 +1028,7 @@ export default function FullDpMakerPage() {
                 {/* 5. Resize Mode Settings */}
                 {fillMode === 'resize' && (
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Stretches your photo to directly fill the square. Great for near-square photos where slight aspect ratio change isn't noticeable.
+                    Stretches your photo to directly fill the square. Great for near-square photos where slight aspect ratio change isn&apos;t noticeable.
                   </p>
                 )}
 
