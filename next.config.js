@@ -2,6 +2,8 @@
 const nextConfig = {
   // Enable gzip compression
   compress: true,
+  poweredByHeader: false,
+  swcMinify: true,
 
   // Production compiler optimizations
   compiler: {
@@ -10,7 +12,7 @@ const nextConfig = {
 
   // Optimize package imports to reduce bundle size (tree-shaking)
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizePackageImports: ['lucide-react', 'framer-motion', 'sonner'],
   },
 
   webpack: (config, { isServer }) => {

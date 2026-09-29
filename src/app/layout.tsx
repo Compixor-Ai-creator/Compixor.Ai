@@ -1,12 +1,16 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Outfit } from 'next/font/google';
+import dynamic from 'next/dynamic';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import FeedbackWidget from '@/components/FeedbackWidget';
 import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
+
+const FeedbackWidget = dynamic(() => import('@/components/FeedbackWidget'), {
+  ssr: false,
+});
 
 const inter = Inter({
   subsets: ['latin'],

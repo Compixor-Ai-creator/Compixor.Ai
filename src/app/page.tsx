@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { ToolCardSkeleton, HeroFeaturesSkeleton } from '@/components/LoadingSkeleton';
 import { motion } from 'framer-motion';
 import {
   FileDown,
@@ -203,14 +202,6 @@ const itemVariants = {
 
 export default function HomePage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Show skeleton briefly so browser has time to load fonts, scripts & WebAssembly
-    // This is especially noticeable on mobile — gives a smooth first-paint experience
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="relative">
@@ -328,18 +319,14 @@ export default function HomePage() {
               </motion.div>
             </motion.div>
 
-            {/* Right Column: 5 Core Tools Feature Highlight Card */}
+            {/* Right Column: Core Tools Feature Highlight Card */}
             <motion.div
-              key={isLoading ? 'skeleton-hero' : 'loaded-hero'}
               className="lg:col-span-5"
               initial={{ opacity: 0, x: 25 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: isLoading ? 0.2 : 0 }}
+              transition={{ duration: 0.6 }}
             >
-              {isLoading ? (
-                <HeroFeaturesSkeleton />
-              ) : (
-                <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/60 dark:border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden flex flex-col">
+              <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/60 dark:border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden flex flex-col">
                   {/* Header Row with dynamic tool count */}
                   <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
                     <div className="flex items-center gap-2">
@@ -391,7 +378,6 @@ export default function HomePage() {
                     })}
                   </div>
                 </div>
-              )}
             </motion.div>
           </div>
         </div>
@@ -416,20 +402,13 @@ export default function HomePage() {
           </motion.div>
 
           <motion.div
-            key={isLoading ? 'skeleton-grid' : 'tools-grid'}
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.05 }}
             variants={containerVariants}
           >
-            {isLoading
-              ? Array.from({ length: 6 }).map((_, i) => (
-                  <motion.div key={i} variants={itemVariants}>
-                    <ToolCardSkeleton />
-                  </motion.div>
-                ))
-              : tools.map((tool) => {
+            {tools.map((tool) => {
                   const Icon = tool.icon;
                   return (
                     <motion.div key={tool.href} variants={itemVariants}>
