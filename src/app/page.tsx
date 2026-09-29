@@ -198,10 +198,10 @@ const itemVariants = {
 
 export default function HomePage() {
   return (
-    <div className="relative">
+    <div className="relative overflow-x-clip">
       <FaqJsonLd faqs={homeFaqs} />
       {/* ============ HERO SECTION ============ */}
-      <section className="relative overflow-hidden">
+      <section className="relative">
         {/* Ambient Glow Orbs (Desktop only — pointer-events-none, behind all content) */}
         <div
           aria-hidden="true"
@@ -214,16 +214,16 @@ export default function HomePage() {
 
         <div
           aria-hidden="true"
-          className="hidden md:block pointer-events-none absolute -z-10 bottom-0 -right-20 w-[560px] h-[440px] rounded-full opacity-25 dark:opacity-20"
+          className="hidden md:block pointer-events-none absolute -z-10 top-1/2 -translate-y-1/2 -right-16 w-[520px] h-[440px] rounded-full opacity-20 dark:opacity-15"
           style={{
-            background: 'radial-gradient(ellipse at center, #06b6d4 0%, #10b981 45%, transparent 70%)',
-            filter: 'blur(110px)',
+            background: 'radial-gradient(ellipse at center, #06b6d4 0%, #10b981 35%, transparent 70%)',
+            filter: 'blur(100px)',
           }}
         />
 
         <div
           aria-hidden="true"
-          className="hidden md:block pointer-events-none absolute -z-10 top-8 right-8 w-[320px] h-[280px] rounded-full opacity-20 dark:opacity-15"
+          className="hidden md:block pointer-events-none absolute -z-10 top-8 right-8 w-[320px] h-[280px] rounded-full opacity-18 dark:opacity-15"
           style={{
             background: 'radial-gradient(ellipse at center, #f43f5e 0%, #fb923c 55%, transparent 72%)',
             filter: 'blur(80px)',

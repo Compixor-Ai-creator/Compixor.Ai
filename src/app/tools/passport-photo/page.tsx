@@ -1,5 +1,7 @@
 'use client';
 
+import ToolSeoSection from "@/components/ToolSeoSection";
+
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -2580,52 +2582,7 @@ export default function PassportPhotoPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="mt-16 pt-12 border-t border-zinc-200 dark:border-zinc-800 max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-display font-bold text-zinc-900 dark:text-white mb-2">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Quick answers about sizing, specifications, and printing
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          {faqs.map((faq, idx) => {
-            const isOpen = activeFaq === idx;
-            return (
-              <div
-                key={idx}
-                className="glass-card rounded-xl overflow-hidden transition"
-              >
-                <button
-                  onClick={() => setActiveFaq(isOpen ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-zinc-900 dark:text-white"
-                >
-                  <span className="flex items-center gap-3">
-                    <HelpCircle className="w-4 h-4 text-brand-500 shrink-0" />
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 pt-3">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Cross-Tool Internal Linking */}
-      <RelatedTools currentTool="passport-photo" />
+      <ToolSeoSection toolSlug="passport-photo" />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import ToolSeoSection from "@/components/ToolSeoSection";
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QrCode,
@@ -1619,18 +1621,7 @@ export default function QrGeneratorPage() {
       {/* Visual Proof Output Mockup */}
       <QrGeneratorPreviewMockup />
 
-      {/* Reusable Client-Side Trust & Privacy Section */}
-      <ClientSideTrustSection />
-
-      {/* FAQs Section with SSR-friendly DOM rendering */}
-      <FaqSection
-        title="QR Generator FAQs"
-        subtitle="Answers to common questions about our free client-side QR generator"
-        faqs={qrGeneratorFaqs}
-      />
-
-      {/* Cross-Tool Internal Linking */}
-      <RelatedTools currentTool="qr-generator" />
+      <ToolSeoSection toolSlug="qr-generator" />
     </div>
   );
 }

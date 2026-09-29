@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getToolMetadata, getToolSchemas, ToolSlug } from '@/lib/seo-config';
 
-const TOOL_SLUG: ToolSlug = 'passport-photo';
+const TOOL_SLUG: ToolSlug = 'pdf-organizer';
 
 export const metadata: Metadata = getToolMetadata(TOOL_SLUG);
 

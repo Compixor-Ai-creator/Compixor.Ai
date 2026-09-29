@@ -1,5 +1,7 @@
 'use client';
 
+import ToolSeoSection from "@/components/ToolSeoSection";
+
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -1717,18 +1719,7 @@ export default function FullDpMakerPage() {
       {/* Visual Proof Output Mockup */}
       <DpMakerPreviewMockup />
 
-      {/* Reusable Client-Side Trust & Privacy Section */}
-      <ClientSideTrustSection />
-
-      {/* FAQs Section with SSR-friendly DOM rendering */}
-      <FaqSection
-        title="Full DP Maker FAQs"
-        subtitle="Common questions about creating no-crop square profile photos"
-        faqs={fullDpMakerFaqs}
-      />
-
-      {/* Cross-Tool Internal Linking */}
-      <RelatedTools currentTool="full-dp-maker" />
+      <ToolSeoSection toolSlug="full-dp-maker" />
     </div>
   );
 }

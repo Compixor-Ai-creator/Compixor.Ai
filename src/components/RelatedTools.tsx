@@ -16,6 +16,8 @@ import {
   Sparkles,
   ShieldCheck,
   LucideIcon,
+  Lock,
+  Unlock,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
 
@@ -27,7 +29,9 @@ export type ToolId =
   | 'pdf-organizer'
   | 'passport-photo'
   | 'full-dp-maker'
-  | 'qr-generator';
+  | 'qr-generator'
+  | 'protect-pdf'
+  | 'unlock-pdf';
 
 export interface ToolItem {
   id: ToolId;
@@ -130,18 +134,42 @@ export const ALL_TOOLS: ToolItem[] = [
     tagline: 'Custom Colors & Logos',
     description: 'Generate high-resolution QR codes for websites, WiFi & contact cards with custom styling.',
   },
+  {
+    id: 'protect-pdf',
+    name: 'Protect PDF',
+    badge: 'Security',
+    stat: 'AES-256 Encryption',
+    href: '/tools/protect-pdf',
+    icon: Lock,
+    color: 'from-violet-500 to-indigo-600',
+    tagline: '100% Client-Side Encryption',
+    description: 'Password protect PDF files with military-grade AES-256 encryption directly in your browser.',
+  },
+  {
+    id: 'unlock-pdf',
+    name: 'Unlock PDF',
+    badge: 'Decrypt',
+    stat: 'Remove Restrictions',
+    href: '/tools/unlock-pdf',
+    icon: Unlock,
+    color: 'from-indigo-500 to-cyan-500',
+    tagline: 'Strip Passwords In-Browser',
+    description: 'Remove passwords and permissions from protected PDFs with zero server uploads.',
+  },
 ];
 
 // Mapping of primary related tools per tool for rich contextual cross-linking
 const RELATED_TOOL_IDS: Record<ToolId, ToolId[]> = {
-  'pdf-compressor': ['pdf-organizer', 'word-compressor', 'add-watermark', 'remove-watermark'],
+  'pdf-compressor': ['pdf-organizer', 'protect-pdf', 'word-compressor', 'add-watermark'],
   'word-compressor': ['pdf-compressor', 'pdf-organizer', 'qr-generator', 'add-watermark'],
-  'add-watermark': ['remove-watermark', 'pdf-compressor', 'pdf-organizer', 'word-compressor'],
-  'remove-watermark': ['add-watermark', 'pdf-compressor', 'pdf-organizer', 'word-compressor'],
-  'pdf-organizer': ['pdf-compressor', 'add-watermark', 'remove-watermark', 'word-compressor'],
+  'add-watermark': ['remove-watermark', 'protect-pdf', 'pdf-organizer', 'pdf-compressor'],
+  'remove-watermark': ['add-watermark', 'unlock-pdf', 'pdf-compressor', 'pdf-organizer'],
+  'pdf-organizer': ['pdf-compressor', 'add-watermark', 'protect-pdf', 'word-compressor'],
   'passport-photo': ['full-dp-maker', 'qr-generator', 'pdf-compressor', 'pdf-organizer'],
-  'full-dp-maker': ['passport-photo', 'qr-generator', 'pdf-compressor', 'word-compressor'],
-  'qr-generator': ['full-dp-maker', 'pdf-compressor', 'word-compressor', 'passport-photo'],
+  'full-dp-maker': ['passport-photo', 'qr-generator', 'add-watermark', 'pdf-compressor'],
+  'qr-generator': ['full-dp-maker', 'pdf-compressor', 'passport-photo', 'word-compressor'],
+  'protect-pdf': ['unlock-pdf', 'pdf-compressor', 'add-watermark', 'pdf-organizer'],
+  'unlock-pdf': ['protect-pdf', 'pdf-compressor', 'remove-watermark', 'pdf-organizer'],
 };
 
 interface RelatedToolsProps {

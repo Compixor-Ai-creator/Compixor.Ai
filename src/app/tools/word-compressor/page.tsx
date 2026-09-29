@@ -1,5 +1,7 @@
 'use client';
 
+import ToolSeoSection from "@/components/ToolSeoSection";
+
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -784,18 +786,7 @@ export default function WordCompressorPage() {
         </div>
       </section>
 
-      {/* Reusable Client-Side Trust & Privacy Section */}
-      <ClientSideTrustSection />
-
-      {/* FAQs Section with SSR-friendly DOM rendering */}
-      <FaqSection
-        title="Word Compressor FAQs"
-        subtitle="Learn how embedded images and docx archives are optimized"
-        faqs={wordCompressorFaqs}
-      />
-
-      {/* Cross-Tool Internal Linking */}
-      <RelatedTools currentTool="word-compressor" />
+      <ToolSeoSection toolSlug="word-compressor" />
     </div>
   );
 }

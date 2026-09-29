@@ -1,3 +1,4 @@
+import ToolSeoSection from "@/components/ToolSeoSection";
 import React from 'react';
 import UnlockPdfClient from '@/components/UnlockPdfClient';
 import { unlockPdfFaqs } from '@/data/faqs';
@@ -180,24 +181,7 @@ export default function UnlockPdfPage() {
           </div>
         </section>
 
-        {/* FAQs Section */}
-        <section aria-labelledby="unlock-faqs-heading">
-          <h2 id="unlock-faqs-heading" className="text-2xl font-bold font-display text-zinc-900 dark:text-white mb-6 text-center">
-            Frequently Asked Questions
-          </h2>
-          <div className="space-y-4">
-            {unlockPdfFaqs.map((faq, i) => (
-              <div key={i} className="glass-card p-5 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60">
-                <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-                  {faq.q}
-                </h3>
-                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  {faq.a}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
+        <ToolSeoSection toolSlug="unlock-pdf" />
       </div>
     </div>
   );

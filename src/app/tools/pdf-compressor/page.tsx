@@ -1,5 +1,7 @@
 'use client';
 
+import ToolSeoSection from "@/components/ToolSeoSection";
+
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FileDown,
@@ -1554,18 +1556,7 @@ export default function PdfCompressorPage() {
       {/* Visual Proof Benchmark Mockup */}
       <PdfCompressorPreviewMockup />
 
-      {/* Reusable Client-Side Trust & Privacy Section */}
-      <ClientSideTrustSection />
-
-      {/* FAQs Section with SSR-friendly DOM rendering */}
-      <FaqSection
-        title="PDF Compressor FAQs"
-        subtitle="Answers to common questions about PDF compression"
-        faqs={pdfCompressorFaqs}
-      />
-
-      {/* Related Tools */}
-      <RelatedPdfTools currentTool="compressor" />
+      <ToolSeoSection toolSlug="pdf-compressor" />
     </div>
   );
 }
