@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from './ThemeProvider';
 import {
   Sun,
@@ -273,15 +272,10 @@ export default function Navbar() {
                 </button>
 
                 {/* Dropdown Floating Menu */}
-                <AnimatePresence>
-                  {pdfDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                      transition={{ duration: 0.18, ease: 'easeOut' }}
-                      className="absolute left-0 mt-2.5 w-[560px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-zinc-700/60 shadow-2xl shadow-purple-950/15 dark:shadow-black/70"
-                    >
+                {pdfDropdownOpen && (
+                  <div
+                    className="absolute left-0 mt-2.5 w-[560px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-zinc-700/60 shadow-2xl shadow-purple-950/15 dark:shadow-black/70 animate-in fade-in zoom-in-95 duration-150"
+                  >
                       {/* Top Header Tag */}
                       <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-zinc-100 dark:border-zinc-800/80">
                         <div className="flex items-center gap-2">
@@ -428,9 +422,8 @@ export default function Navbar() {
                           View All 10 Tools &rarr;
                         </Link>
                       </div>
-                    </motion.div>
+                    </div>
                   )}
-                </AnimatePresence>
               </div>
 
               {/* Word Tools Unified Dropdown */}
@@ -460,15 +453,10 @@ export default function Navbar() {
                   />
                 </button>
 
-                <AnimatePresence>
-                  {wordDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                      transition={{ duration: 0.18, ease: 'easeOut' }}
-                      className="absolute left-0 mt-2.5 w-[380px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-zinc-700/60 shadow-2xl shadow-purple-950/15 dark:shadow-black/70"
-                    >
+                {wordDropdownOpen && (
+                  <div
+                    className="absolute left-0 mt-2.5 w-[380px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-zinc-700/60 shadow-2xl shadow-purple-950/15 dark:shadow-black/70 animate-in fade-in zoom-in-95 duration-150"
+                  >
                       {/* Top Header Tag */}
                       <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/80">
                         <div className="flex items-center gap-2">
@@ -546,9 +534,8 @@ export default function Navbar() {
                         </span>
                         <span className="font-semibold text-brand-600 dark:text-brand-400">Zero Server Uploads</span>
                       </div>
-                    </motion.div>
+                    </div>
                   )}
-                </AnimatePresence>
               </div>
 
               {/* Remaining Top-Level Nav Links */}
@@ -609,45 +596,35 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile Drawer with Slide Blur Effect */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 top-16 z-40 bg-white/90 dark:bg-surface-950/90 backdrop-blur-2xl lg:hidden p-6 flex flex-col justify-between border-t border-zinc-200/60 dark:border-zinc-800/60 shadow-2xl overflow-y-auto"
-          >
-            <div className="space-y-3">
-              {/* Mobile PDF Tools Accordion */}
-              <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-surface-900/40 overflow-hidden">
-                <button
-                  type="button"
-                  onClick={() => setMobilePdfAccordionOpen((prev) => !prev)}
-                  className="w-full flex items-center justify-between p-3.5 text-base font-bold text-zinc-900 dark:text-white"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-500">
-                      <Files className="w-4 h-4" />
-                    </div>
-                    <span>PDF Tools</span>
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 top-16 z-40 bg-white/90 dark:bg-surface-950/90 backdrop-blur-2xl lg:hidden p-6 flex flex-col justify-between border-t border-zinc-200/60 dark:border-zinc-800/60 shadow-2xl overflow-y-auto animate-in fade-in duration-200"
+        >
+          <div className="space-y-3">
+            {/* Mobile PDF Tools Accordion */}
+            <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-surface-900/40 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setMobilePdfAccordionOpen((prev) => !prev)}
+                className="w-full flex items-center justify-between p-3.5 text-base font-bold text-zinc-900 dark:text-white"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-500">
+                    <Files className="w-4 h-4" />
                   </div>
-                  <ChevronDown
-                    className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
-                      mobilePdfAccordionOpen ? 'rotate-180 text-brand-500' : ''
-                    }`}
-                  />
-                </button>
+                  <span>PDF Tools</span>
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
+                    mobilePdfAccordionOpen ? 'rotate-180 text-brand-500' : ''
+                  }`}
+                />
+              </button>
 
-                <AnimatePresence initial={false}>
-                  {mobilePdfAccordionOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden border-t border-zinc-200/60 dark:border-zinc-800/60 px-2 py-2 space-y-1"
-                    >
+              {mobilePdfAccordionOpen && (
+                <div
+                  className="overflow-hidden border-t border-zinc-200/60 dark:border-zinc-800/60 px-2 py-2 space-y-1 animate-in fade-in duration-150"
+                >
                       <div className="space-y-3 py-1">
                         {pdfCategories.map((group) => (
                           <div key={group.category} className="space-y-1">
@@ -693,9 +670,8 @@ export default function Navbar() {
                           </div>
                         ))}
                       </div>
-                    </motion.div>
+                    </div>
                   )}
-                </AnimatePresence>
               </div>
 
               {/* Mobile Word Tools Accordion */}
@@ -718,15 +694,10 @@ export default function Navbar() {
                   />
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {mobileWordAccordionOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden border-t border-zinc-200/60 dark:border-zinc-800/60 px-2 py-2 space-y-1"
-                    >
+                {mobileWordAccordionOpen && (
+                  <div
+                    className="overflow-hidden border-t border-zinc-200/60 dark:border-zinc-800/60 px-2 py-2 space-y-1 animate-in fade-in duration-150"
+                  >
                       <div className="space-y-1 py-1">
                         {wordToolsList.map((item) => {
                           const isCurrent = pathname === item.href;
@@ -761,9 +732,8 @@ export default function Navbar() {
                           );
                         })}
                       </div>
-                    </motion.div>
+                    </div>
                   )}
-                </AnimatePresence>
               </div>
 
               {/* Other Mobile Nav Links */}
@@ -800,9 +770,8 @@ export default function Navbar() {
                 100% Client-Side • Zero Server Uploads
               </p>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </>
   );
 }
