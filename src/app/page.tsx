@@ -471,9 +471,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ============ WHY CHOOSE COMPIXOR AI ============ */}
-      <WhyChooseCompixor />
-
       {/* ============ TRUST ARCHITECTURE ============ */}
       <section className="relative py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -522,6 +519,9 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* ============ WHY CHOOSE COMPIXOR AI ============ */}
+      <WhyChooseCompixor />
 
       {/* ============ CUSTOMER FEEDBACK & TESTIMONIALS ============ */}
       <CustomerTestimonials />
