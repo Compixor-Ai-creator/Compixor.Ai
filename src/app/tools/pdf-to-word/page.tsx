@@ -621,45 +621,6 @@ export default function PdfToWordPage() {
         </div>
       </section>
 
-      {/* ── H2: How to Convert PDF to Word ───────────────────────────────── */}
-      {/* SEO skill: HowTo schema + featured snippet optimization */}
-      <section aria-labelledby="howto-heading" className="space-y-6">
-        <h2
-          id="howto-heading"
-          className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white text-center"
-        >
-          How to Convert PDF to Word — Step by Step
-        </h2>
-
-        <ol className="grid grid-cols-1 sm:grid-cols-4 gap-4 list-none">
-          {[
-            { step: '01', text: 'Drop or select your PDF file (up to 100 MB)' },
-            { step: '02', text: 'Choose No OCR (digital PDF) or OCR mode (scanned)' },
-            { step: '03', text: 'Click "Convert PDF to Word" — processes locally in your browser' },
-            { step: '04', text: 'Download your editable .docx file — no watermarks, free' },
-          ].map((item, i) => (
-            <motion.li
-              key={i}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="glass-card rounded-2xl p-4 border border-zinc-200/70 dark:border-zinc-800/70 relative overflow-hidden"
-            >
-              <span className="absolute -top-2 -right-1 text-6xl font-black text-zinc-100 dark:text-zinc-800 select-none leading-none">
-                {item.step}
-              </span>
-              <div className="relative">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xs font-black mb-3">
-                  {i + 1}
-                </div>
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">{item.text}</p>
-              </div>
-            </motion.li>
-          ))}
-        </ol>
-      </section>
-
       {/* ── Internal CTA links to related tools ───────────────────────────── */}
       <section className="rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-200/50 dark:border-blue-800/40 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
