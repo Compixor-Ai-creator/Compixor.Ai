@@ -16,6 +16,7 @@ import {
   Check,
   ShieldCheck,
   ArrowRight,
+  Star,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -24,6 +25,7 @@ type Category = 'request' | 'bug' | 'feedback';
 interface FeedbackSubmission {
   id: string;
   category: Category;
+  rating?: number;
   message: string;
   email?: string;
   pathname: string;
@@ -63,10 +65,20 @@ const CATEGORIES: {
   },
 ];
 
+const RATING_LABELS: Record<number, { text: string; emoji: string }> = {
+  1: { text: 'Poor', emoji: '😞' },
+  2: { text: 'Fair', emoji: '😐' },
+  3: { text: 'Good', emoji: '🙂' },
+  4: { text: 'Great', emoji: '😊' },
+  5: { text: 'Excellent!', emoji: '🤩' },
+};
+
 export default function FeedbackWidget() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [category, setCategory] = useState<Category>('request');
+  const [rating, setRating] = useState<number>(5);
+  const [hoverRating, setHoverRating] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -120,10 +132,16 @@ export default function FeedbackWidget() {
 
   const getEmailContent = useCallback(() => {
     const subject = `[Compixor AI - ${activeCategoryConfig.badge}] from ${pathname}`;
+    const ratingText =
+      category === 'feedback' && rating > 0
+        ? `Experience Rating: ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)} (${rating}/5 - ${RATING_LABELS[rating]?.text || 'Rated'})`
+        : null;
+
     const body = [
       `Hi Compixor AI Team,`,
       '',
       `Category: ${activeCategoryConfig.label}`,
+      ...(ratingText ? [ratingText] : []),
       `Current Page: ${typeof window !== 'undefined' ? window.location.href : pathname}`,
       `My Email: ${email.trim() || 'Not specified'}`,
       '',
@@ -136,7 +154,7 @@ export default function FeedbackWidget() {
     ].join('\n');
 
     return { subject, body };
-  }, [activeCategoryConfig, pathname, email, message]);
+  }, [activeCategoryConfig, pathname, category, rating, email, message]);
 
   const getGmailComposeUrl = useCallback(() => {
     const { subject, body } = getEmailContent();
@@ -158,6 +176,7 @@ export default function FeedbackWidget() {
       const submission: FeedbackSubmission = {
         id: `fb_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         category,
+        rating: category === 'feedback' ? rating : undefined,
         message: message.trim(),
         email: email.trim() || undefined,
         pathname,
@@ -170,7 +189,7 @@ export default function FeedbackWidget() {
         localStorage.setItem('compixor_user_feedback', JSON.stringify(list.slice(0, 30)));
       }
     } catch {}
-  }, [category, message, email, pathname]);
+  }, [category, rating, message, email, pathname]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -220,6 +239,8 @@ export default function FeedbackWidget() {
   const handleReset = () => {
     setMessage('');
     setEmail('');
+    setRating(5);
+    setHoverRating(null);
     setIsSubmitted(false);
   };
 
@@ -359,6 +380,57 @@ export default function FeedbackWidget() {
                         {pathname}
                       </code>
                     </div>
+
+                    {/* Star Rating Section (Prominent on Feedback Category) */}
+                    {category === 'feedback' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="p-3.5 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/25 dark:border-amber-500/35 space-y-2.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                            Rate Your Experience:
+                          </span>
+                          <span className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                            <span>{hoverRating ?? rating}/5</span>
+                            <span>•</span>
+                            <span>{RATING_LABELS[hoverRating ?? rating]?.text}</span>
+                            <span className="text-sm">{RATING_LABELS[hoverRating ?? rating]?.emoji}</span>
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          {[1, 2, 3, 4, 5].map((star) => {
+                            const isFilled = (hoverRating ?? rating) >= star;
+                            return (
+                              <button
+                                key={star}
+                                type="button"
+                                onClick={() => {
+                                  setRating(star);
+                                  toast.success(`Rated ${star} Star${star > 1 ? 's' : ''}: ${RATING_LABELS[star]?.text}`);
+                                }}
+                                onMouseEnter={() => setHoverRating(star)}
+                                onMouseLeave={() => setHoverRating(null)}
+                                className="p-1 rounded-xl hover:bg-amber-500/20 transition-all transform hover:scale-125 active:scale-95 focus:outline-none cursor-pointer"
+                                aria-label={`Rate ${star} out of 5 stars`}
+                              >
+                                <Star
+                                  className={`w-7 h-7 transition-all duration-150 ${
+                                    isFilled
+                                      ? 'text-amber-400 fill-amber-400 drop-shadow-sm'
+                                      : 'text-zinc-300 dark:text-zinc-600 hover:text-amber-300'
+                                  }`}
+                                />
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
 
                     {/* Message Textarea */}
                     <div>
