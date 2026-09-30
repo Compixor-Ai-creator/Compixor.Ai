@@ -468,7 +468,7 @@ export default function Navbar() {
                         </span>
                       </div>
 
-                      <div className="space-y-1.5">
+                      <div className="space-y-1">
                         {wordToolsList.map((item) => {
                           const isCurrent = pathname === item.href;
                           const Icon = item.icon;
@@ -477,14 +477,14 @@ export default function Navbar() {
                               key={item.href}
                               href={item.href}
                               onClick={() => setWordDropdownOpen(false)}
-                              className={`group flex items-start gap-3 p-3 rounded-2xl transition duration-150 cursor-pointer ${
+                              className={`group flex items-start gap-3 p-2.5 rounded-2xl transition-all duration-150 cursor-pointer ${
                                 isCurrent
-                                  ? 'bg-brand-500 text-white shadow-glow'
-                                  : 'hover:bg-brand-500/10 text-zinc-700 dark:text-zinc-300'
+                                  ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300'
+                                  : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/70 hover:text-brand-600 dark:hover:text-brand-400'
                               }`}
                             >
                               <div
-                                className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shrink-0 shadow-xs group-hover:scale-105 transition-transform`}
+                                className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-200`}
                               >
                                 <Icon className="w-4 h-4" />
                               </div>
@@ -493,7 +493,7 @@ export default function Navbar() {
                                   <span
                                     className={`text-xs font-bold leading-tight ${
                                       isCurrent
-                                        ? 'text-white'
+                                        ? 'text-brand-600 dark:text-brand-300'
                                         : 'text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors'
                                     }`}
                                   >
@@ -501,9 +501,9 @@ export default function Navbar() {
                                   </span>
                                   {item.badge && (
                                     <span
-                                      className={`text-[9px] font-black px-1.5 py-0.2 rounded-full leading-tight uppercase ${
+                                      className={`text-[9px] font-black px-1.5 py-0.5 rounded-full leading-tight uppercase ${
                                         isCurrent
-                                          ? 'bg-white/20 text-white'
+                                          ? 'bg-brand-500/20 text-brand-700 dark:text-brand-200'
                                           : 'bg-brand-500/15 text-brand-600 dark:text-brand-300'
                                       }`}
                                     >
@@ -513,7 +513,7 @@ export default function Navbar() {
                                 </div>
                                 <p
                                   className={`text-[11px] mt-0.5 line-clamp-1 ${
-                                    isCurrent ? 'text-white/80' : 'text-zinc-500 dark:text-zinc-400'
+                                    isCurrent ? 'text-brand-600/70 dark:text-brand-300/70' : 'text-zinc-500 dark:text-zinc-400'
                                   }`}
                                 >
                                   {item.subtitle}
