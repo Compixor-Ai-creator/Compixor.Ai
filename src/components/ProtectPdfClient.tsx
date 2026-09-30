@@ -24,7 +24,6 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DropAnywhere from '@/components/DropAnywhere';
-import RelatedPdfTools from '@/components/RelatedPdfTools';
 import { formatFileSize, validatePdfFile } from '@/utils/fileHelpers';
 import { getPdfLib, getPdfEncrypt } from '@/utils/pdfLoader';
 
@@ -513,8 +512,6 @@ export default function ProtectPdfClient() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <RelatedPdfTools currentTool="protect-pdf" />
     </div>
   );
 }

@@ -33,7 +33,6 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
-import RelatedPdfTools from '@/components/RelatedPdfTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
 import { formatFileSize, validatePdfFile, downloadBlob } from '@/utils/fileHelpers';
 import { convertPdfToDocx, ConversionResult } from '@/utils/pdfToWordEngine';
@@ -660,10 +659,6 @@ export default function PdfToWordPage() {
           ))}
         </ol>
       </section>
-
-      {/* ── Internal Links: Related Tools ─────────────────────────────────── */}
-      {/* SEO skill: 3-5 internal links per section */}
-      <RelatedPdfTools currentTool="pdf-to-word" />
 
       {/* ── Internal CTA links to related tools ───────────────────────────── */}
       <section className="rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-200/50 dark:border-blue-800/40 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
