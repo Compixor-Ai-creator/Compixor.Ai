@@ -11,8 +11,13 @@ import {
   ArrowRight,
   CheckCircle2,
   Sparkles,
+  Upload,
+  Sliders,
+  Cpu,
+  Download,
 } from 'lucide-react';
 import { seoConfig, ToolSlug, BASE_URL } from '@/lib/seo-config';
+import ToolHowToVictory from '@/components/ToolHowToVictory';
 
 interface ToolSeoSectionProps {
   toolSlug: ToolSlug;
@@ -77,25 +82,38 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
           </p>
         </div>
 
+        {/* ── Illustrated Victory / Transformation Pipeline Showcase ── */}
+        <ToolHowToVictory toolSlug={toolSlug} />
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-          {tool.howToSteps.map((step, idx) => (
-            <div
-              key={idx}
-              className="glass-card p-5 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60 flex items-start gap-4 transition-all hover:border-brand-500/30"
-            >
-              <div className="w-8 h-8 rounded-xl bg-brand-500/15 text-brand-600 dark:text-brand-400 font-black flex items-center justify-center text-sm shrink-0 border border-brand-500/20">
-                {idx + 1}
+          {tool.howToSteps.map((step, idx) => {
+            const stepIcons = [Upload, Sliders, Cpu, Download];
+            const StepIcon = stepIcons[idx] || CheckCircle2;
+            return (
+              <div
+                key={idx}
+                className="glass-card p-5 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60 flex items-start gap-4 transition-all hover:border-brand-500/40 hover:shadow-md"
+              >
+                <div className="w-10 h-10 rounded-2xl bg-brand-500/15 text-brand-600 dark:text-brand-400 font-black flex flex-col items-center justify-center shrink-0 border border-brand-500/20 shadow-xs">
+                  <StepIcon className="w-4 h-4 mb-0.5" />
+                  <span className="text-[9px] leading-none">{idx + 1}</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest">
+                      Step {idx + 1}
+                    </span>
+                  </div>
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                    {step.name}
+                  </h3>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    {step.text}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
-                  {step.name}
-                </h3>
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  {step.text}
-                </p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
