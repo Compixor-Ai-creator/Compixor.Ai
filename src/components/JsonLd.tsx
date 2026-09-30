@@ -35,8 +35,8 @@ export function SoftwareAppJsonLd({
       priceCurrency,
     },
     author: {
-      '@type': 'Person',
-      name: 'Haroon Ali',
+      '@type': 'Organization',
+      name: 'Compixor AI',
       url: 'https://compixor-ai.vercel.app',
     },
     publisher: {
@@ -170,12 +170,6 @@ export function OrganizationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Compixor AI',
-    founder: {
-      '@type': 'Person',
-      name: 'Haroon Ali',
-      jobTitle: 'Founder & Lead Developer',
-      url: 'https://compixor-ai.vercel.app',
-    },
     url: 'https://compixor-ai.vercel.app',
     logo: 'https://compixor-ai.vercel.app/icon.png',
     sameAs: ['https://compixor.ai', 'https://compixor-ai.vercel.app'],

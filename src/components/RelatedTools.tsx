@@ -31,7 +31,8 @@ export type ToolId =
   | 'full-dp-maker'
   | 'qr-generator'
   | 'protect-pdf'
-  | 'unlock-pdf';
+  | 'unlock-pdf'
+  | 'pdf-to-word';
 
 export interface ToolItem {
   id: ToolId;
@@ -156,20 +157,32 @@ export const ALL_TOOLS: ToolItem[] = [
     tagline: 'Strip Passwords In-Browser',
     description: 'Remove passwords and permissions from protected PDFs with zero server uploads.',
   },
+  {
+    id: 'pdf-to-word',
+    name: 'PDF to Word Converter',
+    badge: 'Popular',
+    stat: 'Dual OCR & No-OCR',
+    href: '/tools/pdf-to-word',
+    icon: FileText,
+    color: 'from-blue-600 to-indigo-600',
+    tagline: 'Editable .DOCX Output',
+    description: 'Convert PDF files to editable Word documents online with client-side OCR for scanned files and zero uploads.',
+  },
 ];
 
 // Mapping of primary related tools per tool for rich contextual cross-linking
 const RELATED_TOOL_IDS: Record<ToolId, ToolId[]> = {
-  'pdf-compressor': ['pdf-organizer', 'protect-pdf', 'word-compressor', 'add-watermark'],
-  'word-compressor': ['pdf-compressor', 'pdf-organizer', 'qr-generator', 'add-watermark'],
+  'pdf-compressor': ['pdf-to-word', 'pdf-organizer', 'protect-pdf', 'word-compressor'],
+  'word-compressor': ['pdf-to-word', 'pdf-compressor', 'pdf-organizer', 'add-watermark'],
   'add-watermark': ['remove-watermark', 'protect-pdf', 'pdf-organizer', 'pdf-compressor'],
   'remove-watermark': ['add-watermark', 'unlock-pdf', 'pdf-compressor', 'pdf-organizer'],
-  'pdf-organizer': ['pdf-compressor', 'add-watermark', 'protect-pdf', 'word-compressor'],
+  'pdf-organizer': ['pdf-to-word', 'pdf-compressor', 'add-watermark', 'protect-pdf'],
   'passport-photo': ['full-dp-maker', 'qr-generator', 'pdf-compressor', 'pdf-organizer'],
   'full-dp-maker': ['passport-photo', 'qr-generator', 'add-watermark', 'pdf-compressor'],
   'qr-generator': ['full-dp-maker', 'pdf-compressor', 'passport-photo', 'word-compressor'],
   'protect-pdf': ['unlock-pdf', 'pdf-compressor', 'add-watermark', 'pdf-organizer'],
   'unlock-pdf': ['protect-pdf', 'pdf-compressor', 'remove-watermark', 'pdf-organizer'],
+  'pdf-to-word': ['word-compressor', 'pdf-compressor', 'pdf-organizer', 'add-watermark'],
 };
 
 interface RelatedToolsProps {

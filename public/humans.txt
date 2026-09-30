@@ -1,0 +1,10 @@
+/* TEAM */
+Founder & Developer: Haroon Ali
+Site: Compixor AI
+URL: https://compixor-ai.vercel.app/
+Location: Pakistan
+
+/* SITE */
+Standards: HTML5, CSS3, WebAssembly, Web Workers, Next.js, React, TypeScript
+Components: Client-side cryptographic & document processing
+Software: 100% In-Browser Privacy

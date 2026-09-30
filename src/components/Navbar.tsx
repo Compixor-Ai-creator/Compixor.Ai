@@ -300,9 +300,7 @@ export default function Navbar() {
                               </p>
                               <div className="space-y-1">
                                 {group.tools.map((item) => {
-                                  const isCurrent =
-                                    pathname === item.href ||
-                                    (item.href === '/tools/pdf-watermark' && pathname === '/tools/add-watermark');
+                                  const isCurrent = pathname === item.href;
                                   const Icon = item.icon;
                                   return (
                                     <Link
@@ -633,9 +631,7 @@ export default function Navbar() {
                             </p>
                             <div className="space-y-1">
                               {group.tools.map((item) => {
-                                const isCurrent =
-                                  pathname === item.href ||
-                                  (item.href === '/tools/pdf-watermark' && pathname === '/tools/add-watermark');
+                                const isCurrent = pathname === item.href;
                                 const Icon = item.icon;
                                 return (
                                   <Link

@@ -60,39 +60,57 @@ const nextConfig = {
     return config;
   },
 
-  async rewrites() {
+  async redirects() {
     return [
       {
         source: '/compress_pdf',
         destination: '/tools/pdf-compressor',
+        permanent: true,
       },
       {
         source: '/compress-pdf',
         destination: '/tools/pdf-compressor',
+        permanent: true,
       },
       {
         source: '/pdf-compressor',
         destination: '/tools/pdf-compressor',
+        permanent: true,
       },
       {
         source: '/tools/pdf-merge',
-        destination: '/tools/pdf-organizer?tab=merge',
+        destination: '/tools/pdf-organizer',
+        permanent: true,
       },
       {
         source: '/tools/pdf-split',
-        destination: '/tools/pdf-organizer?tab=split',
+        destination: '/tools/pdf-organizer',
+        permanent: true,
       },
       {
         source: '/pdf-organizer',
         destination: '/tools/pdf-organizer',
+        permanent: true,
       },
       {
         source: '/merge-pdf',
-        destination: '/tools/pdf-organizer?tab=merge',
+        destination: '/tools/pdf-organizer',
+        permanent: true,
       },
       {
         source: '/split-pdf',
-        destination: '/tools/pdf-organizer?tab=split',
+        destination: '/tools/pdf-organizer',
+        permanent: true,
+      },
+      {
+        source: '/tools/pdf-protect',
+        destination: '/tools/protect-pdf',
+        permanent: true,
+      },
+      {
+        source: '/tools/pdf-watermark',
+        destination: '/tools/add-watermark',
+        permanent: true,
       },
     ];
   },

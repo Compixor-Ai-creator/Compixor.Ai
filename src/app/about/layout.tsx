@@ -6,14 +6,14 @@ export const metadata: Metadata = {
     absolute: 'About Compixor AI — Private Client-Side Media & Document Toolkit',
   },
   description:
-    'Learn about Compixor AI, created by Haroon Ali. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
+    'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
   alternates: {
     canonical: 'https://compixor-ai.vercel.app/about',
   },
   openGraph: {
     title: 'About Compixor AI — Private Client-Side Media & Document Toolkit',
     description:
-      'Learn about Compixor AI, created by Haroon Ali. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
+      'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
     url: 'https://compixor-ai.vercel.app/about',
     type: 'website',
     images: [
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'About Compixor AI — Private Client-Side Media & Document Toolkit',
     description:
-      'Learn about Compixor AI, created by Haroon Ali. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
+      'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
     images: ['https://compixor-ai.vercel.app/images/og-banner.png'],
   },
 };

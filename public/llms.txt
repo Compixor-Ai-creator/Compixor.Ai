@@ -1,0 +1,23 @@
+# Compixor AI
+
+> Free, 100% client-side document and media processing toolkit with zero server uploads.
+
+## Project Details
+- **Website**: https://compixor-ai.vercel.app/
+- **Founder & Lead Developer**: Haroon Ali
+- **Author**: Haroon Ali
+- **Architecture**: 100% Client-Side Processing (WebAssembly, HTML5 Canvas, Web Workers)
+- **Privacy Model**: All files and computations execute locally within the user's browser memory. Zero files are uploaded or stored on any remote servers.
+
+## Tools Suite
+- **PDF Compressor**: In-browser vector stream optimization, custom size reduction to 100KB, 200KB, 500KB, 1MB. (https://compixor-ai.vercel.app/tools/pdf-compressor)
+- **PDF Merge & Split**: Visual drag-and-drop page organizer, combine multiple PDFs or split page ranges. (https://compixor-ai.vercel.app/tools/pdf-organizer)
+- **Add Watermark**: Stamp custom vector text or transparent logo images onto PDF documents with opacity and rotation control. (https://compixor-ai.vercel.app/tools/add-watermark)
+- **Remove Watermark**: Dual-engine digital stream filtering and interactive visual bounding box stamp eraser. (https://compixor-ai.vercel.app/tools/remove-watermark)
+- **Protect PDF**: Client-side AES-256 password encryption and granular editing/printing restriction controls. (https://compixor-ai.vercel.app/tools/protect-pdf)
+- **Unlock PDF**: In-browser decryption to remove passwords and permission restrictions from owned PDFs. (https://compixor-ai.vercel.app/tools/unlock-pdf)
+- **Word Compressor**: Re-compresses embedded images in .docx archives while keeping XML layouts and tables intact. (https://compixor-ai.vercel.app/tools/word-compressor)
+- **Passport Photo Maker**: AI-driven portrait background matting, biometric dimension presets (NADRA 35x45mm, US Visa 2x2"), 300 DPI 4x6 printable sheets. (https://compixor-ai.vercel.app/tools/passport-photo)
+- **Full DP Maker**: 1:1 square canvas creator for WhatsApp and Instagram with HD blurred backgrounds and zero forced cropping. (https://compixor-ai.vercel.app/tools/full-dp-maker)
+- **QR Code Generator**: Permanent static QR code maker for URLs, WiFi, and WhatsApp with vector SVG and 4K PNG exports. (https://compixor-ai.vercel.app/tools/qr-generator)
+- **PDF to Word Converter**: Dual-engine client-side converter with No-OCR mode for digital PDFs and in-browser OCR for scanned files. (https://compixor-ai.vercel.app/tools/pdf-to-word)

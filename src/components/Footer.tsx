@@ -94,6 +94,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/tools/pdf-to-word"
+                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                >
+                  PDF to Word Converter
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/tools/passport-photo"
                   className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
@@ -205,7 +213,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            © 2026 Compixor AI. Developed and Owned by Haroon Ali. All tools run 100% client-side for total privacy.
+            © 2026 Compixor AI. All tools run 100% client-side for total privacy.
           </p>
           <p className="text-xs text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 shrink-0">
             Designed for privacy & performance

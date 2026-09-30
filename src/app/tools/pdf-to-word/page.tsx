@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useRef } from 'react';
+import ToolSeoSection from '@/components/ToolSeoSection';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
@@ -747,12 +748,8 @@ export default function PdfToWordPage() {
         </div>
       </section>
 
-      {/* ── FAQs — SEO skill: FAQ schema + featured snippets ─────────────── */}
-      <FaqSection
-        faqs={pdfToWordFaqs}
-        title="PDF to Word Converter — Frequently Asked Questions"
-        subtitle="Common questions about No OCR mode, OCR mode, scanned PDFs, privacy, and language support"
-      />
+      {/* ── Comprehensive Tool Intro, How-To, Features, FAQs & Internal Linking ── */}
+      <ToolSeoSection toolSlug="pdf-to-word" />
     </div>
   );
 }

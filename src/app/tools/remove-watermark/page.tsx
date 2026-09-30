@@ -1,6 +1,6 @@
 import ToolSeoSection from "@/components/ToolSeoSection";
 import React from 'react';
-import PdfWatermarkClient from '../pdf-watermark/pdf-watermark-client';
+import PdfWatermarkClient from '@/components/PdfWatermarkClient';
 import { removeWatermarkFaqs } from '@/data/faqs';
 import { Eraser, Shield, Sliders, Sparkles, CheckCircle2 } from 'lucide-react';
 

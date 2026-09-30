@@ -10,7 +10,8 @@ export type ToolSlug =
   | 'word-compressor'
   | 'passport-photo'
   | 'full-dp-maker'
-  | 'qr-generator';
+  | 'qr-generator'
+  | 'pdf-to-word';
 
 export interface HowToStep {
   name: string;
@@ -35,8 +36,10 @@ export interface ToolSeoData {
   canonicalUrl: string;
   primaryKeyword: string;
   secondaryKeywords: string[];
+  longTailKeywords: string[]; // 10 targeted long-tail search queries
   keywords: string[]; // Top 8-10 only for meta tag
   h1: string;
+  searchIntent: string;
   introParagraph: string; // 100-150 words, primary keyword in first 100 words, brand differentiator
   howToSteps: HowToStep[];
   faqs: FaqItem[];
@@ -66,8 +69,8 @@ export const OG_IMAGE_URL = `${BASE_URL}/images/og-banner.png`;
 export const homepageSeoData: HomepageSeoData = {
   title: 'Free Online PDF Tools No Upload - Privacy First | Compixor',
   description:
-    'Free online PDF tools no upload needed. Client side PDF, Word, photo, and QR toolkit created by Haroon Ali. 100% private, free, and works in your browser.',
-  canonicalUrl: `${BASE_URL}/`,
+    'Free online PDF tools no upload needed. Client side PDF, Word, photo, and QR toolkit. 100% private, free, and works in your browser.',
+  canonicalUrl: BASE_URL,
   primaryKeyword: 'free online pdf tools no upload',
   secondaryKeywords: [
     'compixor ai',
@@ -75,7 +78,7 @@ export const homepageSeoData: HomepageSeoData = {
     'privacy first document tools',
     'free pdf tools online',
     'pdf and photo tools in browser',
-    'haroon ali',
+    'online document utilities',
   ],
   keywords: [
     'free online pdf tools no upload',
@@ -84,12 +87,12 @@ export const homepageSeoData: HomepageSeoData = {
     'privacy first document tools',
     'free pdf tools online',
     'pdf and photo tools in browser',
-    'haroon ali',
     'in-browser document converter',
+    'private online file tools',
   ],
   h1: 'Free Online PDF Tools — No Upload',
   introParagraph:
-    'Welcome to Compixor AI, your trusted suite of free online pdf tools no upload needed, founded and developed by Haroon Ali. Designed for professionals, students, lawyers, and creators worldwide, Compixor offers client side pdf tools and privacy first document tools that process files 100% locally in your web browser. Compress PDFs, merge and split pages, add or remove watermarks, password protect documents, convert biometric passport photos, and generate vector QR codes. Free, no signup, no upload, works in your browser with zero server data storage and zero cloud leakage.',
+    'Welcome to Compixor AI, your trusted suite of free online pdf tools no upload needed. Designed for professionals, students, lawyers, and creators worldwide, Compixor offers client side pdf tools and privacy first document tools that process files 100% locally in your web browser. Compress PDFs, merge and split pages, convert PDF to Word with OCR, add or remove watermarks, password protect documents, convert biometric passport photos, and generate vector QR codes. Free, no signup, no upload, works in your browser with zero server data storage and zero cloud leakage.',
   faqs: [
     {
       q: 'How does Compixor AI process files without uploading them?',
@@ -101,7 +104,7 @@ export const homepageSeoData: HomepageSeoData = {
     },
     {
       q: 'Can I safely use Compixor AI for confidential corporate documents?',
-      a: 'Absolutely. Because your files never traverse the network or sit on third-party cloud infrastructure, Compixor is fully compliant with strict privacy regulations including GDPR and enterprise NDA requirements.',
+      a: 'Yes. Because all operations execute locally inside your web browser using client-side WebAssembly and JavaScript, your documents are never transmitted across the network or stored on any external server.',
     },
     {
       q: 'Does Compixor AI work on mobile devices?',
@@ -119,24 +122,38 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Compress PDF online free without uploading files. Reduce PDF size to 100kb, 200kb, or 1mb with no quality loss. Fast, private, works in your browser today.',
     canonicalUrl: `${BASE_URL}/tools/pdf-compressor`,
     primaryKeyword: 'compress pdf online free',
+    searchIntent:
+      'Users looking to reduce PDF file size for email attachments, online job portals, university submissions, or WhatsApp sharing without losing text clarity or uploading private documents to external servers.',
     secondaryKeywords: [
       'compress pdf',
-      'compress pdf document',
-      'compress pdf to 100kb',
-      'compress pdf to 200kb',
-      'compress pdf to 500kb',
+      'reduce pdf file size',
+      'compress pdf without losing quality',
       'compress pdf to 1mb',
+      'compress pdf to 500kb',
+      'compress pdf to 200kb',
+      'compress pdf to 100kb',
+      'make pdf smaller',
       'reduce pdf size online',
-      'pdf size reducer without losing quality',
-      'compress pdf without uploading',
-      'compress pdf for whatsapp',
+      'free pdf compressor',
+      'compress large pdf',
       'compress pdf for email',
-      'pdf compressor no signup',
+    ],
+    longTailKeywords: [
+      'compress pdf online free',
+      'reduce pdf file size',
+      'compress pdf without losing quality',
+      'compress pdf to 1mb',
+      'compress pdf to 500kb',
+      'compress pdf to 300kb',
+      'compress pdf to 200kb',
+      'compress pdf to 100kb',
+      'compress pdf for email attachment',
+      'compress pdf without uploading files',
     ],
     keywords: [
       'compress pdf online free',
       'compress pdf',
-      'compress pdf document',
+      'reduce pdf file size',
       'compress pdf to 100kb',
       'compress pdf to 200kb',
       'reduce pdf size online',
@@ -169,7 +186,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     faqs: [
       {
         q: 'How can I compress PDF online free without uploading my files?',
-        a: 'Compixor AI uses client-side WebAssembly to compress PDF files directly inside your browser memory. Your documents never leave your computer or travel over the internet, ensuring 100% data privacy.',
+        a: 'Compixor AI uses client-side WebAssembly to compress PDF files directly inside your browser memory. Your documents never leave your computer or travel over the internet, ensuring complete data privacy.',
       },
       {
         q: 'Can I compress PDF to 100kb, 200kb, or 500kb for job portals?',
@@ -202,7 +219,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'All operations execute inside your browser memory. Your files never touch external cloud servers.',
       },
     ],
-    relatedToolSlugs: ['pdf-organizer', 'protect-pdf', 'word-compressor'],
+    relatedToolSlugs: ['pdf-to-word', 'pdf-organizer', 'protect-pdf', 'word-compressor'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -222,26 +239,45 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Merge PDF online free without upload. Combine PDF files into one, split pages, or extract sheets with no watermark. Free, no signup, works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/pdf-organizer`,
     primaryKeyword: 'merge pdf online free',
+    searchIntent:
+      'Users seeking to combine multiple PDF documents into a single file or extract/split individual page ranges without watermarks, registration, or uploading confidential records.',
     secondaryKeywords: [
-      'merge pdfs',
-      'merge pdf documents',
+      'merge pdf online',
+      'split pdf online',
       'combine pdf files into one',
-      'join pdf files free',
-      'split pdf pages online',
+      'merge multiple pdfs into one',
+      'combine pdf pages',
+      'split pdf by pages',
       'extract pages from pdf',
+      'separate pdf pages',
+      'split pdf into multiple files',
+      'free pdf merger and splitter',
       'pdf merger no watermark',
       'merge pdf without upload',
     ],
+    longTailKeywords: [
+      'merge multiple pdfs into one',
+      'combine pdf files into one',
+      'merge pdf online free',
+      'combine pdf pages',
+      'split pdf online',
+      'split pdf by pages',
+      'extract pages from pdf',
+      'separate pdf pages',
+      'split pdf into multiple files',
+      'free pdf merger and splitter',
+    ],
     keywords: [
       'merge pdf online free',
-      'merge pdfs',
-      'merge pdf documents',
+      'merge multiple pdfs into one',
       'combine pdf files into one',
-      'join pdf files free',
-      'split pdf pages online',
+      'split pdf online',
       'extract pages from pdf',
       'pdf merger no watermark',
       'merge pdf without upload',
+      'split pdf by pages',
+      'combine pdf pages',
+      'free pdf merger',
     ],
     h1: 'Merge PDF Online Free',
     introParagraph:
@@ -300,7 +336,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'All merging and splitting takes place in your browser buffer with zero data transferred online.',
       },
     ],
-    relatedToolSlugs: ['pdf-compressor', 'add-watermark', 'protect-pdf'],
+    relatedToolSlugs: ['pdf-to-word', 'pdf-compressor', 'add-watermark', 'protect-pdf'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -320,13 +356,31 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Add watermark to PDF online free without upload. Stamp custom text or transparent logo images with full privacy. Free, no signup, works in your browser now.',
     canonicalUrl: `${BASE_URL}/tools/add-watermark`,
     primaryKeyword: 'add watermark to pdf online free',
+    searchIntent:
+      'Users needing to brand draft proposals, add confidential text stamps, or embed company logos into PDF documents across all or selected pages with precise opacity and angle controls.',
     secondaryKeywords: [
-      'pdf watermark maker',
+      'add watermark to pdf online',
       'add text watermark to pdf',
+      'add image watermark to pdf',
+      'watermark pdf online free',
       'add logo to pdf',
-      'confidential watermark pdf',
-      'watermark pdf without software',
-      'add watermark to pdf without upload',
+      'pdf watermark maker',
+      'watermark multiple pdf pages',
+      'stamp pdf online',
+      'add confidential watermark to pdf',
+      'free pdf watermark tool',
+    ],
+    longTailKeywords: [
+      'add watermark to pdf online',
+      'add text watermark to pdf',
+      'add image watermark to pdf',
+      'watermark pdf online free',
+      'add logo to pdf',
+      'pdf watermark maker',
+      'watermark multiple pdf pages',
+      'stamp pdf online',
+      'add confidential watermark to pdf',
+      'free pdf watermark tool',
     ],
     keywords: [
       'add watermark to pdf online free',
@@ -395,7 +449,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Client-side stamping ensures client contracts and financial records remain 100% confidential.',
       },
     ],
-    relatedToolSlugs: ['remove-watermark', 'protect-pdf', 'pdf-organizer'],
+    relatedToolSlugs: ['remove-watermark', 'protect-pdf', 'pdf-organizer', 'pdf-compressor'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -415,12 +469,31 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Remove watermark from PDF free without upload or Adobe Acrobat. Erase stamps, logos, and text overlays in seconds. Free, no signup, works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/remove-watermark`,
     primaryKeyword: 'remove watermark from pdf free',
+    searchIntent:
+      'Users looking to delete unwanted background text, draft stamps, sample watermarks, or logos from PDF files without paying for expensive PDF editors or uploading sensitive files.',
     secondaryKeywords: [
-      'pdf watermark remover online',
+      'pdf watermark remover',
+      'remove pdf watermark online',
+      'erase watermark from pdf',
+      'remove text watermark from pdf',
+      'remove image watermark from pdf',
+      'pdf watermark remover free',
+      'delete watermark from pdf',
+      'clean watermark from pdf',
+      'remove pdf stamp',
       'how to remove watermark from pdf',
-      'delete watermark from pdf without software',
-      'remove watermark from pdf without adobe',
-      'remove pdf watermark no upload',
+    ],
+    longTailKeywords: [
+      'remove watermark from pdf online',
+      'pdf watermark remover',
+      'erase watermark from pdf',
+      'remove text watermark from pdf',
+      'remove image watermark from pdf',
+      'pdf watermark remover free',
+      'delete watermark from pdf',
+      'clean watermark from pdf',
+      'remove pdf stamp',
+      'how to remove watermark from pdf without adobe',
     ],
     keywords: [
       'remove watermark from pdf free',
@@ -489,7 +562,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Process private legal briefs and academic papers with 100% local privacy guarantee.',
       },
     ],
-    relatedToolSlugs: ['add-watermark', 'pdf-compressor', 'unlock-pdf'],
+    relatedToolSlugs: ['add-watermark', 'pdf-compressor', 'unlock-pdf', 'pdf-organizer'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -509,13 +582,31 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Password protect PDF online free with strong AES-256 encryption. Lock PDF files, restrict editing and printing safely. Free, no signup, no upload required.',
     canonicalUrl: `${BASE_URL}/tools/protect-pdf`,
     primaryKeyword: 'password protect pdf online free',
+    searchIntent:
+      'Users wanting to lock PDF files with strong passwords, encrypt sensitive documents (bank statements, contracts, personal records), and configure printing/editing restrictions.',
     secondaryKeywords: [
-      'lock pdf with password',
+      'protect pdf with password',
+      'password protect pdf online',
       'encrypt pdf online',
-      'add password to pdf',
-      'restrict pdf editing and printing',
-      'protect pdf without upload',
-      'AES-256 pdf encryption',
+      'secure pdf with password',
+      'pdf password protection',
+      'protect pdf from editing',
+      'protect pdf from copying',
+      'secure pdf online free',
+      'encrypt pdf with password',
+      'pdf security tool',
+    ],
+    longTailKeywords: [
+      'protect pdf with password',
+      'password protect pdf online',
+      'encrypt pdf online',
+      'secure pdf with password',
+      'pdf password protection',
+      'protect pdf from editing',
+      'protect pdf from copying',
+      'secure pdf online free',
+      'encrypt pdf with password',
+      'aes 256 pdf encryption online',
     ],
     keywords: [
       'password protect pdf online free',
@@ -529,7 +620,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     h1: 'Password Protect PDF Online Free',
     introParagraph:
-      'Easily password protect PDF online free using military-grade security standards. Compixor AI allows you to lock PDF with password protection and encrypt PDF online directly in your browser. Whether you need to add password to PDF for personal bank statements, client NDAs, or tax forms, our engine applies robust AES-256 PDF encryption. You can also restrict PDF editing and printing permissions to prevent unauthorized alterations or copying. Protect PDF without upload: free, no signup, no upload, works in your browser with zero data transmission. Your confidential passwords and documents remain exclusively on your device, guaranteeing total compliance.',
+      'Easily password protect PDF online free using robust security standards. Compixor AI allows you to lock PDF with password protection and encrypt PDF online directly in your browser. Whether you need to add password to PDF for personal bank statements, client contracts, or tax forms, our engine applies robust AES-256 PDF encryption. You can also restrict PDF editing and printing permissions to prevent unauthorized alterations or copying. Protect PDF without upload: free, no signup, no upload, works in your browser with zero data transmission. Your confidential passwords and documents remain exclusively on your device, guaranteeing total privacy.',
     howToSteps: [
       {
         name: 'Drop Your PDF File',
@@ -572,7 +663,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     features: [
       {
-        title: 'AES-256 Military Encryption',
+        title: 'AES-256 Encryption',
         description: 'Industry-standard encryption ensures your documents cannot be decrypted without your password.',
       },
       {
@@ -584,7 +675,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Passwords and encryption keys are generated in local browser memory and never stored.',
       },
     ],
-    relatedToolSlugs: ['unlock-pdf', 'pdf-compressor', 'add-watermark'],
+    relatedToolSlugs: ['unlock-pdf', 'pdf-compressor', 'add-watermark', 'pdf-organizer'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -604,12 +695,31 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Unlock PDF online free without uploading files. Remove PDF password security and printing restrictions instantly. 100% private, works in your browser today.',
     canonicalUrl: `${BASE_URL}/tools/unlock-pdf`,
     primaryKeyword: 'unlock pdf online free',
+    searchIntent:
+      'Users who own password-protected PDFs (salary slips, utility bills, receipts) and want to permanently remove password prompts or clear printing/copying permission locks.',
     secondaryKeywords: [
-      'remove password from pdf',
-      'pdf password remover',
-      'unlock pdf without password',
+      'remove pdf password',
+      'unlock protected pdf',
       'remove pdf restrictions',
-      'unlock pdf no upload',
+      'pdf password remover',
+      'unlock pdf with password',
+      'remove editing restrictions from pdf',
+      'unlock secured pdf',
+      'pdf unlocker online',
+      'free pdf unlock tool',
+      'decrypt pdf document',
+    ],
+    longTailKeywords: [
+      'unlock pdf online free',
+      'remove pdf password',
+      'unlock protected pdf',
+      'remove pdf restrictions',
+      'pdf password remover',
+      'unlock pdf with password',
+      'remove editing restrictions from pdf',
+      'unlock secured pdf',
+      'pdf unlocker online',
+      'free pdf unlock tool',
     ],
     keywords: [
       'unlock pdf online free',
@@ -678,7 +788,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Passwords and sensitive financial records are processed locally in RAM with zero cloud exposure.',
       },
     ],
-    relatedToolSlugs: ['protect-pdf', 'pdf-compressor', 'remove-watermark'],
+    relatedToolSlugs: ['protect-pdf', 'pdf-compressor', 'remove-watermark', 'pdf-organizer'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -698,12 +808,31 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Compress Word document online free without losing quality. Reduce DOCX file size with embedded images for email attachments. Free, no upload, works in browser.',
     canonicalUrl: `${BASE_URL}/tools/word-compressor`,
     primaryKeyword: 'compress word document online free',
+    searchIntent:
+      'Users looking to shrink large Microsoft Word (.docx) files bloated by embedded photos or screenshots so they can be emailed (under 25MB) or submitted to portal limits without formatting changes.',
     secondaryKeywords: [
+      'compress word document online',
+      'compress docx',
       'reduce docx file size',
-      'compress word file with images',
-      'word file size reducer',
-      'compress doc file for email',
-      'compress word document without losing quality',
+      'word document compressor',
+      'reduce word file size',
+      'compress docx without losing formatting',
+      'make word document smaller',
+      'shrink docx file',
+      'compress word file online',
+      'free word compressor',
+    ],
+    longTailKeywords: [
+      'compress word document online',
+      'compress docx',
+      'reduce docx file size',
+      'word document compressor',
+      'reduce word file size',
+      'compress docx without losing formatting',
+      'make word document smaller',
+      'shrink docx file',
+      'compress word file online',
+      'free word compressor',
     ],
     keywords: [
       'compress word document online free',
@@ -772,7 +901,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Unzips, optimizes, and repacks DOCX files inside your browser tab with zero cloud exposure.',
       },
     ],
-    relatedToolSlugs: ['pdf-compressor', 'pdf-organizer', 'qr-generator'],
+    relatedToolSlugs: ['pdf-to-word', 'pdf-compressor', 'pdf-organizer', 'qr-generator'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -792,16 +921,31 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Passport size photo maker online free. Create compliant 35x45 mm, 2x2 inch and NADRA Pakistan CNIC photos with white background on 4x6 sheet in your browser.',
     canonicalUrl: `${BASE_URL}/tools/passport-photo`,
     primaryKeyword: 'passport size photo maker online free',
+    searchIntent:
+      'Users wanting to create official biometric passport, visa, or identity photos from smartphone selfies with pure white background, embassy dimension presets, and printable 4x6 grid sheets.',
     secondaryKeywords: [
-      'passport photo maker pakistan',
-      'nadra passport photo size',
-      'cnic photo maker online',
-      'visa photo maker online',
-      'biometric passport photo online',
-      'passport photo white background',
-      'passport photo 4x6 print sheet',
-      '35x45 mm photo maker',
-      '2x2 inch passport photo online',
+      'passport photo maker online',
+      'passport size photo online',
+      'passport photo maker free',
+      '35x45 passport photo',
+      '2x2 passport photo',
+      'visa photo maker',
+      'pakistan passport photo size',
+      'nadra passport photo',
+      'passport photo resize',
+      'passport photo generator',
+    ],
+    longTailKeywords: [
+      'passport photo maker online',
+      'passport size photo online',
+      'passport photo maker free',
+      '35x45 passport photo',
+      '2x2 passport photo',
+      'visa photo maker',
+      'pakistan passport photo size',
+      'nadra passport photo',
+      'passport photo resize',
+      'passport photo generator',
     ],
     keywords: [
       'passport size photo maker online free',
@@ -872,7 +1016,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Generates a ready-to-print photographic sheet with crop marks for cheap retail printing.',
       },
     ],
-    relatedToolSlugs: ['full-dp-maker', 'qr-generator', 'pdf-compressor'],
+    relatedToolSlugs: ['full-dp-maker', 'qr-generator', 'pdf-compressor', 'word-compressor'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -892,13 +1036,31 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'WhatsApp DP without crop maker online. Post full size profile pictures for Instagram & WhatsApp with stylish blur backgrounds. Free, works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/full-dp-maker`,
     primaryKeyword: 'whatsapp dp without crop',
+    searchIntent:
+      'Users wanting to upload full vertical or horizontal photos as 1:1 square profile pictures on WhatsApp and Instagram without having faces or backgrounds cropped out.',
     secondaryKeywords: [
-      'full size dp maker',
-      'full dp maker for whatsapp',
-      'instagram full dp without cropping',
-      'profile picture without crop',
-      'dp maker online free',
-      'whatsapp full photo dp',
+      'full dp maker',
+      'whatsapp dp without cropping',
+      'full picture whatsapp dp',
+      'no crop profile picture',
+      'whatsapp profile picture maker',
+      'instagram profile picture resize',
+      'facebook profile picture maker',
+      'no crop dp maker',
+      'full photo profile picture',
+      'square fit profile picture',
+    ],
+    longTailKeywords: [
+      'whatsapp dp maker',
+      'full dp maker',
+      'whatsapp dp without cropping',
+      'full picture whatsapp dp',
+      'no crop profile picture',
+      'whatsapp profile picture maker',
+      'instagram profile picture resize',
+      'facebook profile picture maker',
+      'no crop dp maker',
+      'full photo profile picture',
     ],
     keywords: [
       'whatsapp dp without crop',
@@ -967,7 +1129,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'High-speed local rendering in WebP, PNG, or high-quality JPEG with zero server waiting.',
       },
     ],
-    relatedToolSlugs: ['passport-photo', 'qr-generator', 'add-watermark'],
+    relatedToolSlugs: ['passport-photo', 'qr-generator', 'add-watermark', 'pdf-compressor'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -987,14 +1149,31 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'QR code generator free no signup required. Create custom color QR codes with logos for URLs, WiFi, and WhatsApp links in SVG or PNG. Works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/qr-generator`,
     primaryKeyword: 'qr code generator free no signup',
+    searchIntent:
+      'Users looking for permanent, static QR codes that never expire, with custom colors and center logos for website links, WiFi networks, or WhatsApp messages, downloadable in SVG and PNG.',
     secondaryKeywords: [
-      'qr code with logo',
-      'create qr code for whatsapp link',
+      'qr code generator online',
+      'free qr code generator',
+      'qr code maker',
+      'qr code generator with logo',
+      'custom qr code generator',
       'wifi qr code generator',
-      'qr code generator for url',
-      'qr code generator without expiry',
-      'custom color qr code',
-      'qr code generator svg png',
+      'qr code generator svg',
+      'qr code generator png',
+      'url qr code generator',
+      'free custom qr code maker',
+    ],
+    longTailKeywords: [
+      'qr code generator online',
+      'free qr code generator',
+      'qr code maker',
+      'qr code generator with logo',
+      'custom qr code generator',
+      'wifi qr code generator',
+      'qr code generator svg',
+      'qr code generator png',
+      'url qr code generator',
+      'free custom qr code maker',
     ],
     keywords: [
       'qr code generator free no signup',
@@ -1063,7 +1242,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Upload your company logo and adjust gradient dots, eye patterns, and custom palettes.',
       },
     ],
-    relatedToolSlugs: ['pdf-compressor', 'passport-photo', 'full-dp-maker'],
+    relatedToolSlugs: ['pdf-compressor', 'passport-photo', 'full-dp-maker', 'word-compressor'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -1072,6 +1251,119 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'WiFi, URL, WhatsApp, vCard, and SMS presets',
       'Vector SVG and 4K PNG export formats',
       '100% private in-browser generation',
+    ],
+  },
+
+  'pdf-to-word': {
+    slug: 'pdf-to-word',
+    name: 'PDF to Word Converter',
+    title: 'Convert PDF to Word Online Free - Editable DOCX | Compixor',
+    description:
+      'Convert PDF to Word online free without uploading files. Turn digital or scanned PDFs into editable DOCX in your browser with OCR support. 100% private.',
+    canonicalUrl: `${BASE_URL}/tools/pdf-to-word`,
+    primaryKeyword: 'convert pdf to word online free',
+    searchIntent:
+      'Users looking to convert digital or scanned PDF files into editable Microsoft Word documents (.docx) without entering email addresses, paying subscriptions, or uploading documents.',
+    secondaryKeywords: [
+      'pdf to word',
+      'convert pdf to word online free',
+      'pdf to docx converter',
+      'pdf to word no ocr',
+      'ocr pdf to word',
+      'scanned pdf to word converter',
+      'free pdf to word converter without email',
+      'client side pdf to word',
+      'pdf to editable docx online',
+      'convert pdf to word without losing formatting',
+    ],
+    longTailKeywords: [
+      'convert pdf to word online free',
+      'pdf to word converter without email',
+      'pdf to editable docx online',
+      'convert pdf to word without losing formatting',
+      'scanned pdf to word ocr free',
+      'client side pdf to word converter',
+      'pdf to word converter no upload',
+      'pdf table to word converter online',
+      'urdu pdf to word converter online',
+      'free pdf to docx converter no signup',
+    ],
+    keywords: [
+      'convert pdf to word online free',
+      'pdf to word',
+      'pdf to docx',
+      'pdf to word converter free',
+      'scanned pdf to word ocr',
+      'pdf to editable docx',
+      'pdf to word without email',
+      'pdf to word converter no upload',
+    ],
+    h1: 'Convert PDF to Word Online Free',
+    introParagraph:
+      'Convert PDF to Word online free without uploading files or submitting email addresses. Compixor AI is a client-side document converter that turns digital and scanned PDFs into clean, fully editable Microsoft Word (.docx) files. Featuring a dual-engine architecture, it offers a No OCR mode for instant digital text extraction and an in-browser OCR mode powered by Tesseract to recognize text from scanned books, invoices, and multi-language documents including Urdu and Arabic. Enjoy an authentic in-browser converter: free, no signup, no upload, works in your browser with zero server data transfer, keeping your sensitive documents private on your own device.',
+    howToSteps: [
+      {
+        name: 'Drop Your PDF Document',
+        text: 'Select or drag and drop your PDF file into the secure drop zone.',
+      },
+      {
+        name: 'Choose Conversion Mode',
+        text: 'Select No OCR for digital PDFs with selectable text, or OCR Mode for scanned pages and images.',
+      },
+      {
+        name: 'In-Browser Extraction',
+        text: 'Compixor extracts text lines, font styling, and layout coordinates locally inside browser RAM.',
+      },
+      {
+        name: 'Download Editable DOCX',
+        text: 'Save your standard ISO/IEC 29500 OpenXML Word document immediately with zero wait time.',
+      },
+    ],
+    faqs: [
+      {
+        q: 'How can I convert PDF to Word online free without uploading files?',
+        a: 'Compixor AI uses client-side JavaScript and WebAssembly to parse PDF content streams directly inside your browser memory. Your documents are never sent across the internet to external servers.',
+      },
+      {
+        q: 'What is the difference between No OCR and OCR mode?',
+        a: 'No OCR mode is lightning-fast and ideal for digital PDFs where you can highlight text with your cursor. OCR mode uses browser-based optical character recognition to read scanned paper contracts and image-based PDFs.',
+      },
+      {
+        q: 'Does this converter preserve formatting, tables, and headings?',
+        a: 'Yes. Our layout engine calculates bounding boxes, font weights, and spacing to reconstruct standard Microsoft Word paragraphs, headings, and table structures cleanly in the exported .docx.',
+      },
+      {
+        q: 'Can I convert Urdu, Arabic, or foreign language PDFs to Word?',
+        a: 'Yes. Our browser OCR engine supports multi-language recognition including Urdu, Arabic, French, German, Spanish, and English.',
+      },
+      {
+        q: 'Do I need to enter an email address or register an account?',
+        a: 'No email or registration is ever requested. Compixor is completely free with no usage limits, no credit cards, and no watermarks on your generated Word files.',
+      },
+    ],
+    features: [
+      {
+        title: 'Dual Engine OCR & Digital',
+        description: 'Instant native conversion for selectable PDFs plus in-browser OCR recognition for scanned pages.',
+      },
+      {
+        title: 'Standard DOCX Output',
+        description: 'Exports ISO/IEC 29500 compliant Word documents fully compatible with Microsoft Word and Google Docs.',
+      },
+      {
+        title: 'Client-Side Local Privacy',
+        description: 'Processing runs in your browser tab with zero server uploads, keeping confidential files safe.',
+      },
+    ],
+    relatedToolSlugs: ['word-compressor', 'pdf-compressor', 'pdf-organizer', 'add-watermark'],
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any (Web Browser)',
+    featureList: [
+      'Convert PDF to editable DOCX online',
+      'Dual-engine No OCR and in-browser OCR modes',
+      'Multi-language OCR support including Urdu and Arabic',
+      'Zero server upload privacy',
+      'Standard ISO/IEC 29500 OpenXML output',
     ],
   },
 };
@@ -1131,7 +1423,7 @@ export function getToolMetadata(slug: ToolSlug): Metadata {
 
 /**
  * Returns structured JSON-LD schemas for any tool page:
- * - WebApplication (UtilitiesApplication, Any (Web Browser), offers $0, browserRequirements, author/publisher Person "Haroon Ali")
+ * - WebApplication (UtilitiesApplication, Any (Web Browser), offers $0, browserRequirements, author/publisher Organization "Compixor AI")
  * - FAQPage (strictly matching visible FAQs)
  * - HowTo (matching visible steps)
  * - BreadcrumbList (Home > Tools > [Tool Name])
@@ -1203,7 +1495,7 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: `${BASE_URL}/`,
+        item: BASE_URL,
       },
       {
         '@type': 'ListItem',
@@ -1226,8 +1518,8 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
 /**
  * Returns Homepage JSON-LD schemas:
  * - WebSite schema
- * - Organization schema (Compixor AI, logo, founder Haroon Ali)
- * - ItemList schema listing all 10 tools
+ * - Organization schema (Compixor AI, logo)
+ * - ItemList schema listing all 11 tools
  */
 export function getHomepageSchemas(): Record<string, any>[] {
   const toolKeys = Object.keys(seoConfig) as ToolSlug[];
@@ -1237,11 +1529,11 @@ export function getHomepageSchemas(): Record<string, any>[] {
     '@type': 'WebSite',
     name: 'Compixor AI',
     alternateName: ['Compixor', 'Compixor AI', 'Compixor.Ai'],
-    url: `${BASE_URL}/`,
+    url: BASE_URL,
     description: homepageSeoData.description,
     author: {
-      '@type': 'Person',
-      name: AUTHOR_NAME,
+      '@type': 'Organization',
+      name: 'Compixor AI',
       url: BASE_URL,
     },
     publisher: {
@@ -1257,7 +1549,7 @@ export function getHomepageSchemas(): Record<string, any>[] {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Compixor AI',
-    url: `${BASE_URL}/`,
+    url: BASE_URL,
     logo: `${BASE_URL}/icon.png`,
     founder: {
       '@type': 'Person',

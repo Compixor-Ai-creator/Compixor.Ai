@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
+import { BASE_URL } from '@/lib/seo-config';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://compixor-ai.vercel.app';
+  const baseUrl = BASE_URL;
   const currentDate = new Date();
 
   return [
@@ -49,6 +50,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/tools/word-compressor`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/tools/pdf-to-word`,
       lastModified: currentDate,
       changeFrequency: 'daily',
       priority: 0.9,
