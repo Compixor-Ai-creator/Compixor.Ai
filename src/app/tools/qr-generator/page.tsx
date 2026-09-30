@@ -381,12 +381,12 @@ export default function QrGeneratorPage() {
 
   const [phoneNum, setPhoneNum] = useState('');
 
-  // Styling states
-  const [fgColor, setFgColor] = useState('#2563eb');
+  // Styling states (Default: Obsidian Black)
+  const [fgColor, setFgColor] = useState('#0f172a');
   const [bgColor, setBgColor] = useState('#ffffff');
-  const [cornerColor, setCornerColor] = useState('#1d4ed8');
-  const [dotType, setDotType] = useState<DotType>('rounded');
-  const [cornerType, setCornerType] = useState<CornerType>('extra-rounded');
+  const [cornerColor, setCornerColor] = useState('#0f172a');
+  const [dotType, setDotType] = useState<DotType>('square');
+  const [cornerType, setCornerType] = useState<CornerType>('square');
   const [ecLevel, setEcLevel] = useState<ErrorCorrectionLevel>('M');
   const [gradient, setGradient] = useState<{
     type: 'linear' | 'radial';
@@ -1285,6 +1285,17 @@ export default function QrGeneratorPage() {
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
               Point your smartphone camera to test instant recognition
             </p>
+
+            {/* Helpful Hint / Preset Guide for Users */}
+            <div className="p-3 rounded-xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-violet-500/10 border border-blue-500/20 text-center space-y-1">
+              <p className="text-xs font-semibold text-brand-600 dark:text-brand-400 flex items-center justify-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                <span>Want to change QR color or theme?</span>
+              </p>
+              <p className="text-[11.5px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Click any <strong>Style Preset</strong> above (e.g. Electric Blue, Emerald, Sunset Gradient) to instantly customize your QR theme for better recognition!
+              </p>
+            </div>
 
             {/* Action Buttons */}
             <div className="space-y-3">
