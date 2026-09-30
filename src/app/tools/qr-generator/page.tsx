@@ -1287,13 +1287,13 @@ export default function QrGeneratorPage() {
             </p>
 
             {/* Helpful Hint / Preset Guide for Users */}
-            <div className="p-3 rounded-xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-violet-500/10 border border-blue-500/20 text-center space-y-1">
-              <p className="text-xs font-semibold text-brand-600 dark:text-brand-400 flex items-center justify-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                <span>Want to change QR color or theme?</span>
+            <div className="p-3 rounded-xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-violet-500/10 border border-blue-500/20 text-center space-y-1.5">
+              <p className="text-xs font-bold text-zinc-900 dark:text-white flex items-center justify-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-brand-500 shrink-0" />
+                <span>Theme &amp; Color: Use PRESETS Above</span>
               </p>
               <p className="text-[11.5px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Click any <strong>Style Preset</strong> above (e.g. Electric Blue, Emerald, Sunset Gradient) to instantly customize your QR theme for better recognition!
+                Click any <strong>Preset</strong> button above (Electric Blue, Emerald, Sunset, etc.) to customize your QR color!
               </p>
             </div>
 
