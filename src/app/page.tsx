@@ -24,6 +24,7 @@ import { WhatsAppIcon } from '@/components/SocialIcons';
 import { FaqJsonLd } from '@/components/JsonLd';
 import HomeFaqAccordion from '@/components/HomeFaqAccordion';
 import CustomerTestimonials from '@/components/CustomerTestimonials';
+import WhyChooseCompixor from '@/components/WhyChooseCompixor';
 
 const tools = [
   {
@@ -135,29 +136,6 @@ const tools = [
     color: 'from-amber-500 to-rose-500',
     stats: 'SVG & PNG Export',
     badge: 'Static & Permanent',
-  },
-];
-
-const trustSignals = [
-  {
-    icon: Lock,
-    title: '100% Client-Side',
-    description: 'Files are processed inside browser memory — zero bytes uploaded to remote servers.',
-  },
-  {
-    icon: Zap,
-    title: 'Instant Execution',
-    description: 'No network queue or server waiting times. Transforms complete in milliseconds.',
-  },
-  {
-    icon: Shield,
-    title: 'Client-Side Privacy',
-    description: 'Zero data harvesting or storage. What happens in your browser stays in your browser.',
-  },
-  {
-    icon: MonitorSmartphone,
-    title: 'Cross-Platform',
-    description: 'Runs flawlessly on desktop browsers, tablets, iOS Safari, and Android Chrome.',
   },
 ];
 
@@ -470,54 +448,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ============ TRUST ARCHITECTURE ============ */}
-      <section className="relative py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="text-center mb-14"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
-              Engineered with Zero Compromise
-            </h2>
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
-              How CompixorAi redefines privacy and performance for online utilities.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={containerVariants}
-          >
-            {trustSignals.map((signal, i) => {
-              const Icon = signal.icon;
-              return (
-                <motion.div
-                  key={i}
-                  variants={itemVariants}
-                  className="glass-card p-6 text-center rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-brand-500/30 group"
-                >
-                  <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-500 group-hover:scale-110 transition-transform duration-300">
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-bold font-display text-zinc-900 dark:text-white mb-2 text-base">
-                    {signal.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                    {signal.description}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
+      {/* ============ WHY CHOOSE COMPIXOR AI ============ */}
+      <WhyChooseCompixor />
 
       {/* ============ CUSTOMER FEEDBACK & TESTIMONIALS ============ */}
       <CustomerTestimonials />
