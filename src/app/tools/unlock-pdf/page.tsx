@@ -1,7 +1,6 @@
 import ToolSeoSection from "@/components/ToolSeoSection";
 import React from 'react';
 import UnlockPdfClient from '@/components/UnlockPdfClient';
-import { unlockPdfFaqs } from '@/data/faqs';
 import { Shield, Unlock, FileCheck, KeyRound, Cpu, Lock, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function UnlockPdfPage() {

@@ -32,8 +32,6 @@ import DropAnywhere from '@/components/DropAnywhere';
 import ProgressRing from '@/components/ProgressRing';
 import RelatedTools from '@/components/RelatedTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
-import FaqSection from '@/components/FaqSection';
-import { wordCompressorFaqs } from '@/data/faqs';
 
 interface ImageDetail {
   name: string;

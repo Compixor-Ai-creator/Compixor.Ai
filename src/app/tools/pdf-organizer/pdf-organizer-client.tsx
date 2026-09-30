@@ -41,8 +41,6 @@ import {
   ListFilter,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import RelatedPdfTools from '@/components/RelatedPdfTools';
-import { pdfOrganizerFaqs } from '@/data/faqs';
 
 import { formatFileSize, validatePdfFile } from '@/utils/fileHelpers';
 import { getPdfLib, getPdfJs } from '@/utils/pdfLoader';
@@ -222,11 +220,8 @@ async function renderPageThumbnail(pdfDocProxy: any, pageNum: number): Promise<s
   }
 }
 
-const toolFaqs = pdfOrganizerFaqs;
-
 export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTab?: 'merge' | 'split' }) {
   const [activeTab, setActiveTab] = useState<'merge' | 'split'>(initialTab);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   // -------------------------------------------------------------
   // FEATURE 1: PDF MERGER STATE

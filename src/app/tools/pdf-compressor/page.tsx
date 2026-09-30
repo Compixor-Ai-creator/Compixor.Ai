@@ -27,11 +27,8 @@ import { FileDown,
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
-import RelatedPdfTools from '@/components/RelatedPdfTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
-import FaqSection from '@/components/FaqSection';
 import { PdfCompressorPreviewMockup } from '@/components/VisualProofMockup';
-import { pdfCompressorFaqs } from '@/data/faqs';
 
 import { formatFileSize, validatePdfFile } from '@/utils/fileHelpers';
 import { getPdfLib } from '@/utils/pdfLoader';

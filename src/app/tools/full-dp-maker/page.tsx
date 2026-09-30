@@ -41,9 +41,7 @@ import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import RelatedTools from '@/components/RelatedTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
-import FaqSection from '@/components/FaqSection';
 import { DpMakerPreviewMockup } from '@/components/VisualProofMockup';
-import { fullDpMakerFaqs } from '@/data/faqs';
 import { WhatsAppIcon, InstagramIcon, FacebookIcon, TelegramIcon, TwitterXIcon, LinkedInIcon, YouTubeIcon } from '@/components/SocialIcons';
 
 type FillMode = 'blur' | 'color' | 'gradient' | 'mirror' | 'resize' | 'crop';

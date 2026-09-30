@@ -29,9 +29,7 @@ import { QrCode,
 import { toast } from 'sonner';
 import RelatedTools from '@/components/RelatedTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
-import FaqSection from '@/components/FaqSection';
 import { QrGeneratorPreviewMockup } from '@/components/VisualProofMockup';
-import { qrGeneratorFaqs } from '@/data/faqs';
 
 type TabType = 'url' | 'text' | 'wifi' | 'contact' | 'email' | 'phone';
 type DotType = 'square' | 'dots' | 'rounded' | 'classy' | 'extra-rounded';

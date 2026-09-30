@@ -46,7 +46,6 @@ import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import RelatedTools from '@/components/RelatedTools';
 import PassportBeforeAfter from '@/components/PassportBeforeAfter';
-import { passportPhotoFaqs } from '@/data/faqs';
 import {
   removeBackgroundISNet,
   refineCutoutCanvas,
@@ -328,8 +327,6 @@ const sizeLimitOptions = [
   { id: '50kb', label: 'Under 50 KB (NADRA / Online Visa)', maxBytes: 50 * 1024 },
   { id: '30kb', label: 'Under 30 KB', maxBytes: 30 * 1024 },
 ];
-
-const faqs = passportPhotoFaqs;
 
 // High-precision morphological mask cleanup (Open/Close) + smoothstep edge feathering
 function cleanAndRefineAlphaMask(
@@ -631,7 +628,6 @@ export default function PassportPhotoPage() {
   const [customSheetCols, setCustomSheetCols] = useState<number>(2);
   const [customSheetRows, setCustomSheetRows] = useState<number>(5);
   const [selectedSizeLimit, setSelectedSizeLimit] = useState<string>('uncompressed');
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   // Canvases
   const canvasRef = useRef<HTMLCanvasElement>(null);

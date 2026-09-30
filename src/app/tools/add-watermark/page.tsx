@@ -1,7 +1,6 @@
 import ToolSeoSection from "@/components/ToolSeoSection";
 import React from 'react';
 import PdfWatermarkClient from '@/components/PdfWatermarkClient';
-import { addWatermarkFaqs } from '@/data/faqs';
 import { Stamp, Shield, Sliders, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function AddWatermarkPage() {

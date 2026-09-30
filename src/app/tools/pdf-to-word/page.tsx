@@ -35,8 +35,6 @@ import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import RelatedPdfTools from '@/components/RelatedPdfTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
-import FaqSection from '@/components/FaqSection';
-import { pdfToWordFaqs } from '@/data/faqs';
 import { formatFileSize, validatePdfFile, downloadBlob } from '@/utils/fileHelpers';
 import { convertPdfToDocx, ConversionResult } from '@/utils/pdfToWordEngine';
 

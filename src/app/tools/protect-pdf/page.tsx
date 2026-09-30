@@ -1,7 +1,6 @@
 import ToolSeoSection from "@/components/ToolSeoSection";
 import React from 'react';
 import ProtectPdfClient from '@/components/ProtectPdfClient';
-import { protectPdfFaqs } from '@/data/faqs';
 import { Shield, Lock, FileCheck, KeyRound, Cpu, EyeOff, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function ProtectPdfPage() {

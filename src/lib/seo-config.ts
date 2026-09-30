@@ -204,6 +204,14 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         q: 'Is there any file limit or signup required?',
         a: 'None at all. Compixor is free, no signup, no upload, works in your browser with unlimited daily conversions and batch processing support.',
       },
+      {
+        q: 'What happens if my PDF is already compressed?',
+        a: "Compixor's Size Inflation Guard automatically detects when a PDF is already optimized. If running compression again would increase the file size, the tool automatically returns your original file untouched — so you never end up with a larger file than you started with.",
+      },
+      {
+        q: 'Can I upload and compress multiple PDFs at once?',
+        a: 'Yes. You can drop or select up to 5 PDF files at once (each up to 100MB). All files are compressed concurrently in your browser with live progress tracking, and you can download them individually or as a single ZIP archive.',
+      },
     ],
     features: [
       {
@@ -434,6 +442,14 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         q: 'Does adding a watermark degrade the original PDF text?',
         a: 'Not at all. The watermark is layered on top of or beneath existing content streams without re-rasterizing your vector text or destroying existing form fields.',
       },
+      {
+        q: 'Will adding a watermark flatten or rasterize my PDF text?',
+        a: 'No! Unlike tools that convert entire pages into low-resolution JPEG images, Compixor injects native vector text layers and XObjects directly into the PDF content stream. The underlying text remains 100% crisp, vector-sharp, and selectable.',
+      },
+      {
+        q: 'Are my watermark settings saved between browser sessions?',
+        a: 'Yes. Your selected text, font, color, opacity, rotation, scale, and layout preferences are automatically saved in your browser’s localStorage.',
+      },
     ],
     features: [
       {
@@ -546,6 +562,14 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       {
         q: 'Is this tool completely free with no signup?',
         a: 'Yes. Compixor is free, no signup, no upload, works in your browser with unlimited daily watermark removals.',
+      },
+      {
+        q: 'How does lossless watermark removal work?',
+        a: 'Watermarks created with Compixor are tagged with structured marked content (/Artifact /CompixorWatermark). When removing, our engine strips the dedicated watermark stream while leaving every original page content stream 100% byte-identical.',
+      },
+      {
+        q: 'Can I remove watermarks from PDFs created by other software?',
+        a: 'Yes. You can use our Targeted Text Matcher to strip matching text operators from the PDF stream, or the Interactive Erase Box tool to vector-redact watermark blocks. For scanned/flattened pages where the watermark is baked into image pixels, automatic stream removal is not possible, so a redaction patch or OCR fallback should be used.',
       },
     ],
     features: [
@@ -886,6 +910,10 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         q: 'Is there any software installation or signup needed?',
         a: 'None. Compixor is free, no signup, no upload, works in your browser across all modern operating systems.',
       },
+      {
+        q: 'What if my Word document has no images?',
+        a: "If your document contains no embedded images, there is very little to compress — text and XML markup are already extremely lightweight. In this case, Compixor will return your file with minimal or no size change, since further compression would provide no real benefit.",
+      },
     ],
     features: [
       {
@@ -1000,6 +1028,14 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       {
         q: 'Are my personal photos kept private?',
         a: 'Absolutely. Face detection and background matting execute 100% locally on your computer GPU/CPU. No photo is ever uploaded or saved on our servers.',
+      },
+      {
+        q: 'Can I wear glasses or headwear in my passport photo?',
+        a: 'Most official passport authorities (including US Dept of State and UK HMPO) prohibit eyeglasses unless medically documented. Religious headwear is generally permitted provided your full face from chin to forehead is visible.',
+      },
+      {
+        q: 'Can I print these at local retail stores (CVS, Walgreens, Boots)?',
+        a: 'Yes. Our 4x6" printable sheet is rendered at exact 300 DPI resolution, so you can order a standard 4x6" print at CVS, Walgreens, Boots, or Walmart for pennies.',
       },
     ],
     features: [

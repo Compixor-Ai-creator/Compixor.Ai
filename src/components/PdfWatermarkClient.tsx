@@ -11,8 +11,6 @@ import {
   Sparkles,
   CheckCircle2,
   AlertTriangle,
-  HelpCircle,
-  ChevronDown,
   RotateCcw,
   Eye,
   Loader2,
@@ -39,7 +37,6 @@ import {
   MonitorSmartphone,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import RelatedPdfTools from '@/components/RelatedPdfTools';
 import {
   TextWatermarkOptions,
   ImageWatermarkOptions,
@@ -120,29 +117,6 @@ const COLOR_PRESETS = [
   { name: 'Pure White', hex: '#ffffff' },
 ];
 
-const FAQS = [
-  {
-    q: 'Does this tool upload my documents to any server?',
-    a: 'No. Compixor runs 100% locally inside your web browser using WebAssembly and client-side JavaScript. Your files and watermarks never leave your computer or touch an external server.',
-  },
-  {
-    q: 'Will adding a watermark flatten or rasterize my PDF text?',
-    a: 'No! Unlike tools that convert entire pages into low-resolution JPEG images, Compixor injects native vector text layers and XObjects directly into the PDF content stream. The underlying text remains 100% crisp, vector-sharp, and selectable.',
-  },
-  {
-    q: 'How does lossless watermark removal work?',
-    a: 'Watermarks created with Compixor are tagged with structured marked content (/Artifact /CompixorWatermark). When removing, our engine strips the dedicated watermark stream while leaving every original page content stream 100% byte-identical.',
-  },
-  {
-    q: 'Can I remove watermarks from PDFs created by other software?',
-    a: 'Yes. You can use our "Targeted Text Matcher" to strip matching text operators from the PDF stream, or the "Interactive Erase Box" tool to vector-redact watermark blocks. For scanned/flattened pages where the watermark is baked into image pixels, automatic stream removal is not possible, so a redaction patch or OCR fallback should be used.',
-  },
-  {
-    q: 'Are my watermark settings saved between browser sessions?',
-    a: 'Yes. Your selected text, font, color, opacity, rotation, scale, and layout preferences are automatically saved in your browser’s localStorage.',
-  },
-];
-
 export default function PdfWatermarkClient({
   initialMode = 'add',
   hideHeader = false,
@@ -152,7 +126,6 @@ export default function PdfWatermarkClient({
 }) {
   // Mode: Add Watermark vs Remove Watermark
   const [activeMode, setActiveMode] = useState<'add' | 'remove'>(initialMode);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   // PDF Document State
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -2240,52 +2213,6 @@ export default function PdfWatermarkClient({
           </div>
         </div>
       </section>
-
-      {/* ============================================================== */}
-      {/* FAQ SECTION                                                    */}
-      {/* ============================================================== */}
-      <section className="mt-16 pt-10 border-t border-zinc-200/80 dark:border-zinc-800/80">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold font-display text-zinc-900 dark:text-white mb-2">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-            Answers to common questions about client-side PDF watermarking and removal
-          </p>
-        </div>
-
-        <div className="space-y-3 max-w-3xl mx-auto">
-          {FAQS.map((faq, idx) => {
-            const isOpen = activeFaq === idx;
-            return (
-              <div key={idx} className="glass-card rounded-2xl overflow-hidden transition">
-                <button
-                  onClick={() => setActiveFaq(isOpen ? null : idx)}
-                  className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm text-zinc-900 dark:text-white"
-                >
-                  <span className="flex items-center gap-2.5">
-                    <HelpCircle className="w-4 h-4 text-brand-500 shrink-0" />
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 pt-3">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Related Tools */}
-      <RelatedPdfTools currentTool={activeMode === 'add' ? 'add-watermark' : 'remove-watermark'} />
     </div>
   );
 }
