@@ -328,7 +328,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Interactive page thumbnails let you reorder, rotate, or delete individual sheets with ease.',
       },
       {
-        title: 'Zero Watermark Guarantee',
+        title: 'Clean Watermark-Free Output',
         description: 'Export pristine documents containing only your original materials with no added stamps or ads.',
       },
       {
@@ -559,7 +559,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         title: 'Zero Cloud Storage',
-        description: 'Process private legal briefs and academic papers with 100% local privacy guarantee.',
+        description: 'Process private legal briefs and academic papers with 100% local browser execution.',
       },
     ],
     relatedToolSlugs: ['add-watermark', 'pdf-compressor', 'unlock-pdf', 'pdf-organizer'],
@@ -620,7 +620,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     h1: 'Password Protect PDF Online Free',
     introParagraph:
-      'Easily password protect PDF online free using robust security standards. Compixor AI allows you to lock PDF with password protection and encrypt PDF online directly in your browser. Whether you need to add password to PDF for personal bank statements, client contracts, or tax forms, our engine applies robust AES-256 PDF encryption. You can also restrict PDF editing and printing permissions to prevent unauthorized alterations or copying. Protect PDF without upload: free, no signup, no upload, works in your browser with zero data transmission. Your confidential passwords and documents remain exclusively on your device, guaranteeing total privacy.',
+      'Easily password protect PDF online free using robust security standards. Compixor AI allows you to lock PDF with password protection and encrypt PDF online directly in your browser. Whether you need to add password to PDF for personal bank statements, client contracts, or tax forms, our engine applies robust AES-256 PDF encryption. You can also restrict PDF editing and printing permissions to prevent unauthorized alterations or copying. Protect PDF without upload: free, no signup, no upload, works in your browser with zero data transmission. Your confidential passwords and documents remain exclusively on your device, ensuring confidential local execution.',
     howToSteps: [
       {
         name: 'Drop Your PDF File',
@@ -907,7 +907,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     featureList: [
       'Reduce DOCX file size up to 90%',
       'Optimize embedded images without formatting loss',
-      'Format and table preservation guarantee',
+      'High-fidelity layout and table preservation',
       'Ready for Outlook/Gmail 25MB email caps',
       '100% in-browser client-side compression',
     ],

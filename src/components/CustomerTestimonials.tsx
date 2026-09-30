@@ -118,7 +118,7 @@ const testimonials: Testimonial[] = [
     initials: 'TM',
     avatarColor: 'from-green-500 to-emerald-600',
     rating: 4.9,
-    highlight: 'Zero Data Leak Guarantee',
+    highlight: 'Zero-Server Privacy Architecture',
     review:
       'Our banking firm handles highly sensitive customer audit reports. With Compixor, we compress and encrypt PDFs without a single byte leaving our workstations. Privacy compliance has never been this seamless.',
     toolUsed: 'Protect PDF (AES-256)',

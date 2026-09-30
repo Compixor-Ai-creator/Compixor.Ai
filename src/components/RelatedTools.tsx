@@ -144,7 +144,7 @@ export const ALL_TOOLS: ToolItem[] = [
     icon: Lock,
     color: 'from-violet-500 to-indigo-600',
     tagline: '100% Client-Side Encryption',
-    description: 'Password protect PDF files with military-grade AES-256 encryption directly in your browser.',
+    description: 'Password protect PDF files with robust AES-256 encryption directly in your browser.',
   },
   {
     id: 'unlock-pdf',

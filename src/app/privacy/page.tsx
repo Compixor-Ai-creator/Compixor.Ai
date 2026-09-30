@@ -9,7 +9,7 @@ export default function PrivacyPage() {
       <div className="text-center mb-16">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
           <ShieldCheck className="w-3.5 h-3.5" />
-          Strict Privacy Guarantee
+          Strict Privacy Architecture
         </div>
         <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
           Privacy Policy
@@ -60,10 +60,10 @@ export default function PrivacyPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-brand-500" />
-            3. GDPR, CCPA & Global Compliance
+            3. Alignment with GDPR & CCPA Principles
           </h2>
           <p>
-            Because we do not store, process, or sell personal data on remote servers, CompixorAi naturally complies with GDPR, CCPA, and worldwide data protection regulations by design (Privacy by Architecture).
+            Because we do not store, process, or sell personal data on remote servers, CompixorAi aligns with core international data minimization principles under GDPR and CCPA by design (Privacy by Architecture: zero server transmission, zero cloud storage, and zero vendor profiling).
           </p>
         </section>
 

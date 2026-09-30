@@ -43,7 +43,7 @@ const stats = [
   { label: 'Files Processed Locally', value: '100%' },
   { label: 'Server Uploads', value: '0 bytes' },
   { label: 'Average Execution Time', value: '< 1.2s' },
-  { label: 'Privacy & GDPR Risk', value: '0%' },
+  { label: 'Server Data Retention', value: '0%' },
 ];
 
 export default function AboutPage() {

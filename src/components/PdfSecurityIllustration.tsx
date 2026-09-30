@@ -81,7 +81,7 @@ export default function PdfSecurityIllustration({ mode = 'protect' }: PdfSecurit
           </div>
           <div className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900/50">
             <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200">AES-256 Bit Cipher</p>
-            <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Military-grade ISO encryption</p>
+            <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Industry-standard PDF cipher</p>
           </div>
           <div className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900/50">
             <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200">No Data Logs</p>

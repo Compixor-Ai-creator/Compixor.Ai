@@ -56,7 +56,7 @@ export default function ProtectPdfPage() {
         <div className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 border border-indigo-200/60 dark:border-indigo-800/40 rounded-full px-4 py-1.5 mb-4 animate-float-subtle shadow-xs">
           <Shield className="w-3.5 h-3.5 text-indigo-500" />
           <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 tracking-wide uppercase">
-            100% Client-Side · Military-Grade AES-256
+            100% Client-Side · Standard AES-256 Encryption
           </span>
         </div>
 

@@ -194,7 +194,7 @@ export default function PassportBeforeAfter() {
             </div>
             <div>
               <p className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white">
-                True Zero-Server Privacy Guarantee
+                True Zero-Server Privacy Architecture
               </p>
               <p className="text-[11px] sm:text-xs text-zinc-600 dark:text-zinc-400">
                 Your face and ID photo are processed 100% in your device RAM via WebGPU. Never sent to any cloud server, unlike PhotoGov, Cutout.Pro, or PhotoAiD.

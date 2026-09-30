@@ -2223,7 +2223,7 @@ export default function PdfWatermarkClient({
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mx-auto mb-4">
               <ShieldCheck className="w-6 h-6" />
             </div>
-            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1.5">Privacy Guaranteed</h3>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1.5">Client-Side Privacy</h3>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
               Zero telemetry on document contents. Complete client-side confidentiality for contracts and IDs.
             </p>

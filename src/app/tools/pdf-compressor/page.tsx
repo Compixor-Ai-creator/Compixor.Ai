@@ -1144,7 +1144,7 @@ export default function PdfCompressorPage() {
                             This PDF is already highly compressed and cannot be reduced further.
                           </p>
                           <p className="text-[11px] opacity-90 mt-0.5">
-                            Returned pristine original document to guarantee zero file inflation.
+                            Returned pristine original document to prevent file inflation.
                           </p>
                         </div>
                       </div>
@@ -1447,7 +1447,7 @@ export default function PdfCompressorPage() {
                   </h3>
                 </div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
-                  When you drop a PDF into Compixor, WebAssembly parses internal content streams, embedded fonts, and raster images entirely in device RAM — zero cloud uploads, zero privacy risk.
+                  When you drop a PDF into Compixor, WebAssembly parses internal content streams, embedded fonts, and raster images entirely in device RAM — zero cloud uploads, processed locally in your browser.
                 </p>
               </div>
             </div>

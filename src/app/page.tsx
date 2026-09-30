@@ -71,7 +71,7 @@ const tools = [
     icon: Lock,
     title: 'Protect PDF',
     tagline: '100% Client-Side Privacy',
-    description: 'Encrypt PDF with military-grade AES-256 password protection and configure granular restrictions for printing, copying, and editing.',
+    description: 'Encrypt PDF with standard AES-256 password protection and configure granular restrictions for printing, copying, and editing.',
     color: 'from-indigo-500 to-purple-600',
     stats: 'AES-256 Encryption',
     badge: 'New',
@@ -151,7 +151,7 @@ const trustSignals = [
   },
   {
     icon: Shield,
-    title: 'Privacy Guaranteed',
+    title: 'Client-Side Privacy',
     description: 'Zero data harvesting or storage. What happens in your browser stays in your browser.',
   },
   {
