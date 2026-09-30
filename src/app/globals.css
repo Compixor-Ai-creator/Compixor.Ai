@@ -314,6 +314,34 @@
     animation: float-subtle 4s ease-in-out infinite;
   }
 
+  @keyframes float-smooth-slow {
+    0%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -6px, 0);
+    }
+  }
+
+  @keyframes float-smooth-reverse {
+    0%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, 5px, 0);
+    }
+  }
+
+  .animate-float-smooth-slow {
+    animation: float-smooth-slow 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    will-change: transform;
+  }
+
+  .animate-float-smooth-reverse {
+    animation: float-smooth-reverse 7s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    will-change: transform;
+  }
+
   @keyframes pulse-subtle {
     0%, 100% {
       opacity: 1;
