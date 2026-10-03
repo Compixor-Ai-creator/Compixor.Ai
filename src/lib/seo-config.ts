@@ -1407,14 +1407,15 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'img-to-word': {
     slug: 'img-to-word',
     name: 'Image to Word Converter',
-    title: 'Image to Word Converter Free Online — JPG PNG to DOCX | Compixor',
+    title: 'Image to Word Converter Online Free — JPG PNG to DOCX | Compixor',
     description:
       'Convert JPG, PNG, or WEBP images to editable Word .docx files free online. In-browser Tesseract OCR, zero upload, 10+ languages. Instant download, no signup.',
     canonicalUrl: `${BASE_URL}/tools/img-to-word`,
-    primaryKeyword: 'image to word converter',
+    primaryKeyword: 'image to word converter online free',
     searchIntent:
       'Users who have scanned documents, screenshots, or photos of text and need to convert them into editable Microsoft Word documents without uploading to external servers.',
     secondaryKeywords: [
+      'image to word converter online free',
       'jpg to word converter',
       'png to word converter',
       'image to docx',
@@ -1439,6 +1440,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'tesseract ocr image to docx',
     ],
     keywords: [
+      'image to word converter online free',
       'image to word converter',
       'jpg to word converter',
       'png to word converter',
@@ -1450,7 +1452,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'tesseract ocr online',
       'screenshot to word converter',
     ],
-    h1: 'Image to Word Converter — Free Online OCR',
+    h1: 'Image to Word Converter Online Free',
     introParagraph:
       'Compixor\'s free Image to Word Converter transforms JPG, PNG, WEBP, BMP, and GIF images into fully editable Microsoft Word (.docx) documents directly inside your browser. Powered by Tesseract.js WebAssembly OCR — the same engine used by developers worldwide — our image to word converter online free tool recognises printed text, detects headings and lists, and produces clean, structured DOCX files with zero server uploads and zero sign-up. Whether you need to convert a scan, a photo of a contract, or a screenshot to Word, Compixor handles multi-language OCR in English, Arabic, French, German, Spanish, and 6 more scripts — all running privately in your browser tab.',
     howToSteps: [

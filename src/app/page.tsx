@@ -194,16 +194,16 @@ const homeFaqs = [
 const containerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.08 },
+    transition: { staggerChildren: 0.05 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 22 },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
@@ -435,7 +435,7 @@ export default function HomePage() {
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.05 }}
+            viewport={{ once: true, amount: 0.02 }}
             variants={containerVariants}
           >
             {tools.map((tool) => {
@@ -552,10 +552,10 @@ export default function HomePage() {
 
       {/* ============ CTA BOX ============ */}
       <section className="py-16 relative overflow-hidden">
-        {/* Ambient glow behind the CTA box */}
+        {/* Ambient glow behind the CTA box (Desktop only) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 inset-0 flex items-center justify-center"
+          className="hidden md:flex pointer-events-none absolute -z-10 inset-0 items-center justify-center"
         >
           <div
             className="w-[600px] h-[300px] rounded-full opacity-20 dark:opacity-15"

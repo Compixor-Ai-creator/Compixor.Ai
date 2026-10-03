@@ -426,6 +426,43 @@ export default function ToolHowToVictory({ toolSlug }: ToolHowToVictoryProps) {
         />
       );
 
+    case 'img-to-word':
+      return (
+        <VictoryCard
+          badgeText="OCR Transformation Preview"
+          badgeColor="from-violet-500/15 to-indigo-500/15 text-violet-700 dark:text-violet-300 border-violet-500/30"
+          engineTitle="Tesseract.js WebAssembly OCR"
+          engineSub="Recognises Text, Headings & Lists · 10+ Languages"
+          beforeTitle="Scanned / Photo Image"
+          beforeBadge="Unextractable"
+          beforeBadgeColor="bg-amber-500 text-white"
+          beforeContent={
+            <div className="w-18 h-22 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 flex flex-col items-center justify-between p-2 shadow-xs relative overflow-hidden">
+              <span className="text-[7px] font-bold text-amber-600">IMG</span>
+              <div className="w-12 h-10 rounded bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 flex items-center justify-center">
+                <ImageIcon className="w-5 h-5 text-amber-400" />
+              </div>
+              <span className="text-[6px] font-semibold text-amber-600">Text Locked in Pixels</span>
+            </div>
+          }
+          afterTitle="Editable Word Document"
+          afterBadge="100% DOCX"
+          afterBadgeColor="bg-violet-600 text-white"
+          afterContent={
+            <div className="w-18 h-22 rounded-xl bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-950/40 dark:to-indigo-950/40 border-2 border-violet-500 flex flex-col items-center justify-between p-2 shadow-md relative">
+              <span className="text-[8px] font-black text-violet-600">DOCX</span>
+              <div className="w-full space-y-1">
+                <div className="w-full h-1 bg-violet-400 rounded flex items-center justify-end"><span className="w-0.5 h-1.5 bg-violet-600 animate-pulse mr-0.5" /></div>
+                <div className="w-4/5 h-1 bg-indigo-300 dark:bg-indigo-600 rounded" />
+                <div className="w-3/5 h-1 bg-violet-300 dark:bg-violet-700 rounded" />
+              </div>
+              <span className="text-[6.5px] font-bold text-violet-600 uppercase">Live Editable</span>
+              <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-violet-600 text-white flex items-center justify-center text-[8px] font-black shadow-xs">✓</div>
+            </div>
+          }
+        />
+      );
+
     default:
       return null;
   }

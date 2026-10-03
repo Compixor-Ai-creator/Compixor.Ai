@@ -23,6 +23,9 @@ import {
 
 export type OcrLanguage =
   | 'eng'
+  | 'eng+urd'
+  | 'urd'
+  | 'eng+ara'
   | 'ara'
   | 'fra'
   | 'deu'
@@ -57,8 +60,11 @@ export interface ImgToWordOptions {
 // ── Language display map ───────────────────────────────────────────────────────
 
 export const LANGUAGE_OPTIONS: { value: OcrLanguage; label: string }[] = [
-  { value: 'eng', label: 'English' },
-  { value: 'ara', label: 'Arabic / Urdu (Arabic script)' },
+  { value: 'eng', label: 'English (Default)' },
+  { value: 'eng+urd', label: 'English + Urdu (Bilingual)' },
+  { value: 'urd', label: 'Urdu (اردو)' },
+  { value: 'eng+ara', label: 'English + Arabic (Bilingual)' },
+  { value: 'ara', label: 'Arabic (العربية)' },
   { value: 'fra', label: 'French' },
   { value: 'deu', label: 'German' },
   { value: 'spa', label: 'Spanish' },
@@ -73,6 +79,11 @@ export const LANGUAGE_OPTIONS: { value: OcrLanguage; label: string }[] = [
 
 const BULLET_RE = /^\s*([•\-\*\–\—\u2022\u25E6\u2043]|\([a-zA-Z0-9]\))\s+/;
 const NUMBER_RE = /^\s*(\d+[.):]|\([a-zA-Z0-9]+\))\s+/;
+const RTL_RE = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/;
+
+function isRtlLine(text: string): boolean {
+  return RTL_RE.test(text);
+}
 
 function classifyLine(text: string): 'heading' | 'bullet' | 'number' | 'paragraph' {
   const trimmed = text.trim();
@@ -157,7 +168,11 @@ async function extractTextFromCanvas(
       }
     }
 
-    return lines.join('\n\n');
+    const reconstructed = lines.join('\n\n');
+    if (!reconstructed.trim() && data.text) {
+      return data.text.trim();
+    }
+    return reconstructed;
   } finally {
     await worker.terminate();
   }
@@ -187,33 +202,40 @@ async function buildDocx(pages: string[], originalFileName: string): Promise<Blo
         continue;
       }
 
+      const isRtl = isRtlLine(trimmed);
+      const font = isRtl ? 'Jameel Noori Nastaleeq, Arial, Calibri' : 'Calibri';
+      const alignment = isRtl ? AlignmentType.RIGHT : AlignmentType.LEFT;
       const kind = classifyLine(trimmed);
 
       if (kind === 'heading') {
         docChildren.push(
           new Paragraph({
             heading: HeadingLevel.HEADING_2,
-            children: [new TextRun({ text: trimmed, bold: true })],
+            alignment,
+            children: [new TextRun({ text: trimmed, bold: true, font })],
           }),
         );
       } else if (kind === 'bullet') {
         docChildren.push(
           new Paragraph({
+            alignment,
             numbering: { reference: 'bullet-list', level: 0 },
-            children: [new TextRun({ text: stripListPrefix(trimmed) })],
+            children: [new TextRun({ text: stripListPrefix(trimmed), font })],
           }),
         );
       } else if (kind === 'number') {
         docChildren.push(
           new Paragraph({
+            alignment,
             numbering: { reference: 'number-list', level: 0 },
-            children: [new TextRun({ text: stripListPrefix(trimmed) })],
+            children: [new TextRun({ text: stripListPrefix(trimmed), font })],
           }),
         );
       } else {
         docChildren.push(
           new Paragraph({
-            children: [new TextRun({ text: trimmed })],
+            alignment,
+            children: [new TextRun({ text: trimmed, font })],
           }),
         );
       }

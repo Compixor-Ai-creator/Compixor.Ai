@@ -370,15 +370,23 @@
     animation: spin-slow 12s linear infinite;
   }
 
-  /* ── Marquee Animations for Testimonials ── */
+  /* ── Marquee Animations for Testimonials (Hardware-Accelerated 3D) ── */
   @keyframes marquee-ltr {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
   }
 
   @keyframes marquee-rtl {
-    0%   { transform: translateX(-50%); }
-    100% { transform: translateX(0); }
+    0%   { transform: translate3d(-50%, 0, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+  }
+
+  .marquee-track {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    contain: paint;
   }
 
   /* Pause on hover */
@@ -610,11 +618,20 @@
       opacity: 0 !important;
     }
 
-    /* Remove real-time backdrop-filter on mobile (the #1 cause of mobile scroll lag) */
-    /* Instead, use crisp, high-performance solid/translucent glass surfaces */
-    .glass-card {
+    /* Remove real-time backdrop-filter on mobile across ALL elements (the #1 cause of mobile scroll lag) */
+    /* Instead, use crisp, high-performance solid/translucent surfaces */
+    [class*="backdrop-blur"],
+    .glass-card,
+    .glass-nav,
+    .slide-blur-panel,
+    .glow-border,
+    .dropdown-glass,
+    .slider-blur {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
+    }
+
+    .glass-card {
       background: rgba(255, 255, 255, 0.94) !important;
       border: 1px solid rgba(124, 58, 237, 0.1) !important;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
@@ -624,8 +641,6 @@
     }
 
     .dark .glass-card {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
       background: rgba(22, 19, 42, 0.96) !important;
       border: 1px solid rgba(124, 58, 237, 0.18) !important;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
@@ -633,8 +648,6 @@
 
     /* Simplify glass-nav on mobile without laggy backdrop-filter */
     .glass-nav {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
       background: rgba(255, 255, 255, 0.98) !important;
       border-bottom: 1px solid rgba(124, 58, 237, 0.1) !important;
     }
@@ -642,6 +655,16 @@
     .dark .glass-nav {
       background: rgba(15, 12, 36, 0.98) !important;
       border-bottom: 1px solid rgba(124, 58, 237, 0.15) !important;
+    }
+
+    /* Stop continuous infinite float & spin animations on mobile to conserve GPU and battery */
+    .animate-float-subtle,
+    .animate-float-smooth-slow,
+    .animate-float-smooth-reverse,
+    .animate-spin-slow,
+    .animate-pulse-subtle {
+      animation: none !important;
+      transform: none !important;
     }
 
     /* Stop rotating gradient border animation on mobile */
@@ -658,6 +681,16 @@
 
     .btn-primary:hover {
       transform: none !important;
+    }
+  }
+
+  /* Accessibility & Reduced Motion for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
   }
 }

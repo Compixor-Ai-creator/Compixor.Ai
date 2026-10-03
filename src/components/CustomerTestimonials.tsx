@@ -281,8 +281,8 @@ export default function CustomerTestimonials() {
         </div>
       </div>
 
-      {/* ── Marquee Row 2: Right to Left ── */}
-      <div className="relative overflow-hidden">
+      {/* ── Marquee Row 2: Right to Left (Desktop / Tablet only) ── */}
+      <div className="relative overflow-hidden hidden sm:block">
         {/* Soft edge blur fades */}
         <div className="pointer-events-none absolute left-0 top-0 h-full w-14 sm:w-24 z-10 bg-gradient-to-r from-white dark:from-[#0a0e1a] to-transparent" />
         <div className="pointer-events-none absolute right-0 top-0 h-full w-14 sm:w-24 z-10 bg-gradient-to-l from-white dark:from-[#0a0e1a] to-transparent" />

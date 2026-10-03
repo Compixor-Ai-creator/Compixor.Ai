@@ -36,18 +36,18 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
+      staggerChildren: 0.08,
     },
   },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 25 },
+  hidden: { opacity: 0, y: 15 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.4,
       ease: [0.16, 1, 0.3, 1],
     },
   },
@@ -56,10 +56,10 @@ const cardVariants = {
 export default function WhyChooseCompixor() {
   return (
     <section className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Dynamic Aurora & Grid Backdrop */}
+      {/* Dynamic Aurora & Grid Backdrop (Desktop only — disabled on mobile for 60fps scrolling) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -z-10 inset-0 flex items-center justify-center overflow-hidden"
+        className="hidden md:flex pointer-events-none absolute -z-10 inset-0 items-center justify-center overflow-hidden"
       >
         <div
           className="w-[900px] h-[450px] rounded-full opacity-20 dark:opacity-25"
@@ -97,7 +97,7 @@ export default function WhyChooseCompixor() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-60px' }}
+        viewport={{ once: true, amount: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch"
       >
         {/* ================= CARD 1: ONE COMPLETE WORKSPACE ================= */}

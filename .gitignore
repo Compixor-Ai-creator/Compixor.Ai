@@ -50,3 +50,7 @@ instance/
 # Python egg
 *.egg-info/
 dist/
+
+# OCR models and scratch
+*.traineddata
+scratch/

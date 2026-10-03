@@ -282,3 +282,80 @@ export function PdfCompressorPreviewMockup() {
     </div>
   );
 }
+
+export function ImgToWordPreviewMockup() {
+  return (
+    <div className="w-full max-w-3xl mx-auto my-8">
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 mb-1">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Real OCR Extraction Benchmark</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white">
+              From Flat Pixels to 100% Editable DOCX
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              Extract typography, paragraphs, and lists into real Microsoft Word documents directly in your browser.
+            </p>
+          </div>
+          <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 shrink-0">
+            True .DOCX Output
+          </span>
+        </div>
+
+        {/* OCR Conversion Metric Flow */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/70 dark:border-zinc-800/70">
+          {/* Original Image */}
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+              <span className="text-lg">🖼️</span>
+            </div>
+            <div>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">Original Scan / Image</p>
+              <p className="text-sm font-bold text-zinc-800 dark:text-zinc-200">receipt_document.jpg</p>
+              <p className="text-xs font-mono text-amber-600 dark:text-amber-400 font-semibold">Locked Pixels (Uneditable)</p>
+            </div>
+          </div>
+
+          {/* Transformation Arrow */}
+          <div className="flex flex-col items-center">
+            <span className="text-xs font-bold text-violet-600 dark:text-violet-400 bg-violet-500/10 px-2.5 py-0.5 rounded-full mb-1">
+              Tesseract OCR
+            </span>
+            <div className="flex items-center gap-1 text-zinc-400">
+              <span className="h-0.5 w-8 bg-zinc-300 dark:bg-zinc-700" />
+              <ArrowRight className="w-4 h-4 text-violet-500" />
+            </div>
+          </div>
+
+          {/* Resulting Word Document */}
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
+              <FileText className="w-6 h-6 text-violet-600 dark:text-violet-400" />
+            </div>
+            <div>
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Ready in Browser (Zero Uploads)</p>
+              <p className="text-sm font-bold text-zinc-800 dark:text-zinc-200">receipt_document.docx</p>
+              <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">100% Editable Text &amp; Fonts</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Quality Footnotes */}
+        <div className="mt-4 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 px-1">
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+            <span>Compatible with Microsoft Word, LibreOffice &amp; Google Docs</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+            <span>Zero cloud uploads · 100% private</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
