@@ -165,7 +165,7 @@ export default function BlogPostPage({ params }: PageProps) {
         '@type': 'ListItem',
         position: 2,
         name: 'Blogs',
-        item: 'https://compixor-ai.vercel.app/#blog-section',
+        item: 'https://compixor-ai.vercel.app/blog',
       },
       {
         '@type': 'ListItem',
@@ -221,7 +221,7 @@ export default function BlogPostPage({ params }: PageProps) {
           </Link>
           <ChevronRight className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
           <Link
-            href="/#blog-section"
+            href="/blog"
             className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors whitespace-nowrap"
           >
             Blogs
@@ -466,7 +466,7 @@ export default function BlogPostPage({ params }: PageProps) {
                 </h3>
               </div>
               <Link
-                href="/#blog-section"
+                href="/blog"
                 className="text-xs sm:text-sm font-bold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1"
               >
                 <span>All Guides</span>

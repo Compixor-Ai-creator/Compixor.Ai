@@ -26,7 +26,6 @@ import HomeFaqAccordion from '@/components/HomeFaqAccordion';
 import CustomerTestimonials from '@/components/CustomerTestimonials';
 import WhyChooseCompixor from '@/components/WhyChooseCompixor';
 import HeroCTA from '@/components/HeroCTA';
-import BlogSection from '@/components/BlogSection';
 
 const tools = [
   {
@@ -472,9 +471,6 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
-
-      {/* ============ CLIENT-SIDE KNOWLEDGE BASE & BLOGS ============ */}
-      <BlogSection />
 
       {/* ============ TRUST ARCHITECTURE ============ */}
       <section className="relative py-16">

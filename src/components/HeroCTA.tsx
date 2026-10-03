@@ -1,17 +1,10 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, BookOpen } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 export default function HeroCTA() {
-  const handleScrollToBlog = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const blogSection = document.getElementById('blog-section');
-    if (blogSection) {
-      blogSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const handleScrollToTools = (e: React.MouseEvent) => {
     e.preventDefault();
     const toolsSection = document.getElementById('tools');
@@ -33,14 +26,13 @@ export default function HeroCTA() {
         <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
       </a>
 
-      {/* Secondary CTA Button (Glassmorphic) */}
-      <button
-        type="button"
-        onClick={handleScrollToBlog}
+      {/* Secondary CTA Button (Glassmorphic) -> routes to /blog */}
+      <Link
+        href="/blog"
         className="bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-xl px-7 py-3.5 font-semibold hover:border-purple-500 hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs hover:-translate-y-0.5 active:translate-y-0 text-base"
       >
         <span>Explore Guides & Blogs 📖</span>
-      </button>
+      </Link>
     </div>
   );
 }

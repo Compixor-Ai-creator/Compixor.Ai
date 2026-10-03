@@ -153,7 +153,7 @@ const topLevelNavLinks = [
   { href: '/tools/passport-photo', label: 'Passport Photo Maker', icon: Camera },
   { href: '/tools/full-dp-maker', label: 'Full DP Maker', icon: WhatsAppIcon },
   { href: '/tools/qr-generator', label: 'QR Generator', icon: QrCode },
-  { href: '/#blog-section', label: 'Guides', icon: BookOpen },
+  { href: '/blog', label: 'Guides', icon: BookOpen },
   { href: '/about', label: 'About', icon: Info },
 ];
 
