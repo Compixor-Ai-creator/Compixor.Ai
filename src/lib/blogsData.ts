@@ -11,6 +11,22 @@ export interface BlogItem {
   toolPath: string;
   accentColor: string;
   icon: string;
+  decisionBox?: {
+    title?: string;
+    items: {
+      boldText: string;
+      descText: string;
+      toolName?: string;
+      toolPath?: string;
+    }[];
+  };
+  relatedTools?: {
+    title: string;
+    description: string;
+    toolPath: string;
+    icon: string;
+    color?: string;
+  }[];
   content: {
     intro: string;
     sections: {
@@ -277,31 +293,104 @@ export const blogsData: BlogItem[] = [
   {
     id: "protect-pdf",
     slug: "password-protect-pdf-files-online",
-    title: "How to Password Protect PDF Files Online with AES-256",
+    title: "The Complete Guide to PDF Protection and Unlocking: Passwords, Permissions, and AES-256 Security",
     category: "Privacy & Security",
-    readTime: "3 min read",
-    targetKeyword: "password protect pdf online free",
-    metaTitle: "How to Password Protect PDF Files Online with AES-256",
-    metaDescription: "Lock and encrypt confidential PDF files using military-grade AES-256 encryption client-side.",
-    excerpt: "Secure sensitive contracts and financial statements with authentic AES-256 encryption without exposing passwords to any server.",
+    readTime: "4 min read",
+    targetKeyword: "password protect and unlock pdf online free",
+    metaTitle: "The Complete Guide to PDF Protection & Unlocking: Passwords & Permissions",
+    metaDescription: "A systematic guide to the two PDF password types (open password vs permission password), disabling copying/printing/editing, and unlocking restricted PDFs.",
+    excerpt: "A systematic guide to the two PDF password types (open password vs permission password), how to disable copying/printing/editing, and how to legally unlock restricted PDFs.",
     toolPath: "/tools/protect-pdf",
     accentColor: "from-violet-500/20 to-purple-500/20",
     icon: "Lock",
-    content: {
-      intro: "Emailing unencrypted pay slips, legal contracts, or confidential medical records is a major security risk. Standard operating systems don't have simple built-in encryption tools. Compixor's Protect PDF tool encrypts your documents using military-grade AES-256 bit encryption directly inside your browser.",
-      sections: [
+    decisionBox: {
+      title: "What do you want to do? (10-second decision)",
+      items: [
         {
-          heading: "The Power of AES-256 Document Encryption",
-          body: "Advanced Encryption Standard (AES) with 256-bit keys is the global security standard for cybersecurity and banking:",
-          list: [
-            "Brute-Force Immunity: A 256-bit key combination cannot be cracked with modern computers.",
-            "Total Permission Lockdown: Prevents unauthorized viewing, copying, printing, and exporting.",
-            "Universal Compatibility: Encrypted files open securely on Acrobat, Apple Preview, and mobile PDF readers."
-          ]
+          boldText: "Set a password so others cannot open the PDF",
+          descText: "Set an Open Password using AES-256 bit encryption",
+          toolName: "Protect PDF",
+          toolPath: "/tools/protect-pdf"
         },
         {
-          heading: "Zero-Knowledge Encryption",
-          body: "Entering a secret password on typical web converters exposes your password to their backend servers. Compixor encrypts documents 100% inside your local browser memory. Neither your password nor your file ever reaches the internet."
+          boldText: "Let others view but restrict copying, printing, or editing",
+          descText: "Configure Owner permission restrictions in one click",
+          toolName: "Protect PDF",
+          toolPath: "/tools/protect-pdf"
+        },
+        {
+          boldText: "Remove password & printing restrictions from an authorized PDF",
+          descText: "Strip security dictionaries permanently in your browser",
+          toolName: "Unlock PDF",
+          toolPath: "/tools/unlock-pdf"
+        },
+        {
+          boldText: "Not sure about the difference between the two passwords",
+          descText: "Read the comparison breakdown below"
+        }
+      ]
+    },
+    relatedTools: [
+      {
+        title: "Protect PDF",
+        description: "Set an open password and granular AES-256 permission restrictions.",
+        toolPath: "/tools/protect-pdf",
+        icon: "Lock"
+      },
+      {
+        title: "Unlock PDF",
+        description: "Remove password restrictions and restore full printing/editing access.",
+        toolPath: "/tools/unlock-pdf",
+        icon: "Unlock"
+      },
+      {
+        title: "Add PDF Watermark",
+        description: "Stamp custom confidentiality marks and logos across document pages.",
+        toolPath: "/tools/add-watermark",
+        icon: "Stamp"
+      }
+    ],
+    content: {
+      intro: "PDF protection is the first line of defense for sensitive document security, whether you need to prevent unauthorized viewing of financial records, block text copying on proprietary research, or restrict document printing. Compixor's client-side Protect PDF and Unlock PDF tools let you configure military-grade AES-256 encryption and remove permissions directly in your browser with zero data leaks.",
+      sections: [
+        {
+          heading: "Two Passwords, Two Completely Different Purposes",
+          body: "The ISO PDF standard defines two distinct security passwords. Understanding this difference is critical before protecting confidential files:",
+          table: {
+            headers: ["Comparison", "Open Password (User Password)", "Permission Password (Owner Password)"],
+            rows: [
+              ["Purpose", "Cannot open or view the file without entering the password", "File can be opened and viewed, but printing, copying, and editing are restricted"],
+              ["Typical Scenario", "A hard cryptographic lock for sensitive payrolls, medical records, and legal briefs", "A soft restriction for viewable sales decks, eBooks, and public contract templates"],
+              ["Security Strength", "Military-Grade AES-256 encryption. The entire document stream is ciphered", "Permission flags. Modern viewers honor these flags, but content is not fully encrypted"],
+              ["Can It Be Bypassed?", "Mathematically impossible to brute-force without the valid password key", "Some specialized utilities or lenient viewers may ignore permission flags"],
+              ["In Compixor Tools", "Encrypt PDF prompts for your password client-side; file remains encrypted everywhere", "Unlock PDF instantly strips permission flags without re-compressing pages"]
+            ]
+          }
+        },
+        {
+          heading: "Permission Password vs Open Password: Which One Should You Set?",
+          body: "Select the recommended setup tailored to your specific privacy and distribution requirements:",
+          table: {
+            headers: ["Your Privacy Need", "Recommended Setup"],
+            rows: [
+              ["Prevent all unauthorized document viewing", "Open Password (AES-256 encryption)"],
+              ["Allow reading but block text copying & printing", "Permission Password + Flattened Watermark"],
+              ["Highly confidential business distribution", "Open Password + Permission Password + Watermarking"],
+              ["Secure long-term document archiving", "Open Password only (preserves clean vector text)"]
+            ]
+          }
+        },
+        {
+          heading: "Will Encryption Make My PDF File Larger?",
+          body: "Almost never. PDF encryption is stream-based, meaning only raw streams are ciphered, and the file-size impact is typically under 1%. Your PDF remains lightweight and ready for email attachments."
+        },
+        {
+          heading: "Are Encryption and Digital Signatures the Same Thing?",
+          body: "No. Encryption controls who can open and operate the file; digital signatures prove whether the file has been tampered with since signing. Operations like watermarking, rotating, or encrypting will invalidate an existing signature. Always finish all encryption and modifications before applying a digital signature."
+        },
+        {
+          heading: "100% In-Browser Privacy: Why Client-Side Encryption Matters",
+          body: "When you type a confidential password into typical cloud PDF tools, your password travels over the wire to remote servers. Compixor's encryption engine runs entirely inside your device RAM using WebAssembly and WebCrypto. Not a single byte ever leaves your machine."
         }
       ],
       steps: [
