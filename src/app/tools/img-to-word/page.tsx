@@ -274,23 +274,23 @@ export default function ImgToWordPage() {
           Tesseract WebAssembly OCR &amp; Batch Image to DOCX
         </div>
 
-        {/* H1 with Vibrant Violet-Indigo-Purple Gradient + Floating Particles */}
+        {/* H1 with Option 3 Vibrant Prism (Violet-Fuchsia-Pink) Gradient + Floating Particles */}
         <div className="relative inline-block mb-4">
           <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-violet-400/80 animate-pulse" />
           <div
-            className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-indigo-500/80 animate-pulse"
+            className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-fuchsia-400/80 animate-pulse"
             style={{ animationDelay: '0.6s' }}
           />
           <div
-            className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-purple-400/70 animate-pulse"
+            className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-pink-400/70 animate-pulse"
             style={{ animationDelay: '1.2s' }}
           />
-          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-violet-400/70 animate-spin-slow" />
-          <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white">
-            <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-fuchsia-400/70 animate-spin-slow" />
+          <h1 className="text-4xl sm:text-5xl font-black font-display tracking-tight text-zinc-900 dark:text-white">
+            <span className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-400 bg-clip-text text-transparent">
               Image to Word Converter
             </span>{' '}
-            Online Free
+            <span className="inline-block">Online Free</span>
           </h1>
         </div>
 
