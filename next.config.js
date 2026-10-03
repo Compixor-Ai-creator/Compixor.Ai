@@ -112,6 +112,31 @@ const nextConfig = {
         destination: '/tools/add-watermark',
         permanent: true,
       },
+      {
+        source: '/tools/add-pdf-watermark',
+        destination: '/tools/add-watermark',
+        permanent: true,
+      },
+      {
+        source: '/tools/remove-pdf-watermark',
+        destination: '/tools/remove-watermark',
+        permanent: true,
+      },
+      {
+        source: '/tools/pdf-merge-split',
+        destination: '/tools/pdf-organizer',
+        permanent: true,
+      },
+      {
+        source: '/tools/passport-photo-maker',
+        destination: '/tools/passport-photo',
+        permanent: true,
+      },
+      {
+        source: '/tools/image-to-word',
+        destination: '/tools/img-to-word',
+        permanent: true,
+      },
     ];
   },
 };

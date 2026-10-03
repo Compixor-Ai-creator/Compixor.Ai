@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { BASE_URL } from '@/lib/seo-config';
+import { blogsData } from '@/lib/blogsData';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = BASE_URL;
@@ -96,5 +97,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
+    ...blogsData.map((blog) => ({
+      url: `${baseUrl}/blog/${blog.slug}`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    })),
   ];
 }
