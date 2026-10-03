@@ -134,6 +134,14 @@ export const wordCategories: PdfCategoryGroup[] = [
         gradient: 'from-violet-500 to-purple-600',
         badge: 'New',
       },
+      {
+        href: '/tools/img-to-word',
+        label: 'Image to Word Converter',
+        subtitle: 'OCR images to editable Word document',
+        icon: FileText,
+        gradient: 'from-violet-600 to-indigo-600',
+        badge: 'New',
+      },
     ],
   },
 ];
@@ -171,7 +179,9 @@ export default function Navbar() {
     pathname === '/tools/unlock-pdf';
 
   const isWordRouteActive =
-    pathname === '/tools/word-compressor' || pathname === '/tools/pdf-to-word';
+    pathname === '/tools/word-compressor' ||
+    pathname === '/tools/pdf-to-word' ||
+    pathname === '/tools/img-to-word';
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);

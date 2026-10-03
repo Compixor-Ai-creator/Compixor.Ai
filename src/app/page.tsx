@@ -108,6 +108,16 @@ const tools = [
     badge: 'New',
   },
   {
+    href: '/tools/img-to-word',
+    icon: FileText,
+    title: 'Image to Word Converter',
+    tagline: 'Tesseract OCR · 100% Client-Side',
+    description: 'Convert JPG, PNG, WEBP, or scanned image files into fully editable Word (.docx) documents using in-browser Tesseract OCR.',
+    color: 'from-violet-600 to-purple-600',
+    stats: '10+ Languages · Batch OCR',
+    badge: 'New',
+  },
+  {
     href: '/tools/passport-photo',
     icon: Camera,
     title: 'Biometric Passport Photo Maker',

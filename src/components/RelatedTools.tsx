@@ -32,7 +32,8 @@ export type ToolId =
   | 'qr-generator'
   | 'protect-pdf'
   | 'unlock-pdf'
-  | 'pdf-to-word';
+  | 'pdf-to-word'
+  | 'img-to-word';
 
 export interface ToolItem {
   id: ToolId;
@@ -168,12 +169,23 @@ export const ALL_TOOLS: ToolItem[] = [
     tagline: 'Editable .DOCX Output',
     description: 'Convert PDF files to editable Word documents online with client-side OCR for scanned files and zero uploads.',
   },
+  {
+    id: 'img-to-word',
+    name: 'Image to Word Converter',
+    badge: 'New',
+    stat: '10+ Languages · OCR',
+    href: '/tools/img-to-word',
+    icon: FileText,
+    color: 'from-violet-600 to-purple-600',
+    tagline: 'Tesseract WebAssembly OCR',
+    description: 'Convert JPG, PNG, WEBP, or scanned images into editable Word documents using Tesseract OCR — zero uploads.',
+  },
 ];
 
 // Mapping of primary related tools per tool for rich contextual cross-linking
 const RELATED_TOOL_IDS: Record<ToolId, ToolId[]> = {
   'pdf-compressor': ['pdf-to-word', 'pdf-organizer', 'protect-pdf', 'word-compressor'],
-  'word-compressor': ['pdf-to-word', 'pdf-compressor', 'pdf-organizer', 'add-watermark'],
+  'word-compressor': ['img-to-word', 'pdf-to-word', 'pdf-compressor', 'pdf-organizer'],
   'add-watermark': ['remove-watermark', 'protect-pdf', 'pdf-organizer', 'pdf-compressor'],
   'remove-watermark': ['add-watermark', 'unlock-pdf', 'pdf-compressor', 'pdf-organizer'],
   'pdf-organizer': ['pdf-to-word', 'pdf-compressor', 'add-watermark', 'protect-pdf'],
@@ -182,7 +194,8 @@ const RELATED_TOOL_IDS: Record<ToolId, ToolId[]> = {
   'qr-generator': ['full-dp-maker', 'pdf-compressor', 'passport-photo', 'word-compressor'],
   'protect-pdf': ['unlock-pdf', 'pdf-compressor', 'add-watermark', 'pdf-organizer'],
   'unlock-pdf': ['protect-pdf', 'pdf-compressor', 'remove-watermark', 'pdf-organizer'],
-  'pdf-to-word': ['word-compressor', 'pdf-compressor', 'pdf-organizer', 'add-watermark'],
+  'pdf-to-word': ['img-to-word', 'word-compressor', 'pdf-compressor', 'pdf-organizer'],
+  'img-to-word': ['pdf-to-word', 'word-compressor', 'pdf-compressor', 'pdf-organizer'],
 };
 
 interface RelatedToolsProps {

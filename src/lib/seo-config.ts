@@ -11,7 +11,8 @@ export type ToolSlug =
   | 'passport-photo'
   | 'full-dp-maker'
   | 'qr-generator'
-  | 'pdf-to-word';
+  | 'pdf-to-word'
+  | 'img-to-word';
 
 export interface HowToStep {
   name: string;
@@ -1400,6 +1401,127 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Multi-language OCR support including Urdu and Arabic',
       'Zero server upload privacy',
       'Standard ISO/IEC 29500 OpenXML output',
+    ],
+  },
+
+  'img-to-word': {
+    slug: 'img-to-word',
+    name: 'Image to Word Converter',
+    title: 'Image to Word Converter Free Online — JPG PNG to DOCX | Compixor',
+    description:
+      'Convert JPG, PNG, or WEBP images to editable Word .docx files free online. In-browser Tesseract OCR, zero upload, 10+ languages. Instant download, no signup.',
+    canonicalUrl: `${BASE_URL}/tools/img-to-word`,
+    primaryKeyword: 'image to word converter',
+    searchIntent:
+      'Users who have scanned documents, screenshots, or photos of text and need to convert them into editable Microsoft Word documents without uploading to external servers.',
+    secondaryKeywords: [
+      'jpg to word converter',
+      'png to word converter',
+      'image to docx',
+      'photo to word converter',
+      'ocr image to word',
+      'convert image to word online free',
+      'scan to word converter',
+      'screenshot to word',
+      'image text to word',
+      'free ocr to word',
+    ],
+    longTailKeywords: [
+      'convert jpg image to word document free',
+      'png to docx converter online no upload',
+      'ocr image to editable word document',
+      'convert photo to word online free',
+      'jpg to word converter no signup',
+      'scan to word free browser tool',
+      'image to word converter without watermark',
+      'convert screenshot to word document',
+      'arabic ocr to word online free',
+      'tesseract ocr image to docx',
+    ],
+    keywords: [
+      'image to word converter',
+      'jpg to word converter',
+      'png to word converter',
+      'ocr image to word',
+      'convert image to word online free',
+      'photo to docx converter',
+      'scan to word online',
+      'image to docx no upload',
+      'tesseract ocr online',
+      'screenshot to word converter',
+    ],
+    h1: 'Image to Word Converter — Free Online OCR',
+    introParagraph:
+      'Compixor\'s free Image to Word Converter transforms JPG, PNG, WEBP, BMP, and GIF images into fully editable Microsoft Word (.docx) documents directly inside your browser. Powered by Tesseract.js WebAssembly OCR — the same engine used by developers worldwide — our image to word converter online free tool recognises printed text, detects headings and lists, and produces clean, structured DOCX files with zero server uploads and zero sign-up. Whether you need to convert a scan, a photo of a contract, or a screenshot to Word, Compixor handles multi-language OCR in English, Arabic, French, German, Spanish, and 6 more scripts — all running privately in your browser tab.',
+    howToSteps: [
+      {
+        name: 'Upload Your Image',
+        text: 'Drag and drop a JPG, PNG, WEBP, BMP, GIF, or TIFF file into the secure drop zone, or click Browse to select up to 10 images.',
+      },
+      {
+        name: 'Choose OCR Language',
+        text: 'Select the language of the text in your image from the language dropdown. Supports English, Arabic, French, German, Spanish, Portuguese, Russian, Chinese, and Japanese.',
+      },
+      {
+        name: 'Run In-Browser OCR',
+        text: 'Click Convert to Word. Tesseract OCR runs entirely inside your browser using WebAssembly — your images never leave your device.',
+      },
+      {
+        name: 'Download Editable DOCX',
+        text: 'Download your structured Word (.docx) document instantly. Headings, bullet lists, and paragraphs are preserved and ready to edit in Microsoft Word or Google Docs.',
+      },
+    ],
+    faqs: [
+      {
+        q: 'How do I convert an image to Word for free without uploading?',
+        a: 'Compixor runs Tesseract OCR inside your browser using WebAssembly. Your image is processed in local browser memory — nothing is ever sent to a server. The converted Word file is generated and downloaded directly on your device.',
+      },
+      {
+        q: 'What image formats can I convert to Word?',
+        a: 'You can convert JPG, JPEG, PNG, WEBP, BMP, GIF, and TIFF images to Word (.docx). Up to 10 images can be converted at once into a single merged Word document.',
+      },
+      {
+        q: 'Can I convert Arabic, Urdu, or other non-English images to Word?',
+        a: 'Yes. Compixor supports OCR recognition in English, Arabic, French, German, Spanish, Portuguese, Italian, Russian, Simplified Chinese, and Japanese. Select the matching language before converting.',
+      },
+      {
+        q: 'Does the Word output preserve headings and bullet lists?',
+        a: 'Yes. The conversion engine analyses line height, capitalisation, and list markers to reconstruct standard Microsoft Word paragraph styles — including Heading 2, bullet lists, and numbered lists — in the exported .docx file.',
+      },
+      {
+        q: 'Is there a file size or page limit?',
+        a: 'Each image can be up to 25 MB, and you can process up to 10 images per batch. There are no artificial usage limits — Compixor is completely free with zero paywalls.',
+      },
+    ],
+    features: [
+      {
+        title: 'Tesseract.js WebAssembly OCR',
+        description: 'Industry-standard optical character recognition compiled to WebAssembly runs entirely in your browser tab at native speed.',
+      },
+      {
+        title: 'Structured Word Output',
+        description: 'Headings, bullets, numbered lists, and paragraphs are detected and formatted as native Word styles in the exported .docx.',
+      },
+      {
+        title: '10+ Language OCR Support',
+        description: 'Recognise and convert English, Arabic, French, German, Spanish, Russian, Chinese, Japanese, and more.',
+      },
+      {
+        title: 'Batch Multi-Image Conversion',
+        description: 'Convert up to 10 images simultaneously into a single merged Word document — ideal for multi-page scanned contracts.',
+      },
+    ],
+    relatedToolSlugs: ['pdf-to-word', 'word-compressor', 'pdf-compressor', 'pdf-organizer'],
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any (Web Browser)',
+    featureList: [
+      'Convert JPG PNG WEBP BMP TIFF to editable Word DOCX',
+      'Tesseract.js WebAssembly OCR engine',
+      'Multi-language OCR: English Arabic French German Spanish Russian Chinese Japanese',
+      'Batch convert up to 10 images into one document',
+      'Zero server upload — 100% in-browser processing',
+      'Heading and list detection for structured output',
+      'Free with no signup, no watermarks, no usage limits',
     ],
   },
 };
