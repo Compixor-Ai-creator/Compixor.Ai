@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Camera,
@@ -154,15 +155,27 @@ export default function BlogSection() {
                         </span>
                       </div>
 
-                      {/* Vector Illustration / Glow Box */}
-                      <div className="relative mb-5 inline-block">
-                        <div
-                          className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${blog.accentColor} border border-zinc-200/60 dark:border-zinc-700/60 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-300`}
-                        >
-                          <IconComponent className="w-7 h-7 text-brand-600 dark:text-brand-400" />
+                      {/* Thumbnail or Vector Illustration Glow Box */}
+                      {blog.thumbnail ? (
+                        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-5 border border-zinc-200/80 dark:border-zinc-800/80 shadow-md group-hover:scale-[1.02] transition-transform duration-300 bg-zinc-950">
+                          <Image
+                            src={blog.thumbnail}
+                            alt={blog.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover"
+                          />
                         </div>
-                        <div className="absolute -inset-1 rounded-2xl bg-brand-500/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                      </div>
+                      ) : (
+                        <div className="relative mb-5 inline-block">
+                          <div
+                            className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${blog.accentColor} border border-zinc-200/60 dark:border-zinc-700/60 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-300`}
+                          >
+                            <IconComponent className="w-7 h-7 text-brand-600 dark:text-brand-400" />
+                          </div>
+                          <div className="absolute -inset-1 rounded-2xl bg-brand-500/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                        </div>
+                      )}
 
                       {/* H3 Title */}
                       <h3 className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white mb-2.5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug">

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import {
   Camera,
@@ -36,6 +37,8 @@ import ArticleHeroBanner from '@/components/ArticleHeroBanner';
 import DecisionCalloutBox from '@/components/DecisionCalloutBox';
 import TableOfContents from '@/components/TableOfContents';
 import RelatedToolsGrid from '@/components/RelatedToolsGrid';
+import PasswordComparisonVisual from '@/components/PasswordComparisonVisual';
+import DocumentLayersVisual from '@/components/DocumentLayersVisual';
 
 interface PageProps {
   params: {
@@ -98,11 +101,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       siteName: 'Compixor AI',
       type: 'article',
       locale: 'en_US',
+      images: [
+        {
+          url: blog.thumbnail
+            ? `https://compixor-ai.vercel.app${blog.thumbnail}`
+            : 'https://compixor-ai.vercel.app/icon.png',
+          width: 1200,
+          height: 630,
+          alt: blog.title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: blog.metaTitle,
       description: blog.metaDescription,
+      images: [
+        blog.thumbnail
+          ? `https://compixor-ai.vercel.app${blog.thumbnail}`
+          : 'https://compixor-ai.vercel.app/icon.png',
+      ],
     },
   };
 }
@@ -354,6 +372,16 @@ export default function BlogPostPage({ params }: PageProps) {
                   {section.body}
                 </p>
 
+                {/* Password Types Visual Matrix (Open Password vs Permission Password) */}
+                {blog.slug === 'password-protect-pdf-files-online' && idx === 0 && (
+                  <PasswordComparisonVisual />
+                )}
+
+                {/* Multi-Layer Pipeline Architecture (Document, Encryption, Watermark, Flatten) */}
+                {blog.slug === 'password-protect-pdf-files-online' && idx === 1 && (
+                  <DocumentLayersVisual />
+                )}
+
                 {/* Styled Bullet Points */}
                 {section.list && (
                   <ul className="my-5 space-y-3 not-prose pl-0">
@@ -545,6 +573,17 @@ export default function BlogPostPage({ params }: PageProps) {
                         </span>
                         <span>{rel.readTime}</span>
                       </div>
+                      {rel.thumbnail && (
+                        <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-3 border border-zinc-200/60 dark:border-zinc-800/60 bg-zinc-950">
+                          <Image
+                            src={rel.thumbnail}
+                            alt={rel.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
                       <h4 className="font-bold text-sm text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2 mb-2">
                         <Link href={`/blog/${rel.slug}`}>{rel.title}</Link>
                       </h4>
