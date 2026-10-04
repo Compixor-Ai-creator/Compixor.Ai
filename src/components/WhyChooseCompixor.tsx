@@ -111,8 +111,8 @@ export default function WhyChooseCompixor() {
             <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-brand-500/10 dark:bg-brand-500/20 blur-2xl pointer-events-none" />
             <div className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 blur-2xl pointer-events-none" />
 
-            {/* Floating Unified Toolkit Interface (Smooth Hardware-Accelerated Levitation) */}
-            <div className="w-full max-w-[260px] bg-white dark:bg-surface-900 rounded-2xl p-3.5 shadow-xl shadow-zinc-950/5 dark:shadow-black/50 border border-zinc-200/90 dark:border-zinc-700/90 transform group-hover:scale-[1.03] transition-transform duration-500 ease-out animate-float-smooth-slow relative z-10">
+            {/* Unified Toolkit Interface */}
+            <div className="w-full max-w-[260px] bg-white dark:bg-surface-900 rounded-2xl p-3.5 shadow-xl shadow-zinc-950/5 dark:shadow-black/50 border border-zinc-200/90 dark:border-zinc-700/90 relative z-10">
               {/* 3x3 Mini Tools Grid */}
               <div className="grid grid-cols-3 gap-2 mb-3">
                 {toolkitMiniApps.map((tool) => {
@@ -139,7 +139,6 @@ export default function WhyChooseCompixor() {
                   Unified Client Toolkit
                 </span>
                 <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
               </div>
@@ -168,8 +167,8 @@ export default function WhyChooseCompixor() {
             <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 blur-2xl pointer-events-none" />
             <div className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-brand-500/10 dark:bg-brand-500/20 blur-2xl pointer-events-none" />
 
-            {/* Floating Metric Slates (Smooth Hardware-Accelerated Levitation) */}
-            <div className="w-full max-w-[260px] space-y-2.5 transform group-hover:scale-[1.03] transition-transform duration-500 ease-out animate-float-smooth-reverse relative z-10">
+            {/* Metric Slates */}
+            <div className="w-full max-w-[260px] space-y-2.5 relative z-10">
               {/* Progress Card */}
               <div className="bg-white dark:bg-surface-900 rounded-xl p-3 shadow-md shadow-zinc-950/5 dark:shadow-black/40 border border-zinc-200/80 dark:border-zinc-700/80">
                 <div className="flex items-center justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">
@@ -240,8 +239,8 @@ export default function WhyChooseCompixor() {
             <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 blur-2xl pointer-events-none" />
             <div className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-cyan-500/10 dark:bg-cyan-500/20 blur-2xl pointer-events-none" />
 
-            {/* Floating Security Structure (Smooth Hardware-Accelerated Levitation) */}
-            <div className="w-full max-w-[260px] relative transform group-hover:scale-[1.03] transition-transform duration-500 ease-out animate-float-smooth-slow flex flex-col items-center z-10">
+            {/* Security Structure */}
+            <div className="w-full max-w-[260px] relative flex flex-col items-center z-10">
               {/* Floating Top Pill (Angled 3D Badging) */}
               <div className="self-start -mb-2 ml-2 px-3 py-1 rounded-full bg-white dark:bg-surface-900 border border-zinc-200/90 dark:border-zinc-700/90 shadow-md text-[10px] font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5 -rotate-2 z-20">
                 <Lock className="w-3 h-3 text-amber-500" />
