@@ -32,7 +32,6 @@ import {
   getRelatedBlogs,
 } from '@/lib/blogsData';
 import BlogFaqAccordion from '@/components/BlogFaqAccordion';
-import StickyBlogCta from '@/components/StickyBlogCta';
 import ArticleHeroBanner from '@/components/ArticleHeroBanner';
 import DecisionCalloutBox from '@/components/DecisionCalloutBox';
 import TableOfContents from '@/components/TableOfContents';
@@ -648,9 +647,6 @@ export default function BlogPostPage({ params }: PageProps) {
           </aside>
         )}
       </div>
-
-      {/* Sticky Bottom Tool CTA Banner */}
-      <StickyBlogCta toolTitle={blog.title} toolPath={blog.toolPath} />
     </div>
   );
 }
