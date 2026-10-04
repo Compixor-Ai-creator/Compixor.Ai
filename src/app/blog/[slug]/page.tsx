@@ -423,6 +423,48 @@ export default function BlogPostPage({ params }: PageProps) {
                   </div>
                 )}
 
+                {/* PDF Watermark Architecture Comparison Visual Diagram */}
+                {blog.slug === 'how-to-add-watermark-to-pdf' && idx === 0 && (
+                  <div className="my-8 not-prose w-full">
+                    <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
+                      <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
+                        <Image
+                          src="/blog/pdf-watermark-architecture.png"
+                          alt="PDF Watermark Architecture Comparison: Text Watermark vs Image Watermark (ISO 32000 Standard)"
+                          fill
+                          sizes="(max-width: 768px) 100vw, 768px"
+                          className="object-contain sm:object-cover"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
+                        <span className="font-semibold text-zinc-300">PDF Watermark Architecture Comparison</span>
+                        <span className="text-[11px] font-mono text-zinc-500 hidden sm:inline-block">ISO 32000 Standard • Vector vs Asset</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* PDF Security Architecture Workflow Diagram (Encrypt -> Watermark -> Flatten) */}
+                {blog.slug === 'how-to-add-watermark-to-pdf' && idx === 6 && (
+                  <div className="my-8 not-prose w-full">
+                    <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
+                      <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
+                        <Image
+                          src="/blog/pdf-security-workflow.jpg"
+                          alt="PDF Security Architecture Visualized: Encrypt, Watermark, and Flatten (ISO 32000 Standard)"
+                          fill
+                          sizes="(max-width: 768px) 100vw, 768px"
+                          className="object-contain sm:object-cover"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
+                        <span className="font-semibold text-zinc-300">PDF Security Architecture Visualized</span>
+                        <span className="text-[11px] font-mono text-zinc-500 hidden sm:inline-block">Strict AES-256 Lock • Watermark • Flatten</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Styled Bullet Points */}
                 {section.list && (
                   <ul className="my-5 space-y-3 not-prose pl-0">
