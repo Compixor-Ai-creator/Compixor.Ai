@@ -497,6 +497,7 @@ export default function QrGeneratorPage() {
           height: 200,
           type: 'svg',
           data: getQrValue(),
+          margin: 10,
           dotsOptions: {
             color: fgColor,
             type: dotType,
@@ -583,12 +584,12 @@ export default function QrGeneratorPage() {
     if (!qrCodeInstance.current) return;
     try {
       if (extension === 'png') {
-        qrCodeInstance.current.update({ width: 1000, height: 1000 });
+        qrCodeInstance.current.update({ width: 1000, height: 1000, margin: 40 });
         await qrCodeInstance.current.download({
           name: `compixor-qr-${Date.now()}`,
           extension,
         });
-        qrCodeInstance.current.update({ width: 200, height: 200 });
+        qrCodeInstance.current.update({ width: 200, height: 200, margin: 10 });
       } else {
         await qrCodeInstance.current.download({
           name: `compixor-qr-${Date.now()}`,
@@ -1277,9 +1278,14 @@ export default function QrGeneratorPage() {
               Live QR Preview
             </h3>
 
-            {/* QR Canvas Container */}
-            <div className="flex items-center justify-center p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-inner min-h-[220px] max-w-[240px] mx-auto">
-              <div ref={qrRef} className="overflow-hidden rounded-lg flex items-center justify-center" />
+            {/* QR Canvas Container with Clean High-Contrast Stage for Dark Mode Scanning */}
+            <div className="flex items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 shadow-inner min-h-[230px] max-w-[250px] mx-auto">
+              <div
+                className="p-2 rounded-xl shadow-lg border border-zinc-200/80 dark:border-zinc-600/60 flex items-center justify-center transition-colors"
+                style={{ backgroundColor: bgColor || '#ffffff' }}
+              >
+                <div ref={qrRef} className="flex items-center justify-center" />
+              </div>
             </div>
 
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
