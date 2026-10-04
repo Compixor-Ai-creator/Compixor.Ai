@@ -607,6 +607,7 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Stamp custom text or graphic logos across all PDF pages with customized opacity and rotation.",
     excerpt: "Protect proprietary reports from copyright theft by applying customizable text or brand logo watermarks across pages.",
     toolPath: "/tools/add-pdf-watermark",
+    thumbnail: "/blog/pdf-watermark-hero.jpg",
     accentColor: "from-pink-500/20 to-rose-500/20",
     icon: "Stamp",
     content: {

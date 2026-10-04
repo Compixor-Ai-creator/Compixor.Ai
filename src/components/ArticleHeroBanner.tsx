@@ -63,6 +63,21 @@ export default function ArticleHeroBanner({
     );
   }
 
+  if (id === 'add-pdf-watermark') {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
+        <Image
+          src="/blog/pdf-watermark-hero.jpg"
+          alt={title}
+          fill
+          priority
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          className="object-cover"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 flex items-center justify-center p-6 sm:p-10 my-8 group">
       {/* Ambient Mesh Glow Backdrop */}
