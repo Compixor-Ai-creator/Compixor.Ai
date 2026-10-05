@@ -702,13 +702,13 @@ export default function BlogPostPage({ params }: PageProps) {
                         <span>{rel.readTime}</span>
                       </div>
                       {rel.thumbnail && (
-                        <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-3 border border-zinc-200/60 dark:border-zinc-800/60 bg-zinc-950">
+                        <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-3 border border-zinc-200/60 dark:border-zinc-800/60 bg-zinc-950 flex items-center justify-center">
                           <Image
                             src={rel.thumbnail}
                             alt={rel.title}
                             fill
                             sizes="(max-width: 768px) 100vw, 33vw"
-                            className="object-cover"
+                            className={rel.id === 'full-dp-maker' ? 'object-contain' : 'object-cover'}
                           />
                         </div>
                       )}

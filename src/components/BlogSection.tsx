@@ -157,13 +157,13 @@ export default function BlogSection() {
 
                       {/* Thumbnail or Vector Illustration Glow Box */}
                       {blog.thumbnail ? (
-                        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-5 border border-zinc-200/80 dark:border-zinc-800/80 shadow-md group-hover:scale-[1.02] transition-transform duration-300 bg-zinc-950">
+                        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-5 border border-zinc-200/80 dark:border-zinc-800/80 shadow-md group-hover:scale-[1.02] transition-transform duration-300 bg-zinc-950 flex items-center justify-center">
                           <Image
                             src={blog.thumbnail}
                             alt={blog.title}
                             fill
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover"
+                            className={blog.id === 'full-dp-maker' ? 'object-contain' : 'object-cover'}
                           />
                         </div>
                       ) : (
