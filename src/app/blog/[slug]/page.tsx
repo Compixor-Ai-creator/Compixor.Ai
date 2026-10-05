@@ -465,6 +465,70 @@ export default function BlogPostPage({ params }: PageProps) {
                   </div>
                 )}
 
+                {/* WhatsApp Full DP vs Cropped Comparison Banner */}
+                {blog.slug === 'how-to-set-full-dp-whatsapp-without-cropping' && idx === 0 && (
+                  <div className="my-8 not-prose w-full">
+                    <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
+                      <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
+                        <Image
+                          src="/blog/whatsapp-full-dp-banner.jpg"
+                          alt="WhatsApp DP Comparison: Annoying Crop Window vs Uncropped Full DP with Ambient Frosted Blur"
+                          fill
+                          priority
+                          sizes="(max-width: 768px) 100vw, 768px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
+                        <span className="font-semibold text-zinc-300">WhatsApp DP Canvas Transformation</span>
+                        <span className="text-[11px] font-mono text-zinc-500 hidden sm:inline-block">1:1 Square Pad • Frosted Ambient Blur • 100% In-Browser</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Aspect Ratio Split Comparison Infographic */}
+                {blog.slug === 'how-to-set-full-dp-whatsapp-without-cropping' && idx === 2 && (
+                  <div className="my-8 not-prose w-full">
+                    <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
+                      <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
+                        <Image
+                          src="/blog/aspect-ratio-comparison.jpg"
+                          alt="Aspect Ratio Comparison: 9:16 Portrait Forced Square Crop vs 1:1 Expanded Canvas with Circular Safe Zone"
+                          fill
+                          sizes="(max-width: 768px) 100vw, 768px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
+                        <span className="font-semibold text-zinc-300">Aspect Ratio &amp; Circular Safe-Zone Anatomy</span>
+                        <span className="text-[11px] font-mono text-zinc-500 hidden sm:inline-block">9:16 Forced Crop vs 1:1 Safe Zone</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3 Different Background Effects Showcase (Frosted Blur, Solid, Gradient) */}
+                {blog.slug === 'how-to-set-full-dp-whatsapp-without-cropping' && idx === 3 && (
+                  <div className="my-8 not-prose w-full">
+                    <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
+                      <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
+                        <Image
+                          src="/blog/whatsapp-dp-effects-samples.jpg"
+                          alt="3 Background Effects for WhatsApp DP: Frosted Blur Backdrop, Solid Minimalist Border, Dual-Tone Gradient"
+                          fill
+                          sizes="(max-width: 768px) 100vw, 768px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
+                        <span className="font-semibold text-zinc-300">Canvas Styling Effects</span>
+                        <span className="text-[11px] font-mono text-zinc-500 hidden sm:inline-block">Frosted Blur • Solid Minimalist • Dual-Tone Gradient</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Styled Bullet Points */}
                 {section.list && (
                   <ul className="my-5 space-y-3 not-prose pl-0">
