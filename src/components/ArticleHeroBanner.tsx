@@ -80,23 +80,14 @@ export default function ArticleHeroBanner({
 
   if (id === 'full-dp-maker') {
     return (
-      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8 flex items-center justify-center">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none opacity-40 dark:opacity-30"
-          style={{
-            background:
-              'radial-gradient(ellipse at center, rgba(124, 58, 237, 0.45) 0%, rgba(59, 130, 246, 0.25) 45%, transparent 75%)',
-            filter: 'blur(60px)',
-          }}
-        />
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
           src="/blog/whatsapp-full-dp-thumbnail.jpg"
           alt={title}
           fill
           priority
           sizes="(max-width: 1200px) 100vw, 1200px"
-          className="object-contain"
+          className="object-cover"
         />
       </div>
     );
