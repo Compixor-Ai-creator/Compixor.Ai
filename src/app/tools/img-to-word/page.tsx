@@ -164,15 +164,28 @@ export default function ImgToWordPage() {
           ? await convertImageToWord(files[0], { language, onProgress })
           : await convertImagesToWord(files, { language, onProgress });
 
+      const outputName = getOutputFileName(files);
+
       setResult({
         blob: res.docxBlob,
         wordCount: res.wordCount,
         pageCount: res.pageCount,
         timeMs: res.processingTimeMs,
-        outputName: getOutputFileName(files),
+        outputName,
       });
       setPreviewText(res.textContent);
-      toast.success('Word document ready — click Download!');
+
+      // Instant browser download trigger (in-memory Blob)
+      const downloadUrl = URL.createObjectURL(res.docxBlob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = outputName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(downloadUrl), 60000);
+
+      toast.success('Word document generated and downloaded!');
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'OCR failed unexpectedly.';
       setError(msg);

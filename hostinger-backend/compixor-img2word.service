@@ -1,0 +1,16 @@
+[Unit]
+Description=Compixor AI — Image to Word FastAPI Service
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/var/www/compixor-img2word
+ExecStart=/var/www/compixor-img2word/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8001 --workers 2
+Restart=always
+RestartSec=5
+Environment="ALLOWED_ORIGINS=https://compixor-ai.cloud,https://www.compixor-ai.cloud,https://compixor-ai.vercel.app"
+Environment="MAX_FILE_SIZE_MB=25"
+Environment="MAX_BATCH_FILES=10"
+
+[Install]
+WantedBy=multi-user.target
