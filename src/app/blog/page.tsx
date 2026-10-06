@@ -9,13 +9,13 @@ export const metadata: Metadata = {
   description:
     'Comprehensive step-by-step guides on PDF compression, password protection, passport photo sizing, WhatsApp DP formatting, and QR code generation.',
   alternates: {
-    canonical: 'https://compixor-ai.vercel.app/blog',
+    canonical: 'https://compixor-ai.cloud/blog',
   },
   openGraph: {
     title: 'Client-Side Guides & Tutorials | Compixor AI',
     description:
       'Learn how to convert, compress, protect, and optimize files locally in your browser with zero server uploads.',
-    url: 'https://compixor-ai.vercel.app/blog',
+    url: 'https://compixor-ai.cloud/blog',
     siteName: 'Compixor AI',
     type: 'website',
   },

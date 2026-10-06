@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const canonicalUrl = `https://compixor-ai.vercel.app/blog/${blog.slug}`;
+  const canonicalUrl = `https://compixor-ai.cloud/blog/${blog.slug}`;
 
   return {
     title: `${blog.metaTitle} | Compixor AI`,
@@ -103,8 +103,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: [
         {
           url: blog.thumbnail
-            ? `https://compixor-ai.vercel.app${blog.thumbnail}`
-            : 'https://compixor-ai.vercel.app/icon.png',
+            ? `https://compixor-ai.cloud${blog.thumbnail}`
+            : 'https://compixor-ai.cloud/icon.png',
           width: 1200,
           height: 630,
           alt: blog.title,
@@ -117,8 +117,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: blog.metaDescription,
       images: [
         blog.thumbnail
-          ? `https://compixor-ai.vercel.app${blog.thumbnail}`
-          : 'https://compixor-ai.vercel.app/icon.png',
+          ? `https://compixor-ai.cloud${blog.thumbnail}`
+          : 'https://compixor-ai.cloud/icon.png',
       ],
     },
   };
@@ -159,19 +159,19 @@ export default function BlogPostPage({ params }: PageProps) {
     author: {
       '@type': 'Organization',
       name: 'Compixor AI',
-      url: 'https://compixor-ai.vercel.app',
+      url: 'https://compixor-ai.cloud',
     },
     publisher: {
       '@type': 'Organization',
       name: 'Compixor AI',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://compixor-ai.vercel.app/icon.png',
+        url: 'https://compixor-ai.cloud/icon.png',
       },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://compixor-ai.vercel.app/blog/${blog.slug}`,
+      '@id': `https://compixor-ai.cloud/blog/${blog.slug}`,
     },
   };
 
@@ -196,19 +196,19 @@ export default function BlogPostPage({ params }: PageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://compixor-ai.vercel.app',
+        item: 'https://compixor-ai.cloud',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Blogs',
-        item: 'https://compixor-ai.vercel.app/blog',
+        item: 'https://compixor-ai.cloud/blog',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: blog.title,
-        item: `https://compixor-ai.vercel.app/blog/${blog.slug}`,
+        item: `https://compixor-ai.cloud/blog/${blog.slug}`,
       },
     ],
   };

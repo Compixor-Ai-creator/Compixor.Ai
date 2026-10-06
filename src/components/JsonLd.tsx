@@ -37,13 +37,13 @@ export function SoftwareAppJsonLd({
     author: {
       '@type': 'Organization',
       name: 'Compixor AI',
-      url: 'https://compixor-ai.vercel.app',
+      url: 'https://compixor-ai.cloud',
     },
     publisher: {
       '@type': 'Organization',
       name: 'Compixor AI',
-      url: 'https://compixor-ai.vercel.app',
-      logo: 'https://compixor-ai.vercel.app/icon.png',
+      url: 'https://compixor-ai.cloud',
+      logo: 'https://compixor-ai.cloud/icon.png',
     },
   };
 
@@ -170,9 +170,9 @@ export function OrganizationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Compixor AI',
-    url: 'https://compixor-ai.vercel.app',
-    logo: 'https://compixor-ai.vercel.app/icon.png',
-    sameAs: ['https://compixor.ai', 'https://compixor-ai.vercel.app'],
+    url: 'https://compixor-ai.cloud',
+    logo: 'https://compixor-ai.cloud/icon.png',
+    sameAs: ['https://compixor.ai', 'https://compixor-ai.cloud'],
     description:
       'Compixor AI provides 100% private, client-side web utilities for documents and media with zero cloud uploads.',
   };

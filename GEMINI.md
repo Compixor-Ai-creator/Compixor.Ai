@@ -2,7 +2,7 @@
 
 ## Project Architecture & Philosophy
 - **Compixor Web App (`d:/vs code/compixor`):**
-  - **Live Reference**: [https://compixor-ai.vercel.app](https://compixor-ai.vercel.app)
+  - **Live Reference**: [https://compixor-ai.cloud](https://compixor-ai.cloud)
   - **100% Client-Side Processing**: All conversion, compression, and file processing tools MUST run entirely in the browser (RAM) using WebAssembly, Web Workers, and client-side JS/TS libraries (HTML5 Canvas, pdf-lib, etc.). No user file buffers may ever be uploaded to a backend or external server.
   - **Design System**: Clean, modern glassmorphism UI inspired by SlideSpeak and Microsoft Fluent Design. Features include subtle mesh glow orbs, topo background patterns, dark/light theme persistence (`compixor-theme`), responsive cards, and Lucide React icons.
   - **Core Tool Catalog**:

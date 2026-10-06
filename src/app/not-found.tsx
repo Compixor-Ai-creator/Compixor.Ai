@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: 'The requested page could not be found. Your local files and memory remain safe.',
     images: [
       {
-        url: 'https://compixor-ai.vercel.app/images/og-banner.png',
+        url: 'https://compixor-ai.cloud/images/og-banner.png',
         width: 1200,
         height: 630,
         alt: 'Compixor AI - 404',
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '404 - Page Not Found | COMPIXOR.AI',
     description: 'The requested page could not be found. Your local files and memory remain safe.',
-    images: ['https://compixor-ai.vercel.app/images/og-banner.png'],
+    images: ['https://compixor-ai.cloud/images/og-banner.png'],
   },
 };
 

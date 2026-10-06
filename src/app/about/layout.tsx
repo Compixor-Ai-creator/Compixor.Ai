@@ -8,17 +8,17 @@ export const metadata: Metadata = {
   description:
     'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
   alternates: {
-    canonical: 'https://compixor-ai.vercel.app/about',
+    canonical: 'https://compixor-ai.cloud/about',
   },
   openGraph: {
     title: 'About Compixor AI — Private Client-Side Media & Document Toolkit',
     description:
       'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
-    url: 'https://compixor-ai.vercel.app/about',
+    url: 'https://compixor-ai.cloud/about',
     type: 'website',
     images: [
       {
-        url: 'https://compixor-ai.vercel.app/images/og-banner.png',
+        url: 'https://compixor-ai.cloud/images/og-banner.png',
         width: 1200,
         height: 630,
         alt: 'About Compixor AI',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     title: 'About Compixor AI — Private Client-Side Media & Document Toolkit',
     description:
       'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
-    images: ['https://compixor-ai.vercel.app/images/og-banner.png'],
+    images: ['https://compixor-ai.cloud/images/og-banner.png'],
   },
 };
 
@@ -44,8 +44,8 @@ export default function AboutLayout({
       <OrganizationJsonLd />
       <BreadcrumbJsonLd
         items={[
-          { name: 'Home', url: 'https://compixor-ai.vercel.app/' },
-          { name: 'About', url: 'https://compixor-ai.vercel.app/about' },
+          { name: 'Home', url: 'https://compixor-ai.cloud/' },
+          { name: 'About', url: 'https://compixor-ai.cloud/about' },
         ]}
       />
       {children}

@@ -63,7 +63,7 @@ export interface HomepageSeoData {
   faqs: FaqItem[];
 }
 
-export const BASE_URL = 'https://compixor-ai.vercel.app';
+export const BASE_URL = 'https://compixor-ai.cloud';
 export const AUTHOR_NAME = 'Haroon Ali';
 export const OG_IMAGE_URL = `${BASE_URL}/images/og-banner.png`;
 
