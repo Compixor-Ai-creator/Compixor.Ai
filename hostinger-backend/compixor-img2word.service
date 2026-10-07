@@ -1,5 +1,5 @@
 [Unit]
-Description=Compixor AI — Image to Word FastAPI Service
+Description=Compixor AI — Image to Word FastAPI Service (Gemini Vision v5)
 After=network.target
 
 [Service]
@@ -11,6 +11,7 @@ RestartSec=5
 Environment="ALLOWED_ORIGINS=https://compixor-ai.cloud,https://www.compixor-ai.cloud,https://compixor-ai.vercel.app"
 Environment="MAX_FILE_SIZE_MB=25"
 Environment="MAX_BATCH_FILES=10"
+Environment="GEMINI_API_KEY="
 
 [Install]
 WantedBy=multi-user.target
