@@ -72,16 +72,10 @@ MAX_BATCH_FILES = int(os.getenv("MAX_BATCH_FILES", "10"))
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 
-# Initialize Google Generative AI if key is present
-genai_client = None
-if GEMINI_API_KEY:
-    try:
-        import google.generativeai as genai
-        genai.configure(api_key=GEMINI_API_KEY)
-        genai_client = genai.GenerativeModel("gemini-1.5-flash")
-        logger.info("Gemini 1.5 Flash Vision successfully configured!")
-    except Exception as e:
-        logger.warning(f"Could not initialize google.generativeai: {e}")
+# Check if Gemini API Key is configured
+genai_ready = bool(GEMINI_API_KEY)
+if genai_ready:
+    logger.info("Gemini Vision Engine configured and ready!")
 
 
 # ── Utility Formatting Helpers ────────────────────────────────────────────────
@@ -221,28 +215,47 @@ RULES:
 
 
 def extract_with_gemini(pil_img: Image.Image) -> dict:
-    """Call Gemini 1.5 Flash Vision to parse document into structured schema."""
-    if not genai_client:
+    """Call Gemini Vision with automatic multi-model fallback."""
+    if not GEMINI_API_KEY:
         raise ValueError("GEMINI_API_KEY is not configured.")
 
-    response = genai_client.generate_content(
-        [SYSTEM_PROMPT, pil_img],
-        generation_config={
-            "temperature": 0.1,
-            "response_mime_type": "application/json",
-        },
-    )
+    import google.generativeai as genai
+    genai.configure(api_key=GEMINI_API_KEY)
 
-    text = response.text.strip()
-    # Clean potential markdown wrapping
-    if text.startswith("```json"):
-        text = text[7:]
-    if text.startswith("```"):
-        text = text[3:]
-    if text.endswith("```"):
-        text = text[:-3]
+    candidate_models = [
+        "gemini-flash-latest",
+        "gemini-3.8-flash",
+        "gemini-3.5-flash",
+        "gemini-3.1-flash-lite",
+    ]
+    last_err = None
 
-    return json.loads(text.strip())
+    for model_name in candidate_models:
+        try:
+            logger.info(f"Attempting extraction with {model_name}...")
+            model = genai.GenerativeModel(model_name)
+            response = model.generate_content(
+                [SYSTEM_PROMPT, pil_img],
+                generation_config={
+                    "temperature": 0.1,
+                    "response_mime_type": "application/json",
+                },
+            )
+            text = response.text.strip()
+            if text.startswith("```json"):
+                text = text[7:]
+            if text.startswith("```"):
+                text = text[3:]
+            if text.endswith("```"):
+                text = text[:-3]
+            logger.info(f"Gemini Vision successfully extracted layout via {model_name}!")
+            return json.loads(text.strip())
+        except Exception as e:
+            logger.warning(f"Model {model_name} failed ({e}), trying next candidate...")
+            last_err = e
+            continue
+
+    raise last_err or RuntimeError("All Gemini models failed.")
 
 
 # ── High-Fidelity DOCX Document Builder ───────────────────────────────────────
@@ -512,11 +525,11 @@ def local_ocr_fallback(pil_img: Image.Image, first_stem: str) -> bytes:
 
 @app.get("/health")
 async def health_check():
-    mode = "Gemini 1.5 Flash Vision (Active)" if genai_client else "Local OCR Fallback (API Key missing)"
+    mode = "Gemini Flash Vision (Active)" if genai_ready else "Local OCR Fallback (API Key missing)"
     return {
         "status": "healthy",
         "engine": f"Compixor AI v5 — {mode}",
-        "gemini_active": genai_client is not None,
+        "gemini_active": genai_ready,
     }
 
 
@@ -548,10 +561,10 @@ async def convert_image_to_docx(
         logger.error(f"Image decode failed: {exc}")
         raise HTTPException(status_code=415, detail="Invalid image file format.")
 
-    # Primary: Gemini 1.5 Flash Vision (< 2.5s)
-    if genai_client:
+    # Primary: Gemini Flash Vision (< 2.5s)
+    if genai_ready:
         try:
-            logger.info(f"Processing '{upload.filename}' with Gemini 1.5 Flash Vision...")
+            logger.info(f"Processing '{upload.filename}' with Gemini Vision...")
             doc_data = extract_with_gemini(pil_img)
             docx_bytes = build_docx_from_data(pil_img, doc_data, first_stem)
             logger.info("Successfully synthesized high-fidelity DOCX with Gemini Vision!")
