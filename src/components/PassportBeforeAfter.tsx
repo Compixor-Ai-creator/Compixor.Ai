@@ -172,7 +172,7 @@ export default function PassportBeforeAfter() {
             <div className="w-full mt-4 space-y-1.5 text-left">
               <div className="flex items-center gap-2 text-xs text-zinc-700 dark:text-zinc-300 font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <span>IS-Net FP16 AI hair matting with 0% fringe halos</span>
+                <span>Cloud AI HD portrait matting with 0% fringe halos</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-zinc-700 dark:text-zinc-300 font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
@@ -194,10 +194,10 @@ export default function PassportBeforeAfter() {
             </div>
             <div>
               <p className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white">
-                True Zero-Server Privacy Architecture
+                No Data Leak — 100% On-Device Processing
               </p>
               <p className="text-[11px] sm:text-xs text-zinc-600 dark:text-zinc-400">
-                Your face and ID photo are processed 100% in your device RAM via WebGPU. Never sent to any cloud server, unlike PhotoGov, Cutout.Pro, or PhotoAiD.
+                Your passport and ID photo never leaves your device. Processed entirely in browser RAM — no server, no upload, no storage. Unlike PhotoGov, Cutout.Pro, or PhotoAiD.
               </p>
             </div>
           </div>

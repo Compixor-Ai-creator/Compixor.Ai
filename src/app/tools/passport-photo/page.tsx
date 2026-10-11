@@ -47,6 +47,7 @@ import DropAnywhere from '@/components/DropAnywhere';
 import RelatedTools from '@/components/RelatedTools';
 import PassportBeforeAfter from '@/components/PassportBeforeAfter';
 import {
+  removeBackground,
   removeBackgroundISNet,
   refineCutoutCanvas,
   sampleOriginalBgColor,
@@ -635,10 +636,10 @@ export default function PassportPhotoPage() {
   const imageElementRef = useRef<HTMLImageElement | null>(null);
   const previewBoxRef = useRef<HTMLDivElement>(null);
 
-  // Cached Step 1 Cutout (Clean Transparent Subject PNG)
   const rawCutoutCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const cachedCutoutCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const segmenterRef = useRef<any>(null);
+  const hasAutoAlignedRef = useRef<boolean>(false);
 
   // Dynamic preview box
   const previewDimensions = useMemo(() => {
@@ -656,32 +657,7 @@ export default function PassportPhotoPage() {
     };
   }, [activePreset.aspectRatio]);
 
-  // Initialize MediaPipe AI Segmentation Model on mount
-  useEffect(() => {
-    let isMounted = true;
-    async function initModel() {
-      try {
-        const mp = await import('@mediapipe/selfie_segmentation');
-        const segmenter = new mp.SelfieSegmentation({
-          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
-        });
-        segmenter.setOptions({
-          modelSelection: 0, // Portrait/selfie model — optimized for close-up face photos (passport, visa)
-        });
-        await segmenter.initialize();
-        if (isMounted) {
-          segmenterRef.current = segmenter;
-          console.debug('[PassportStudio] High-Precision AI Portrait Model ready.');
-        }
-      } catch (err) {
-        console.warn('[PassportStudio] MediaPipe initialization error (using client matting fallback):', err);
-      }
-    }
-    initModel();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  // MediaPipe client model removed: Background removal is now 100% processed via FastAPI backend API
 
   // Draw formal outfit template onto canvas
   const drawOutfitOverlay = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number) => {
@@ -851,6 +827,8 @@ export default function PassportPhotoPage() {
 
   // STEP 2 — Instant Solid Color Background Compositing Engine
   // Rule: Solid BG fill FIRST → then draw pure transparent subject cutout on top (no blending/tinting)
+  // STEP 2 — Instant Solid Color Background & Transformed Cutout Compositing Engine
+  // Rule: Solid BG fill FIRST → then draw clean transformed subject cutout on top (instant 60 FPS client-side)
   const compositeFinalCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -873,67 +851,132 @@ export default function PassportPhotoPage() {
     if (isTransparent) {
       ctx.clearRect(0, 0, width, height);
     } else {
-      // Solid color fill — pure, no transparency, no tint (e.g. #FFFFFF for US/NADRA, #e0f2fe light blue)
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);
     }
 
-    // STEP 2: Draw the clean RGBA subject cutout directly on top (source-over)
-    // The cutout canvas has transparent background + subject with alpha mask — no color contamination
-    if (cachedCutoutCanvasRef.current) {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.drawImage(cachedCutoutCanvasRef.current, 0, 0, width, height);
+    // STEP 2: Draw the subject (cutout or raw photo) with transforms
+    const subjectSource = enableBgRemoval ? cachedCutoutCanvasRef.current : imageElementRef.current;
+    if (subjectSource) {
+      const srcW = 'naturalWidth' in subjectSource ? (subjectSource as HTMLImageElement).naturalWidth : (subjectSource as HTMLCanvasElement).width;
+      const srcH = 'naturalHeight' in subjectSource ? (subjectSource as HTMLImageElement).naturalHeight : (subjectSource as HTMLCanvasElement).height;
+
+      if (srcW > 0 && srcH > 0) {
+        const scaleX = width / previewDimensions.width;
+        const scaleY = height / previewDimensions.height;
+        const scaledPanX = panX * scaleX;
+        const scaledPanY = panY * scaleY;
+
+        ctx.save();
+        ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+        ctx.translate(width / 2 + scaledPanX, height / 2 + scaledPanY);
+        ctx.rotate((rotation * Math.PI) / 180);
+        if (flipH) {
+          ctx.scale(-zoom, zoom);
+        } else {
+          ctx.scale(zoom, zoom);
+        }
+
+        const fitScale = Math.max(width / srcW, height / srcH);
+        const drawW = srcW * fitScale;
+        const drawH = srcH * fitScale;
+        ctx.drawImage(subjectSource, -drawW / 2, -drawH / 2, drawW, drawH);
+        ctx.restore();
+      }
     }
 
     // STEP 3: Draw formal outfit overlay (if selected) on top of subject
     drawOutfitOverlay(ctx, width, height);
 
     setProcessingStep('done');
-  }, [activePreset, bgColor, previewTab, drawOutfitOverlay]);
+  }, [
+    activePreset,
+    bgColor,
+    previewTab,
+    enableBgRemoval,
+    panX,
+    panY,
+    zoom,
+    rotation,
+    flipH,
+    brightness,
+    contrast,
+    saturation,
+    previewDimensions,
+    drawOutfitOverlay,
+  ]);
 
+  // Biometric Auto-Aligner (ICAO 9303 70-80% head height alignment)
+  const autoAlignBiometric = useCallback(() => {
+    const canvas = cachedCutoutCanvasRef.current;
+    if (!canvas) return;
+    const w = canvas.width;
+    const h = canvas.height;
+    try {
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return;
+      const data = ctx.getImageData(0, 0, w, h).data;
+      let minY = h, maxY = 0, minX = w, maxX = 0;
+      for (let y = 0; y < h; y += 4) {
+        for (let x = 0; x < w; x += 4) {
+          if (data[(y * w + x) * 4 + 3] > 60) {
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+          }
+        }
+      }
+      if (minY < maxY && minX < maxX) {
+        const subH = maxY - minY;
+        const subW = maxX - minX;
+        // In full body shot (subH > subW * 1.6), head is approx top 28% of subject
+        if (subH > subW * 1.6) {
+          const estimatedHeadH = subH * 0.28;
+          const targetHeadH = activePreset.heightPx * 0.72;
+          const targetZoom = Math.min(2.8, Math.max(1.0, (targetHeadH / (estimatedHeadH * (activePreset.heightPx / h)))));
+          setZoom(Math.round(targetZoom * 100) / 100);
+          const headCenterXPct = (minX + maxX) / 2 / w;
+          setPanX(-Math.round((headCenterXPct - 0.5) * previewDimensions.width));
+          const crownYPct = minY / h;
+          const targetCrownPct = (activePreset.biometricSpec.topMarginPercent ?? 12) / 100;
+          setPanY(-Math.round((crownYPct - targetCrownPct) * previewDimensions.height));
+          toast.success('Subject automatically framed into biometric guidelines!');
+        } else {
+          // Half-body / portrait
+          const crownYPct = minY / h;
+          const targetCrownPct = (activePreset.biometricSpec.topMarginPercent ?? 12) / 100;
+          setPanY(-Math.round((crownYPct - targetCrownPct) * previewDimensions.height * 0.7));
+          toast.success('Portrait centered to biometric guidelines!');
+        }
+      }
+    } catch (_) {}
+  }, [activePreset, previewDimensions]);
 
-  // STEP 1 — Background Removal & Subject Separation (Produces Pure Transparent Cutout PNG)
-  // Pre-resizes image to max 1024px for speed, then runs MediaPipe AI matting
+  // STEP 1 — Background Removal & Subject Separation ON FULL ORIGINAL PHOTO
+  // Runs ONCE per uploaded image or when toggled, never per transform slider change
   const processSubjectCutout = useCallback(async () => {
     const img = imageElementRef.current;
     if (!img || !img.complete || img.naturalWidth === 0) return;
 
-    const width = activePreset.widthPx;
-    const height = activePreset.heightPx;
-
-    const scaleX = width / previewDimensions.width;
-    const scaleY = height / previewDimensions.height;
-    const scaledPanX = panX * scaleX;
-    const scaledPanY = panY * scaleY;
-
-    setProcessingStep('optimizing');
-    setSegmentationStatus('Optimizing Image...');
-
-    // Yield to browser to paint the loading state before heavy work
-    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
-
-    // 1. Render transformed and filtered subject photo onto offscreen sourceCanvas
-    const sourceCanvas = document.createElement('canvas');
-    sourceCanvas.width = width;
-    sourceCanvas.height = height;
-    const srcCtx = sourceCanvas.getContext('2d', { willReadFrequently: true });
-    if (!srcCtx) return;
-
-    srcCtx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
-    srcCtx.save();
-    srcCtx.translate(width / 2 + scaledPanX, height / 2 + scaledPanY);
-    srcCtx.rotate((rotation * Math.PI) / 180);
-    if (flipH) {
-      srcCtx.scale(-zoom, zoom);
-    } else {
-      srcCtx.scale(zoom, zoom);
+    // 1. Offscreen canvas for the full original image (max 1600px for crispness and speed)
+    const naturalW = img.naturalWidth;
+    const naturalH = img.naturalHeight;
+    let procW = naturalW;
+    let procH = naturalH;
+    const maxDim = 1600;
+    if (procW > maxDim || procH > maxDim) {
+      const ratio = Math.min(maxDim / procW, maxDim / procH);
+      procW = Math.round(procW * ratio);
+      procH = Math.round(procH * ratio);
     }
 
-    const scale = Math.max(width / img.naturalWidth, height / img.naturalHeight);
-    const drawWidth = img.naturalWidth * scale;
-    const drawHeight = img.naturalHeight * scale;
-    srcCtx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
-    srcCtx.restore();
+    const sourceCanvas = document.createElement('canvas');
+    sourceCanvas.width = procW;
+    sourceCanvas.height = procH;
+    const srcCtx = sourceCanvas.getContext('2d', { willReadFrequently: true });
+    if (!srcCtx) return;
+    srcCtx.drawImage(img, 0, 0, procW, procH);
 
     // 2. If Background Removal is DISABLED: Cache source photo directly
     if (!enableBgRemoval) {
@@ -946,21 +989,19 @@ export default function PassportPhotoPage() {
       return;
     }
 
-    // 3. Run High-Precision AI Portrait Matting (IS-Net FP16)
+    // 3. Run High-Precision AI Portrait Matting (Backend Server API with fallback)
     setIsSegmenting(true);
     setProcessingStep('removing-bg');
     setSegmentationStatus('Initializing High-Precision AI Model...');
-    setMattingProgress({ stage: 'Starting IS-Net Matting Engine...', current: 0, total: 100, percent: 0 });
+    setMattingProgress({ stage: 'Starting AI Matting Engine...', current: 0, total: 100, percent: 0 });
 
-    // Yield again so UI can update
     await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
     try {
       let rawCutoutCanvas: HTMLCanvasElement | null = null;
 
       try {
-        // High-Accuracy Client-Side Model: @imgly/background-removal (isnet_fp16)
-        const cutoutBlob = await removeBackgroundISNet(sourceCanvas, (p) => {
+        const cutoutBlob = await removeBackground(sourceCanvas, (p) => {
           setMattingProgress(p);
           setSegmentationStatus(`${p.stage} ${p.percent > 0 ? `(${p.percent}%)` : ''}`);
         });
@@ -974,50 +1015,15 @@ export default function PassportPhotoPage() {
         });
 
         rawCutoutCanvas = document.createElement('canvas');
-        rawCutoutCanvas.width = width;
-        rawCutoutCanvas.height = height;
+        rawCutoutCanvas.width = procW;
+        rawCutoutCanvas.height = procH;
         const rcCtx = rawCutoutCanvas.getContext('2d', { willReadFrequently: true });
-        rcCtx?.drawImage(cutoutImg, 0, 0, width, height);
+        rcCtx?.drawImage(cutoutImg, 0, 0, procW, procH);
         URL.revokeObjectURL(blobUrl);
-      } catch (imglyErr) {
-        console.warn('[PassportStudio] IS-Net error or unsupported browser feature, trying MediaPipe fallback:', imglyErr);
-        const segmenter = segmenterRef.current;
-        if (segmenter) {
-          // Fallback to MediaPipe
-          await new Promise<void>((resolve) => {
-            segmenter.onResults((results: any) => {
-              const rawMaskCanvas = results.segmentationMask;
-              if (rawMaskCanvas) {
-                const offMask = document.createElement('canvas');
-                offMask.width = width;
-                offMask.height = height;
-                const offCtx = offMask.getContext('2d');
-                if (offCtx) {
-                  offCtx.drawImage(rawMaskCanvas, 0, 0, width, height);
-                  const maskData = offCtx.getImageData(0, 0, width, height);
-                  const rawAlpha = new Uint8Array(width * height);
-                  for (let i = 0; i < width * height; i++) {
-                    rawAlpha[i] = maskData.data[i * 4];
-                  }
-                  const refinedAlpha = cleanAndRefineAlphaMask(rawAlpha, width, height, bgTolerance, bgFeather);
-                  rawCutoutCanvas = document.createElement('canvas');
-                  rawCutoutCanvas.width = width;
-                  rawCutoutCanvas.height = height;
-                  const cutCtx = rawCutoutCanvas.getContext('2d', { willReadFrequently: true });
-                  if (cutCtx) {
-                    const finalSubjectData = srcCtx.getImageData(0, 0, width, height);
-                    for (let i = 0; i < width * height; i++) {
-                      finalSubjectData.data[i * 4 + 3] = refinedAlpha[i];
-                    }
-                    cutCtx.putImageData(finalSubjectData, 0, 0);
-                  }
-                }
-              }
-              resolve();
-            });
-            segmenter.send({ image: sourceCanvas });
-          });
-        }
+      } catch (backendErr) {
+        console.error('[PassportStudio] Backend error:', backendErr);
+        toast.error('Backend processing failed. Please check server or try again.');
+        throw backendErr;
       }
 
       if (!rawCutoutCanvas) {
@@ -1030,7 +1036,7 @@ export default function PassportPhotoPage() {
       setProcessingStep('compositing');
       setSegmentationStatus('Smoothing & Decontaminating Boundary...');
 
-      const originalBg = sampleOriginalBgColor(srcCtx, width, height);
+      const originalBg = sampleOriginalBgColor(srcCtx, procW, procH);
       const refinedCanvas = refineCutoutCanvas(rawCutoutCanvas, {
         featherRadius: bgFeather,
         chokeAmount: bgChoke,
@@ -1040,6 +1046,14 @@ export default function PassportPhotoPage() {
 
       cachedCutoutCanvasRef.current = refinedCanvas;
       setSegmentationStatus('Biometric Cutout Ready');
+
+      // Auto-align portrait on first run
+      if (!hasAutoAlignedRef.current) {
+        hasAutoAlignedRef.current = true;
+        setTimeout(() => {
+          autoAlignBiometric();
+        }, 50);
+      }
     } catch (err) {
       console.error('[PassportStudio] Segmentation error:', err);
       rawCutoutCanvasRef.current = sourceCanvas;
@@ -1052,22 +1066,13 @@ export default function PassportPhotoPage() {
       compositeFinalCanvas();
     }
   }, [
-    activePreset,
-    panX,
-    panY,
-    rotation,
-    zoom,
-    flipH,
-    brightness,
-    contrast,
-    saturation,
     enableBgRemoval,
     bgTolerance,
     bgFeather,
     bgChoke,
     enableDecontamination,
-    previewDimensions,
     compositeFinalCanvas,
+    autoAlignBiometric,
   ]);
 
   // Instant re-refining when edge sliders (feather / choke / decontamination) are tweaked
@@ -1088,22 +1093,12 @@ export default function PassportPhotoPage() {
     }
   }, [bgFeather, bgChoke, enableDecontamination, handleRefineEdgeSettings]);
 
-  // Re-run Step 1 when transform / crop / filter parameters change
+  // Re-run Step 1 ONLY when raw image or background removal toggle changes (NEVER on transform sliders)
   useEffect(() => {
     if (imageElementRef.current && imageElementRef.current.complete) {
       processSubjectCutout();
     }
-  }, [processSubjectCutout]);
-
-  // Re-run Step 2 (instant compositing) when background color, previewTab, or outfit changes
-  useEffect(() => {
-    if (cachedCutoutCanvasRef.current) {
-      compositeFinalCanvas();
-      if (currentStep === 'preview') {
-        renderPrintSheetCanvas();
-      }
-    }
-  }, [bgColor, previewTab, selectedOutfit, outfitScale, outfitOffsetY, compositeFinalCanvas, currentStep]);
+  }, [imageSrc, enableBgRemoval, processSubjectCutout]);
 
   // Render Printable Tiled Sheet Canvas
   const renderPrintSheetCanvas = useCallback(() => {
@@ -1226,6 +1221,14 @@ export default function PassportPhotoPage() {
       sheetH - 24
     );
   }, [activePreset, sheetPreset, customSheetCols, customSheetRows]);
+
+  // Re-run Step 2 (instant 60 FPS compositing) when ANY transform or styling setting changes
+  useEffect(() => {
+    compositeFinalCanvas();
+    if (currentStep === 'preview') {
+      renderPrintSheetCanvas();
+    }
+  }, [compositeFinalCanvas, currentStep, renderPrintSheetCanvas]);
 
   // Handle image drop
   const handleFileDrop = useCallback((file: File) => {
@@ -1527,7 +1530,7 @@ export default function PassportPhotoPage() {
 
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           {currentStep === 'edit'
-            ? 'True zero-server privacy — your sensitive ID/passport photo never touches any cloud server, unlike PhotoGov or PhotoAiD. Create official NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
+            ? 'No data leak, no cloud upload — your ID and passport photo is processed entirely on your device. Zero server contact, unlike PhotoGov or PhotoAiD. Create official NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
             : 'Your biometric photo is processed and print-ready. Download a single image for online portal submissions or a high-res tiled print sheet with cutting guides.'}
         </p>
 
@@ -1538,7 +1541,7 @@ export default function PassportPhotoPage() {
             'US Visa 2x2"',
             'AI Background Removal',
             '300 DPI Print Sheet',
-            '100% In-Browser',
+            'No Data Leak',
             'Zero Cloud Uploads',
           ].map((tag) => (
             <span
@@ -1698,6 +1701,14 @@ export default function PassportPhotoPage() {
                     Studio Adjustments & Tools
                   </h3>
                   <div className="flex items-center gap-3">
+                    <button
+                      onClick={autoAlignBiometric}
+                      className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold flex items-center gap-1 transition px-2 py-1 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60"
+                      title="Automatically center and scale subject into the biometric oval guide"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-brand-500" />
+                      Auto-Align Face
+                    </button>
                     <button
                       onClick={resetTransform}
                       className="text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 font-semibold transition"
@@ -2136,7 +2147,7 @@ export default function PassportPhotoPage() {
                           </span>
                         </div>
                       )}
-                      <span className="text-[9px] text-zinc-400">100% Client-Side Processing</span>
+                      <span className="text-[9px] text-zinc-400">Compixor Cloud AI Backend</span>
                     </div>
                   </div>
                 )}
@@ -2144,11 +2155,35 @@ export default function PassportPhotoPage() {
                 {!imageSrc && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
                     {/* Authentic Biometric Sample Portrait */}
-                    <img
-                      src="/images/passport-sample.jpg"
-                      alt="Official Biometric Passport Sample"
-                      className="w-full h-full object-cover opacity-85 dark:opacity-80 scale-105 pointer-events-none"
-                    />
+                    {/* Generic Passport Photo Illustration — no real person */}
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-sky-50 to-white dark:from-zinc-900 dark:to-zinc-950">
+                      <svg
+                        viewBox="0 0 200 260"
+                        className="w-3/4 h-3/4 opacity-80 dark:opacity-60"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        {/* Clean White Background */}
+                        <rect width="200" height="260" fill="white" rx="8" />
+                        {/* Head / Hair silhouette */}
+                        <ellipse cx="100" cy="88" rx="44" ry="52" fill="#cbd5e1" />
+                        {/* Face */}
+                        <ellipse cx="100" cy="100" rx="36" ry="44" fill="#e2e8f0" />
+                        {/* Neck */}
+                        <rect x="88" y="140" width="24" height="20" rx="4" fill="#e2e8f0" />
+                        {/* Shoulders / formal top */}
+                        <path d="M40,170 Q100,200 160,170 L175,260 L25,260 Z" fill="#94a3b8" />
+                        {/* Shirt collar */}
+                        <polygon points="100,160 86,175 100,195 114,175" fill="#f8fafc" />
+                        {/* Eyes */}
+                        <ellipse cx="86" cy="95" rx="5" ry="3.5" fill="#94a3b8" />
+                        <ellipse cx="114" cy="95" rx="5" ry="3.5" fill="#94a3b8" />
+                        {/* Neutral mouth */}
+                        <line x1="90" y1="118" x2="110" y2="118" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" />
+                        {/* Subtle guide lines */}
+                        <line x1="0" y1="95" x2="200" y2="95" stroke="#3b82f6" strokeWidth="0.6" strokeDasharray="4,4" opacity="0.5" />
+                        <line x1="100" y1="0" x2="100" y2="260" stroke="#3b82f6" strokeWidth="0.6" strokeDasharray="4,4" opacity="0.4" />
+                      </svg>
+                    </div>
 
                     {/* Official Biometric Guidelines Overlay across sample */}
                     <div className="absolute inset-0 pointer-events-none border-2 border-brand-500/50 rounded-2xl overflow-hidden">

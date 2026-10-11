@@ -83,6 +83,156 @@ export function sampleOriginalBgColor(
 }
 
 /**
+ * Resolves the Background Removal Backend API URL.
+ */
+export function getBgApiUrl(): string {
+  // If running locally in a browser, connect directly to local FastAPI server
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return `http://${window.location.hostname}:8000`;
+    }
+  }
+  if (process.env.NEXT_PUBLIC_BG_REMOVE_API_URL) {
+    return process.env.NEXT_PUBLIC_BG_REMOVE_API_URL.replace(/\/$/, '');
+  }
+  return 'https://api.compixor-ai.cloud';
+}
+
+/**
+ * Helper to normalize various image sources to a Blob.
+ */
+async function sourceToBlob(imageSource: ImageData | HTMLCanvasElement | Blob | string): Promise<Blob> {
+  if (imageSource instanceof Blob) {
+    return imageSource;
+  }
+  if (typeof HTMLCanvasElement !== 'undefined' && imageSource instanceof HTMLCanvasElement) {
+    return new Promise<Blob>((resolve, reject) => {
+      imageSource.toBlob((b) => {
+        if (b) resolve(b);
+        else reject(new Error('Failed to convert canvas to blob'));
+      }, 'image/png');
+    });
+  }
+  if (typeof ImageData !== 'undefined' && imageSource instanceof ImageData) {
+    const canvas = document.createElement('canvas');
+    canvas.width = imageSource.width;
+    canvas.height = imageSource.height;
+    const ctx = canvas.getContext('2d');
+    if (ctx) ctx.putImageData(imageSource, 0, 0);
+    return new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((b) => {
+        if (b) resolve(b);
+        else reject(new Error('Failed to convert ImageData to blob'));
+      }, 'image/png');
+    });
+  }
+  if (typeof imageSource === 'string') {
+    const res = await fetch(imageSource);
+    return await res.blob();
+  }
+  throw new Error('Unsupported image source type for background removal');
+}
+
+/**
+ * Calls the Compixor FastAPI backend (/api/process-passport) to remove background.
+ * Returns a transparent-background PNG blob by calling remove.bg server-side.
+ *
+ * Form fields match the FastAPI schema:
+ *   image      → the photo file
+ *   bg_color   → hex or preset (we always pass 'transparent' equivalent → '#FFFFFF' then handle client-side)
+ *
+ * NOTE: /api/process-passport returns a JPEG with a solid background.
+ *       For client-side compositing we need a transparent PNG cutout,
+ *       so we use the /api/remove-bg endpoint (returns PNG with alpha).
+ */
+export async function removeBackgroundViaAPI(
+  imageSource: ImageData | HTMLCanvasElement | Blob | string,
+  onProgress?: MattingProgressCallback,
+  bg: string = 'transparent'
+): Promise<Blob> {
+  const blob = await sourceToBlob(imageSource);
+  const primaryUrl = getBgApiUrl();
+  const alternateUrl =
+    primaryUrl.includes('localhost') || primaryUrl.includes('127.0.0.1')
+      ? 'https://api.compixor-ai.cloud'
+      : 'http://127.0.0.1:8000';
+
+  const tryEndpoint = async (baseUrl: string): Promise<Blob> => {
+    onProgress?.({
+      stage: 'Connecting to Compixor AI Backend...',
+      current: 15,
+      total: 100,
+      percent: 15,
+    });
+
+    let currentPct = 20;
+    const timer = setInterval(() => {
+      if (currentPct < 90) {
+        currentPct += 6;
+        onProgress?.({
+          stage: 'remove.bg AI: Removing Background...',
+          current: currentPct,
+          total: 100,
+          percent: currentPct,
+        });
+      }
+    }, 400);
+
+    try {
+      const fd = new FormData();
+      // Field name must match FastAPI: image (UploadFile)
+      fd.append('image', blob, 'passport_portrait.jpg');
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 35000); // 35s matches backend timeout
+
+      // Use /api/remove-bg which returns PNG with alpha channel for client-side compositing
+      const res = await fetch(`${baseUrl}/api/remove-bg`, {
+        method: 'POST',
+        body: fd,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+      clearInterval(timer);
+
+      if (!res.ok) {
+        let msg = `Server error ${res.status}`;
+        try {
+          const data = await res.json();
+          if (data && data.error) msg = data.error;
+        } catch (_) {}
+        throw new Error(msg);
+      }
+
+      onProgress?.({
+        stage: 'Background removed — rendering cutout...',
+        current: 100,
+        total: 100,
+        percent: 100,
+      });
+
+      return await res.blob();
+    } catch (err) {
+      clearInterval(timer);
+      throw err;
+    }
+  };
+
+  try {
+    return await tryEndpoint(primaryUrl);
+  } catch (primaryErr) {
+    console.warn(`[BackgroundMatting] Primary backend (${primaryUrl}) failed:`, primaryErr);
+    try {
+      return await tryEndpoint(alternateUrl);
+    } catch (altErr) {
+      console.warn(`[BackgroundMatting] Alternate backend (${alternateUrl}) failed:`, altErr);
+      throw primaryErr;
+    }
+  }
+}
+
+/**
  * Executes high-precision client-side background removal using @imgly/background-removal (IS-Net FP16)
  */
 export async function removeBackgroundISNet(
@@ -122,6 +272,18 @@ export async function removeBackgroundISNet(
   });
 
   return resultBlob;
+}
+
+/**
+ * Universal Background Removal entry point:
+ * Calls FastAPI backend directly (/api/remove-bg) without running heavy browser AI.
+ */
+export async function removeBackground(
+  imageSource: ImageData | HTMLCanvasElement | Blob | string,
+  onProgress?: MattingProgressCallback,
+  bg: string = 'transparent'
+): Promise<Blob> {
+  return await removeBackgroundViaAPI(imageSource, onProgress, bg);
 }
 
 /**
