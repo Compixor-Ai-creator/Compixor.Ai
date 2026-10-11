@@ -439,3 +439,60 @@ async def convert_image_to_docx(files: list[UploadFile] = File(...), language: s
             "X-Processing-Time-Ms": str(elapsed_ms),
         },
     )
+
+# ── Background Removal (Passport Photo & General Cutouts) ────────────────────
+
+try:
+    from bg_remove import remove_background as do_remove_bg
+except ImportError:
+    do_remove_bg = None
+
+@app.post("/api/remove-bg")
+@app.post("/remove-bg")
+async def handle_remove_bg(
+    file: Optional[UploadFile] = File(None),
+    image: Optional[UploadFile] = File(None),
+    bg: str = "transparent"
+):
+    upload = file or image
+    if upload is None:
+        raise HTTPException(status_code=400, detail="No image file provided (field 'file' or 'image').")
+    
+    raw = await upload.read()
+    if not raw:
+        raise HTTPException(status_code=400, detail="Empty file uploaded.")
+    if len(raw) > MAX_FILE_SIZE_BYTES:
+        raise HTTPException(status_code=413, detail=f"File exceeds {MAX_FILE_SIZE_MB}MB limit.")
+        
+    if do_remove_bg is None:
+        raise HTTPException(status_code=501, detail="Background removal engine not installed or import failed.")
+
+    try:
+        with Image.open(io.BytesIO(raw)) as img:
+            img = ImageOps.exif_transpose(img)
+            if img.mode not in ("RGB", "RGBA"):
+                img = img.convert("RGB")
+            buf = io.BytesIO()
+            img.save(buf, format="JPEG", quality=95)
+            normalized_bytes = buf.getvalue()
+    except Exception as exc:
+        raise HTTPException(status_code=415, detail=f"Invalid image format: {exc}")
+
+    try:
+        png_bytes, meta = do_remove_bg(normalized_bytes, bg=bg)
+    except Exception as exc:
+        logger.exception("remove_background failed: %s", exc)
+        raise HTTPException(status_code=500, detail=f"Processing error: {exc}")
+
+    return StreamingResponse(
+        io.BytesIO(png_bytes),
+        media_type="image/png",
+        headers={
+            "Access-Control-Expose-Headers": "X-Processing-Time-Ms, X-FG-Estimate-Ms, X-Cleanup-Ms, X-Output-Px",
+            "X-Processing-Time-Ms": str(meta.get("total_ms", "")),
+            "X-FG-Estimate-Ms": str(meta.get("fg_estimate_ms", "")),
+            "X-Cleanup-Ms": str(meta.get("cleanup_ms", "")),
+            "X-Output-Px": str(meta.get("output_px", "")),
+        },
+    )
+
