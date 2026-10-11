@@ -26,7 +26,7 @@ export default function PrivacyPage() {
           The CompixorAi Privacy Pledge
         </h3>
         <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
-          At CompixorAi, we operate under a strict <strong>Zero-Server Architecture</strong>. Your files (PDFs, Word documents, portrait photos, and QR contents) are processed entirely inside your local browser instance. They are never transmitted over the internet to our servers or stored in any database.
+          At CompixorAi, we operate under a strict <strong>Privacy-First Architecture</strong>. Most tools (PDFs, Word documents, and QR generation) are processed entirely inside your local browser instance without leaving your device. For AI passport photo background removal, your photo is sent over HTTPS to our own secure server, processed purely in memory, and immediately discarded without storage or logging. You can also select &quot;Process on my device only&quot; for complete in-browser execution.
         </p>
       </div>
 
@@ -34,16 +34,16 @@ export default function PrivacyPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
             <ServerOff className="w-5 h-5 text-brand-500" />
-            1. Information We Do Not Collect
+            1. Information We Do Not Store or Share
           </h2>
           <p>
-            Because file transformation occurs client-side using JavaScript, WebAssembly, and HTML5 Canvas:
+            We adhere to strict data minimization principles:
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-zinc-600 dark:text-zinc-400 text-sm">
-            <li>We do <strong>not</strong> collect or store any files or images you upload.</li>
-            <li>We do <strong>not</strong> inspect, read, or catalog document text or embedded media.</li>
-            <li>We do <strong>not</strong> track or log the QR code payloads or credentials you generate.</li>
-            <li>We do <strong>not</strong> retain biometric data from passport photo cropping.</li>
+            <li>We do <strong>not</strong> permanently store, catalog, or share any images or documents you process.</li>
+            <li>We do <strong>not</strong> retain biometric data or facial embeddings from passport photo processing.</li>
+            <li>We do <strong>not</strong> inspect, read, or monetize document contents.</li>
+            <li>We do <strong>not</strong> track or log QR code contents or user credentials.</li>
           </ul>
         </section>
 

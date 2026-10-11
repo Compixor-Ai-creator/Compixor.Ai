@@ -27,7 +27,6 @@ import {
   Maximize2,
   FileCheck,
   Palette,
-  Shirt,
   Scissors,
   Check,
   FileDown,
@@ -51,6 +50,9 @@ import {
   removeBackgroundISNet,
   refineCutoutCanvas,
   sampleOriginalBgColor,
+  computeImageSha256,
+  cutoutCache,
+  prepareUploadBlob,
   MattingProgress,
 } from '@/utils/backgroundMatting';
 
@@ -300,24 +302,6 @@ const bgColors = [
   { label: 'Transparent (PNG Cutout)', value: 'transparent', class: 'bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:6px_6px] border-zinc-400' },
 ];
 
-interface OutfitOption {
-  id: string;
-  name: string;
-  category: 'men' | 'women' | 'kids' | 'modest';
-  svgType: 'suit-black' | 'suit-navy' | 'shirt-white' | 'women-blazer-navy' | 'women-jacket-black' | 'kids-formal' | 'hijab-black';
-}
-
-const outfitOptions: OutfitOption[] = [
-  { id: 'none', name: 'Original Clothing', category: 'men', svgType: 'suit-black' },
-  { id: 'men-suit-black', name: 'Men: Classic Black Suit & Tie', category: 'men', svgType: 'suit-black' },
-  { id: 'men-suit-navy', name: 'Men: Dark Navy Blazer & Tie', category: 'men', svgType: 'suit-navy' },
-  { id: 'men-shirt-white', name: 'Men: Formal White Collar Shirt', category: 'men', svgType: 'shirt-white' },
-  { id: 'women-blazer-navy', name: 'Women: Navy Blazer & Blouse', category: 'women', svgType: 'women-blazer-navy' },
-  { id: 'women-jacket-black', name: 'Women: Executive Black Jacket', category: 'women', svgType: 'women-jacket-black' },
-  { id: 'kids-formal', name: 'Kids: Formal Shirt & Vest', category: 'kids', svgType: 'kids-formal' },
-  { id: 'hijab-black', name: 'Modest: Black Hijab & Suit', category: 'modest', svgType: 'hijab-black' },
-];
-
 type SheetPresetOption = 'a4' | '3-per-a4' | 'custom';
 
 const sizeLimitOptions = [
@@ -505,7 +489,7 @@ function applyCanvasMaskBlur(alpha: Uint8Array, width: number, height: number, b
 
 export default function PassportPhotoPage() {
   const [currentStep, setCurrentStep] = useState<'edit' | 'preview'>('edit');
-  // Remove.bg UX Mode: 'cutout' (transparent checkerboard) vs 'background' (solid colors)
+  // Compixor AI Mode: 'cutout' (transparent checkerboard) vs 'background' (solid colors)
   const [previewTab, setPreviewTab] = useState<'cutout' | 'background'>('background');
 
 
@@ -603,8 +587,8 @@ export default function PassportPhotoPage() {
   const [saturation, setSaturation] = useState(100);
   const [showGuidelines, setShowGuidelines] = useState(true);
 
-  // Background removal state
-  const [enableBgRemoval, setEnableBgRemoval] = useState(false);
+  // Background removal state (enabled by default for passport workflow)
+  const [enableBgRemoval, setEnableBgRemoval] = useState(true);
   const [bgTolerance, setBgTolerance] = useState(45); // 15% - 85% confidence cutoff
   const [bgFeather, setBgFeather] = useState(1.2); // 0.5px - 2.5px edge feather (default 1.2px for natural hair/shoulder softness)
   const [bgChoke, setBgChoke] = useState(0.6); // 0.0px - 1.2px alpha boundary choke to eliminate fringe halos
@@ -612,17 +596,41 @@ export default function PassportPhotoPage() {
   const [isSegmenting, setIsSegmenting] = useState(false);
   const [segmentationStatus, setSegmentationStatus] = useState<string | null>(null);
   const [mattingProgress, setMattingProgress] = useState<MattingProgress | null>(null);
+  const [uploadPercent, setUploadPercent] = useState<number>(0);
+  const [mattingState, setMattingState] = useState<'idle' | 'uploading' | 'processing' | 'error'>('idle');
+  const [lastApiError, setLastApiError] = useState<string | null>(null);
+  const requestCountRef = useRef<number>(0);
 
   // Step-by-step processing state
   type ProcessingStep = null | 'optimizing' | 'removing-bg' | 'compositing' | 'done';
   const [processingStep, setProcessingStep] = useState<ProcessingStep>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
+  // Device-only mode toggle & explicit retry
+  const [forceOnDevice, setForceOnDevice] = useState(false);
+  const currentPhotoHashRef = useRef<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const [faceDetected, setFaceDetected] = useState<boolean | null>(null);
 
-  // Outfit overlay
-  const [selectedOutfit, setSelectedOutfit] = useState<string>('none');
-  const [outfitScale, setOutfitScale] = useState(1.0);
-  const [outfitOffsetY, setOutfitOffsetY] = useState(0);
+  // Floating Debug Panel (?debug=1)
+  const [isDebugMode, setIsDebugMode] = useState(false);
+  const [debugStats, setDebugStats] = useState({
+    requestsSent: 0,
+    cacheHits: 0,
+    lastDurationMs: 0,
+    lastUploadedKb: 0,
+    lastResult: 'idle' as 'idle' | 'ok' | 'error' | 'fallback',
+    mode: 'server' as 'server' | 'on-device',
+    cachedHash: 'none',
+    lastRenderMs: 0,
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setIsDebugMode(params.get('debug') === '1');
+    }
+  }, []);
 
   // Download screen options
   const [sheetPreset, setSheetPreset] = useState<SheetPresetOption>('a4');
@@ -659,177 +667,10 @@ export default function PassportPhotoPage() {
 
   // MediaPipe client model removed: Background removal is now 100% processed via FastAPI backend API
 
-  // Draw formal outfit template onto canvas
-  const drawOutfitOverlay = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number) => {
-    if (selectedOutfit === 'none') return;
-
-    ctx.save();
-    const outfitConfig = outfitOptions.find((o) => o.id === selectedOutfit);
-    if (!outfitConfig) {
-      ctx.restore();
-      return;
-    }
-
-    const baseScale = width / 400;
-    const finalScale = baseScale * outfitScale;
-
-    const centerX = width / 2;
-    const bottomY = height + outfitOffsetY * baseScale;
-
-    ctx.translate(centerX, bottomY);
-    ctx.scale(finalScale, finalScale);
-
-    if (outfitConfig.svgType === 'suit-black' || outfitConfig.svgType === 'suit-navy') {
-      const isNavy = outfitConfig.svgType === 'suit-navy';
-      const suitColor = isNavy ? '#0f172a' : '#18181b';
-      const lapelColor = isNavy ? '#1e293b' : '#27272a';
-      const tieColor = isNavy ? '#dc2626' : '#2563eb';
-
-      ctx.beginPath();
-      ctx.moveTo(-180, 0);
-      ctx.bezierCurveTo(-170, -110, -90, -150, -45, -145);
-      ctx.lineTo(-20, -70);
-      ctx.lineTo(20, -70);
-      ctx.lineTo(45, -145);
-      ctx.bezierCurveTo(90, -150, 170, -110, 180, 0);
-      ctx.closePath();
-      ctx.fillStyle = suitColor;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(-45, -145);
-      ctx.lineTo(0, -60);
-      ctx.lineTo(45, -145);
-      ctx.closePath();
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(-45, -145);
-      ctx.lineTo(-12, -125);
-      ctx.lineTo(-20, -100);
-      ctx.closePath();
-      ctx.fillStyle = '#f8fafc';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(45, -145);
-      ctx.lineTo(12, -125);
-      ctx.lineTo(20, -100);
-      ctx.closePath();
-      ctx.fillStyle = '#f8fafc';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(-8, -122);
-      ctx.lineTo(8, -122);
-      ctx.lineTo(12, -105);
-      ctx.lineTo(0, 0);
-      ctx.lineTo(-12, -105);
-      ctx.closePath();
-      ctx.fillStyle = tieColor;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(-45, -145);
-      ctx.lineTo(-10, -70);
-      ctx.lineTo(-40, -50);
-      ctx.lineTo(-80, -90);
-      ctx.closePath();
-      ctx.fillStyle = lapelColor;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(45, -145);
-      ctx.lineTo(10, -70);
-      ctx.lineTo(40, -50);
-      ctx.lineTo(80, -90);
-      ctx.closePath();
-      ctx.fillStyle = lapelColor;
-      ctx.fill();
-    } else if (outfitConfig.svgType === 'shirt-white') {
-      ctx.beginPath();
-      ctx.moveTo(-180, 0);
-      ctx.bezierCurveTo(-160, -110, -85, -145, -45, -140);
-      ctx.lineTo(0, -90);
-      ctx.lineTo(45, -140);
-      ctx.bezierCurveTo(85, -145, 160, -110, 180, 0);
-      ctx.closePath();
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(-45, -140);
-      ctx.lineTo(-10, -100);
-      ctx.lineTo(0, -90);
-      ctx.lineTo(10, -100);
-      ctx.lineTo(45, -140);
-      ctx.lineTo(0, -125);
-      ctx.closePath();
-      ctx.fillStyle = '#f1f5f9';
-      ctx.fill();
-      ctx.stroke();
-    } else if (outfitConfig.svgType === 'women-blazer-navy' || outfitConfig.svgType === 'women-jacket-black') {
-      const isNavy = outfitConfig.svgType === 'women-blazer-navy';
-      const jacketColor = isNavy ? '#1e1b4b' : '#18181b';
-
-      ctx.beginPath();
-      ctx.moveTo(-175, 0);
-      ctx.bezierCurveTo(-155, -115, -80, -145, -40, -140);
-      ctx.lineTo(-15, -60);
-      ctx.lineTo(15, -60);
-      ctx.lineTo(40, -140);
-      ctx.bezierCurveTo(80, -145, 155, -115, 175, 0);
-      ctx.closePath();
-      ctx.fillStyle = jacketColor;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(-35, -140);
-      ctx.bezierCurveTo(-15, -80, 15, -80, 35, -140);
-      ctx.closePath();
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
-    } else if (outfitConfig.svgType === 'kids-formal') {
-      ctx.beginPath();
-      ctx.moveTo(-160, 0);
-      ctx.bezierCurveTo(-140, -90, -70, -130, -35, -125);
-      ctx.lineTo(0, -65);
-      ctx.lineTo(35, -125);
-      ctx.bezierCurveTo(70, -130, 140, -90, 160, 0);
-      ctx.closePath();
-      ctx.fillStyle = '#1e293b';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(-35, -125);
-      ctx.lineTo(0, -65);
-      ctx.lineTo(35, -125);
-      ctx.closePath();
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
-    } else if (outfitConfig.svgType === 'hijab-black') {
-      ctx.beginPath();
-      ctx.moveTo(-170, 0);
-      ctx.bezierCurveTo(-150, -120, -80, -155, -45, -150);
-      ctx.bezierCurveTo(-20, -120, 20, -120, 45, -150);
-      ctx.bezierCurveTo(80, -155, 150, -120, 170, 0);
-      ctx.closePath();
-      ctx.fillStyle = '#0f172a';
-      ctx.fill();
-    }
-
-    ctx.restore();
-  }, [selectedOutfit, outfitScale, outfitOffsetY]);
-
-  // STEP 2 — Instant Solid Color Background Compositing Engine
-  // Rule: Solid BG fill FIRST → then draw pure transparent subject cutout on top (no blending/tinting)
   // STEP 2 — Instant Solid Color Background & Transformed Cutout Compositing Engine
   // Rule: Solid BG fill FIRST → then draw clean transformed subject cutout on top (instant 60 FPS client-side)
   const compositeFinalCanvas = useCallback(() => {
+    const renderStart = performance.now();
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -885,10 +726,9 @@ export default function PassportPhotoPage() {
       }
     }
 
-    // STEP 3: Draw formal outfit overlay (if selected) on top of subject
-    drawOutfitOverlay(ctx, width, height);
-
     setProcessingStep('done');
+    const renderDuration = Math.round(performance.now() - renderStart);
+    setDebugStats((prev) => ({ ...prev, lastRenderMs: renderDuration }));
   }, [
     activePreset,
     bgColor,
@@ -903,18 +743,27 @@ export default function PassportPhotoPage() {
     contrast,
     saturation,
     previewDimensions,
-    drawOutfitOverlay,
   ]);
 
-  // Biometric Auto-Aligner (ICAO 9303 70-80% head height alignment)
-  const autoAlignBiometric = useCallback(() => {
-    const canvas = cachedCutoutCanvasRef.current;
-    if (!canvas) return;
+  // Face detection helper & Biometric Auto-Aligner (ICAO 9303 70-80% head height alignment)
+  const detectFaceBounds = async (canvas: HTMLCanvasElement): Promise<{ x: number; y: number; width: number; height: number } | null> => {
+    if (typeof window !== 'undefined' && 'FaceDetector' in window) {
+      try {
+        const detector = new (window as any).FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
+        const faces = await detector.detect(canvas);
+        if (faces && faces.length > 0) {
+          const b = faces[0].boundingBox;
+          return { x: b.x, y: b.y, width: b.width, height: b.height };
+        }
+        return null;
+      } catch (_) {}
+    }
+
     const w = canvas.width;
     const h = canvas.height;
     try {
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
-      if (!ctx) return;
+      if (!ctx) return null;
       const data = ctx.getImageData(0, 0, w, h).data;
       let minY = h, maxY = 0, minX = w, maxX = 0;
       for (let y = 0; y < h; y += 4) {
@@ -927,35 +776,71 @@ export default function PassportPhotoPage() {
           }
         }
       }
-      if (minY < maxY && minX < maxX) {
-        const subH = maxY - minY;
-        const subW = maxX - minX;
-        // In full body shot (subH > subW * 1.6), head is approx top 28% of subject
-        if (subH > subW * 1.6) {
-          const estimatedHeadH = subH * 0.28;
-          const targetHeadH = activePreset.heightPx * 0.72;
-          const targetZoom = Math.min(2.8, Math.max(1.0, (targetHeadH / (estimatedHeadH * (activePreset.heightPx / h)))));
-          setZoom(Math.round(targetZoom * 100) / 100);
-          const headCenterXPct = (minX + maxX) / 2 / w;
-          setPanX(-Math.round((headCenterXPct - 0.5) * previewDimensions.width));
-          const crownYPct = minY / h;
-          const targetCrownPct = (activePreset.biometricSpec.topMarginPercent ?? 12) / 100;
-          setPanY(-Math.round((crownYPct - targetCrownPct) * previewDimensions.height));
-          toast.success('Subject automatically framed into biometric guidelines!');
-        } else {
-          // Half-body / portrait
-          const crownYPct = minY / h;
-          const targetCrownPct = (activePreset.biometricSpec.topMarginPercent ?? 12) / 100;
-          setPanY(-Math.round((crownYPct - targetCrownPct) * previewDimensions.height * 0.7));
-          toast.success('Portrait centered to biometric guidelines!');
+
+      if (minY >= maxY || minX >= maxX) return null;
+
+      const subH = maxY - minY;
+      const subW = maxX - minX;
+
+      // RULE F: Full-body photo check:
+      // If subH > subW * 1.6 or subH > h * 0.72 (full body in frame), face is NOT clearly isolated.
+      // Do NOT crop onto torso/dress.
+      if (subH > subW * 1.6 || (subH > h * 0.72 && subW < w * 0.55)) {
+        return null;
+      }
+
+      // Check for head region at the top
+      const topQuarterH = Math.round(subH * 0.35);
+      let topPixels = 0;
+      for (let y = minY; y < minY + topQuarterH; y += 4) {
+        for (let x = minX; x < maxX; x += 4) {
+          if (data[(y * w + x) * 4 + 3] > 60) {
+            topPixels++;
+          }
         }
       }
+
+      if (topPixels > 50) {
+        return {
+          x: minX,
+          y: minY,
+          width: subW,
+          height: subH * 0.45,
+        };
+      }
     } catch (_) {}
+    return null;
+  };
+
+  const autoAlignBiometric = useCallback(async () => {
+    const canvas = cachedCutoutCanvasRef.current;
+    if (!canvas) return;
+
+    const face = await detectFaceBounds(canvas);
+    if (!face) {
+      setFaceDetected(false);
+      toast.warning('Face not detected - drag/zoom the photo so your face is inside the guide');
+      return;
+    }
+
+    setFaceDetected(true);
+    const targetHeadH = activePreset.heightPx * (activePreset.biometricSpec.headHeightPercent / 100);
+    const faceHInPreset = face.height * (activePreset.heightPx / canvas.height);
+    const targetZoom = Math.min(2.5, Math.max(1.0, targetHeadH / Math.max(60, faceHInPreset)));
+    setZoom(Math.round(targetZoom * 100) / 100);
+
+    const faceCenterX = (face.x + face.width / 2) / canvas.width;
+    setPanX(-Math.round((faceCenterX - 0.5) * previewDimensions.width));
+
+    const crownY = face.y / canvas.height;
+    const targetCrown = (activePreset.biometricSpec.topMarginPercent ?? 10) / 100;
+    setPanY(-Math.round((crownY - targetCrown) * previewDimensions.height));
+    toast.success('Subject automatically framed into biometric guidelines!');
   }, [activePreset, previewDimensions]);
 
   // STEP 1 — Background Removal & Subject Separation ON FULL ORIGINAL PHOTO
-  // Runs ONCE per uploaded image or when toggled, never per transform slider change
-  const processSubjectCutout = useCallback(async () => {
+  // Runs ONCE per unique photo hash (never on color or transform changes)
+  const processSubjectCutout = useCallback(async (forceRetry: boolean = false) => {
     const img = imageElementRef.current;
     if (!img || !img.complete || img.naturalWidth === 0) return;
 
@@ -985,51 +870,112 @@ export default function PassportPhotoPage() {
       setSegmentationStatus(null);
       setMattingProgress(null);
       setProcessingStep(null);
+      setMattingState('idle');
       compositeFinalCanvas();
       return;
     }
 
-    // 3. Run High-Precision AI Portrait Matting (Backend Server API with fallback)
+    // 3. Prepare upload blob and compute SHA-256 hash
+    let preparedBlob: Blob;
+    try {
+      preparedBlob = await prepareUploadBlob(sourceCanvas, 1600);
+    } catch {
+      preparedBlob = await new Promise<Blob>((res) => sourceCanvas.toBlob((b) => res(b!), 'image/jpeg', 0.9));
+    }
+
+    const photoHash = await computeImageSha256(preparedBlob);
+    currentPhotoHashRef.current = photoHash;
+
+    // Check SHA-256 in-memory cache
+    if (!forceRetry && cutoutCache.has(photoHash)) {
+      console.log('[passport] cache hit');
+      const cachedRaw = cutoutCache.get(photoHash)!;
+      rawCutoutCanvasRef.current = cachedRaw;
+
+      const originalBg = sampleOriginalBgColor(srcCtx, procW, procH);
+      const refinedCanvas = refineCutoutCanvas(cachedRaw, {
+        featherRadius: bgFeather,
+        chokeAmount: bgChoke,
+        decontaminate: enableDecontamination,
+        originalBgColor: originalBg,
+      });
+
+      cachedCutoutCanvasRef.current = refinedCanvas;
+      setSegmentationStatus('Cutout retrieved from cache');
+      setDebugStats((prev) => ({
+        ...prev,
+        cacheHits: prev.cacheHits + 1,
+        cachedHash: photoHash.slice(0, 8),
+        lastResult: 'ok',
+      }));
+
+      compositeFinalCanvas();
+      return;
+    }
+
+    if (forceRetry) {
+      cutoutCache.delete(photoHash);
+    }
+
+    // 4. Run High-Precision AI Portrait Matting (Backend API with automatic on-device fallback)
+    abortControllerRef.current?.abort();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     setIsSegmenting(true);
     setProcessingStep('removing-bg');
-    setSegmentationStatus('Initializing High-Precision AI Model...');
-    setMattingProgress({ stage: 'Starting AI Matting Engine...', current: 0, total: 100, percent: 0 });
+    setMattingState('uploading');
+    setUploadPercent(0);
+    setLastApiError(null);
+    setSegmentationStatus('Uploading photo to secure server...');
 
-    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+    const startTime = performance.now();
+    const uploadKb = Math.round(preparedBlob.size / 1024);
 
     try {
-      let rawCutoutCanvas: HTMLCanvasElement | null = null;
+      const result = await removeBackground(preparedBlob, {
+        signal: abortController.signal,
+        forceOnDevice,
+        onUploadProgress: (pct) => {
+          setUploadPercent(pct);
+          if (pct >= 99) {
+            setMattingState('processing');
+            setSegmentationStatus('Removing background... usually a few seconds');
+          }
+        },
+        onStatusChange: (statusText) => {
+          setSegmentationStatus(statusText);
+        },
+        onFallback: () => {
+          toast.info('Using on-device mode (Compixor IS-Net)...');
+        },
+      });
 
-      try {
-        const cutoutBlob = await removeBackground(sourceCanvas, (p) => {
-          setMattingProgress(p);
-          setSegmentationStatus(`${p.stage} ${p.percent > 0 ? `(${p.percent}%)` : ''}`);
-        });
+      const durationMs = Math.round(performance.now() - startTime);
 
-        const cutoutImg = new Image();
-        const blobUrl = URL.createObjectURL(cutoutBlob);
-        await new Promise<void>((resolve, reject) => {
-          cutoutImg.onload = () => resolve();
-          cutoutImg.onerror = reject;
-          cutoutImg.src = blobUrl;
-        });
-
-        rawCutoutCanvas = document.createElement('canvas');
-        rawCutoutCanvas.width = procW;
-        rawCutoutCanvas.height = procH;
-        const rcCtx = rawCutoutCanvas.getContext('2d', { willReadFrequently: true });
-        rcCtx?.drawImage(cutoutImg, 0, 0, procW, procH);
-        URL.revokeObjectURL(blobUrl);
-      } catch (backendErr) {
-        console.error('[PassportStudio] Backend error:', backendErr);
-        toast.error('Backend processing failed. Please check server or try again.');
-        throw backendErr;
+      if (result.mode === 'server') {
+        requestCountRef.current += 1;
+        const reqNum = requestCountRef.current;
+        console.log(`[passport] API call #${reqNum} ${durationMs}ms ${uploadKb}KB`);
       }
 
-      if (!rawCutoutCanvas) {
-        rawCutoutCanvas = sourceCanvas;
-      }
+      const cutoutImg = new Image();
+      const blobUrl = URL.createObjectURL(result.blob);
+      await new Promise<void>((resolve, reject) => {
+        cutoutImg.onload = () => resolve();
+        cutoutImg.onerror = reject;
+        cutoutImg.src = blobUrl;
+      });
 
+      const rawCutoutCanvas = document.createElement('canvas');
+      rawCutoutCanvas.width = procW;
+      rawCutoutCanvas.height = procH;
+      const rcCtx = rawCutoutCanvas.getContext('2d', { willReadFrequently: true });
+      rcCtx?.drawImage(cutoutImg, 0, 0, procW, procH);
+      URL.revokeObjectURL(blobUrl);
+
+      // Save into cache keyed by SHA-256
+      cutoutCache.set(photoHash, rawCutoutCanvas);
       rawCutoutCanvasRef.current = rawCutoutCanvas;
 
       // STEP 4: Intermediate Canvas Alpha Mask Smoothing, Edge Feathering & Decontamination
@@ -1047,18 +993,33 @@ export default function PassportPhotoPage() {
       cachedCutoutCanvasRef.current = refinedCanvas;
       setSegmentationStatus('Biometric Cutout Ready');
 
-      // Auto-align portrait on first run
+      setDebugStats((prev) => ({
+        ...prev,
+        requestsSent: prev.requestsSent + (result.mode === 'server' ? 1 : 0),
+        lastDurationMs: durationMs,
+        lastUploadedKb: uploadKb,
+        lastResult: result.mode === 'server' ? 'ok' : 'fallback',
+        mode: result.mode,
+        cachedHash: photoHash.slice(0, 8),
+      }));
+
+      // Check face detection & auto-align on first run
       if (!hasAutoAlignedRef.current) {
         hasAutoAlignedRef.current = true;
         setTimeout(() => {
           autoAlignBiometric();
         }, 50);
       }
-    } catch (err) {
-      console.error('[PassportStudio] Segmentation error:', err);
+    } catch (err: any) {
+      if (err?.name === 'AbortError') return;
+      console.error('[PassportStudio] Matting error:', err);
+      setMattingState('error');
+      setLastApiError(err?.message || 'Background removal failed');
+      setDebugStats((prev) => ({ ...prev, lastResult: 'error' }));
       rawCutoutCanvasRef.current = sourceCanvas;
       cachedCutoutCanvasRef.current = sourceCanvas;
       setSegmentationStatus('Cutout fallback active');
+      toast.error(err?.message || 'Processing failed. You can retry or switch to on-device mode.');
     } finally {
       setIsSegmenting(false);
       setMattingProgress(null);
@@ -1067,7 +1028,7 @@ export default function PassportPhotoPage() {
     }
   }, [
     enableBgRemoval,
-    bgTolerance,
+    forceOnDevice,
     bgFeather,
     bgChoke,
     enableDecontamination,
@@ -1078,13 +1039,16 @@ export default function PassportPhotoPage() {
   // Instant re-refining when edge sliders (feather / choke / decontamination) are tweaked
   const handleRefineEdgeSettings = useCallback(() => {
     if (!rawCutoutCanvasRef.current || !enableBgRemoval) return;
-    const refined = refineCutoutCanvas(rawCutoutCanvasRef.current, {
-      featherRadius: bgFeather,
-      chokeAmount: bgChoke,
-      decontaminate: enableDecontamination,
+    requestAnimationFrame(() => {
+      if (!rawCutoutCanvasRef.current) return;
+      const refined = refineCutoutCanvas(rawCutoutCanvasRef.current, {
+        featherRadius: bgFeather,
+        chokeAmount: bgChoke,
+        decontaminate: enableDecontamination,
+      });
+      cachedCutoutCanvasRef.current = refined;
+      compositeFinalCanvas();
     });
-    cachedCutoutCanvasRef.current = refined;
-    compositeFinalCanvas();
   }, [bgFeather, bgChoke, enableDecontamination, enableBgRemoval, compositeFinalCanvas]);
 
   useEffect(() => {
@@ -1098,7 +1062,7 @@ export default function PassportPhotoPage() {
     if (imageElementRef.current && imageElementRef.current.complete) {
       processSubjectCutout();
     }
-  }, [imageSrc, enableBgRemoval, processSubjectCutout]);
+  }, [imageSrc, enableBgRemoval, forceOnDevice]);
 
   // Render Printable Tiled Sheet Canvas
   const renderPrintSheetCanvas = useCallback(() => {
@@ -1334,12 +1298,11 @@ export default function PassportPhotoPage() {
     setBrightness(100);
     setContrast(100);
     setSaturation(100);
-    setEnableBgRemoval(false);
+    setEnableBgRemoval(true);
     setBgFeather(1.2);
     setBgChoke(0.6);
     setEnableDecontamination(true);
     setMattingProgress(null);
-    setSelectedOutfit('none');
     setPreviewTab('background');
     toast.info('Studio settings reset to default.');
   };
@@ -1350,6 +1313,9 @@ export default function PassportPhotoPage() {
     imageElementRef.current = null;
     rawCutoutCanvasRef.current = null;
     cachedCutoutCanvasRef.current = null;
+    currentPhotoHashRef.current = null;
+    hasAutoAlignedRef.current = false;
+    setFaceDetected(null);
     setMattingProgress(null);
     resetTransform();
     setCurrentStep('edit');
@@ -1858,7 +1824,7 @@ export default function PassportPhotoPage() {
 
                   {enableBgRemoval && (
                     <div className="space-y-4">
-                      {/* Remove.bg Mode Tabs: Cutout (Checkerboard) vs Background (Solid) */}
+                      {/* Compixor AI Cutout Mode Tabs: Cutout (Checkerboard) vs Background (Solid) */}
                       <div className="flex items-center gap-2 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
                         <button
                           onClick={() => setPreviewTab('cutout')}
@@ -1969,36 +1935,52 @@ export default function PassportPhotoPage() {
                         </div>
                       </div>
 
-                      {/* Visual Progress & Processing Status */}
-                      <div className="flex flex-col gap-2 p-3 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
-                        {mattingProgress && (
-                          <div className="space-y-1.5 pb-1">
-                            <div className="flex items-center justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-200">
-                              <span className="flex items-center gap-1.5 text-brand-600 dark:text-brand-400">
-                                <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
-                                {mattingProgress.stage}
-                              </span>
-                              {mattingProgress.percent > 0 && (
-                                <span className="font-mono text-xs font-bold text-brand-600 dark:text-brand-400">
-                                  {mattingProgress.percent}%
-                                </span>
-                              )}
-                            </div>
-                            <div className="w-full bg-zinc-200 dark:bg-zinc-700 h-1.5 rounded-full overflow-hidden">
-                              <div
-                                className="bg-brand-500 h-full rounded-full transition-all duration-200 ease-out"
-                                style={{ width: `${Math.max(8, mattingProgress.percent)}%` }}
-                              />
-                            </div>
+                      {/* Processing Mode & Retry Controls */}
+                      <div className="flex flex-col gap-2.5 p-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
+                        {/* Device-only toggle & Retry Button */}
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={forceOnDevice}
+                              onChange={(e) => setForceOnDevice(e.target.checked)}
+                              className="rounded text-brand-500 focus:ring-brand-500"
+                            />
+                            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-200">
+                              Process on my device only
+                            </span>
+                          </label>
+
+                          <button
+                            type="button"
+                            onClick={() => processSubjectCutout(true)}
+                            disabled={isSegmenting}
+                            className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200 transition flex items-center gap-1.5 disabled:opacity-50"
+                          >
+                            <RefreshCw className={`w-3 h-3 ${isSegmenting ? 'animate-spin' : ''}`} />
+                            Retry AI matting
+                          </button>
+                        </div>
+
+                        {lastApiError && (
+                          <div className="p-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs flex items-center justify-between gap-2">
+                            <span>{lastApiError}</span>
+                            <button
+                              type="button"
+                              onClick={() => processSubjectCutout(true)}
+                              className="px-2 py-0.5 rounded bg-red-500 text-white font-bold hover:bg-red-600 transition shrink-0"
+                            >
+                              Try again
+                            </button>
                           </div>
                         )}
 
                         <div className="flex items-center justify-between pt-1 border-t border-zinc-200 dark:border-zinc-700/60 text-[11px] text-zinc-500 dark:text-zinc-400">
                           <span className="flex items-center gap-1">
                             {isSegmenting ? (
-                              <><Loader2 className="w-3 h-3 animate-spin text-brand-500" /> Processing AI Matting...</>
+                              <><Loader2 className="w-3 h-3 animate-spin text-brand-500" /> {segmentationStatus || 'Processing AI Matting...'}</>
                             ) : (
-                              <><ShieldCheck className="w-3 h-3 text-emerald-500" /> {segmentationStatus || 'IS-Net Precision Matting Active'}</>
+                              <><ShieldCheck className="w-3 h-3 text-emerald-500" /> {segmentationStatus || 'Compixor AI Cutout Active'}</>
                             )}
                           </span>
                           <span className="font-medium text-zinc-600 dark:text-zinc-300">
@@ -2007,75 +1989,6 @@ export default function PassportPhotoPage() {
                         </div>
                       </div>
 
-                    </div>
-                  )}
-                </div>
-
-                {/* Formal Outfit Overlay Section */}
-                <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
-                      <Shirt className="w-3.5 h-3.5 text-brand-500" />
-                      Formal Outfit Overlay (Optional)
-                    </span>
-                    {selectedOutfit !== 'none' && (
-                      <button
-                        onClick={() => setSelectedOutfit('none')}
-                        className="text-xs text-red-500 font-semibold hover:underline"
-                      >
-                        Remove Suit
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {outfitOptions.map((outfit) => (
-                      <button
-                        key={outfit.id}
-                        onClick={() => setSelectedOutfit(outfit.id)}
-                        className={`p-2.5 rounded-xl text-left border text-xs font-semibold transition ${
-                          selectedOutfit === outfit.id
-                            ? 'border-brand-500 bg-brand-500/10 text-brand-600 dark:text-brand-300 ring-2 ring-brand-500/20'
-                            : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 text-zinc-700 dark:text-zinc-300 bg-white/40 dark:bg-zinc-900/40'
-                        }`}
-                      >
-                        <p className="truncate">{outfit.name}</p>
-                      </button>
-                    ))}
-                  </div>
-
-                  {selectedOutfit !== 'none' && (
-                    <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <div className="flex justify-between text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1">
-                          <span>Suit Scale</span>
-                          <span>{Math.round(outfitScale * 100)}%</span>
-                        </div>
-                        <input
-                          type="range"
-                          min="0.7"
-                          max="1.4"
-                          step="0.02"
-                          value={outfitScale}
-                          onChange={(e) => setOutfitScale(parseFloat(e.target.value))}
-                          className="w-full slider-blur cursor-pointer"
-                        />
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1">
-                          <span>Vertical Position</span>
-                          <span>{outfitOffsetY}px</span>
-                        </div>
-                        <input
-                          type="range"
-                          min="-60"
-                          max="80"
-                          step="2"
-                          value={outfitOffsetY}
-                          onChange={(e) => setOutfitOffsetY(parseInt(e.target.value))}
-                          className="w-full slider-blur cursor-pointer"
-                        />
-                      </div>
                     </div>
                   )}
                 </div>
@@ -2126,28 +2039,29 @@ export default function PassportPhotoPage() {
               >
                 <canvas ref={canvasRef} className="w-full h-full object-contain block" />
 
-                {/* Lightweight Visual Progress Indicator / Spinner during Model Parsing & Alpha Mask Generation */}
+                {/* Honest Loading UX: Overlay shown during removal */}
                 {isSegmenting && (
-                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xs p-4 text-white text-center animate-in fade-in duration-200">
-                    <div className="p-3.5 rounded-2xl bg-zinc-900/90 border border-white/10 shadow-2xl flex flex-col items-center gap-2 max-w-[210px]">
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] p-4 text-white text-center animate-in fade-in duration-200 pointer-events-none">
+                    <div className="p-4 rounded-2xl bg-zinc-900/95 border border-white/10 shadow-2xl flex flex-col items-center gap-2.5 max-w-[220px]">
                       <Loader2 className="w-7 h-7 text-brand-400 animate-spin" />
-                      <p className="text-xs font-bold text-zinc-100 leading-tight">
-                        {mattingProgress?.stage || 'Generating Alpha Mask...'}
-                      </p>
-                      {mattingProgress && mattingProgress.percent > 0 && (
-                        <div className="w-full space-y-1 mt-1">
+                      {mattingState === 'uploading' ? (
+                        <div className="w-full space-y-1.5">
+                          <p className="text-xs font-bold text-zinc-100 leading-tight">
+                            Uploading photo ({uploadPercent}%)...
+                          </p>
                           <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
                             <div
                               className="bg-brand-500 h-full rounded-full transition-all duration-200"
-                              style={{ width: `${mattingProgress.percent}%` }}
+                              style={{ width: `${uploadPercent}%` }}
                             />
                           </div>
-                          <span className="text-[10px] text-zinc-400 font-mono">
-                            {mattingProgress.percent}%
-                          </span>
                         </div>
+                      ) : (
+                        <p className="text-xs font-bold text-zinc-100 leading-tight">
+                          Removing background... usually a few seconds
+                        </p>
                       )}
-                      <span className="text-[9px] text-zinc-400">Compixor Cloud AI Backend</span>
+                      <span className="text-[9px] text-zinc-400">Compixor AI Secure Processing</span>
                     </div>
                   </div>
                 )}
@@ -2606,7 +2520,7 @@ export default function PassportPhotoPage() {
                 Attire & Accessories
               </h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Formal/business attire recommended (or use our digital formal suit overlay). No eyeglasses with glare or non-religious headwear.
+                Formal/business attire recommended. No eyeglasses with glare or non-religious headwear.
               </p>
             </div>
           </div>
@@ -2614,6 +2528,63 @@ export default function PassportPhotoPage() {
       </section>
 
       <ToolSeoSection toolSlug="passport-photo" />
+
+      {/* Floating Debug Panel (?debug=1) */}
+      {isDebugMode && (
+        <div className="fixed bottom-4 right-4 z-50 p-4 rounded-2xl bg-zinc-950/95 border border-cyan-500/40 text-cyan-300 font-mono text-xs shadow-2xl backdrop-blur-md max-w-xs space-y-1.5 select-none pointer-events-auto">
+          <div className="flex items-center justify-between border-b border-cyan-500/30 pb-1.5 mb-2">
+            <span className="font-bold text-white flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Passport Studio Debug (?debug=1)
+            </span>
+            <span className="text-[10px] text-zinc-400">Live Stats</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-zinc-400">API Requests Sent:</span>
+            <span className="font-bold text-white">{debugStats.requestsSent}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-zinc-400">Cache Hits:</span>
+            <span className="font-bold text-emerald-400">{debugStats.cacheHits}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-zinc-400">Last API Duration:</span>
+            <span className="font-bold text-white">{debugStats.lastDurationMs} ms</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-zinc-400">Uploaded Size:</span>
+            <span className="font-bold text-white">{debugStats.lastUploadedKb} KB</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-zinc-400">Result:</span>
+            <span
+              className={`font-bold ${
+                debugStats.lastResult === 'ok'
+                  ? 'text-emerald-400'
+                  : debugStats.lastResult === 'error'
+                  ? 'text-red-400'
+                  : 'text-amber-400'
+              }`}
+            >
+              {debugStats.lastResult}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-zinc-400">Mode:</span>
+            <span className="font-bold text-white">{debugStats.mode}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-zinc-400">Cutout Cached:</span>
+            <span className="font-bold text-cyan-400">
+              {debugStats.cachedHash !== 'none' ? `yes (${debugStats.cachedHash})` : 'no'}
+            </span>
+          </div>
+          <div className="flex justify-between border-t border-cyan-500/20 pt-1 mt-1">
+            <span className="text-zinc-400">Last Re-render:</span>
+            <span className="font-bold text-white">{debugStats.lastRenderMs} ms</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

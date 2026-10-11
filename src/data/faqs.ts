@@ -121,11 +121,11 @@ export const passportPhotoFaqs: FaqItem[] = [
   },
   {
     q: 'How does the biometric alignment guide work?',
-    a: 'Our live visual overlay checks head-height, eye-level percentage, and framing requirements instantly before you crop.',
+    a: 'Our live visual overlay checks head-height, eye-level percentage, and framing requirements before you crop.',
   },
   {
-    q: 'How does the remove.bg-grade background removal work?',
-    a: 'We use the high-precision IS-Net neural matting model (IS-Net FP16) executing 100% client-side via WebAssembly & WebGPU. It features an intermediate canvas smoothing pipeline with alpha boundary choke (to eliminate outer fringing), 1.2px Gaussian edge feathering (to eradicate jagged contours and aliasing along hair and shoulders), and color de-spill to neutralize residual wall color halos.',
+    q: 'How does the Compixor AI background removal work?',
+    a: 'We use high-precision portrait neural matting running securely on our own private server with an automatic on-device fallback option. It features an alpha boundary choke (to eliminate outer fringing), Gaussian edge feathering (for smooth contours along hair and shoulders), and color de-spill to neutralize residual wall color halos.',
   },
   {
     q: 'Can I download just the transparent PNG cutout without any background?',
@@ -136,8 +136,8 @@ export const passportPhotoFaqs: FaqItem[] = [
     a: 'We generate an exact 300 DPI high-resolution sheet with standard ~1.5px border outlines and corner registration crop ticks extending outside each photo, so you can cleanly cut individual copies with scissors or a paper trimmer.',
   },
   {
-    q: 'Is my portrait uploaded to any remote server?',
-    a: 'Never. All AI portrait matting, face cropping, background filtering, outfit compositing, and file exports are executed 100% locally in your browser memory sandbox.',
+    q: 'Is my portrait uploaded or saved to remote servers?',
+    a: 'AI background removal sends your photo over HTTPS to our own secure server, processes it in memory and does not store it. You can choose "Process on my device only" instead for 100% local processing.',
   },
 ];
 

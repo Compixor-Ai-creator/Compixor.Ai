@@ -990,7 +990,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     h1: 'Passport Size Photo Maker Online Free',
     introParagraph:
-      'Create official biometric passport photo online with our passport size photo maker online free. Compixor AI converts ordinary smartphone selfies into compliant government identification photos in seconds. Whether you need a passport photo maker Pakistan for NADRA passport photo size and CNIC photo maker online, a 2x2 inch passport photo online for US visas, or a standard 35x45 mm photo maker for UK, Schengen, and Canadian applications, our local AI handles it all. Generate a crisp passport photo white background and a 300 DPI passport photo 4x6 print sheet: free, no signup, no upload, works in your browser with zero studio wait times.',
+      'Create official biometric passport photo online with our passport size photo maker online free. Compixor AI converts ordinary smartphone selfies into compliant government identification photos in seconds. Whether you need a passport photo maker Pakistan for NADRA passport photo size and CNIC photo maker online, a 2x2 inch passport photo online for US visas, or a standard 35x45 mm photo maker for UK, Schengen, and Canadian applications, our AI handles it all. Generate a crisp passport photo white background and a 300 DPI passport photo 4x6 print sheet: free, fast, with zero studio wait times.',
     howToSteps: [
       {
         name: 'Upload Your Portrait',
@@ -1002,7 +1002,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         name: 'AI Background & Face Alignment',
-        text: 'Use in-browser AI to remove background, set pure white/blue color, and align face guidelines.',
+        text: 'Use AI to remove background, set pure white/blue color, and align face guidelines.',
       },
       {
         name: 'Download Printable 4x6 Sheet',
@@ -1020,7 +1020,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         q: 'Can I make a biometric passport photo with white background from a selfie?',
-        a: 'Yes. Our client-side AI automatically removes busy backgrounds and applies a clean white, off-white, or light blue backdrop without uploading your selfie to external servers.',
+        a: 'Yes. Our AI automatically removes busy backgrounds and applies a clean white, off-white, or light blue backdrop with optional on-device mode.',
       },
       {
         q: 'What is the passport photo 4x6 print sheet?',
@@ -1028,7 +1028,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         q: 'Are my personal photos kept private?',
-        a: 'Absolutely. Face detection and background matting execute 100% locally on your computer GPU/CPU. No photo is ever uploaded or saved on our servers.',
+        a: 'AI background removal sends your photo over HTTPS to our own secure server, processes it in memory and does not store it. You can choose "Process on my device only" instead.',
       },
       {
         q: 'Can I wear glasses or headwear in my passport photo?',
@@ -1041,7 +1041,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     features: [
       {
-        title: 'Local AI Background Removal',
+        title: 'Compixor AI Background Removal',
         description: 'Removes busy home backgrounds and substitutes pure white, off-white, or embassy blue backdrops.',
       },
       {
@@ -1061,7 +1061,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'AI background removal with solid color backdrops',
       'Biometric head height and eye-line guidelines',
       '300 DPI 4x6 printable cut sheet export',
-      '100% private in-browser portrait processing',
+      'Private memory-only and on-device processing options',
     ],
   },
 

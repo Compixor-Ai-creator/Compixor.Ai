@@ -21,12 +21,12 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm leading-relaxed">
-              Professional-grade document and media tools that run entirely in your browser.
-              Your files never touch remote servers — 100% private, instant execution.
+              Professional-grade document and media tools engineered for privacy and speed.
+              Client-side by default with private memory-only AI processing.
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              All Client-Side Systems Operational
+              All Systems Operational
             </div>
           </div>
 
@@ -221,7 +221,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            © 2026 Compixor AI. All tools run 100% client-side for total privacy.
+            © 2026 Compixor AI. Engineered for privacy, security & performance.
           </p>
           <p className="text-xs text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 shrink-0">
             Designed for privacy & performance

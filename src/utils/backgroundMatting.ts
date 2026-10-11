@@ -1,25 +1,9 @@
 /**
- * High-Precision Client-Side Background Removal & Passport Photo Compositing Pipeline
- * Powered by @imgly/background-removal (IS-Net FP16)
+ * High-Precision Background Removal & Passport Photo Compositing Pipeline
+ * Powered by Compixor Cloud AI Backend (rembg) with On-Device Fallback (IS-Net FP16)
  *
- * 100% Client-Side / Zero Server Uploads
+ * Secure memory-only HTTPS processing & zero photo retention
  */
-
-export interface MattingProgress {
-  stage: string;
-  current: number;
-  total: number;
-  percent: number;
-}
-
-export type MattingProgressCallback = (progress: MattingProgress) => void;
-
-export interface EdgeRefinementOptions {
-  featherRadius?: number; // 0.8px to 2.5px (recommended: 1.2px)
-  chokeAmount?: number;    // 0 to 1.5px (recommended: 0.6px)
-  decontaminate?: boolean;
-  originalBgColor?: { r: number; g: number; b: number } | null;
-}
 
 /**
  * Samples the original background color from outer border perimeter of the image canvas
@@ -83,14 +67,51 @@ export function sampleOriginalBgColor(
 }
 
 /**
+ * Compixor AI — High-Precision Passport Photo Matting Pipeline
+ *
+ * Connects directly to our VPS backend (POST /remove-bg?bg=transparent or /api/remove-bg)
+ * with automatic graceful fallback to client-side IS-Net neural matting when offline/busy.
+ */
+
+export interface MattingProgress {
+  stage: string;
+  current: number;
+  total: number;
+  percent: number;
+}
+
+export type MattingProgressCallback = (progress: MattingProgress) => void;
+
+export interface EdgeRefinementOptions {
+  featherRadius?: number; // 0.8px to 2.5px (recommended: 1.2px)
+  chokeAmount?: number;   // 0 to 1.5px (recommended: 0.6px)
+  decontaminate?: boolean;
+  originalBgColor?: { r: number; g: number; b: number } | null;
+}
+
+/**
+ * Global in-memory cache keyed by SHA-256 hash of the input image.
+ * Guarantees background removal runs ONLY ONCE per unique photo.
+ */
+export const cutoutCache = new Map<string, HTMLCanvasElement>();
+
+/**
+ * Calculates SHA-256 hexadecimal hash of an ArrayBuffer or Blob.
+ */
+export async function computeImageSha256(data: ArrayBuffer | Blob): Promise<string> {
+  const buffer = data instanceof Blob ? await data.arrayBuffer() : data;
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
  * Resolves the Background Removal Backend API URL.
+ * Env var: NEXT_PUBLIC_BG_API_URL (default: https://api.compixor-ai.cloud)
  */
 export function getBgApiUrl(): string {
-  // If running locally in a browser, connect directly to local FastAPI server
-  if (typeof window !== 'undefined') {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      return `http://${window.location.hostname}:8000`;
-    }
+  if (process.env.NEXT_PUBLIC_BG_API_URL) {
+    return process.env.NEXT_PUBLIC_BG_API_URL.replace(/\/$/, '');
   }
   if (process.env.NEXT_PUBLIC_BG_REMOVE_API_URL) {
     return process.env.NEXT_PUBLIC_BG_REMOVE_API_URL.replace(/\/$/, '');
@@ -99,166 +120,204 @@ export function getBgApiUrl(): string {
 }
 
 /**
- * Helper to normalize various image sources to a Blob.
+ * Helper to normalize image sources to a downscaled, EXIF-corrected Blob.
+ * Downscales before upload: longest side max 1600 px, JPEG quality 0.9.
  */
-async function sourceToBlob(imageSource: ImageData | HTMLCanvasElement | Blob | string): Promise<Blob> {
+export async function prepareUploadBlob(
+  imageSource: ImageData | HTMLCanvasElement | Blob | string,
+  maxDimension: number = 1600
+): Promise<Blob> {
+  let imgBitmap: ImageBitmap | HTMLImageElement | HTMLCanvasElement;
+
   if (imageSource instanceof Blob) {
-    return imageSource;
-  }
-  if (typeof HTMLCanvasElement !== 'undefined' && imageSource instanceof HTMLCanvasElement) {
-    return new Promise<Blob>((resolve, reject) => {
-      imageSource.toBlob((b) => {
-        if (b) resolve(b);
-        else reject(new Error('Failed to convert canvas to blob'));
-      }, 'image/png');
-    });
-  }
-  if (typeof ImageData !== 'undefined' && imageSource instanceof ImageData) {
-    const canvas = document.createElement('canvas');
-    canvas.width = imageSource.width;
-    canvas.height = imageSource.height;
-    const ctx = canvas.getContext('2d');
+    try {
+      imgBitmap = await createImageBitmap(imageSource, { imageOrientation: 'from-image' });
+    } catch {
+      const url = URL.createObjectURL(imageSource);
+      const img = new Image();
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = reject;
+        img.src = url;
+      });
+      URL.revokeObjectURL(url);
+      imgBitmap = img;
+    }
+  } else if (typeof HTMLCanvasElement !== 'undefined' && imageSource instanceof HTMLCanvasElement) {
+    imgBitmap = imageSource;
+  } else if (typeof ImageData !== 'undefined' && imageSource instanceof ImageData) {
+    const c = document.createElement('canvas');
+    c.width = imageSource.width;
+    c.height = imageSource.height;
+    const ctx = c.getContext('2d');
     if (ctx) ctx.putImageData(imageSource, 0, 0);
-    return new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((b) => {
-        if (b) resolve(b);
-        else reject(new Error('Failed to convert ImageData to blob'));
-      }, 'image/png');
-    });
-  }
-  if (typeof imageSource === 'string') {
+    imgBitmap = c;
+  } else if (typeof imageSource === 'string') {
     const res = await fetch(imageSource);
-    return await res.blob();
+    const blob = await res.blob();
+    imgBitmap = await createImageBitmap(blob, { imageOrientation: 'from-image' });
+  } else {
+    throw new Error('Unsupported image source type for upload preparation');
   }
-  throw new Error('Unsupported image source type for background removal');
+
+  const w = 'width' in imgBitmap ? imgBitmap.width : (imgBitmap as HTMLImageElement).naturalWidth;
+  const h = 'height' in imgBitmap ? imgBitmap.height : (imgBitmap as HTMLImageElement).naturalHeight;
+
+  let targetW = w;
+  let targetH = h;
+  if (w > maxDimension || h > maxDimension) {
+    const ratio = Math.min(maxDimension / w, maxDimension / h);
+    targetW = Math.round(w * ratio);
+    targetH = Math.round(h * ratio);
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = targetW;
+  canvas.height = targetH;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!ctx) throw new Error('Could not create 2D canvas context');
+  ctx.drawImage(imgBitmap, 0, 0, targetW, targetH);
+
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (b) => {
+        if (b) resolve(b);
+        else reject(new Error('Failed to encode downscaled image'));
+      },
+      'image/jpeg',
+      0.9
+    );
+  });
 }
 
 /**
- * Calls the Compixor FastAPI backend (/api/process-passport) to remove background.
- * Returns a transparent-background PNG blob by calling remove.bg server-side.
- *
- * Form fields match the FastAPI schema:
- *   image      → the photo file
- *   bg_color   → hex or preset (we always pass 'transparent' equivalent → '#FFFFFF' then handle client-side)
- *
- * NOTE: /api/process-passport returns a JPEG with a solid background.
- *       For client-side compositing we need a transparent PNG cutout,
- *       so we use the /api/remove-bg endpoint (returns PNG with alpha).
+ * Universal Background Removal via Compixor VPS Backend API.
+ * Uses XMLHttpRequest for genuine upload progress tracking, AbortController for cancellation,
+ * and automatic single-retry on network/5xx failures.
  */
 export async function removeBackgroundViaAPI(
-  imageSource: ImageData | HTMLCanvasElement | Blob | string,
-  onProgress?: MattingProgressCallback,
-  bg: string = 'transparent'
+  blob: Blob,
+  options: {
+    signal?: AbortSignal;
+    onUploadProgress?: (percent: number) => void;
+    onStatusChange?: (statusText: string) => void;
+  } = {}
 ): Promise<Blob> {
-  const blob = await sourceToBlob(imageSource);
-  const primaryUrl = getBgApiUrl();
-  const alternateUrl =
-    primaryUrl.includes('localhost') || primaryUrl.includes('127.0.0.1')
-      ? 'https://api.compixor-ai.cloud'
-      : 'http://127.0.0.1:8000';
+  const baseUrl = getBgApiUrl();
+  const endpoints = [
+    `${baseUrl}/api/remove-bg`,
+    `${baseUrl}/api/remove-bg?bg=transparent`,
+    `${baseUrl}/remove-bg?bg=transparent`,
+    `${baseUrl}/remove-bg`,
+  ];
 
-  const tryEndpoint = async (baseUrl: string): Promise<Blob> => {
-    onProgress?.({
-      stage: 'Connecting to Compixor AI Backend...',
-      current: 15,
-      total: 100,
-      percent: 15,
-    });
+  let lastError: Error | null = null;
 
-    let currentPct = 20;
-    const timer = setInterval(() => {
-      if (currentPct < 90) {
-        currentPct += 6;
-        onProgress?.({
-          stage: 'remove.bg AI: Removing Background...',
-          current: currentPct,
-          total: 100,
-          percent: currentPct,
-        });
-      }
-    }, 400);
-
-    try {
-      const fd = new FormData();
-      // Field name must match FastAPI: image (UploadFile)
-      fd.append('image', blob, 'passport_portrait.jpg');
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 35000); // 35s matches backend timeout
-
-      // Use /api/remove-bg which returns PNG with alpha channel for client-side compositing
-      const res = await fetch(`${baseUrl}/api/remove-bg`, {
-        method: 'POST',
-        body: fd,
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-      clearInterval(timer);
-
-      if (!res.ok) {
-        let msg = `Server error ${res.status}`;
-        try {
-          const data = await res.json();
-          if (data && data.error) msg = data.error;
-        } catch (_) {}
-        throw new Error(msg);
-      }
-
-      onProgress?.({
-        stage: 'Background removed — rendering cutout...',
-        current: 100,
-        total: 100,
-        percent: 100,
-      });
-
-      return await res.blob();
-    } catch (err) {
-      clearInterval(timer);
-      throw err;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (options.signal?.aborted) {
+      throw new DOMException('Upload aborted by user', 'AbortError');
     }
-  };
 
-  try {
-    return await tryEndpoint(primaryUrl);
-  } catch (primaryErr) {
-    console.warn(`[BackgroundMatting] Primary backend (${primaryUrl}) failed:`, primaryErr);
-    try {
-      return await tryEndpoint(alternateUrl);
-    } catch (altErr) {
-      console.warn(`[BackgroundMatting] Alternate backend (${alternateUrl}) failed:`, altErr);
-      throw primaryErr;
+    if (attempt > 0) {
+      options.onStatusChange?.('Retrying connection to Compixor AI...');
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    for (const url of endpoints) {
+      try {
+        const resultBlob = await new Promise<Blob>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', url, true);
+          xhr.responseType = 'blob';
+          xhr.timeout = 60000; // 60s timeout
+
+          if (options.signal) {
+            options.signal.addEventListener('abort', () => {
+              xhr.abort();
+              reject(new DOMException('Upload aborted by user', 'AbortError'));
+            });
+          }
+
+          xhr.upload.onprogress = (evt) => {
+            if (evt.lengthComputable && evt.total > 0) {
+              const pct = Math.min(99, Math.round((evt.loaded / evt.total) * 100));
+              options.onUploadProgress?.(pct);
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(xhr.response);
+            } else {
+              let errMsg = `Server returned HTTP ${xhr.status}`;
+              if (xhr.response instanceof Blob) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  try {
+                    const parsed = JSON.parse(reader.result as string);
+                    if (parsed.error) errMsg = parsed.error;
+                    else if (parsed.detail) errMsg = typeof parsed.detail === 'string' ? parsed.detail : JSON.stringify(parsed.detail);
+                  } catch {}
+                  reject(new Error(errMsg));
+                };
+                reader.readAsText(xhr.response);
+              } else {
+                reject(new Error(errMsg));
+              }
+            }
+          };
+
+          xhr.onerror = () => reject(new Error('Network connection error to backend'));
+          xhr.ontimeout = () => reject(new Error('Request timed out (60s limit)'));
+
+          const fd = new FormData();
+          // Supply both field names so any backend routing works flawlessly
+          fd.append('file', blob, 'portrait.jpg');
+          fd.append('image', blob, 'portrait.jpg');
+
+          options.onStatusChange?.('Uploading photo to secure server...');
+          xhr.send(fd);
+        });
+
+        return resultBlob;
+      } catch (err: any) {
+        if (err?.name === 'AbortError') throw err;
+        lastError = err;
+      }
     }
   }
+
+  throw lastError || new Error('Backend background removal failed after retry');
 }
 
 /**
  * Executes high-precision client-side background removal using @imgly/background-removal (IS-Net FP16)
+ * Used as automatic fallback when backend returns 429/503 or network is completely offline.
  */
 export async function removeBackgroundISNet(
   imageSource: ImageData | HTMLCanvasElement | Blob | string,
   onProgress?: MattingProgressCallback
 ): Promise<Blob> {
   const imgly = await import('@imgly/background-removal');
-  const removeBgFn: (image: any, config?: any) => Promise<Blob> =
+  const removeMattingFn: (image: any, config?: any) => Promise<Blob> =
     (imgly as any).removeBackground || (imgly as any).default || (imgly as any);
 
-  const resultBlob = await removeBgFn(imageSource, {
+  const resultBlob = await removeMattingFn(imageSource, {
     model: 'isnet_fp16',
     output: {
       format: 'image/png',
       quality: 1.0,
     },
     progress: (key: string, current: number, total: number) => {
-      let stage = 'Refining portrait matting...';
+      let stage = 'Refining portrait matting on device...';
       if (key.includes('fetch') || key.includes('download')) {
-        stage = 'Downloading IS-Net AI Model...';
+        stage = 'Downloading on-device AI model...';
       } else if (key.includes('onnx') || key.includes('init')) {
-        stage = 'Initializing ONNX WebAssembly Engine...';
+        stage = 'Initializing WebAssembly engine...';
       } else if (key.includes('compute') || key.includes('inference')) {
-        stage = 'Generating High-Precision Alpha Mask...';
+        stage = 'Processing alpha mask locally...';
       } else if (key.includes('encode')) {
-        stage = 'Rendering PNG cutout...';
+        stage = 'Generating PNG cutout...';
       }
 
       const percent = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
@@ -276,14 +335,44 @@ export async function removeBackgroundISNet(
 
 /**
  * Universal Background Removal entry point:
- * Calls FastAPI backend directly (/api/remove-bg) without running heavy browser AI.
+ * Uses Compixor VPS Backend API first with automatic on-device fallback if offline or overloaded.
  */
 export async function removeBackground(
   imageSource: ImageData | HTMLCanvasElement | Blob | string,
-  onProgress?: MattingProgressCallback,
-  bg: string = 'transparent'
-): Promise<Blob> {
-  return await removeBackgroundViaAPI(imageSource, onProgress, bg);
+  options: {
+    signal?: AbortSignal;
+    onUploadProgress?: (percent: number) => void;
+    onStatusChange?: (statusText: string) => void;
+    forceOnDevice?: boolean;
+    onFallback?: () => void;
+  } = {}
+): Promise<{ blob: Blob; mode: 'server' | 'on-device' }> {
+  if (options.forceOnDevice) {
+    options.onStatusChange?.('Processing on device only...');
+    const blob = await removeBackgroundISNet(imageSource, (p) => {
+      options.onStatusChange?.(p.stage);
+    });
+    return { blob, mode: 'on-device' };
+  }
+
+  try {
+    const preparedBlob = await prepareUploadBlob(imageSource);
+    const blob = await removeBackgroundViaAPI(preparedBlob, {
+      signal: options.signal,
+      onUploadProgress: options.onUploadProgress,
+      onStatusChange: options.onStatusChange,
+    });
+    return { blob, mode: 'server' };
+  } catch (apiErr: any) {
+    if (apiErr?.name === 'AbortError') throw apiErr;
+    console.warn('[passport] Backend error or offline, falling back to on-device mode:', apiErr);
+    options.onFallback?.();
+    options.onStatusChange?.('Using on-device mode (IS-Net)...');
+    const blob = await removeBackgroundISNet(imageSource, (p) => {
+      options.onStatusChange?.(p.stage);
+    });
+    return { blob, mode: 'on-device' };
+  }
 }
 
 /**

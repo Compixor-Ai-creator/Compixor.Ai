@@ -20,7 +20,7 @@ export default function PassportBeforeAfter() {
           See the Difference: Smartphone Selfie to Compliant Passport Photo
         </h3>
         <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-xl mx-auto">
-          Drag the slider or inspect side-by-side to see how our zero-server AI isolates hair strands, standardizes dimensions, and overlays biometric guides.
+          Drag the slider or inspect side-by-side to see how our high-precision AI isolates hair strands, standardizes dimensions, and overlays biometric guides.
         </p>
       </div>
 
@@ -172,15 +172,15 @@ export default function PassportBeforeAfter() {
             <div className="w-full mt-4 space-y-1.5 text-left">
               <div className="flex items-center gap-2 text-xs text-zinc-700 dark:text-zinc-300 font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <span>Cloud AI HD portrait matting with 0% fringe halos</span>
+                <span>Compixor AI portrait matting with 0% fringe halos</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-zinc-700 dark:text-zinc-300 font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <span>Exact 70–80% biometric head ratio verified</span>
+                <span>Exact biometric head ratio & eye line alignment</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-zinc-700 dark:text-zinc-300 font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <span>Instant formal suit replacement & 300 DPI print ready</span>
+                <span>Official dimensions & 300 DPI print sheet ready</span>
               </div>
             </div>
           </div>
@@ -194,10 +194,10 @@ export default function PassportBeforeAfter() {
             </div>
             <div>
               <p className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white">
-                No Data Leak — 100% On-Device Processing
+                Strict Privacy Architecture — Zero Photo Retention
               </p>
               <p className="text-[11px] sm:text-xs text-zinc-600 dark:text-zinc-400">
-                Your passport and ID photo never leaves your device. Processed entirely in browser RAM — no server, no upload, no storage. Unlike PhotoGov, Cutout.Pro, or PhotoAiD.
+                AI background removal sends your photo over HTTPS to our own secure server, processes it in memory and does not store it. You can choose &quot;Process on my device only&quot; instead.
               </p>
             </div>
           </div>
