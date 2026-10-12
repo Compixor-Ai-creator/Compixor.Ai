@@ -622,6 +622,7 @@ export default function PassportPhotoPage() {
 
   // Floating Debug Panel (?debug=1)
   const [isDebugMode, setIsDebugMode] = useState(false);
+  const [isDebugExpanded, setIsDebugExpanded] = useState(false);
   const [debugStats, setDebugStats] = useState({
     requestsSent: 0,
     cacheHits: 0,
@@ -632,6 +633,7 @@ export default function PassportPhotoPage() {
     cachedHash: 'none',
     lastRenderMs: 0,
   });
+
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -2683,62 +2685,110 @@ export default function PassportPhotoPage() {
 
       <ToolSeoSection toolSlug="passport-photo" />
 
-      {/* Floating Debug Panel (?debug=1) */}
+      {/* Floating Debug Panel (?debug=1) — Bottom-LEFT, Collapsible, Copy Report, No Feedback Collision */}
       {isDebugMode && (
-        <div className="fixed bottom-4 right-4 z-50 p-4 rounded-2xl bg-zinc-950/95 border border-cyan-500/40 text-cyan-300 font-mono text-xs shadow-2xl backdrop-blur-md max-w-xs space-y-1.5 select-none pointer-events-auto">
-          <div className="flex items-center justify-between border-b border-cyan-500/30 pb-1.5 mb-2">
-            <span className="font-bold text-white flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Passport Studio Debug (?debug=1)
-            </span>
-            <span className="text-[10px] text-zinc-400">Live Stats</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">API Requests Sent:</span>
-            <span className="font-bold text-white">{debugStats.requestsSent}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Cache Hits:</span>
-            <span className="font-bold text-emerald-400">{debugStats.cacheHits}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Last API Duration:</span>
-            <span className="font-bold text-white">{debugStats.lastDurationMs} ms</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Uploaded Size:</span>
-            <span className="font-bold text-white">{debugStats.lastUploadedKb} KB</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Result:</span>
-            <span
-              className={`font-bold ${
-                debugStats.lastResult === 'ok'
-                  ? 'text-emerald-400'
-                  : debugStats.lastResult === 'error'
-                  ? 'text-red-400'
-                  : 'text-amber-400'
-              }`}
+        <div className="fixed bottom-4 left-4 z-40 select-none pointer-events-auto">
+          {!isDebugExpanded ? (
+            <button
+              onClick={() => setIsDebugExpanded(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-950/95 border border-cyan-500/50 text-cyan-300 font-mono text-xs shadow-2xl backdrop-blur-md hover:bg-zinc-900 transition-all cursor-pointer min-h-[36px]"
+              title="Click to expand Passport Studio Debug Panel"
             >
-              {debugStats.lastResult}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Mode:</span>
-            <span className="font-bold text-white">{debugStats.mode}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Cutout Cached:</span>
-            <span className="font-bold text-cyan-400">
-              {debugStats.cachedHash !== 'none' ? `yes (${debugStats.cachedHash})` : 'no'}
-            </span>
-          </div>
-          <div className="flex justify-between border-t border-cyan-500/20 pt-1 mt-1">
-            <span className="text-zinc-400">Last Re-render:</span>
-            <span className="font-bold text-white">{debugStats.lastRenderMs} ms</span>
-          </div>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-bold text-white">Debug</span>
+              <span className="text-[10px] text-cyan-400/80">({debugStats.requestsSent} req)</span>
+            </button>
+          ) : (
+            <div className="p-4 rounded-2xl bg-zinc-950/95 border border-cyan-500/40 text-cyan-300 font-mono text-xs shadow-2xl backdrop-blur-md w-[320px] max-w-[90vw] space-y-1.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div className="flex items-center justify-between border-b border-cyan-500/30 pb-1.5 mb-2">
+                <span className="font-bold text-white flex items-center gap-1.5 text-xs truncate">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                  Passport Debug (?debug=1)
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => {
+                      const report = [
+                        `--- Passport Studio Debug Report ---`,
+                        `API Requests Sent: ${debugStats.requestsSent}`,
+                        `Cache Hits: ${debugStats.cacheHits}`,
+                        `Last API Duration: ${debugStats.lastDurationMs} ms`,
+                        `Uploaded Size: ${debugStats.lastUploadedKb} KB`,
+                        `Result: ${debugStats.lastResult}`,
+                        `Mode: ${debugStats.mode}`,
+                        `Cutout Cached: ${debugStats.cachedHash}`,
+                        `Last Re-render: ${debugStats.lastRenderMs} ms`,
+                        `Sheet Preset: ${sheetPreset}`,
+                        `Active Country: ${activePreset.name} (${activePreset.widthMm}x${activePreset.heightMm} mm)`,
+                        `Timestamp: ${new Date().toISOString()}`,
+                      ].join('\n');
+                      navigator.clipboard.writeText(report);
+                      toast.success('Debug report copied to clipboard!');
+                    }}
+                    className="px-2 py-0.5 rounded bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/40 text-[10px] font-sans font-bold transition"
+                    title="Copy full debug report"
+                  >
+                    Copy report
+                  </button>
+                  <button
+                    onClick={() => setIsDebugExpanded(false)}
+                    className="w-5 h-5 rounded flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 text-xs transition"
+                    title="Collapse debug panel"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-zinc-400">API Requests Sent:</span>
+                <span className="font-bold text-white">{debugStats.requestsSent}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Cache Hits:</span>
+                <span className="font-bold text-emerald-400">{debugStats.cacheHits}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Last API Duration:</span>
+                <span className="font-bold text-white">{debugStats.lastDurationMs} ms</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Uploaded Size:</span>
+                <span className="font-bold text-white">{debugStats.lastUploadedKb} KB</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Result:</span>
+                <span
+                  className={`font-bold ${
+                    debugStats.lastResult === 'ok'
+                      ? 'text-emerald-400'
+                      : debugStats.lastResult === 'error'
+                      ? 'text-red-400'
+                      : 'text-amber-400'
+                  }`}
+                >
+                  {debugStats.lastResult}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Mode:</span>
+                <span className="font-bold text-white">{debugStats.mode}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Cutout Cached:</span>
+                <span className="font-bold text-cyan-400">
+                  {debugStats.cachedHash !== 'none' ? `yes (${debugStats.cachedHash})` : 'no'}
+                </span>
+              </div>
+              <div className="flex justify-between border-t border-cyan-500/20 pt-1 mt-1">
+                <span className="text-zinc-400">Last Re-render:</span>
+                <span className="font-bold text-white">{debugStats.lastRenderMs} ms</span>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 }
+
