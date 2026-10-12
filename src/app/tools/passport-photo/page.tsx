@@ -39,6 +39,8 @@ import {
   Loader2,
   ShieldCheck,
   Image as ImageIcon,
+  Move,
+  Crosshair,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
@@ -63,6 +65,8 @@ import {
   generateStudioPdf,
   SheetLayoutResult,
 } from '@/lib/printSheetsV2';
+import { parseImageHeaderDimensions } from '@/utils/imageHeaderParser';
+import { createPassportWorkingCopy, PASSPORT_UPLOAD_CONFIG } from '@/utils/imageWorkingCopy';
 
 export interface BiometricSpec {
   headHeightPercent: number; // Crown to chin % of photo height
@@ -618,6 +622,11 @@ export default function PassportPhotoPage() {
     setSelectedPreset(preset);
     setBgColor(preset.defaultBgColor);
     setPreviewTab('background');
+    if (cachedCutoutCanvasRef.current || imageSrc) {
+      setTimeout(() => {
+        autoAlignBiometric('preset-change');
+      }, 50);
+    }
   };
 
 
@@ -724,6 +733,16 @@ export default function PassportPhotoPage() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const [faceDetected, setFaceDetected] = useState<boolean | null>(null);
 
+  // UX and Mobile Adjust Mode state
+  const [isAdjustMode, setIsAdjustMode] = useState(false);
+  const [isAdvancedAccordionOpen, setIsAdvancedAccordionOpen] = useState(false);
+  const [baselineZoom, setBaselineZoom] = useState(1);
+  const [isTooCloseWarning, setIsTooCloseWarning] = useState(false);
+  const [uploadErrorMessage, setUploadErrorMessage] = useState<string | null>(null);
+  const [resetSignal, setResetSignal] = useState(0);
+  const pinchStartDistRef = useRef<number | null>(null);
+  const pinchStartZoomRef = useRef<number>(1);
+
   // Floating Debug Panel (?debug=1)
   const [isDebugMode, setIsDebugMode] = useState(false);
   const [isDebugExpanded, setIsDebugExpanded] = useState(false);
@@ -736,15 +755,45 @@ export default function PassportPhotoPage() {
     mode: 'server' as 'server' | 'on-device',
     cachedHash: 'none',
     lastRenderMs: 0,
+    lastAlignCause: 'none' as string,
+    zoomDisplay: '100% (1.00x)' as string,
   });
 
 
+  // Sync debug mode and step=download query param on load
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setIsDebugMode(params.get('debug') === '1');
+      if (params.get('step') === 'download') {
+        if (!imageSrc) {
+          // If visited without a photo, force Step 1 (Upload/Edit)
+          const newParams = new URLSearchParams(window.location.search);
+          newParams.delete('step');
+          const newUrl = window.location.pathname + (newParams.toString() ? `?${newParams.toString()}` : '');
+          window.history.replaceState({}, '', newUrl);
+          setCurrentStep('edit');
+        } else {
+          setCurrentStep('preview');
+        }
+      }
     }
-  }, []);
+  }, [imageSrc]);
+
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('step') === 'download' && imageSrc) {
+        setCurrentStep('preview');
+      } else {
+        setCurrentStep('edit');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [imageSrc]);
 
   // Download screen options
   const [sheetPreset, setSheetPreset] = useState<SheetPresetOption>('a4');
@@ -936,22 +985,52 @@ export default function PassportPhotoPage() {
     return null;
   };
 
-  const autoAlignBiometric = useCallback(async () => {
+  const autoAlignBiometric = useCallback(async (cause: 'cutout-ready' | 'preset-change' | 'button' = 'button') => {
     const canvas = cachedCutoutCanvasRef.current;
     if (!canvas) return;
 
     const face = await detectFaceBounds(canvas);
     if (!face) {
       setFaceDetected(false);
-      toast.warning('Face not detected - drag/zoom the photo so your face is inside the guide');
+      setDebugStats((prev) => ({
+        ...prev,
+        lastAlignCause: cause,
+      }));
+      if (cause === 'button') {
+        toast.warning('Face not detected - drag/zoom the photo so your face is inside the guide');
+      }
       return;
     }
 
     setFaceDetected(true);
     const targetHeadH = activePreset.heightPx * (activePreset.biometricSpec.headHeightPercent / 100);
     const faceHInPreset = face.height * (activePreset.heightPx / canvas.height);
-    const targetZoom = Math.min(2.5, Math.max(1.0, targetHeadH / Math.max(60, faceHInPreset)));
-    setZoom(Math.round(targetZoom * 100) / 100);
+    let targetZoom = Math.max(0.6, Math.min(2.5, targetHeadH / Math.max(40, faceHInPreset)));
+
+    // Biometric margins check: crown, chin, and ears margin >= 2% (0.02)
+    // If crown or chin or ears clip the canvas at targetZoom, cap the zoom to fit the head
+    const crownMargin = face.y / canvas.height;
+    const chinMargin = (canvas.height - (face.y + face.height)) / canvas.height;
+    const leftEarMargin = face.x / canvas.width;
+    const rightEarMargin = (canvas.width - (face.x + face.width)) / canvas.width;
+
+    let tooClose = false;
+    if (crownMargin < 0.02 || chinMargin < 0.02 || leftEarMargin < 0.02 || rightEarMargin < 0.02) {
+      // Prioritize showing full head inside frame over enforcing oversized targetHeadH
+      const maxFitZoom = Math.min(
+        (activePreset.heightPx * 0.94) / Math.max(40, faceHInPreset),
+        targetZoom
+      );
+      if (maxFitZoom < targetZoom) {
+        targetZoom = Math.max(0.6, maxFitZoom);
+        tooClose = true;
+      }
+    }
+    setIsTooCloseWarning(tooClose);
+
+    const calculatedZoom = Math.round(targetZoom * 100) / 100;
+    setBaselineZoom(calculatedZoom);
+    setZoom(calculatedZoom);
 
     const faceCenterX = (face.x + face.width / 2) / canvas.width;
     setPanX(-Math.round((faceCenterX - 0.5) * previewDimensions.width));
@@ -959,7 +1038,14 @@ export default function PassportPhotoPage() {
     const crownY = face.y / canvas.height;
     const targetCrown = (activePreset.biometricSpec.topMarginPercent ?? 10) / 100;
     setPanY(-Math.round((crownY - targetCrown) * previewDimensions.height));
-    toast.success('Subject automatically framed into biometric guidelines!');
+
+    setDebugStats((prev) => ({
+      ...prev,
+      lastAlignCause: cause,
+      zoomDisplay: `100% (${calculatedZoom.toFixed(2)}x)`,
+    }));
+
+    toast.success('Photo fitted automatically. Tap Adjust to fine-tune.');
   }, [activePreset, previewDimensions]);
 
   // STEP 1 — Background Removal & Subject Separation ON FULL ORIGINAL PHOTO
@@ -1131,7 +1217,7 @@ export default function PassportPhotoPage() {
       if (!hasAutoAlignedRef.current) {
         hasAutoAlignedRef.current = true;
         setTimeout(() => {
-          autoAlignBiometric();
+          autoAlignBiometric('cutout-ready');
         }, 50);
       }
     } catch (err: any) {
@@ -1332,8 +1418,22 @@ export default function PassportPhotoPage() {
     }
   }, [compositeFinalCanvas, currentStep, renderPrintSheetCanvas]);
 
-  // Handle image drop
-  const handleFileDrop = useCallback((file: File) => {
+  // Handle image drop with 15 MB / 100 MP limit and 2400px working copy generator
+  const handleFileDrop = useCallback(async (file: File) => {
+    setUploadErrorMessage(null);
+
+    // 1. File size check: up to 15 MB
+    const maxBytes = PASSPORT_UPLOAD_CONFIG.MAX_FILE_BYTES;
+    if (file.size > maxBytes) {
+      const mbSize = (file.size / (1024 * 1024)).toFixed(1);
+      const msg = `This file is ${mbSize} MB. The maximum is 15 MB. Please use a smaller photo.`;
+      setUploadErrorMessage(msg);
+      toast.error(msg);
+      setResetSignal((s) => s + 1);
+      return;
+    }
+
+    // 2. Format check
     const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     const isHeic =
       file.name.toLowerCase().endsWith('.heic') ||
@@ -1342,28 +1442,55 @@ export default function PassportPhotoPage() {
       file.type === 'image/heif';
 
     if (isHeic) {
-      toast.error('HEIC format is not natively supported by browsers. Please convert to JPG/PNG first.');
+      // Clear guidance for iPhone HEIC images (or dynamic converter if available)
+      try {
+        // Dynamic import using Function to prevent TypeScript compile-time module resolution failure
+        const dynamicImport = new Function('specifier', 'return import(specifier)');
+        const heicModule = await dynamicImport('heic2any');
+        const heic2any = heicModule.default || heicModule;
+        toast.info('Converting iPhone HEIC photo...');
+        const convertedBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.95 });
+        const finalBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+        file = new File([finalBlob], file.name.replace(/\.heic$/i, '.jpg'), { type: 'image/jpeg' });
+      } catch {
+        const msg = 'HEIC photos are not supported yet. On iPhone choose Most Compatible, or export as JPG.';
+        setUploadErrorMessage(msg);
+        toast.error(msg);
+        setResetSignal((s) => s + 1);
+        return;
+      }
+    } else if (!validTypes.includes(file.type) && !file.type.startsWith('image/')) {
+      const msg = 'Please upload a JPG, PNG or WebP photo.';
+      setUploadErrorMessage(msg);
+      toast.error(msg);
+      setResetSignal((s) => s + 1);
       return;
     }
 
-    if (!validTypes.includes(file.type) && !file.type.startsWith('image/')) {
-      toast.error('Please upload a valid image file (JPG, PNG, WebP).');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const src = e.target?.result as string;
-      const img = new Image();
-      img.onload = () => {
-        if (img.naturalWidth > 5000 || img.naturalHeight > 4000) {
-          toast.error('Image is too large. Max supported resolution is 5000×4000px.');
+    // 3. Pre-decode header dimension check (reject if > 100 MP)
+    try {
+      const headerInfo = await parseImageHeaderDimensions(file);
+      if (headerInfo) {
+        const mp = (headerInfo.width * headerInfo.height) / 1_000_000;
+        if (mp > PASSPORT_UPLOAD_CONFIG.MAX_MEGAPIXELS) {
+          const msg = `This photo is ${headerInfo.width} x ${headerInfo.height} px (${Math.round(mp)} MP). The maximum is 100 MP.`;
+          setUploadErrorMessage(msg);
+          toast.error(msg);
+          setResetSignal((s) => s + 1);
           return;
         }
+      }
+    } catch (_) {}
 
+    // 4. Create working copy (longest side <= 2400px)
+    try {
+      const working = await createPassportWorkingCopy(file);
+      const img = new Image();
+      img.onload = () => {
         imageElementRef.current = img;
-        setImageSrc(src);
+        setImageSrc(working.dataUrl);
         setZoom(1);
+        setBaselineZoom(1);
         setRotation(0);
         setPanX(0);
         setPanY(0);
@@ -1371,39 +1498,49 @@ export default function PassportPhotoPage() {
         setBrightness(100);
         setContrast(100);
         setSaturation(100);
+        hasAutoAlignedRef.current = false;
         setCurrentStep('edit');
+        setUploadErrorMessage(null);
         toast.success('Photo loaded! Align your portrait with the biometric guide.');
       };
       img.onerror = () => {
-        toast.error('Failed to parse portrait image.');
+        const msg = 'Your photo could not be read. Please try saving it again as a standard JPG or PNG.';
+        setUploadErrorMessage(msg);
+        toast.error(msg);
+        setResetSignal((s) => s + 1);
       };
-      img.src = src;
-    };
-    reader.readAsDataURL(file);
+      img.src = working.dataUrl;
+    } catch (err) {
+      console.error('Working copy error:', err);
+      const msg = 'Your photo could not be read. Please try saving it again as a standard JPG or PNG.';
+      setUploadErrorMessage(msg);
+      toast.error(msg);
+      setResetSignal((s) => s + 1);
+    }
   }, []);
 
-  // Pan interactions
+  // Pan interactions (Desktop & Adjust mode)
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!imageSrc) return;
+    if (!imageSrc || !isAdjustMode) return;
     setIsDragging(true);
     setDragStart({ x: e.clientX - panX, y: e.clientY - panY });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
+    if (!isDragging || !isAdjustMode) return;
     setPanX(e.clientX - dragStart.x);
     setPanY(e.clientY - dragStart.y);
   };
 
   const handleMouseUp = () => setIsDragging(false);
 
-  // Wheel zoom
+  // Wheel zoom (only in adjust mode or active canvas)
   useEffect(() => {
     const el = previewBoxRef.current;
     if (!el) return;
 
     const handleWheel = (e: WheelEvent) => {
-      if (!imageSrc) return;
+      if (!imageSrc || !isAdjustMode) return;
       e.preventDefault();
       const delta = e.deltaY > 0 ? -0.05 : 0.05;
       setZoom((z) => Math.min(Math.max(0.4, z + delta), 3.0));
@@ -1411,28 +1548,57 @@ export default function PassportPhotoPage() {
 
     el.addEventListener('wheel', handleWheel, { passive: false });
     return () => el.removeEventListener('wheel', handleWheel);
-  }, [imageSrc]);
+  }, [imageSrc, isAdjustMode]);
 
-  // Touch handlers
+  // Touch handlers (Drag & Pinch - only active when Adjust Position mode is on)
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (!imageSrc || e.touches.length !== 1) return;
-    setIsDragging(true);
-    setDragStart({ x: e.touches[0].clientX - panX, y: e.touches[0].clientY - panY });
+    if (!imageSrc || !isAdjustMode) return;
+    if (e.touches.length === 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.touches[0].clientX - panX, y: e.touches[0].clientY - panY });
+    } else if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      pinchStartDistRef.current = dist;
+      pinchStartZoomRef.current = zoom;
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || e.touches.length !== 1) return;
-    setPanX(e.touches[0].clientX - dragStart.x);
-    setPanY(e.touches[0].clientY - dragStart.y);
+    if (!imageSrc || !isAdjustMode) return;
+    if (e.touches.length === 1 && isDragging) {
+      e.preventDefault();
+      setPanX(e.touches[0].clientX - dragStart.x);
+      setPanY(e.touches[0].clientY - dragStart.y);
+    } else if (e.touches.length === 2 && pinchStartDistRef.current !== null) {
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const scale = dist / pinchStartDistRef.current;
+      const newZoom = Math.min(Math.max(0.4, pinchStartZoomRef.current * scale), 3.0);
+      setZoom(Math.round(newZoom * 100) / 100);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    pinchStartDistRef.current = null;
   };
 
   // Reset transforms
   const resetTransform = () => {
     setZoom(1);
+    setBaselineZoom(1);
     setRotation(0);
     setPanX(0);
     setPanY(0);
     setFlipH(false);
+    setIsAdjustMode(false);
+    setIsTooCloseWarning(false);
     setBrightness(100);
     setContrast(100);
     setSaturation(100);
@@ -1455,8 +1621,19 @@ export default function PassportPhotoPage() {
     hasAutoAlignedRef.current = false;
     setFaceDetected(null);
     setMattingProgress(null);
+    setIsAdjustMode(false);
+    setIsTooCloseWarning(false);
+    setUploadErrorMessage(null);
     resetTransform();
     setCurrentStep('edit');
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('step')) {
+        params.delete('step');
+        const newUrl = window.location.pathname + (params.toString() ? `?${params.toString()}` : '');
+        window.history.pushState({}, '', newUrl);
+      }
+    }
   };
 
   // Binary search compression helper to strictly meet target file size limits
@@ -1868,14 +2045,32 @@ export default function PassportPhotoPage() {
 
             {/* Upload Drop Zone */}
             {!imageSrc ? (
-              <div className="glass-card p-6 rounded-2xl">
+              <div className="glass-card p-6 rounded-2xl space-y-4">
                 <FileDropZone
                   accept="image/jpeg,image/png,image/webp,image/gif"
                   onFileDrop={handleFileDrop}
                   maxSizeMB={15}
+                  resetSignal={resetSignal}
                   title="Upload portrait or selfie"
                   subtitle="JPG, PNG, or WebP up to 15MB. Front-facing with neutral lighting."
                 />
+                {uploadErrorMessage && (
+                  <div
+                    data-testid="dropzone-error-banner"
+                    className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-700 dark:text-red-300 text-xs flex items-center justify-between gap-2.5 animate-in fade-in"
+                  >
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
+                      <span className="font-medium">{uploadErrorMessage}</span>
+                    </div>
+                    <button
+                      onClick={() => setUploadErrorMessage(null)}
+                      className="text-red-500 hover:text-red-700 dark:hover:text-red-200 text-xs font-bold underline shrink-0 cursor-pointer"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               /* Studio Adjustment Controls */
@@ -1887,8 +2082,8 @@ export default function PassportPhotoPage() {
                   </h3>
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={autoAlignBiometric}
-                      className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold flex items-center gap-1 transition px-2 py-1 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60"
+                      onClick={() => autoAlignBiometric('button')}
+                      className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold flex items-center gap-1 transition px-2 py-1 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60 cursor-pointer min-h-[32px]"
                       title="Automatically center and scale subject into the biometric oval guide"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-brand-500" />
@@ -1910,23 +2105,34 @@ export default function PassportPhotoPage() {
                   </div>
                 </div>
 
-                {/* Quick Transform Toolbar */}
-                <div className="flex flex-wrap gap-2">
+                {/* Quick Transform & Adjust Position Toolbar */}
+                <div className="flex flex-wrap items-center gap-2">
                   <button
-                    onClick={() => setRotation((r) => (r - 90) % 360)}
-                    className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5 transition"
+                    onClick={() => setIsAdjustMode(!isAdjustMode)}
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[38px] ${
+                      isAdjustMode
+                        ? 'border-brand-500 bg-brand-500/15 text-brand-600 dark:text-brand-300 ring-2 ring-brand-500/25'
+                        : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
+                    }`}
+                  >
+                    <Move className="w-3.5 h-3.5" />
+                    {isAdjustMode ? 'Done Adjusting' : 'Adjust Position (Drag/Pinch)'}
+                  </button>
+                  <button
+                    onClick={() => setRotation((r) => (r - 90 + 360) % 360)}
+                    className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5 transition cursor-pointer min-h-[38px]"
                   >
                     <RotateCcw className="w-3.5 h-3.5" /> -90° Rotate
                   </button>
                   <button
                     onClick={() => setRotation((r) => (r + 90) % 360)}
-                    className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5 transition"
+                    className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5 transition cursor-pointer min-h-[38px]"
                   >
                     <RotateCw className="w-3.5 h-3.5" /> +90° Rotate
                   </button>
                   <button
                     onClick={() => setFlipH(!flipH)}
-                    className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[38px] ${
                       flipH
                         ? 'border-brand-500 bg-brand-500/10 text-brand-600 dark:text-brand-300'
                         : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
@@ -1936,97 +2142,83 @@ export default function PassportPhotoPage() {
                   </button>
                 </div>
 
-                {/* Zoom & Fine Angle */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span className="flex items-center gap-1.5">
-                        <ZoomIn className="w-3.5 h-3.5" /> Zoom Level
-                      </span>
-                      <span>{Math.round(zoom * 100)}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0.5"
-                      max="2.5"
-                      step="0.02"
-                      value={zoom}
-                      onChange={(e) => setZoom(parseFloat(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
+                {/* Relative Zoom (100% = Auto-fit baseline) */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+                    <span className="flex items-center gap-1.5">
+                      <ZoomIn className="w-3.5 h-3.5" /> Zoom Level
+                    </span>
+                    <span>{Math.round((zoom / (baselineZoom || 1)) * 100)}%</span>
                   </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span>Fine Tilt Angle</span>
-                      <span>{rotation}°</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="-45"
-                      max="45"
-                      step="1"
-                      value={rotation % 90}
-                      onChange={(e) => setRotation(parseInt(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
-                  </div>
+                  <input
+                    type="range"
+                    min="0.5"
+                    max="2.5"
+                    step="0.02"
+                    value={zoom}
+                    onChange={(e) => setZoom(parseFloat(e.target.value))}
+                    className="w-full slider-blur cursor-pointer"
+                  />
                 </div>
 
-                {/* Lighting: Brightness, Contrast, Saturation */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span>Brightness</span>
-                      <span>{brightness}%</span>
+                {/* Advanced Adjustments Accordion (Brightness, Contrast, Saturation) */}
+                <details className="group border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+                  <summary className="text-xs font-bold text-zinc-700 dark:text-zinc-300 cursor-pointer list-none flex items-center justify-between">
+                    <span>Advanced adjustments (optional)</span>
+                    <span className="text-zinc-400 group-open:rotate-180 transition-transform">▼</span>
+                  </summary>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 mt-2 border-t border-zinc-200/60 dark:border-zinc-800/60">
+                    <div>
+                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                        <span>Brightness</span>
+                        <span>{brightness}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="60"
+                        max="140"
+                        value={brightness}
+                        onChange={(e) => setBrightness(parseInt(e.target.value))}
+                        className="w-full slider-blur cursor-pointer"
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="60"
-                      max="140"
-                      value={brightness}
-                      onChange={(e) => setBrightness(parseInt(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span>Contrast</span>
-                      <span>{contrast}%</span>
+                    <div>
+                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                        <span>Contrast</span>
+                        <span>{contrast}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="60"
+                        max="140"
+                        value={contrast}
+                        onChange={(e) => setContrast(parseInt(e.target.value))}
+                        className="w-full slider-blur cursor-pointer"
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="60"
-                      max="140"
-                      value={contrast}
-                      onChange={(e) => setContrast(parseInt(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span>Saturation</span>
-                      <span>{saturation}%</span>
+                    <div>
+                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                        <span>Saturation</span>
+                        <span>{saturation}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="60"
+                        max="140"
+                        value={saturation}
+                        onChange={(e) => setSaturation(parseInt(e.target.value))}
+                        className="w-full slider-blur cursor-pointer"
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="60"
-                      max="140"
-                      value={saturation}
-                      onChange={(e) => setSaturation(parseInt(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
                   </div>
-                </div>
+                </details>
 
                 {/* 2-Step AI Matting & Background Engine */}
                 <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
                       <Palette className="w-3.5 h-3.5 text-brand-500" />
-                      AI Portrait Matting & Background
+                      Background removal & colour
                     </span>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -2036,7 +2228,7 @@ export default function PassportPhotoPage() {
                         className="rounded text-brand-500 focus:ring-brand-500"
                       />
                       <span className="text-xs font-semibold text-brand-600 dark:text-brand-400">
-                        Enable AI Matting
+                        Remove background automatically (AI)
                       </span>
                     </label>
                   </div>
@@ -2269,12 +2461,12 @@ export default function PassportPhotoPage() {
                       )}
 
 
-                      {/* Precision Sliders: Edge Feathering & Alpha Choke */}
+                      {/* Precision Sliders: Soften edges & Trim edge fringe */}
                       <div className="p-3.5 rounded-xl bg-brand-500/5 border border-brand-500/15 space-y-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <div className="flex justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
-                              <span>Edge Feathering (Softening)</span>
+                              <span>Soften edges</span>
                               <span className="font-mono text-brand-600 dark:text-brand-400">{bgFeather.toFixed(1)}px</span>
                             </div>
                             <input
@@ -2285,13 +2477,13 @@ export default function PassportPhotoPage() {
                               value={bgFeather}
                               onChange={(e) => setBgFeather(parseFloat(e.target.value))}
                               className="w-full slider-blur cursor-pointer"
-                              title="Controls Gaussian blur feathering on subject contours"
+                              title="Controls Gaussian blur softening on subject contours"
                             />
                             <p className="text-[10px] text-zinc-400 mt-0.5">Smooths hair, neck & shoulder contours</p>
                           </div>
                           <div>
                             <div className="flex justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
-                              <span>Boundary Choke (Fringe Cut)</span>
+                              <span>Trim edge fringe</span>
                               <span className="font-mono text-brand-600 dark:text-brand-400">{bgChoke.toFixed(1)}px</span>
                             </div>
                             <input
@@ -2302,7 +2494,7 @@ export default function PassportPhotoPage() {
                               value={bgChoke}
                               onChange={(e) => setBgChoke(parseFloat(e.target.value))}
                               className="w-full slider-blur cursor-pointer"
-                              title="Insets boundary by subpixel to remove outer backdrop halo"
+                              title="Insets boundary to remove outer backdrop halo"
                             />
                             <p className="text-[10px] text-zinc-400 mt-0.5">Eliminates outer wall color rim</p>
                           </div>
@@ -2318,7 +2510,7 @@ export default function PassportPhotoPage() {
                               className="rounded text-brand-500 focus:ring-brand-500"
                             />
                             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-200">
-                              Background Color Decontamination & De-Spill
+                              Remove colour halo
                             </span>
                           </label>
                           <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
@@ -2327,11 +2519,14 @@ export default function PassportPhotoPage() {
                         </div>
                       </div>
 
-                      {/* Processing Mode & Retry Controls */}
+                      {/* Processing Mode & Redo Controls */}
                       <div className="flex flex-col gap-2.5 p-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
-                        {/* Device-only toggle & Retry Button */}
+                        {/* Private Mode toggle & Redo Button */}
                         <div className="flex items-center justify-between gap-2">
-                          <label className="flex items-center gap-2 cursor-pointer">
+                          <label
+                            className="flex items-center gap-2 cursor-pointer"
+                            title="When enabled, background removal runs 100% inside your browser using WebAssembly. No photo data leaves your device."
+                          >
                             <input
                               type="checkbox"
                               checked={forceOnDevice}
@@ -2339,7 +2534,7 @@ export default function PassportPhotoPage() {
                               className="rounded text-brand-500 focus:ring-brand-500"
                             />
                             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-200">
-                              Process on my device only
+                              Private mode: don&apos;t upload my photo
                             </span>
                           </label>
 
@@ -2347,10 +2542,10 @@ export default function PassportPhotoPage() {
                             type="button"
                             onClick={() => processSubjectCutout(true)}
                             disabled={isSegmenting}
-                            className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200 transition flex items-center gap-1.5 disabled:opacity-50"
+                            className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200 transition flex items-center gap-1.5 disabled:opacity-50 cursor-pointer min-h-[36px]"
                           >
                             <RefreshCw className={`w-3 h-3 ${isSegmenting ? 'animate-spin' : ''}`} />
-                            Retry AI matting
+                            Redo background removal
                           </button>
                         </div>
 
@@ -2370,9 +2565,9 @@ export default function PassportPhotoPage() {
                         <div className="flex items-center justify-between pt-1 border-t border-zinc-200 dark:border-zinc-700/60 text-[11px] text-zinc-500 dark:text-zinc-400">
                           <span className="flex items-center gap-1">
                             {isSegmenting ? (
-                              <><Loader2 className="w-3 h-3 animate-spin text-brand-500" /> {segmentationStatus || 'Processing AI Matting...'}</>
+                              <><Loader2 className="w-3 h-3 animate-spin text-brand-500" /> {segmentationStatus || 'Processing...'}</>
                             ) : (
-                              <><ShieldCheck className="w-3 h-3 text-emerald-500" /> {segmentationStatus || 'Compixor AI Cutout Active'}</>
+                              <><ShieldCheck className="w-3 h-3 text-emerald-500" /> {segmentationStatus || 'Background removed'}</>
                             )}
                           </span>
                           <span className="font-medium text-zinc-600 dark:text-zinc-300">
@@ -2409,11 +2604,12 @@ export default function PassportPhotoPage() {
               <div
                 ref={previewBoxRef}
                 className={`relative mx-auto rounded-2xl overflow-hidden shadow-lg border border-zinc-300 dark:border-zinc-700 select-none ${
-                  imageSrc ? 'cursor-grab active:cursor-grabbing' : ''
+                  imageSrc && isAdjustMode ? 'cursor-grab active:cursor-grabbing ring-2 ring-brand-500' : ''
                 }`}
                 style={{
                   width: `${previewDimensions.width}px`,
                   height: `${previewDimensions.height}px`,
+                  touchAction: isAdjustMode ? 'none' : 'pan-y',
                   backgroundColor: previewTab === 'cutout' || bgColor === 'transparent' ? '#ffffff' : bgColor,
                   backgroundImage: (previewTab === 'cutout' || bgColor === 'transparent')
                     ? 'linear-gradient(45deg, #e2e8f0 25%, transparent 25%), linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e2e8f0 75%), linear-gradient(-45deg, transparent 75%, #e2e8f0 75%)'
@@ -2598,6 +2794,70 @@ export default function PassportPhotoPage() {
                 )}
               </div>
 
+              {/* Always-visible Preview Quick Action Buttons */}
+              {imageSrc && (
+                <div className="flex items-center justify-center gap-2 pt-1">
+                  <button
+                    onClick={() => autoAlignBiometric('button')}
+                    className="px-3 py-1.5 rounded-xl bg-brand-50 hover:bg-brand-100 dark:bg-brand-950/40 dark:hover:bg-brand-900/40 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[36px]"
+                    title="Automatically fit portrait to biometric spec"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-brand-500" />
+                    Auto-fit
+                  </button>
+                  <button
+                    onClick={() => setIsAdjustMode(!isAdjustMode)}
+                    className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[36px] ${
+                      isAdjustMode
+                        ? 'border-brand-500 bg-brand-500/15 text-brand-600 dark:text-brand-300 ring-2 ring-brand-500/25'
+                        : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
+                    }`}
+                  >
+                    <Move className="w-3.5 h-3.5" />
+                    {isAdjustMode ? 'Done' : 'Adjust position'}
+                  </button>
+                </div>
+              )}
+
+              {/* Warning note if head was too close to fit without clipping */}
+              {isTooCloseWarning && (
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2 text-left animate-in fade-in">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
+                  <span>Photo is too close; use a photo with more space around the head.</span>
+                </div>
+              )}
+
+              {/* Small Biometric Live Checklist */}
+              {imageSrc && (
+                <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 text-left text-xs space-y-1.5">
+                  <div className="font-bold text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                    Biometric Check:
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className={`w-3.5 h-3.5 ${isTooCloseWarning ? 'text-amber-500' : 'text-emerald-500'}`} />
+                    <span className="text-zinc-700 dark:text-zinc-300">
+                      Head size: {isTooCloseWarning ? 'Close to edge (fits fully)' : 'Standard size OK'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                    <span className="text-zinc-700 dark:text-zinc-300">
+                      Eye line: Aligned at ~{activePreset.biometricSpec.eyeLinePercent}% height
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {activePreset.allowedBgColors.includes(bgColor.toLowerCase()) || bgColor === 'transparent' ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                    ) : (
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                    )}
+                    <span className="text-zinc-700 dark:text-zinc-300">
+                      Background: {activePreset.allowedBgColors.includes(bgColor.toLowerCase()) || bgColor === 'transparent' ? `Compliant for ${activePreset.country}` : `Non-official for ${activePreset.country}`}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {/* Country Biometric Specs Readout */}
               <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 text-left border border-zinc-200 dark:border-zinc-700/60 space-y-1.5">
                 <div className="flex items-center justify-between text-xs font-semibold text-zinc-900 dark:text-zinc-100">
@@ -2630,8 +2890,13 @@ export default function PassportPhotoPage() {
               {/* Proceed to Download Preview Action */}
               {imageSrc ? (
                 <button
-                  onClick={() => setCurrentStep('preview')}
-                  className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-sm font-semibold shadow-glow"
+                  onClick={() => {
+                    setCurrentStep('preview');
+                    if (typeof window !== 'undefined') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                  className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-sm font-semibold shadow-glow cursor-pointer"
                 >
                   <FileDown className="w-4 h-4" />
                   Proceed to Download Preview & Sheets →
@@ -2649,11 +2914,32 @@ export default function PassportPhotoPage() {
         </div>
       )}
 
-      {/* STEP 2: DEDICATED 2-PANEL DOWNLOAD PREVIEW SCREEN */}
+      {/* STEP 3: DEDICATED 2-PANEL DOWNLOAD PREVIEW SCREEN */}
       {currentStep === 'preview' && (
-        <div className="space-y-8">
+        <div className="space-y-8" id="download-screen-top">
+          {/* Step 3 Top Bar: Back to editor & Change photo */}
+          <div className="flex items-center justify-between p-4 rounded-2xl glass-card border border-zinc-200 dark:border-zinc-800">
+            <button
+              onClick={() => setCurrentStep('edit')}
+              className="text-xs font-bold text-zinc-700 dark:text-zinc-200 hover:text-brand-500 flex items-center gap-1.5 transition cursor-pointer min-h-[40px] px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              ← Back to editor
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-zinc-500 hidden sm:inline">Your photo is ready</span>
+              <button
+                onClick={handleMakeNewImage}
+                className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 flex items-center gap-1.5 transition cursor-pointer min-h-[40px] px-3 py-1.5 rounded-xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Change photo
+              </button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* LEFT PANEL — Online Submission (5 cols) */}
+            {/* LEFT PANEL — Online Submission (Single Photo) (5 cols) */}
             <motion.div
               className="lg:col-span-5 glass-card p-6 md:p-8 rounded-3xl space-y-6"
               initial={{ opacity: 0, y: 20 }}
@@ -2733,6 +3019,7 @@ export default function PassportPhotoPage() {
 
             {/* RIGHT PANEL — Print Sheet (7 cols) */}
             <motion.div
+              id="print-sheet-panel"
               className="lg:col-span-7 glass-card p-6 md:p-8 rounded-3xl space-y-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -2912,7 +3199,7 @@ export default function PassportPhotoPage() {
           >
             <button
               onClick={() => setCurrentStep('edit')}
-              className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-2 transition"
+              className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-2 transition cursor-pointer min-h-[44px]"
             >
               <ArrowLeft className="w-4 h-4" />
               ← Back to Studio Editor
@@ -2920,12 +3207,35 @@ export default function PassportPhotoPage() {
 
             <button
               onClick={handleMakeNewImage}
-              className="px-5 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2 transition"
+              className="px-5 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2 transition cursor-pointer min-h-[44px]"
             >
               <PlusCircle className="w-4 h-4 text-brand-500" />
               + Make New Image
             </button>
           </motion.div>
+
+          {/* MOBILE STICKY BOTTOM ACTION BAR */}
+          <div className="fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 p-3 shadow-2xl flex items-center gap-2">
+            <button
+              onClick={downloadSinglePhoto}
+              className="flex-1 btn-primary py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm min-h-[44px]"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Download JPEG
+            </button>
+            <button
+              onClick={() => {
+                const sheetEl = document.querySelector('#print-sheet-panel');
+                if (sheetEl) {
+                  sheetEl.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="flex-1 py-2.5 px-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-bold flex items-center justify-center gap-1.5 min-h-[44px]"
+            >
+              <Printer className="w-3.5 h-3.5 text-brand-500" />
+              Print Sheets ↓
+            </button>
+          </div>
         </div>
       )}
 
@@ -3198,6 +3508,18 @@ export default function PassportPhotoPage() {
                 <span className="text-zinc-400">Cutout Cached:</span>
                 <span className="font-bold text-cyan-400">
                   {debugStats.cachedHash !== 'none' ? `yes (${debugStats.cachedHash})` : 'no'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Last align cause:</span>
+                <span className="font-bold text-amber-400">
+                  {(debugStats as any).lastAlignCause || 'none'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Zoom:</span>
+                <span className="font-bold text-white">
+                  {(debugStats as any).zoomDisplay || `${Math.round(zoom * 100)}%`}
                 </span>
               </div>
               <div className="flex justify-between border-t border-cyan-500/20 pt-1 mt-1">
