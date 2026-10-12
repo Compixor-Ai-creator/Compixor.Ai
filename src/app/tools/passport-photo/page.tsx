@@ -39,6 +39,8 @@ import {
   Loader2,
   ShieldCheck,
   Image as ImageIcon,
+  Move,
+  Crosshair,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
@@ -55,6 +57,16 @@ import {
   prepareUploadBlob,
   MattingProgress,
 } from '@/utils/backgroundMatting';
+import {
+  computeStudioLayout,
+  renderStudioSheetToCanvas,
+  injectJpegDpi300,
+  injectPngDpi300,
+  generateStudioPdf,
+  SheetLayoutResult,
+} from '@/lib/printSheetsV2';
+import { parseImageHeaderDimensions } from '@/utils/imageHeaderParser';
+import { createPassportWorkingCopy, PASSPORT_UPLOAD_CONFIG } from '@/utils/imageWorkingCopy';
 
 export interface BiometricSpec {
   headHeightPercent: number; // Crown to chin % of photo height
@@ -77,10 +89,14 @@ export interface Preset {
   heightPx: number;
   aspectRatio: number;
   defaultBgColor: string;
+  allowedBgColors: string[];
+  verified: boolean;
+  officialUrl?: string;
   description: string;
   flag: string;
   biometricSpec: BiometricSpec;
 }
+
 
 const standardPresets: Preset[] = [
   {
@@ -93,6 +109,9 @@ const standardPresets: Preset[] = [
     heightPx: 531,
     aspectRatio: 35 / 45,
     defaultBgColor: '#e0f2fe',
+    allowedBgColors: ['#ffffff', '#f8fafc', '#e0f2fe', '#438edb'],
+    verified: true,
+    officialUrl: 'https://onlinemrp.dgip.gov.pk/photo-requirements/',
     description: '35 x 45 mm (NADRA / Passports light blue or white background)',
     flag: '🇵🇰',
     biometricSpec: {
@@ -116,6 +135,9 @@ const standardPresets: Preset[] = [
     heightPx: 600,
     aspectRatio: 1,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc'],
+    verified: true,
+    officialUrl: 'https://travel.state.gov/content/travel/en/passports/how-apply/photos.html',
     description: '2 x 2 inches (51 x 51 mm) at 300 DPI, solid white background',
     flag: '🇺🇸',
     biometricSpec: {
@@ -139,6 +161,9 @@ const standardPresets: Preset[] = [
     heightPx: 531,
     aspectRatio: 35 / 45,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc', '#f1f5f9'],
+    verified: true,
+    officialUrl: 'https://www.gov.uk/photos-for-passports',
     description: '35 x 45 mm standard ICAO 9303 format (Light gray or white)',
     flag: '🇪🇺',
     biometricSpec: {
@@ -162,6 +187,9 @@ const standardPresets: Preset[] = [
     heightPx: 600,
     aspectRatio: 1,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc'],
+    verified: true,
+    officialUrl: 'https://passportindia.gov.in/',
     description: '2 x 2 inches (51 x 51 mm) pure white background',
     flag: '🇮🇳',
     biometricSpec: {
@@ -185,6 +213,9 @@ const standardPresets: Preset[] = [
     heightPx: 826,
     aspectRatio: 50 / 70,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc', '#f1f5f9'],
+    verified: true,
+    officialUrl: 'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html',
     description: '50 x 70 mm (2 x 2.75 inches) white or light gray background',
     flag: '🇨🇦',
     biometricSpec: {
@@ -208,6 +239,9 @@ const standardPresets: Preset[] = [
     heightPx: 531,
     aspectRatio: 35 / 45,
     defaultBgColor: '#1d4ed8',
+    allowedBgColors: ['#1d4ed8', '#438edb', '#ffffff'],
+    verified: true,
+    officialUrl: 'https://dfa-oca.ph/passport/passport-requirements/',
     description: '35 x 45 mm (Royal blue background standard)',
     flag: '🇵🇭',
     biometricSpec: {
@@ -231,6 +265,9 @@ const standardPresets: Preset[] = [
     heightPx: 567,
     aspectRatio: 33 / 48,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#e0f2fe', '#438edb'],
+    verified: true,
+    officialUrl: 'https://www.fmprc.gov.cn/',
     description: '33 x 48 mm biometric specification (White or Blue)',
     flag: '🇨🇳',
     biometricSpec: {
@@ -254,6 +291,9 @@ const standardPresets: Preset[] = [
     heightPx: 531,
     aspectRatio: 35 / 45,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f1f5f9'],
+    verified: true,
+    officialUrl: 'https://www.passports.gov.au/getting-passport-how-it-works/photo-requirements',
     description: '35 x 45 mm (Australian Passport Office light gray/white standard)',
     flag: '🇦🇺',
     biometricSpec: {
@@ -277,6 +317,9 @@ const standardPresets: Preset[] = [
     heightPx: 708,
     aspectRatio: 40 / 60,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc'],
+    verified: true,
+    officialUrl: 'https://gdrfad.gov.ae/',
     description: '40 x 60 mm (White background GDRFA format)',
     flag: '🇦🇪',
     biometricSpec: {
@@ -292,17 +335,54 @@ const standardPresets: Preset[] = [
   },
 ];
 
-const bgColors = [
-  { label: 'White (US / UK / EU / India)', value: '#ffffff', class: 'bg-white border-zinc-300' },
-  { label: 'Off-White', value: '#f8fafc', class: 'bg-slate-50 border-slate-300' },
-  { label: 'Light Blue (Pakistan / Gulf)', value: '#e0f2fe', class: 'bg-sky-100 border-sky-300' },
-  { label: 'Royal Blue (Philippines)', value: '#1d4ed8', class: 'bg-blue-700 border-blue-800' },
-  { label: 'Light Gray (Canada / Australia)', value: '#f1f5f9', class: 'bg-slate-100 border-slate-300' },
-  { label: 'Red (Indonesia / Vietnam / China ID)', value: '#dc2626', class: 'bg-red-600 border-red-700' },
-  { label: 'Transparent (PNG Cutout)', value: 'transparent', class: 'bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:6px_6px] border-zinc-400' },
+// Renamed "Light" to "Light Blue" and "Light Gray" as requested in Task 3
+export interface ColorOption {
+  label: string;
+  value: string; // Hex or linear-gradient string
+  previewClass?: string;
+  isGradient?: boolean;
+  from?: string;
+  to?: string;
+}
+
+const classicalColors: ColorOption[] = [
+  { label: 'White', value: '#FFFFFF', previewClass: 'bg-white border-zinc-300' },
+  { label: 'Off-White', value: '#f8fafc', previewClass: 'bg-slate-50 border-slate-300' },
+  { label: 'Light Blue', value: '#e0f2fe', previewClass: 'bg-sky-100 border-sky-300' },
+  { label: 'Light Gray', value: '#f1f5f9', previewClass: 'bg-slate-100 border-slate-300' },
+  { label: 'Sky Blue', value: '#438EDB', previewClass: 'bg-[#438EDB] border-sky-600' },
+  { label: 'Royal Blue', value: '#1d4ed8', previewClass: 'bg-blue-700 border-blue-800' },
+  { label: 'Navy', value: '#2A385B', previewClass: 'bg-[#2A385B] border-indigo-950' },
+  { label: 'Cyan', value: '#00BFF2', previewClass: 'bg-[#00BFF2] border-cyan-500' },
+  { label: 'Red', value: '#FF0000', previewClass: 'bg-[#FF0000] border-red-700' },
+  { label: 'Transparent', value: 'transparent', previewClass: 'bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:6px_6px] border-zinc-400' },
 ];
 
-type SheetPresetOption = 'a4' | '3-per-a4' | 'custom';
+const stylishSolids: ColorOption[] = [
+  { label: 'Peach', value: '#F6BEB2', previewClass: 'bg-[#F6BEB2]' },
+  { label: 'Aqua', value: '#B8DDE6', previewClass: 'bg-[#B8DDE6]' },
+  { label: 'Sand', value: '#E0B97E', previewClass: 'bg-[#E0B97E]' },
+  { label: 'Mint', value: '#CCE2D6', previewClass: 'bg-[#CCE2D6]' },
+  { label: 'Green', value: '#40896E', previewClass: 'bg-[#40896E]' },
+  { label: 'Crimson', value: '#C42134', previewClass: 'bg-[#C42134]' },
+  { label: 'Cobalt', value: '#3F64BF', previewClass: 'bg-[#3F64BF]' },
+  { label: 'Terracotta', value: '#D16541', previewClass: 'bg-[#D16541]' },
+  { label: 'Blush', value: '#FCD9E0', previewClass: 'bg-[#FCD9E0]' },
+  { label: 'Black', value: '#000000', previewClass: 'bg-black' },
+  { label: 'Pale Mint', value: '#CDE9DF', previewClass: 'bg-[#CDE9DF]' },
+  { label: 'Beige', value: '#DFCCB0', previewClass: 'bg-[#DFCCB0]' },
+];
+
+const stylishGradients: ColorOption[] = [
+  { label: 'Sky Gradient', value: 'gradient:#6FB9F2:#C1E3FA', isGradient: true, from: '#6FB9F2', to: '#C1E3FA' },
+  { label: 'Silver Gradient', value: 'gradient:#A2A2A2:#F5F5F5', isGradient: true, from: '#A2A2A2', to: '#F5F5F5' },
+  { label: 'Slate Gradient', value: 'gradient:#7E8597:#A3AABD', isGradient: true, from: '#7E8597', to: '#A3AABD' },
+];
+
+const bgColors = classicalColors;
+
+
+type SheetPresetOption = 'a4' | '3-per-a4' | 'a6-2' | 'a5-6' | 'custom';
 
 const sizeLimitOptions = [
   { id: 'uncompressed', label: 'Original Quality (Max Resolution)', maxBytes: 0 },
@@ -504,13 +584,51 @@ export default function PassportPhotoPage() {
 
   // Background color state
   const [bgColor, setBgColor] = useState('#ffffff');
+  const [customColorsHistory, setCustomColorsHistory] = useState<string[]>([]);
+  const [customHexInput, setCustomHexInput] = useState('#ffffff');
+  const [isStylishPaletteOpen, setIsStylishPaletteOpen] = useState(false);
+
+  // Load last 5 custom colors from localStorage (wrapped in try/catch)
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('compixor-passport-custom-colors');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            setCustomColorsHistory(parsed.slice(0, 5));
+          }
+        }
+      }
+    } catch (_) {}
+  }, []);
+
+  const addCustomColorToHistory = useCallback((colorHex: string) => {
+    const clean = colorHex.trim().toUpperCase();
+    if (!/^#[0-9A-F]{6}$/i.test(clean)) return;
+    setCustomColorsHistory((prev) => {
+      const next = [clean, ...prev.filter((c) => c !== clean)].slice(0, 5);
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('compixor-passport-custom-colors', JSON.stringify(next));
+        }
+      } catch (_) {}
+      return next;
+    });
+  }, []);
 
   // Sync background color when preset changes
   const handlePresetSelect = (preset: Preset) => {
     setSelectedPreset(preset);
     setBgColor(preset.defaultBgColor);
     setPreviewTab('background');
+    if (cachedCutoutCanvasRef.current || imageSrc) {
+      setTimeout(() => {
+        autoAlignBiometric('preset-change');
+      }, 50);
+    }
   };
+
 
   // Compute active preset object
   const activePreset = useMemo<Preset>(() => {
@@ -555,7 +673,10 @@ export default function PassportPhotoPage() {
       heightPx,
       aspectRatio: aspect,
       defaultBgColor: '#ffffff',
+      allowedBgColors: ['#ffffff', '#f8fafc', '#e0f2fe', '#438edb', '#1d4ed8', '#f1f5f9', '#dc2626'],
+      verified: false,
       description: `${widthPx} × ${heightPx} px @ ${customDpi} DPI`,
+
       flag: '🛠️',
       biometricSpec: {
         headHeightPercent: 70,
@@ -612,8 +733,19 @@ export default function PassportPhotoPage() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const [faceDetected, setFaceDetected] = useState<boolean | null>(null);
 
+  // UX and Mobile Adjust Mode state
+  const [isAdjustMode, setIsAdjustMode] = useState(false);
+  const [isAdvancedAccordionOpen, setIsAdvancedAccordionOpen] = useState(false);
+  const [baselineZoom, setBaselineZoom] = useState(1);
+  const [isTooCloseWarning, setIsTooCloseWarning] = useState(false);
+  const [uploadErrorMessage, setUploadErrorMessage] = useState<string | null>(null);
+  const [resetSignal, setResetSignal] = useState(0);
+  const pinchStartDistRef = useRef<number | null>(null);
+  const pinchStartZoomRef = useRef<number>(1);
+
   // Floating Debug Panel (?debug=1)
   const [isDebugMode, setIsDebugMode] = useState(false);
+  const [isDebugExpanded, setIsDebugExpanded] = useState(false);
   const [debugStats, setDebugStats] = useState({
     requestsSent: 0,
     cacheHits: 0,
@@ -623,14 +755,45 @@ export default function PassportPhotoPage() {
     mode: 'server' as 'server' | 'on-device',
     cachedHash: 'none',
     lastRenderMs: 0,
+    lastAlignCause: 'none' as string,
+    zoomDisplay: '100% (1.00x)' as string,
   });
 
+
+  // Sync debug mode and step=download query param on load
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setIsDebugMode(params.get('debug') === '1');
+      if (params.get('step') === 'download') {
+        if (!imageSrc) {
+          // If visited without a photo, force Step 1 (Upload/Edit)
+          const newParams = new URLSearchParams(window.location.search);
+          newParams.delete('step');
+          const newUrl = window.location.pathname + (newParams.toString() ? `?${newParams.toString()}` : '');
+          window.history.replaceState({}, '', newUrl);
+          setCurrentStep('edit');
+        } else {
+          setCurrentStep('preview');
+        }
+      }
     }
-  }, []);
+  }, [imageSrc]);
+
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('step') === 'download' && imageSrc) {
+        setCurrentStep('preview');
+      } else {
+        setCurrentStep('edit');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [imageSrc]);
 
   // Download screen options
   const [sheetPreset, setSheetPreset] = useState<SheetPresetOption>('a4');
@@ -688,13 +851,23 @@ export default function PassportPhotoPage() {
 
     const isTransparent = previewTab === 'cutout' || bgColor === 'transparent';
 
-    // STEP 1: Always fill background first (solid color or pure transparent for cutout PNG export)
+    // STEP 1: Always fill background first (solid color, linear gradient, or pure transparent for cutout PNG export)
     if (isTransparent) {
       ctx.clearRect(0, 0, width, height);
+    } else if (bgColor.startsWith('gradient:')) {
+      const parts = bgColor.split(':');
+      const fromColor = parts[1] || '#6FB9F2';
+      const toColor = parts[2] || '#C1E3FA';
+      const grad = ctx.createLinearGradient(0, 0, 0, height);
+      grad.addColorStop(0, fromColor);
+      grad.addColorStop(1, toColor);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
     } else {
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);
     }
+
 
     // STEP 2: Draw the subject (cutout or raw photo) with transforms
     const subjectSource = enableBgRemoval ? cachedCutoutCanvasRef.current : imageElementRef.current;
@@ -812,22 +985,52 @@ export default function PassportPhotoPage() {
     return null;
   };
 
-  const autoAlignBiometric = useCallback(async () => {
+  const autoAlignBiometric = useCallback(async (cause: 'cutout-ready' | 'preset-change' | 'button' = 'button') => {
     const canvas = cachedCutoutCanvasRef.current;
     if (!canvas) return;
 
     const face = await detectFaceBounds(canvas);
     if (!face) {
       setFaceDetected(false);
-      toast.warning('Face not detected - drag/zoom the photo so your face is inside the guide');
+      setDebugStats((prev) => ({
+        ...prev,
+        lastAlignCause: cause,
+      }));
+      if (cause === 'button') {
+        toast.warning('Face not detected - drag/zoom the photo so your face is inside the guide');
+      }
       return;
     }
 
     setFaceDetected(true);
     const targetHeadH = activePreset.heightPx * (activePreset.biometricSpec.headHeightPercent / 100);
     const faceHInPreset = face.height * (activePreset.heightPx / canvas.height);
-    const targetZoom = Math.min(2.5, Math.max(1.0, targetHeadH / Math.max(60, faceHInPreset)));
-    setZoom(Math.round(targetZoom * 100) / 100);
+    let targetZoom = Math.max(0.6, Math.min(2.5, targetHeadH / Math.max(40, faceHInPreset)));
+
+    // Biometric margins check: crown, chin, and ears margin >= 2% (0.02)
+    // If crown or chin or ears clip the canvas at targetZoom, cap the zoom to fit the head
+    const crownMargin = face.y / canvas.height;
+    const chinMargin = (canvas.height - (face.y + face.height)) / canvas.height;
+    const leftEarMargin = face.x / canvas.width;
+    const rightEarMargin = (canvas.width - (face.x + face.width)) / canvas.width;
+
+    let tooClose = false;
+    if (crownMargin < 0.02 || chinMargin < 0.02 || leftEarMargin < 0.02 || rightEarMargin < 0.02) {
+      // Prioritize showing full head inside frame over enforcing oversized targetHeadH
+      const maxFitZoom = Math.min(
+        (activePreset.heightPx * 0.94) / Math.max(40, faceHInPreset),
+        targetZoom
+      );
+      if (maxFitZoom < targetZoom) {
+        targetZoom = Math.max(0.6, maxFitZoom);
+        tooClose = true;
+      }
+    }
+    setIsTooCloseWarning(tooClose);
+
+    const calculatedZoom = Math.round(targetZoom * 100) / 100;
+    setBaselineZoom(calculatedZoom);
+    setZoom(calculatedZoom);
 
     const faceCenterX = (face.x + face.width / 2) / canvas.width;
     setPanX(-Math.round((faceCenterX - 0.5) * previewDimensions.width));
@@ -835,7 +1038,14 @@ export default function PassportPhotoPage() {
     const crownY = face.y / canvas.height;
     const targetCrown = (activePreset.biometricSpec.topMarginPercent ?? 10) / 100;
     setPanY(-Math.round((crownY - targetCrown) * previewDimensions.height));
-    toast.success('Subject automatically framed into biometric guidelines!');
+
+    setDebugStats((prev) => ({
+      ...prev,
+      lastAlignCause: cause,
+      zoomDisplay: `100% (${calculatedZoom.toFixed(2)}x)`,
+    }));
+
+    toast.success('Photo fitted automatically. Tap Adjust to fine-tune.');
   }, [activePreset, previewDimensions]);
 
   // STEP 1 — Background Removal & Subject Separation ON FULL ORIGINAL PHOTO
@@ -1007,7 +1217,7 @@ export default function PassportPhotoPage() {
       if (!hasAutoAlignedRef.current) {
         hasAutoAlignedRef.current = true;
         setTimeout(() => {
-          autoAlignBiometric();
+          autoAlignBiometric('cutout-ready');
         }, 50);
       }
     } catch (err: any) {
@@ -1070,10 +1280,24 @@ export default function PassportPhotoPage() {
     const photoCanvas = canvasRef.current;
     if (!sheetCanvas || !photoCanvas) return;
 
+    // Delegated V2 Studio Sheets ('a6-2' and 'a5-6')
+    if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+      renderStudioSheetToCanvas(
+        sheetCanvas,
+        photoCanvas,
+        sheetPreset,
+        activePreset.widthMm,
+        activePreset.heightMm,
+        activePreset.name
+      );
+      return;
+    }
+
     let sheetW = 2480; // A4 @ 300 DPI
     let sheetH = 3508;
     let defaultCols = 2;
     let defaultRows = 5;
+
 
     if (sheetPreset === '3-per-a4') {
       sheetW = 2480;
@@ -1194,8 +1418,22 @@ export default function PassportPhotoPage() {
     }
   }, [compositeFinalCanvas, currentStep, renderPrintSheetCanvas]);
 
-  // Handle image drop
-  const handleFileDrop = useCallback((file: File) => {
+  // Handle image drop with 15 MB / 100 MP limit and 2400px working copy generator
+  const handleFileDrop = useCallback(async (file: File) => {
+    setUploadErrorMessage(null);
+
+    // 1. File size check: up to 15 MB
+    const maxBytes = PASSPORT_UPLOAD_CONFIG.MAX_FILE_BYTES;
+    if (file.size > maxBytes) {
+      const mbSize = (file.size / (1024 * 1024)).toFixed(1);
+      const msg = `This file is ${mbSize} MB. The maximum is 15 MB. Please use a smaller photo.`;
+      setUploadErrorMessage(msg);
+      toast.error(msg);
+      setResetSignal((s) => s + 1);
+      return;
+    }
+
+    // 2. Format check
     const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     const isHeic =
       file.name.toLowerCase().endsWith('.heic') ||
@@ -1204,28 +1442,55 @@ export default function PassportPhotoPage() {
       file.type === 'image/heif';
 
     if (isHeic) {
-      toast.error('HEIC format is not natively supported by browsers. Please convert to JPG/PNG first.');
+      // Clear guidance for iPhone HEIC images (or dynamic converter if available)
+      try {
+        // Dynamic import using Function to prevent TypeScript compile-time module resolution failure
+        const dynamicImport = new Function('specifier', 'return import(specifier)');
+        const heicModule = await dynamicImport('heic2any');
+        const heic2any = heicModule.default || heicModule;
+        toast.info('Converting iPhone HEIC photo...');
+        const convertedBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.95 });
+        const finalBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+        file = new File([finalBlob], file.name.replace(/\.heic$/i, '.jpg'), { type: 'image/jpeg' });
+      } catch {
+        const msg = 'HEIC photos are not supported yet. On iPhone choose Most Compatible, or export as JPG.';
+        setUploadErrorMessage(msg);
+        toast.error(msg);
+        setResetSignal((s) => s + 1);
+        return;
+      }
+    } else if (!validTypes.includes(file.type) && !file.type.startsWith('image/')) {
+      const msg = 'Please upload a JPG, PNG or WebP photo.';
+      setUploadErrorMessage(msg);
+      toast.error(msg);
+      setResetSignal((s) => s + 1);
       return;
     }
 
-    if (!validTypes.includes(file.type) && !file.type.startsWith('image/')) {
-      toast.error('Please upload a valid image file (JPG, PNG, WebP).');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const src = e.target?.result as string;
-      const img = new Image();
-      img.onload = () => {
-        if (img.naturalWidth > 5000 || img.naturalHeight > 4000) {
-          toast.error('Image is too large. Max supported resolution is 5000×4000px.');
+    // 3. Pre-decode header dimension check (reject if > 100 MP)
+    try {
+      const headerInfo = await parseImageHeaderDimensions(file);
+      if (headerInfo) {
+        const mp = (headerInfo.width * headerInfo.height) / 1_000_000;
+        if (mp > PASSPORT_UPLOAD_CONFIG.MAX_MEGAPIXELS) {
+          const msg = `This photo is ${headerInfo.width} x ${headerInfo.height} px (${Math.round(mp)} MP). The maximum is 100 MP.`;
+          setUploadErrorMessage(msg);
+          toast.error(msg);
+          setResetSignal((s) => s + 1);
           return;
         }
+      }
+    } catch (_) {}
 
+    // 4. Create working copy (longest side <= 2400px)
+    try {
+      const working = await createPassportWorkingCopy(file);
+      const img = new Image();
+      img.onload = () => {
         imageElementRef.current = img;
-        setImageSrc(src);
+        setImageSrc(working.dataUrl);
         setZoom(1);
+        setBaselineZoom(1);
         setRotation(0);
         setPanX(0);
         setPanY(0);
@@ -1233,39 +1498,49 @@ export default function PassportPhotoPage() {
         setBrightness(100);
         setContrast(100);
         setSaturation(100);
+        hasAutoAlignedRef.current = false;
         setCurrentStep('edit');
+        setUploadErrorMessage(null);
         toast.success('Photo loaded! Align your portrait with the biometric guide.');
       };
       img.onerror = () => {
-        toast.error('Failed to parse portrait image.');
+        const msg = 'Your photo could not be read. Please try saving it again as a standard JPG or PNG.';
+        setUploadErrorMessage(msg);
+        toast.error(msg);
+        setResetSignal((s) => s + 1);
       };
-      img.src = src;
-    };
-    reader.readAsDataURL(file);
+      img.src = working.dataUrl;
+    } catch (err) {
+      console.error('Working copy error:', err);
+      const msg = 'Your photo could not be read. Please try saving it again as a standard JPG or PNG.';
+      setUploadErrorMessage(msg);
+      toast.error(msg);
+      setResetSignal((s) => s + 1);
+    }
   }, []);
 
-  // Pan interactions
+  // Pan interactions (Desktop & Adjust mode)
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!imageSrc) return;
+    if (!imageSrc || !isAdjustMode) return;
     setIsDragging(true);
     setDragStart({ x: e.clientX - panX, y: e.clientY - panY });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
+    if (!isDragging || !isAdjustMode) return;
     setPanX(e.clientX - dragStart.x);
     setPanY(e.clientY - dragStart.y);
   };
 
   const handleMouseUp = () => setIsDragging(false);
 
-  // Wheel zoom
+  // Wheel zoom (only in adjust mode or active canvas)
   useEffect(() => {
     const el = previewBoxRef.current;
     if (!el) return;
 
     const handleWheel = (e: WheelEvent) => {
-      if (!imageSrc) return;
+      if (!imageSrc || !isAdjustMode) return;
       e.preventDefault();
       const delta = e.deltaY > 0 ? -0.05 : 0.05;
       setZoom((z) => Math.min(Math.max(0.4, z + delta), 3.0));
@@ -1273,28 +1548,57 @@ export default function PassportPhotoPage() {
 
     el.addEventListener('wheel', handleWheel, { passive: false });
     return () => el.removeEventListener('wheel', handleWheel);
-  }, [imageSrc]);
+  }, [imageSrc, isAdjustMode]);
 
-  // Touch handlers
+  // Touch handlers (Drag & Pinch - only active when Adjust Position mode is on)
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (!imageSrc || e.touches.length !== 1) return;
-    setIsDragging(true);
-    setDragStart({ x: e.touches[0].clientX - panX, y: e.touches[0].clientY - panY });
+    if (!imageSrc || !isAdjustMode) return;
+    if (e.touches.length === 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.touches[0].clientX - panX, y: e.touches[0].clientY - panY });
+    } else if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      pinchStartDistRef.current = dist;
+      pinchStartZoomRef.current = zoom;
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || e.touches.length !== 1) return;
-    setPanX(e.touches[0].clientX - dragStart.x);
-    setPanY(e.touches[0].clientY - dragStart.y);
+    if (!imageSrc || !isAdjustMode) return;
+    if (e.touches.length === 1 && isDragging) {
+      e.preventDefault();
+      setPanX(e.touches[0].clientX - dragStart.x);
+      setPanY(e.touches[0].clientY - dragStart.y);
+    } else if (e.touches.length === 2 && pinchStartDistRef.current !== null) {
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const scale = dist / pinchStartDistRef.current;
+      const newZoom = Math.min(Math.max(0.4, pinchStartZoomRef.current * scale), 3.0);
+      setZoom(Math.round(newZoom * 100) / 100);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    pinchStartDistRef.current = null;
   };
 
   // Reset transforms
   const resetTransform = () => {
     setZoom(1);
+    setBaselineZoom(1);
     setRotation(0);
     setPanX(0);
     setPanY(0);
     setFlipH(false);
+    setIsAdjustMode(false);
+    setIsTooCloseWarning(false);
     setBrightness(100);
     setContrast(100);
     setSaturation(100);
@@ -1317,8 +1621,19 @@ export default function PassportPhotoPage() {
     hasAutoAlignedRef.current = false;
     setFaceDetected(null);
     setMattingProgress(null);
+    setIsAdjustMode(false);
+    setIsTooCloseWarning(false);
+    setUploadErrorMessage(null);
     resetTransform();
     setCurrentStep('edit');
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('step')) {
+        params.delete('step');
+        const newUrl = window.location.pathname + (params.toString() ? `?${params.toString()}` : '');
+        window.history.pushState({}, '', newUrl);
+      }
+    }
   };
 
   // Binary search compression helper to strictly meet target file size limits
@@ -1374,25 +1689,84 @@ export default function PassportPhotoPage() {
     toast.success(`Photo downloaded! (${Math.round(blob.size / 1024)} KB)`);
   };
 
-  // Export Printable Multi-Sheet (async toBlob — non-blocking, no UI freeze)
-  const downloadPrintableSheet = async () => {
+  // Export Printable Multi-Sheet (async toBlob — non-blocking, with 300 DPI metadata injection)
+  const downloadPrintableSheet = async (formatOverride?: 'jpg' | 'pdf') => {
     const sheetCanvas = sheetCanvasRef.current;
     if (!sheetCanvas) return;
+
+    // Handle PDF export for A6 and A5
+    if (formatOverride === 'pdf') {
+      try {
+        setIsDownloading(true);
+        toast.info('Generating studio PDF document...');
+        const singlePhotoCanvas = canvasRef.current;
+        if (!singlePhotoCanvas) {
+          toast.error('Photo canvas not ready');
+          setIsDownloading(false);
+          return;
+        }
+        const photoDataUrl = singlePhotoCanvas.toDataURL(bgColor === 'transparent' ? 'image/png' : 'image/jpeg', 0.98);
+        const pdfBytes = await generateStudioPdf(
+          photoDataUrl,
+          sheetPreset as 'a6-2' | 'a5-6',
+          activePreset.widthMm,
+          activePreset.heightMm,
+          activePreset.name
+        );
+        const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const count = layoutV2.actualCount;
+        const paper = sheetPreset === 'a6-2' ? 'A6' : 'A5';
+        const countrySlug = activePreset.country.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        link.download = `passport-sheet-${count}x-${activePreset.widthMm}x${activePreset.heightMm}mm-${paper}-${countrySlug}.pdf`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        setIsDownloading(false);
+        toast.success('✅ Vector PDF downloaded! Print at 100% / Actual size.');
+        return;
+      } catch (err) {
+        console.error('PDF export error:', err);
+        toast.error('Failed to generate PDF');
+        setIsDownloading(false);
+        return;
+      }
+    }
 
     setIsDownloading(true);
     toast.info('Preparing your print sheet...');
 
-    // toBlob is async and non-blocking — no UI freeze on large 2480×3508px canvas
+    // toBlob is async and non-blocking
     sheetCanvas.toBlob(
-      (blob) => {
+      async (blob) => {
         if (!blob) {
           toast.error('Sheet export failed. Please try again.');
           setIsDownloading(false);
           return;
         }
-        const url = URL.createObjectURL(blob);
+
+        // If A6 or A5, inject 300 DPI JFIF metadata into JPEG bytes
+        let finalBlob = blob;
+        if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+          const rawBuffer = new Uint8Array(await blob.arrayBuffer());
+          const withDpi = injectJpegDpi300(rawBuffer);
+          finalBlob = new Blob([withDpi.buffer as ArrayBuffer], { type: 'image/jpeg' });
+        }
+
+        const url = URL.createObjectURL(finalBlob);
         const link = document.createElement('a');
-        link.download = `passport-print-sheet-${sheetPreset}-${activePreset.id}.jpg`;
+        if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+          const count = layoutV2.actualCount;
+          const paper = sheetPreset === 'a6-2' ? 'A6' : 'A5';
+          const countrySlug = activePreset.country.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          link.download = `passport-sheet-${count}x-${activePreset.widthMm}x${activePreset.heightMm}mm-${paper}-${countrySlug}.jpg`;
+        } else {
+          link.download = `passport-print-sheet-${sheetPreset}-${activePreset.id}.jpg`;
+        }
+
         link.href = url;
         document.body.appendChild(link);
         link.click();
@@ -1406,9 +1780,30 @@ export default function PassportPhotoPage() {
     );
   };
 
+  // Layout calculations for V2 studio sheets
+  const layoutV2 = useMemo(() => {
+    if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+      return computeStudioLayout(sheetPreset, activePreset.widthMm, activePreset.heightMm);
+    }
+    return {
+      sheetW: 2480,
+      sheetH: 3508,
+      photoW: 413,
+      photoH: 531,
+      cols: 2,
+      rows: 5,
+      actualCount: 6,
+      targetCount: 6,
+      fitsRequested: true,
+      positions: [],
+    };
+  }, [sheetPreset, activePreset.widthMm, activePreset.heightMm]);
 
   // Computed count of sheet photos
   const sheetPhotoCount = useMemo(() => {
+    if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+      return layoutV2.actualCount;
+    }
     if (sheetPreset === 'a4') {
       if (activePreset.widthMm <= 35) return 24;
       if (activePreset.widthMm <= 51) return 12;
@@ -1416,7 +1811,8 @@ export default function PassportPhotoPage() {
     }
     if (sheetPreset === '3-per-a4') return 6;
     return customSheetCols * customSheetRows;
-  }, [sheetPreset, activePreset.widthMm, customSheetCols, customSheetRows]);
+  }, [sheetPreset, activePreset.widthMm, customSheetCols, customSheetRows, layoutV2.actualCount]);
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
@@ -1496,7 +1892,7 @@ export default function PassportPhotoPage() {
 
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           {currentStep === 'edit'
-            ? 'No data leak, no cloud upload — your ID and passport photo is processed entirely on your device. Zero server contact, unlike PhotoGov or PhotoAiD. Create official NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
+            ? 'AI background removal runs in memory on our secure HTTPS server (nothing stored), with an on-device option available. Create official Pakistan NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
             : 'Your biometric photo is processed and print-ready. Download a single image for online portal submissions or a high-res tiled print sheet with cutting guides.'}
         </p>
 
@@ -1507,8 +1903,8 @@ export default function PassportPhotoPage() {
             'US Visa 2x2"',
             'AI Background Removal',
             '300 DPI Print Sheet',
-            'No Data Leak',
-            'Zero Cloud Uploads',
+            'In-Memory Processing',
+            'On-Device Option',
           ].map((tag) => (
             <span
                 key={tag}
@@ -1649,14 +2045,32 @@ export default function PassportPhotoPage() {
 
             {/* Upload Drop Zone */}
             {!imageSrc ? (
-              <div className="glass-card p-6 rounded-2xl">
+              <div className="glass-card p-6 rounded-2xl space-y-4">
                 <FileDropZone
                   accept="image/jpeg,image/png,image/webp,image/gif"
                   onFileDrop={handleFileDrop}
                   maxSizeMB={15}
+                  resetSignal={resetSignal}
                   title="Upload portrait or selfie"
                   subtitle="JPG, PNG, or WebP up to 15MB. Front-facing with neutral lighting."
                 />
+                {uploadErrorMessage && (
+                  <div
+                    data-testid="dropzone-error-banner"
+                    className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-700 dark:text-red-300 text-xs flex items-center justify-between gap-2.5 animate-in fade-in"
+                  >
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
+                      <span className="font-medium">{uploadErrorMessage}</span>
+                    </div>
+                    <button
+                      onClick={() => setUploadErrorMessage(null)}
+                      className="text-red-500 hover:text-red-700 dark:hover:text-red-200 text-xs font-bold underline shrink-0 cursor-pointer"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               /* Studio Adjustment Controls */
@@ -1668,8 +2082,8 @@ export default function PassportPhotoPage() {
                   </h3>
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={autoAlignBiometric}
-                      className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold flex items-center gap-1 transition px-2 py-1 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60"
+                      onClick={() => autoAlignBiometric('button')}
+                      className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold flex items-center gap-1 transition px-2 py-1 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60 cursor-pointer min-h-[32px]"
                       title="Automatically center and scale subject into the biometric oval guide"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-brand-500" />
@@ -1691,23 +2105,34 @@ export default function PassportPhotoPage() {
                   </div>
                 </div>
 
-                {/* Quick Transform Toolbar */}
-                <div className="flex flex-wrap gap-2">
+                {/* Quick Transform & Adjust Position Toolbar */}
+                <div className="flex flex-wrap items-center gap-2">
                   <button
-                    onClick={() => setRotation((r) => (r - 90) % 360)}
-                    className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5 transition"
+                    onClick={() => setIsAdjustMode(!isAdjustMode)}
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[38px] ${
+                      isAdjustMode
+                        ? 'border-brand-500 bg-brand-500/15 text-brand-600 dark:text-brand-300 ring-2 ring-brand-500/25'
+                        : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
+                    }`}
+                  >
+                    <Move className="w-3.5 h-3.5" />
+                    {isAdjustMode ? 'Done Adjusting' : 'Adjust Position (Drag/Pinch)'}
+                  </button>
+                  <button
+                    onClick={() => setRotation((r) => (r - 90 + 360) % 360)}
+                    className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5 transition cursor-pointer min-h-[38px]"
                   >
                     <RotateCcw className="w-3.5 h-3.5" /> -90° Rotate
                   </button>
                   <button
                     onClick={() => setRotation((r) => (r + 90) % 360)}
-                    className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5 transition"
+                    className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5 transition cursor-pointer min-h-[38px]"
                   >
                     <RotateCw className="w-3.5 h-3.5" /> +90° Rotate
                   </button>
                   <button
                     onClick={() => setFlipH(!flipH)}
-                    className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[38px] ${
                       flipH
                         ? 'border-brand-500 bg-brand-500/10 text-brand-600 dark:text-brand-300'
                         : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
@@ -1717,97 +2142,83 @@ export default function PassportPhotoPage() {
                   </button>
                 </div>
 
-                {/* Zoom & Fine Angle */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span className="flex items-center gap-1.5">
-                        <ZoomIn className="w-3.5 h-3.5" /> Zoom Level
-                      </span>
-                      <span>{Math.round(zoom * 100)}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0.5"
-                      max="2.5"
-                      step="0.02"
-                      value={zoom}
-                      onChange={(e) => setZoom(parseFloat(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
+                {/* Relative Zoom (100% = Auto-fit baseline) */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+                    <span className="flex items-center gap-1.5">
+                      <ZoomIn className="w-3.5 h-3.5" /> Zoom Level
+                    </span>
+                    <span>{Math.round((zoom / (baselineZoom || 1)) * 100)}%</span>
                   </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span>Fine Tilt Angle</span>
-                      <span>{rotation}°</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="-45"
-                      max="45"
-                      step="1"
-                      value={rotation % 90}
-                      onChange={(e) => setRotation(parseInt(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
-                  </div>
+                  <input
+                    type="range"
+                    min="0.5"
+                    max="2.5"
+                    step="0.02"
+                    value={zoom}
+                    onChange={(e) => setZoom(parseFloat(e.target.value))}
+                    className="w-full slider-blur cursor-pointer"
+                  />
                 </div>
 
-                {/* Lighting: Brightness, Contrast, Saturation */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span>Brightness</span>
-                      <span>{brightness}%</span>
+                {/* Advanced Adjustments Accordion (Brightness, Contrast, Saturation) */}
+                <details className="group border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+                  <summary className="text-xs font-bold text-zinc-700 dark:text-zinc-300 cursor-pointer list-none flex items-center justify-between">
+                    <span>Advanced adjustments (optional)</span>
+                    <span className="text-zinc-400 group-open:rotate-180 transition-transform">▼</span>
+                  </summary>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 mt-2 border-t border-zinc-200/60 dark:border-zinc-800/60">
+                    <div>
+                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                        <span>Brightness</span>
+                        <span>{brightness}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="60"
+                        max="140"
+                        value={brightness}
+                        onChange={(e) => setBrightness(parseInt(e.target.value))}
+                        className="w-full slider-blur cursor-pointer"
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="60"
-                      max="140"
-                      value={brightness}
-                      onChange={(e) => setBrightness(parseInt(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span>Contrast</span>
-                      <span>{contrast}%</span>
+                    <div>
+                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                        <span>Contrast</span>
+                        <span>{contrast}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="60"
+                        max="140"
+                        value={contrast}
+                        onChange={(e) => setContrast(parseInt(e.target.value))}
+                        className="w-full slider-blur cursor-pointer"
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="60"
-                      max="140"
-                      value={contrast}
-                      onChange={(e) => setContrast(parseInt(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                      <span>Saturation</span>
-                      <span>{saturation}%</span>
+                    <div>
+                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                        <span>Saturation</span>
+                        <span>{saturation}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="60"
+                        max="140"
+                        value={saturation}
+                        onChange={(e) => setSaturation(parseInt(e.target.value))}
+                        className="w-full slider-blur cursor-pointer"
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="60"
-                      max="140"
-                      value={saturation}
-                      onChange={(e) => setSaturation(parseInt(e.target.value))}
-                      className="w-full slider-blur cursor-pointer"
-                    />
                   </div>
-                </div>
+                </details>
 
                 {/* 2-Step AI Matting & Background Engine */}
                 <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
                       <Palette className="w-3.5 h-3.5 text-brand-500" />
-                      AI Portrait Matting & Background
+                      Background removal & colour
                     </span>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -1817,7 +2228,7 @@ export default function PassportPhotoPage() {
                         className="rounded text-brand-500 focus:ring-brand-500"
                       />
                       <span className="text-xs font-semibold text-brand-600 dark:text-brand-400">
-                        Enable AI Matting
+                        Remove background automatically (AI)
                       </span>
                     </label>
                   </div>
@@ -1850,39 +2261,212 @@ export default function PassportPhotoPage() {
                         </button>
                       </div>
 
-                      {/* Solid Colors Palette (active when Background tab is chosen) */}
+                      {/* Solid & Gradient Palette (active when Color Background tab is chosen) */}
                       {previewTab === 'background' && (
-                        <div className="flex flex-wrap items-center gap-2.5">
-                          {bgColors.map((bg) => (
+                        <div className="space-y-3.5 pt-1">
+                          {/* Compliance Warning Note if current color is not accepted for official documents */}
+                          {!activePreset.allowedBgColors.includes(bgColor.toLowerCase()) && bgColor !== 'transparent' && (
+                            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2 animate-in fade-in duration-200">
+                              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
+                              <span>
+                                This colour is not accepted for official {activePreset.country} documents. Use it for personal or social photos.
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Row 1: Recommended for <selected country> */}
+                          <div>
+                            <span className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                              Recommended for {activePreset.country}
+                            </span>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {classicalColors
+                                .filter((c) => activePreset.allowedBgColors.includes(c.value.toLowerCase()))
+                                .map((bg) => (
+                                  <button
+                                    key={`rec-${bg.value}`}
+                                    onClick={() => setBgColor(bg.value)}
+                                    className={`min-h-[44px] px-3 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                                      bgColor.toLowerCase() === bg.value.toLowerCase()
+                                        ? 'border-brand-500 ring-2 ring-brand-500/30 shadow-xs bg-brand-500/10 text-brand-600 dark:text-brand-300 font-bold'
+                                        : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+                                    }`}
+                                  >
+                                    <span className={`w-4 h-4 rounded-full border shadow-2xs ${bg.previewClass}`} />
+                                    <span>{bg.label}</span>
+                                    {bgColor.toLowerCase() === bg.value.toLowerCase() && (
+                                      <Check className="w-3.5 h-3.5 text-brand-500" />
+                                    )}
+                                  </button>
+                                ))}
+                            </div>
+                          </div>
+
+                          {/* Row 2: More colours (strictly non-duplicate, excluding those already in Recommended) */}
+                          <div>
+                            <span className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                              More colours
+                            </span>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {classicalColors
+                                .filter((c) => !activePreset.allowedBgColors.includes(c.value.toLowerCase()))
+                                .map((bg) => (
+                                  <button
+                                    key={`more-${bg.value}`}
+                                    onClick={() => setBgColor(bg.value)}
+                                    className={`min-h-[44px] px-3 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                                      bgColor.toLowerCase() === bg.value.toLowerCase()
+                                        ? 'border-brand-500 ring-2 ring-brand-500/30 shadow-xs bg-brand-500/10 text-brand-600 dark:text-brand-300 font-bold'
+                                        : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+                                    }`}
+                                  >
+                                    <span className={`w-4 h-4 rounded-full border shadow-2xs ${bg.previewClass}`} />
+                                    <span>{bg.label}</span>
+                                    {bgColor.toLowerCase() === bg.value.toLowerCase() && (
+                                      <Check className="w-3.5 h-3.5 text-brand-500" />
+                                    )}
+                                  </button>
+                                ))}
+                            </div>
+                          </div>
+
+                          {/* Row 3: Stylish Solids & Gradients (Collapsible) */}
+                          <div className="border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 bg-zinc-50/50 dark:bg-zinc-900/40">
                             <button
-                              key={bg.value}
-                              onClick={() => setBgColor(bg.value)}
-                              className={`h-8 px-3 rounded-lg border text-xs font-semibold flex items-center gap-2 transition-all ${
-                                bgColor === bg.value
-                                  ? 'border-brand-500 ring-2 ring-brand-500/30 shadow-xs bg-brand-500/5'
-                                  : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300'
-                              }`}
+                              type="button"
+                              onClick={() => setIsStylishPaletteOpen(!isStylishPaletteOpen)}
+                              className="w-full flex items-center justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300 min-h-[44px] cursor-pointer"
                             >
-                              <span className={`w-3.5 h-3.5 rounded-full border ${bg.class}`} />
-                              {bg.label.split(' ')[0]}
+                              <span className="flex items-center gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                                Stylish (not for official documents)
+                              </span>
+                              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isStylishPaletteOpen ? 'rotate-180' : ''}`} />
                             </button>
-                          ))}
-                          <input
-                            type="color"
-                            value={bgColor === 'transparent' ? '#ffffff' : bgColor}
-                            onChange={(e) => setBgColor(e.target.value)}
-                            className="w-8 h-8 rounded-lg cursor-pointer border border-zinc-300 dark:border-zinc-700 bg-transparent"
-                            title="Custom color"
-                          />
+
+                            {isStylishPaletteOpen && (
+                              <div className="mt-3 space-y-3 pt-3 border-t border-zinc-200 dark:border-zinc-800 animate-in fade-in duration-200">
+                                <div>
+                                  <span className="block text-[10px] font-semibold uppercase text-zinc-400 mb-1.5">Stylish Solids</span>
+                                  <div className="flex flex-wrap gap-2">
+                                    {stylishSolids.map((bg) => (
+                                      <button
+                                        key={`solid-${bg.value}`}
+                                        onClick={() => setBgColor(bg.value)}
+                                        className={`min-h-[44px] px-2.5 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+                                          bgColor.toUpperCase() === bg.value.toUpperCase()
+                                            ? 'border-brand-500 ring-2 ring-brand-500/30 bg-brand-500/10 font-bold text-brand-600 dark:text-brand-300'
+                                            : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                                        }`}
+                                      >
+                                        <span className="w-4 h-4 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: bg.value }} />
+                                        <span>{bg.label}</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <span className="block text-[10px] font-semibold uppercase text-zinc-400 mb-1.5">Vertical Studio Gradients</span>
+                                  <div className="flex flex-wrap gap-2">
+                                    {stylishGradients.map((bg) => (
+                                      <button
+                                        key={`grad-${bg.value}`}
+                                        onClick={() => setBgColor(bg.value)}
+                                        className={`min-h-[44px] px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+                                          bgColor === bg.value
+                                            ? 'border-brand-500 ring-2 ring-brand-500/30 bg-brand-500/10 font-bold text-brand-600 dark:text-brand-300'
+                                            : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                                        }`}
+                                      >
+                                        <span
+                                          className="w-4 h-4 rounded-full border border-black/10 shrink-0"
+                                          style={{ background: `linear-gradient(to bottom, ${bg.from}, ${bg.to})` }}
+                                        />
+                                        <span>{bg.label}</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Row 4: Custom Rainbow Tile & Hex Input & History */}
+                          <div className="pt-1 flex flex-wrap items-center gap-3">
+                            <label
+                              className="relative min-h-[44px] px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 hover:border-brand-500 bg-white dark:bg-zinc-800 flex items-center gap-2.5 cursor-pointer shadow-2xs transition"
+                              title="Pick any custom color"
+                            >
+                              <span
+                                className="w-5 h-5 rounded-full border border-zinc-300 dark:border-zinc-600 shrink-0 shadow-2xs"
+                                style={{
+                                  background: 'conic-gradient(from 180deg, red, yellow, lime, aqua, blue, magenta, red)',
+                                }}
+                              />
+                              <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">Custom</span>
+                              <input
+                                type="color"
+                                value={bgColor.startsWith('#') ? bgColor : '#ffffff'}
+                                onChange={(e) => {
+                                  const c = e.target.value.toUpperCase();
+                                  setBgColor(c);
+                                  setCustomHexInput(c);
+                                  addCustomColorToHistory(c);
+                                }}
+                                className="sr-only"
+                              />
+                            </label>
+
+                            {/* Hex Text Field */}
+                            <div className="flex items-center gap-1.5 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-2.5 py-1.5 min-h-[44px]">
+                              <span className="text-xs text-zinc-400 font-mono">#</span>
+                              <input
+                                type="text"
+                                maxLength={7}
+                                value={customHexInput.replace('#', '')}
+                                onChange={(e) => {
+                                  const val = '#' + e.target.value.replace(/[^0-9A-Fa-f]/g, '').slice(0, 6);
+                                  setCustomHexInput(val);
+                                  if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                                    setBgColor(val);
+                                    addCustomColorToHistory(val);
+                                  }
+                                }}
+                                placeholder="FFFFFF"
+                                className="w-20 text-xs font-mono font-bold bg-transparent text-zinc-900 dark:text-white outline-hidden uppercase"
+                              />
+                            </div>
+
+                            {/* Last 5 Custom Colors from LocalStorage */}
+                            {customColorsHistory.length > 0 && (
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] text-zinc-400 uppercase font-semibold">Recent:</span>
+                                {customColorsHistory.map((hex, idx) => (
+                                  <button
+                                    key={`hist-${hex}-${idx}`}
+                                    onClick={() => {
+                                      setBgColor(hex);
+                                      setCustomHexInput(hex);
+                                    }}
+                                    className="w-7 h-7 rounded-full border border-black/20 shadow-2xs cursor-pointer hover:scale-110 transition shrink-0"
+                                    style={{ backgroundColor: hex }}
+                                    title={`Recent color: ${hex}`}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
 
-                      {/* Precision Sliders: Edge Feathering & Alpha Choke */}
+
+                      {/* Precision Sliders: Soften edges & Trim edge fringe */}
                       <div className="p-3.5 rounded-xl bg-brand-500/5 border border-brand-500/15 space-y-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <div className="flex justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
-                              <span>Edge Feathering (Softening)</span>
+                              <span>Soften edges</span>
                               <span className="font-mono text-brand-600 dark:text-brand-400">{bgFeather.toFixed(1)}px</span>
                             </div>
                             <input
@@ -1893,13 +2477,13 @@ export default function PassportPhotoPage() {
                               value={bgFeather}
                               onChange={(e) => setBgFeather(parseFloat(e.target.value))}
                               className="w-full slider-blur cursor-pointer"
-                              title="Controls Gaussian blur feathering on subject contours"
+                              title="Controls Gaussian blur softening on subject contours"
                             />
                             <p className="text-[10px] text-zinc-400 mt-0.5">Smooths hair, neck & shoulder contours</p>
                           </div>
                           <div>
                             <div className="flex justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
-                              <span>Boundary Choke (Fringe Cut)</span>
+                              <span>Trim edge fringe</span>
                               <span className="font-mono text-brand-600 dark:text-brand-400">{bgChoke.toFixed(1)}px</span>
                             </div>
                             <input
@@ -1910,7 +2494,7 @@ export default function PassportPhotoPage() {
                               value={bgChoke}
                               onChange={(e) => setBgChoke(parseFloat(e.target.value))}
                               className="w-full slider-blur cursor-pointer"
-                              title="Insets boundary by subpixel to remove outer backdrop halo"
+                              title="Insets boundary to remove outer backdrop halo"
                             />
                             <p className="text-[10px] text-zinc-400 mt-0.5">Eliminates outer wall color rim</p>
                           </div>
@@ -1926,7 +2510,7 @@ export default function PassportPhotoPage() {
                               className="rounded text-brand-500 focus:ring-brand-500"
                             />
                             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-200">
-                              Background Color Decontamination & De-Spill
+                              Remove colour halo
                             </span>
                           </label>
                           <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
@@ -1935,11 +2519,14 @@ export default function PassportPhotoPage() {
                         </div>
                       </div>
 
-                      {/* Processing Mode & Retry Controls */}
+                      {/* Processing Mode & Redo Controls */}
                       <div className="flex flex-col gap-2.5 p-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
-                        {/* Device-only toggle & Retry Button */}
+                        {/* Private Mode toggle & Redo Button */}
                         <div className="flex items-center justify-between gap-2">
-                          <label className="flex items-center gap-2 cursor-pointer">
+                          <label
+                            className="flex items-center gap-2 cursor-pointer"
+                            title="When enabled, background removal runs 100% inside your browser using WebAssembly. No photo data leaves your device."
+                          >
                             <input
                               type="checkbox"
                               checked={forceOnDevice}
@@ -1947,7 +2534,7 @@ export default function PassportPhotoPage() {
                               className="rounded text-brand-500 focus:ring-brand-500"
                             />
                             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-200">
-                              Process on my device only
+                              Private mode: don&apos;t upload my photo
                             </span>
                           </label>
 
@@ -1955,10 +2542,10 @@ export default function PassportPhotoPage() {
                             type="button"
                             onClick={() => processSubjectCutout(true)}
                             disabled={isSegmenting}
-                            className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200 transition flex items-center gap-1.5 disabled:opacity-50"
+                            className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200 transition flex items-center gap-1.5 disabled:opacity-50 cursor-pointer min-h-[36px]"
                           >
                             <RefreshCw className={`w-3 h-3 ${isSegmenting ? 'animate-spin' : ''}`} />
-                            Retry AI matting
+                            Redo background removal
                           </button>
                         </div>
 
@@ -1978,9 +2565,9 @@ export default function PassportPhotoPage() {
                         <div className="flex items-center justify-between pt-1 border-t border-zinc-200 dark:border-zinc-700/60 text-[11px] text-zinc-500 dark:text-zinc-400">
                           <span className="flex items-center gap-1">
                             {isSegmenting ? (
-                              <><Loader2 className="w-3 h-3 animate-spin text-brand-500" /> {segmentationStatus || 'Processing AI Matting...'}</>
+                              <><Loader2 className="w-3 h-3 animate-spin text-brand-500" /> {segmentationStatus || 'Processing...'}</>
                             ) : (
-                              <><ShieldCheck className="w-3 h-3 text-emerald-500" /> {segmentationStatus || 'Compixor AI Cutout Active'}</>
+                              <><ShieldCheck className="w-3 h-3 text-emerald-500" /> {segmentationStatus || 'Background removed'}</>
                             )}
                           </span>
                           <span className="font-medium text-zinc-600 dark:text-zinc-300">
@@ -2017,11 +2604,12 @@ export default function PassportPhotoPage() {
               <div
                 ref={previewBoxRef}
                 className={`relative mx-auto rounded-2xl overflow-hidden shadow-lg border border-zinc-300 dark:border-zinc-700 select-none ${
-                  imageSrc ? 'cursor-grab active:cursor-grabbing' : ''
+                  imageSrc && isAdjustMode ? 'cursor-grab active:cursor-grabbing ring-2 ring-brand-500' : ''
                 }`}
                 style={{
                   width: `${previewDimensions.width}px`,
                   height: `${previewDimensions.height}px`,
+                  touchAction: isAdjustMode ? 'none' : 'pan-y',
                   backgroundColor: previewTab === 'cutout' || bgColor === 'transparent' ? '#ffffff' : bgColor,
                   backgroundImage: (previewTab === 'cutout' || bgColor === 'transparent')
                     ? 'linear-gradient(45deg, #e2e8f0 25%, transparent 25%), linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e2e8f0 75%), linear-gradient(-45deg, transparent 75%, #e2e8f0 75%)'
@@ -2206,6 +2794,70 @@ export default function PassportPhotoPage() {
                 )}
               </div>
 
+              {/* Always-visible Preview Quick Action Buttons */}
+              {imageSrc && (
+                <div className="flex items-center justify-center gap-2 pt-1">
+                  <button
+                    onClick={() => autoAlignBiometric('button')}
+                    className="px-3 py-1.5 rounded-xl bg-brand-50 hover:bg-brand-100 dark:bg-brand-950/40 dark:hover:bg-brand-900/40 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[36px]"
+                    title="Automatically fit portrait to biometric spec"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-brand-500" />
+                    Auto-fit
+                  </button>
+                  <button
+                    onClick={() => setIsAdjustMode(!isAdjustMode)}
+                    className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[36px] ${
+                      isAdjustMode
+                        ? 'border-brand-500 bg-brand-500/15 text-brand-600 dark:text-brand-300 ring-2 ring-brand-500/25'
+                        : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
+                    }`}
+                  >
+                    <Move className="w-3.5 h-3.5" />
+                    {isAdjustMode ? 'Done' : 'Adjust position'}
+                  </button>
+                </div>
+              )}
+
+              {/* Warning note if head was too close to fit without clipping */}
+              {isTooCloseWarning && (
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2 text-left animate-in fade-in">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
+                  <span>Photo is too close; use a photo with more space around the head.</span>
+                </div>
+              )}
+
+              {/* Small Biometric Live Checklist */}
+              {imageSrc && (
+                <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 text-left text-xs space-y-1.5">
+                  <div className="font-bold text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                    Biometric Check:
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className={`w-3.5 h-3.5 ${isTooCloseWarning ? 'text-amber-500' : 'text-emerald-500'}`} />
+                    <span className="text-zinc-700 dark:text-zinc-300">
+                      Head size: {isTooCloseWarning ? 'Close to edge (fits fully)' : 'Standard size OK'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                    <span className="text-zinc-700 dark:text-zinc-300">
+                      Eye line: Aligned at ~{activePreset.biometricSpec.eyeLinePercent}% height
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {activePreset.allowedBgColors.includes(bgColor.toLowerCase()) || bgColor === 'transparent' ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                    ) : (
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                    )}
+                    <span className="text-zinc-700 dark:text-zinc-300">
+                      Background: {activePreset.allowedBgColors.includes(bgColor.toLowerCase()) || bgColor === 'transparent' ? `Compliant for ${activePreset.country}` : `Non-official for ${activePreset.country}`}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {/* Country Biometric Specs Readout */}
               <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 text-left border border-zinc-200 dark:border-zinc-700/60 space-y-1.5">
                 <div className="flex items-center justify-between text-xs font-semibold text-zinc-900 dark:text-zinc-100">
@@ -2238,8 +2890,13 @@ export default function PassportPhotoPage() {
               {/* Proceed to Download Preview Action */}
               {imageSrc ? (
                 <button
-                  onClick={() => setCurrentStep('preview')}
-                  className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-sm font-semibold shadow-glow"
+                  onClick={() => {
+                    setCurrentStep('preview');
+                    if (typeof window !== 'undefined') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                  className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-sm font-semibold shadow-glow cursor-pointer"
                 >
                   <FileDown className="w-4 h-4" />
                   Proceed to Download Preview & Sheets →
@@ -2257,11 +2914,32 @@ export default function PassportPhotoPage() {
         </div>
       )}
 
-      {/* STEP 2: DEDICATED 2-PANEL DOWNLOAD PREVIEW SCREEN */}
+      {/* STEP 3: DEDICATED 2-PANEL DOWNLOAD PREVIEW SCREEN */}
       {currentStep === 'preview' && (
-        <div className="space-y-8">
+        <div className="space-y-8" id="download-screen-top">
+          {/* Step 3 Top Bar: Back to editor & Change photo */}
+          <div className="flex items-center justify-between p-4 rounded-2xl glass-card border border-zinc-200 dark:border-zinc-800">
+            <button
+              onClick={() => setCurrentStep('edit')}
+              className="text-xs font-bold text-zinc-700 dark:text-zinc-200 hover:text-brand-500 flex items-center gap-1.5 transition cursor-pointer min-h-[40px] px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              ← Back to editor
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-zinc-500 hidden sm:inline">Your photo is ready</span>
+              <button
+                onClick={handleMakeNewImage}
+                className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 flex items-center gap-1.5 transition cursor-pointer min-h-[40px] px-3 py-1.5 rounded-xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Change photo
+              </button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* LEFT PANEL — Online Submission (5 cols) */}
+            {/* LEFT PANEL — Online Submission (Single Photo) (5 cols) */}
             <motion.div
               className="lg:col-span-5 glass-card p-6 md:p-8 rounded-3xl space-y-6"
               initial={{ opacity: 0, y: 20 }}
@@ -2341,6 +3019,7 @@ export default function PassportPhotoPage() {
 
             {/* RIGHT PANEL — Print Sheet (7 cols) */}
             <motion.div
+              id="print-sheet-panel"
               className="lg:col-span-7 glass-card p-6 md:p-8 rounded-3xl space-y-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -2357,11 +3036,11 @@ export default function PassportPhotoPage() {
                   </p>
                 </div>
 
-                {/* Radio Selector: A4 / 3 per A4 / Custom */}
-                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
+                {/* Sheet Selector: A4 / 3 per A4 / A6 - 2 photos / A5 - 6 photos / Custom */}
+                <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 max-w-full overflow-x-auto">
                   <button
                     onClick={() => setSheetPreset('a4')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
                       sheetPreset === 'a4'
                         ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
                         : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -2371,7 +3050,7 @@ export default function PassportPhotoPage() {
                   </button>
                   <button
                     onClick={() => setSheetPreset('3-per-a4')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
                       sheetPreset === '3-per-a4'
                         ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
                         : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -2380,8 +3059,28 @@ export default function PassportPhotoPage() {
                     3 per A4
                   </button>
                   <button
+                    onClick={() => setSheetPreset('a6-2')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
+                      sheetPreset === 'a6-2'
+                        ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
+                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                    }`}
+                  >
+                    A6 - 2 photos
+                  </button>
+                  <button
+                    onClick={() => setSheetPreset('a5-6')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
+                      sheetPreset === 'a5-6'
+                        ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
+                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                    }`}
+                  >
+                    A5 - 6 photos
+                  </button>
+                  <button
                     onClick={() => setSheetPreset('custom')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
                       sheetPreset === 'custom'
                         ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
                         : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -2391,6 +3090,14 @@ export default function PassportPhotoPage() {
                   </button>
                 </div>
               </div>
+
+              {/* Warning note if preset dimensions reduce target count on A6 or A5 */}
+              {(sheetPreset === 'a6-2' || sheetPreset === 'a5-6') && layoutV2.reducedMessage && (
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
+                  <span>{layoutV2.reducedMessage}</span>
+                </div>
+              )}
 
               {/* Custom Grid Controls if selected */}
               {sheetPreset === 'custom' && (
@@ -2434,29 +3141,52 @@ export default function PassportPhotoPage() {
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between w-full text-xs text-zinc-500 dark:text-zinc-400">
+                <div className="mt-3 flex flex-col sm:flex-row items-center justify-between gap-2 w-full text-xs text-zinc-500 dark:text-zinc-400">
                   <span className="flex items-center gap-1">
                     <Scissors className="w-3.5 h-3.5 text-brand-500" />
                     Includes thin cutting borders & registration cut marks
                   </span>
                   <span className="font-bold text-zinc-800 dark:text-zinc-200">
-                    {sheetPhotoCount} Copies @ 300 DPI
+                    {sheetPreset === 'a6-2'
+                      ? `A6 - ${sheetPhotoCount} photos - ${activePreset.widthMm}x${activePreset.heightMm} mm - 300 DPI`
+                      : sheetPreset === 'a5-6'
+                      ? `A5 - ${sheetPhotoCount} photos - ${activePreset.widthMm}x${activePreset.heightMm} mm - 300 DPI`
+                      : `${sheetPhotoCount} Copies @ 300 DPI`}
                   </span>
                 </div>
+
+                {/* Print Dialog Guidance Tip */}
+                <p className="mt-2 text-[11px] text-zinc-500 dark:text-zinc-400 text-center italic">
+                  💡 In the print dialog choose <strong className="font-semibold text-zinc-700 dark:text-zinc-300">Actual size / 100%</strong> and turn off <strong className="font-semibold text-zinc-700 dark:text-zinc-300">Fit to page</strong>.
+                </p>
               </div>
 
-              {/* Right Panel Download Button */}
-              <button
-                onClick={downloadPrintableSheet}
-                disabled={isDownloading}
-                className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-sm font-semibold shadow-glow disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {isDownloading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> Preparing Sheet...</>
-                ) : (
-                  <><Printer className="w-4 h-4" /> Download Passport Sheet ({sheetPreset.toUpperCase()})</>
+              {/* Right Panel Download Buttons */}
+              <div className="space-y-2">
+                <button
+                  onClick={() => downloadPrintableSheet('jpg')}
+                  disabled={isDownloading}
+                  className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-sm font-semibold shadow-glow disabled:opacity-70 disabled:cursor-not-allowed min-h-[44px]"
+                >
+                  {isDownloading ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Preparing Sheet...</>
+                  ) : (
+                    <><Printer className="w-4 h-4" /> Download Print Sheet ({sheetPreset === 'a6-2' ? 'A6 JPG' : sheetPreset === 'a5-6' ? 'A5 JPG' : `${sheetPreset.toUpperCase()} JPG`})</>
+                  )}
+                </button>
+
+                {(sheetPreset === 'a6-2' || sheetPreset === 'a5-6') && (
+                  <button
+                    onClick={() => downloadPrintableSheet('pdf')}
+                    disabled={isDownloading}
+                    className="w-full py-3 px-4 rounded-xl border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-bold text-zinc-800 dark:text-zinc-200 flex items-center justify-center gap-2 transition min-h-[44px]"
+                  >
+                    <FileDown className="w-4 h-4 text-emerald-500" />
+                    Download PDF ({sheetPreset === 'a6-2' ? 'A6 105x148 mm' : 'A5 148x210 mm'})
+                  </button>
                 )}
-              </button>
+              </div>
+
             </motion.div>
           </div>
 
@@ -2469,7 +3199,7 @@ export default function PassportPhotoPage() {
           >
             <button
               onClick={() => setCurrentStep('edit')}
-              className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-2 transition"
+              className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-2 transition cursor-pointer min-h-[44px]"
             >
               <ArrowLeft className="w-4 h-4" />
               ← Back to Studio Editor
@@ -2477,12 +3207,35 @@ export default function PassportPhotoPage() {
 
             <button
               onClick={handleMakeNewImage}
-              className="px-5 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2 transition"
+              className="px-5 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2 transition cursor-pointer min-h-[44px]"
             >
               <PlusCircle className="w-4 h-4 text-brand-500" />
               + Make New Image
             </button>
           </motion.div>
+
+          {/* MOBILE STICKY BOTTOM ACTION BAR */}
+          <div className="fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 p-3 shadow-2xl flex items-center gap-2">
+            <button
+              onClick={downloadSinglePhoto}
+              className="flex-1 btn-primary py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm min-h-[44px]"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Download JPEG
+            </button>
+            <button
+              onClick={() => {
+                const sheetEl = document.querySelector('#print-sheet-panel');
+                if (sheetEl) {
+                  sheetEl.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="flex-1 py-2.5 px-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-bold flex items-center justify-center gap-1.5 min-h-[44px]"
+            >
+              <Printer className="w-3.5 h-3.5 text-brand-500" />
+              Print Sheets ↓
+            </button>
+          </div>
         </div>
       )}
 
@@ -2527,64 +3280,257 @@ export default function PassportPhotoPage() {
         </div>
       </section>
 
+      {/* ── Studio & Home Print Sheet Sizes Reference Table ── */}
+      <section className="mt-12">
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-2">
+                <Grid className="w-3.5 h-3.5" />
+                Paper & Layout Specifications
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+                Print Sheet Sizes & Photo Capacities (300 DPI)
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                Generated from active studio presets. Every layout preserves pixel-exact dimensions with corner cutting marks.
+              </p>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-zinc-200 dark:border-zinc-700/80 text-zinc-500 dark:text-zinc-400">
+                  <th className="py-3 px-3 font-semibold">Sheet Option</th>
+                  <th className="py-3 px-3 font-semibold">Paper Dimensions</th>
+                  <th className="py-3 px-3 font-semibold">Paper Pixels @ 300 DPI</th>
+                  <th className="py-3 px-3 font-semibold">Standard 35x45 mm Capacity</th>
+                  <th className="py-3 px-3 font-semibold">US 2x2&quot; Capacity</th>
+                  <th className="py-3 px-3 font-semibold">Canada 50x70 mm Capacity</th>
+                  <th className="py-3 px-3 font-semibold">Features</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300">
+                <tr className="hover:bg-zinc-500/5 transition-colors">
+                  <td className="py-3.5 px-3 font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-brand-500" />
+                    A6 - 2 photos
+                  </td>
+                  <td className="py-3.5 px-3">105 x 148 mm (4.13 x 5.83 in)</td>
+                  <td className="py-3.5 px-3 font-mono text-[11px] sm:text-xs">1240 x 1748 px</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">2 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">2 photos</td>
+                  <td className="py-3.5 px-3 text-amber-600 dark:text-amber-400 font-medium">1 photo (auto-adjusted)</td>
+                  <td className="py-3.5 px-3 text-zinc-500 dark:text-zinc-400 text-xs">Side-by-side, 2.5mm gap, corner crop marks, PDF</td>
+                </tr>
+                <tr className="hover:bg-zinc-500/5 transition-colors">
+                  <td className="py-3.5 px-3 font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    A5 - 6 photos
+                  </td>
+                  <td className="py-3.5 px-3">148 x 210 mm (5.83 x 8.27 in)</td>
+                  <td className="py-3.5 px-3 font-mono text-[11px] sm:text-xs">1748 x 2480 px</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos (3x2 grid)</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">4 photos (2x2 grid)</td>
+                  <td className="py-3.5 px-3 text-amber-600 dark:text-amber-400 font-medium">4 photos (2x2 grid)</td>
+                  <td className="py-3.5 px-3 text-zinc-500 dark:text-zinc-400 text-xs">5mm margin, 2.5mm gap, crop marks, vector PDF</td>
+                </tr>
+                <tr className="hover:bg-zinc-500/5 transition-colors">
+                  <td className="py-3.5 px-3 font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-blue-500" />
+                    A4 Page (Studio)
+                  </td>
+                  <td className="py-3.5 px-3">210 x 297 mm (8.27 x 11.69 in)</td>
+                  <td className="py-3.5 px-3 font-mono text-[11px] sm:text-xs">2480 x 3508 px</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">24 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">12 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos</td>
+                  <td className="py-3.5 px-3 text-zinc-500 dark:text-zinc-400 text-xs">Full-page batch tiling with cutting guides</td>
+                </tr>
+                <tr className="hover:bg-zinc-500/5 transition-colors">
+                  <td className="py-3.5 px-3 font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-violet-500" />
+                    3 per A4
+                  </td>
+                  <td className="py-3.5 px-3">210 x 297 mm (8.27 x 11.69 in)</td>
+                  <td className="py-3.5 px-3 font-mono text-[11px] sm:text-xs">2480 x 3508 px</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos</td>
+                  <td className="py-3.5 px-3 text-zinc-500 dark:text-zinc-400 text-xs">Spaced studio cut strips</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ── How Passport Photo Prints Are Made at a Studio and at Home ── */}
+      <section className="mt-12">
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm space-y-6">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20 mb-2">
+              <Printer className="w-3.5 h-3.5" />
+              Printing &amp; Lab Guide
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+              How Passport Photo Prints Are Made at a Studio and at Home
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              Avoid the most common reason for embassy rejections: incorrect physical scaling and paper distortion.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/50 space-y-3">
+              <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-black">1</span>
+                Studio Mini-Lab Workflow
+              </h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Commercial photo studios rarely print single passport photos. They arrange portraits onto standard photo paper sizes (such as A6 postcard or A5 sheets) at 300 DPI, print them on dye-sublimation or glossy inkjet printers, and cut along calibrated crop marks. Compixor gives you the exact same digital layout without paying studio markups.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/50 space-y-3">
+              <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-black">2</span>
+                Home Printing: The 100% Scale Rule
+              </h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                When printing your downloaded JPEG or vector PDF at home, <strong>never use &quot;Fit to page&quot; or &quot;Shrink to fit&quot;</strong>. Doing so alters the physical millimeter dimensions of the photos, causing immediate rejection by visa officers. Always select <strong>&quot;Actual size&quot;</strong> or set page scaling to <strong>100%</strong> in your printer software.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-800 dark:text-amber-200 flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold">Paper &amp; Finish Recommendation:</span> Use 200–250 GSM semi-gloss or satin photo paper. Matte paper is accepted for Pakistan NADRA, UK, and Schengen passports, while glossy or semi-gloss is standard for US Visas and Indian passports.
+            </div>
+          </div>
+        </div>
+      </section>
+
       <ToolSeoSection toolSlug="passport-photo" />
 
-      {/* Floating Debug Panel (?debug=1) */}
+      {/* Floating Debug Panel (?debug=1) — Bottom-LEFT, Collapsible, Copy Report, No Feedback Collision */}
       {isDebugMode && (
-        <div className="fixed bottom-4 right-4 z-50 p-4 rounded-2xl bg-zinc-950/95 border border-cyan-500/40 text-cyan-300 font-mono text-xs shadow-2xl backdrop-blur-md max-w-xs space-y-1.5 select-none pointer-events-auto">
-          <div className="flex items-center justify-between border-b border-cyan-500/30 pb-1.5 mb-2">
-            <span className="font-bold text-white flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Passport Studio Debug (?debug=1)
-            </span>
-            <span className="text-[10px] text-zinc-400">Live Stats</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">API Requests Sent:</span>
-            <span className="font-bold text-white">{debugStats.requestsSent}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Cache Hits:</span>
-            <span className="font-bold text-emerald-400">{debugStats.cacheHits}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Last API Duration:</span>
-            <span className="font-bold text-white">{debugStats.lastDurationMs} ms</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Uploaded Size:</span>
-            <span className="font-bold text-white">{debugStats.lastUploadedKb} KB</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Result:</span>
-            <span
-              className={`font-bold ${
-                debugStats.lastResult === 'ok'
-                  ? 'text-emerald-400'
-                  : debugStats.lastResult === 'error'
-                  ? 'text-red-400'
-                  : 'text-amber-400'
-              }`}
+        <div className="fixed bottom-4 left-4 z-40 select-none pointer-events-auto">
+          {!isDebugExpanded ? (
+            <button
+              onClick={() => setIsDebugExpanded(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-950/95 border border-cyan-500/50 text-cyan-300 font-mono text-xs shadow-2xl backdrop-blur-md hover:bg-zinc-900 transition-all cursor-pointer min-h-[36px]"
+              title="Click to expand Passport Studio Debug Panel"
             >
-              {debugStats.lastResult}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Mode:</span>
-            <span className="font-bold text-white">{debugStats.mode}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-400">Cutout Cached:</span>
-            <span className="font-bold text-cyan-400">
-              {debugStats.cachedHash !== 'none' ? `yes (${debugStats.cachedHash})` : 'no'}
-            </span>
-          </div>
-          <div className="flex justify-between border-t border-cyan-500/20 pt-1 mt-1">
-            <span className="text-zinc-400">Last Re-render:</span>
-            <span className="font-bold text-white">{debugStats.lastRenderMs} ms</span>
-          </div>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-bold text-white">Debug</span>
+              <span className="text-[10px] text-cyan-400/80">({debugStats.requestsSent} req)</span>
+            </button>
+          ) : (
+            <div className="p-4 rounded-2xl bg-zinc-950/95 border border-cyan-500/40 text-cyan-300 font-mono text-xs shadow-2xl backdrop-blur-md w-[320px] max-w-[90vw] space-y-1.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div className="flex items-center justify-between border-b border-cyan-500/30 pb-1.5 mb-2">
+                <span className="font-bold text-white flex items-center gap-1.5 text-xs truncate">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                  Passport Debug (?debug=1)
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => {
+                      const report = [
+                        `--- Passport Studio Debug Report ---`,
+                        `API Requests Sent: ${debugStats.requestsSent}`,
+                        `Cache Hits: ${debugStats.cacheHits}`,
+                        `Last API Duration: ${debugStats.lastDurationMs} ms`,
+                        `Uploaded Size: ${debugStats.lastUploadedKb} KB`,
+                        `Result: ${debugStats.lastResult}`,
+                        `Mode: ${debugStats.mode}`,
+                        `Cutout Cached: ${debugStats.cachedHash}`,
+                        `Last Re-render: ${debugStats.lastRenderMs} ms`,
+                        `Sheet Preset: ${sheetPreset}`,
+                        `Active Country: ${activePreset.name} (${activePreset.widthMm}x${activePreset.heightMm} mm)`,
+                        `Timestamp: ${new Date().toISOString()}`,
+                      ].join('\n');
+                      navigator.clipboard.writeText(report);
+                      toast.success('Debug report copied to clipboard!');
+                    }}
+                    className="px-2 py-0.5 rounded bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/40 text-[10px] font-sans font-bold transition"
+                    title="Copy full debug report"
+                  >
+                    Copy report
+                  </button>
+                  <button
+                    onClick={() => setIsDebugExpanded(false)}
+                    className="w-5 h-5 rounded flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 text-xs transition"
+                    title="Collapse debug panel"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-zinc-400">API Requests Sent:</span>
+                <span className="font-bold text-white">{debugStats.requestsSent}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Cache Hits:</span>
+                <span className="font-bold text-emerald-400">{debugStats.cacheHits}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Last API Duration:</span>
+                <span className="font-bold text-white">{debugStats.lastDurationMs} ms</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Uploaded Size:</span>
+                <span className="font-bold text-white">{debugStats.lastUploadedKb} KB</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Result:</span>
+                <span
+                  className={`font-bold ${
+                    debugStats.lastResult === 'ok'
+                      ? 'text-emerald-400'
+                      : debugStats.lastResult === 'error'
+                      ? 'text-red-400'
+                      : 'text-amber-400'
+                  }`}
+                >
+                  {debugStats.lastResult}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Mode:</span>
+                <span className="font-bold text-white">{debugStats.mode}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Cutout Cached:</span>
+                <span className="font-bold text-cyan-400">
+                  {debugStats.cachedHash !== 'none' ? `yes (${debugStats.cachedHash})` : 'no'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Last align cause:</span>
+                <span className="font-bold text-amber-400">
+                  {(debugStats as any).lastAlignCause || 'none'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400">Zoom:</span>
+                <span className="font-bold text-white">
+                  {(debugStats as any).zoomDisplay || `${Math.round(zoom * 100)}%`}
+                </span>
+              </div>
+              <div className="flex justify-between border-t border-cyan-500/20 pt-1 mt-1">
+                <span className="text-zinc-400">Last Re-render:</span>
+                <span className="font-bold text-white">{debugStats.lastRenderMs} ms</span>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 }
+

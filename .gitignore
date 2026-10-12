@@ -54,3 +54,4 @@ dist/
 # OCR models and scratch
 *.traineddata
 scratch/
+test-results/

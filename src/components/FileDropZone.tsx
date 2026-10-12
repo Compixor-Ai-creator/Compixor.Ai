@@ -13,6 +13,7 @@ interface FileDropZoneProps {
   subtitle?: string;
   buttonText?: string;
   className?: string;
+  resetSignal?: number;
 }
 
 export default function FileDropZone({
@@ -25,16 +26,27 @@ export default function FileDropZone({
   subtitle = 'or click to browse',
   buttonText,
   className = '',
+  resetSignal,
 }: FileDropZoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef(0);
 
+  // Clear dropzone state when resetSignal changes
+  React.useEffect(() => {
+    if (resetSignal !== undefined && resetSignal > 0) {
+      setFileName(null);
+      if (inputRef.current) inputRef.current.value = '';
+    }
+  }, [resetSignal]);
+
   const handleFile = useCallback(
     (file: File) => {
       if (file.size > maxSizeMB * 1024 * 1024) {
-        alert(`File too large. Max size is ${maxSizeMB}MB.`);
+        setFileName(null);
+        if (inputRef.current) inputRef.current.value = '';
+        onFileDrop(file);
         return;
       }
       setFileName(file.name);

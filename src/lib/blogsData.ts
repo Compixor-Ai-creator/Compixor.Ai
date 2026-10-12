@@ -52,7 +52,7 @@ export const blogsData: BlogItem[] = [
     metaTitle: "How to Make Passport Size Photos Online for Free (Fast & Private)",
     metaDescription: "Learn how to resize, frame, and export standard 2x2 and 35x45mm ID photos online for free with 100% in-browser privacy.",
     excerpt: "Create compliant biometric passport, visa, and ID photos from smartphone portraits in seconds without cloud uploads.",
-    toolPath: "/tools/passport-photo-maker",
+    toolPath: "/tools/passport-photo",
     accentColor: "from-sky-500/20 to-indigo-500/20",
     icon: "Camera",
     content: {
@@ -1002,6 +1002,528 @@ export const blogsData: BlogItem[] = [
       faqs: [
         { question: "Can I convert smartphone photos of receipts?", answer: "Yes. As long as the receipt text is in focus and legible, the engine will extract line items and numbers." },
         { question: "Will my confidential documents be kept private?", answer: "Yes. The OCR engine executes completely inside your browser session with zero data uploaded to any server." }
+      ]
+    }
+  },
+  {
+    id: "passport-photo-size-pakistan",
+    slug: "passport-photo-size-pakistan",
+    title: "Passport Photo Size in Pakistan: Complete NADRA, CNIC & Online Visa Requirements Guide",
+    category: "Image & DP Tools",
+    readTime: "6 min read",
+    targetKeyword: "passport photo size pakistan nadra",
+    metaTitle: "Passport Photo Size in Pakistan: Official NADRA & CNIC Guide (2026)",
+    metaDescription: "Official guide to Pakistan passport photo size for NADRA & CNIC. Exact mm (35x45), inches, 300 DPI pixels (413x531), white vs blue background, and online tools.",
+    excerpt: "Get exact biometric specifications for Pakistan passport and NADRA CNIC photos: 35x45 mm, 413x531 px at 300 DPI, background rules, and how to create them free.",
+    toolPath: "/tools/passport-photo",
+    accentColor: "from-emerald-500/20 to-teal-500/20",
+    icon: "Camera",
+    decisionBox: {
+      title: "Pakistan Official Document Photo Quick Reference",
+      items: [
+        {
+          boldText: "Standard Machine Readable Passport (MRP / E-Passport)",
+          descText: "35 x 45 mm, light blue (#e0f2fe) or plain white background, head size 32–36 mm.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "NADRA Smart National Identity Card (SNIC / CNIC)",
+          descText: "Captured in-person at NADRA centers or 35 x 45 mm white background for Pak-ID online portal.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "Pak-ID Mobile App / Online Portal File Limit",
+          descText: "Under 50 KB, JPEG format, minimum 300 DPI, neutral expression without glasses.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        }
+      ]
+    },
+    relatedTools: [
+      {
+        title: "Passport Photo Maker",
+        description: "Generate compliant NADRA 35x45 mm photos with light blue or white background.",
+        toolPath: "/tools/passport-photo",
+        icon: "Camera",
+        color: "brand"
+      },
+      {
+        title: "Full DP Maker",
+        description: "Prepare square profile pictures for WhatsApp and social media without cropping.",
+        toolPath: "/tools/full-dp-maker",
+        icon: "Maximize2",
+        color: "purple"
+      }
+    ],
+    content: {
+      intro: "Applying for a Pakistan Machine Readable Passport (MRP), E-Passport, or renewing your National Identity Card (CNIC / Smart NIC) through the official Pak-ID portal requires precise biometric adherence. A millimeter mistake in photo dimensions or the wrong background tint can lead to an immediate rejection by immigration authorities (DGIP) or NADRA. In this comprehensive guide, we cover the exact dimensions in millimeters, inches, and pixels at 300 DPI, along with background rules, dress codes, and how you can prepare compliant prints at home.",
+      sections: [
+        {
+          heading: "Official Pakistan Passport & NADRA Dimensions Table",
+          body: "The Directorate General of Immigration & Passports (DGIP) and NADRA follow standard International Civil Aviation Organization (ICAO Doc 9303) guidelines. Here are the precise specifications:",
+          table: {
+            headers: ["Metric", "Official Specification", "Digital Value @ 300 DPI"],
+            rows: [
+              ["Physical Dimensions (mm)", "35 mm (width) x 45 mm (height)", "Exact standard"],
+              ["Physical Dimensions (inches)", "1.38 inches x 1.77 inches", "Approximate conversion"],
+              ["Pixel Dimensions at 300 DPI", "413 pixels (width) x 531 pixels (height)", "Pixel-exact canvas"],
+              ["Head Height (Crown to Chin)", "32 mm to 36 mm", "70% to 80% of photo height"],
+              ["Top Margin (Above Hair)", "3 mm to 5 mm", "Balanced headroom"],
+              ["Maximum File Size (Online Pak-ID)", "Under 50 KB (or 60 KB max depending on form)", "JPEG format only"],
+              ["Accepted Backgrounds", "Light Blue (#e0f2fe) or Pure White (#ffffff)", "Solid, zero shadow"]
+            ]
+          }
+        },
+        {
+          heading: "White vs Light Blue Background: Which One Does NADRA Require?",
+          body: "One of the most common questions applicants ask is whether they need a white or a light sky-blue background:",
+          list: [
+            "Official Passport Application (MRP & E-Passport): The Directorate General of Immigration & Passports officially accepts both light blue (standard studio color #e0f2fe) and plain white backgrounds.",
+            "Pak-ID Online Portal (CNIC / NICOP / POC Renewal): For online uploads through the Pak-ID app or nadra.gov.pk website, a pure white background is strongly recommended to ensure automated edge detection.",
+            "Pakistani Visa for Foreign Nationals: The Pakistan Online Visa System (POVS) mandates a plain white background with no patterns or shadows.",
+            "Unverified Claims to Avoid: Avoid deep navy blue or textured fabric studio backgrounds. Always verify current embassy alerts at official portals (https://onlinemrp.dgip.gov.pk/photo-requirements/)."
+          ]
+        },
+        {
+          heading: "Facial Expression, Hijab, and Dress Code Rules",
+          body: "Biometric passport cameras use automated optical inspection to measure facial landmarks. You must adhere to the following posture and attire instructions:",
+          list: [
+            "Facial Pose: Both ears and eyes must be clearly visible. Keep a neutral facial expression with closed mouth and lips. Do not show teeth or tilt your head.",
+            "Eyeglasses: Thick frames or tinted lenses are forbidden. If you wear prescription eyeglasses, ensure no glare or flash reflection obscures your pupils. Most embassies recommend removing glasses entirely.",
+            "Hijab / Dupatta / Religious Headwear: Head coverings are fully allowed for religious observance, provided they do not cast shadows on the face and the full oval of the face (from forehead hairline to the tip of the chin) is completely visible.",
+            "Clothing Contrast: Wear dark or colored clothing that contrasts clearly against white and light blue backgrounds. Avoid white or pale pastel shirts that blend into the canvas."
+          ]
+        },
+        {
+          heading: "How to Generate Pakistan Passport Photos Free with Compixor",
+          body: "Instead of paying local studio fees, you can take a clear portrait with your smartphone against any wall and use Compixor's Passport Photo Maker. Our tool automatically segments your portrait, removes background clutter, replaces it with official light blue or pure white, aligns biometric face guidelines, and generates single 413x531 px portraits or A4/A5/A6 print sheets at 300 DPI."
+        }
+      ],
+      steps: [
+        { stepNumber: 1, title: "Take a Frontal Portrait", description: "Stand 4 to 6 feet away from your phone camera in natural daylight with even facial illumination." },
+        { stepNumber: 2, title: "Select Pakistan NADRA Preset", description: "Open Compixor's Passport Photo Maker and select 'Pakistan Passport / NADRA' (35x45 mm)." },
+        { stepNumber: 3, title: "Pick Light Blue or White Background", description: "Choose official Light Blue or White background. Adjust zoom so your head matches the 32–36 mm biometric guide." },
+        { stepNumber: 4, title: "Download 300 DPI Single Photo or Sheet", description: "Download a single JPEG under 50 KB for Pak-ID or a studio print sheet (A6 2 photos, A5 6 photos) for physical prints." }
+      ],
+      faqs: [
+        { question: "What is the exact NADRA passport photo size in mm and pixels?", answer: "The official Pakistan passport and NADRA photo size is 35 mm wide by 45 mm high. At standard 300 DPI print resolution, this corresponds to exactly 413 x 531 pixels." },
+        { question: "Can I wear glasses in my Pakistan passport photo?", answer: "While clear prescription glasses are technically permitted if eyes are visible without glare, NADRA and DGIP officials frequently reject photos with reflections. It is safest to remove glasses." },
+        { question: "What is the file size limit for online Pak-ID uploads?", answer: "NADRA's online Pak-ID portal typically requires the image to be under 50 KB in JPEG format. Compixor includes a dedicated 'Under 50 KB' export preset." },
+        { question: "Is light blue background still accepted for Pakistani passports?", answer: "Yes. Light blue remains the traditional studio standard for Pakistani passport photos, though pure white is also accepted and preferred for online visa portals." }
+      ]
+    }
+  },
+  {
+    id: "how-to-print-passport-photos-at-home",
+    slug: "how-to-print-passport-photos-at-home",
+    title: "How to Print Passport Photos at Home: A4, A5 & A6 Sheets (100% Scale Guide)",
+    category: "Image & DP Tools",
+    readTime: "7 min read",
+    targetKeyword: "how to print passport photos at home",
+    metaTitle: "How to Print Passport Photos at Home: A4, A5 & A6 Guide (300 DPI)",
+    metaDescription: "Step-by-step tutorial on printing passport photos at home on A4, A5, and A6 photo paper. Avoid scaling errors with the 100% actual size rule and crop marks.",
+    excerpt: "Learn how to print passport and ID photos at home on photo paper using inkjet printers, A6 (2 photos) or A5 (6 photos) sheets, and calibrated crop marks.",
+    toolPath: "/tools/passport-photo",
+    accentColor: "from-blue-500/20 to-indigo-500/20",
+    icon: "Printer",
+    decisionBox: {
+      title: "Choosing the Right Paper Size for Home Printing",
+      items: [
+        {
+          boldText: "A6 Photo Paper (105 x 148 mm / ~4x6 inch postcard)",
+          descText: "Ideal for personal needs: fits 2 standard passport photos side-by-side with 2.5 mm gap and cutting marks.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "A5 Photo Paper (148 x 210 mm)",
+          descText: "Great for families: fits 6 passport photos in a 3x2 grid with 5 mm safe paper margins.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "A4 Standard Photo Paper (210 x 297 mm)",
+          descText: "High volume: fits up to 24 photos on a full sheet for multiple visa or passport applications.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        }
+      ]
+    },
+    relatedTools: [
+      {
+        title: "Passport Photo Maker",
+        description: "Generate A4, A5, and A6 printable sheets with corner crop marks and vector PDF export.",
+        toolPath: "/tools/passport-photo",
+        icon: "Camera",
+        color: "brand"
+      },
+      {
+        title: "PDF Compressor",
+        description: "Compress scanned PDF passport applications under strict upload limits without losing quality.",
+        toolPath: "/tools/pdf-compressor",
+        icon: "FileArchive",
+        color: "emerald"
+      }
+    ],
+    content: {
+      intro: "Paying commercial photography studios $15 to $25 for a tiny sheet of 2 to 4 passport prints is frustrating, especially when you already own an inkjet printer and photo paper. However, printing passport photos at home comes with one major risk: printer software automatically scaling or shrinking images to fit paper borders, thereby altering the physical millimeter dimensions of your photos. In this guide, you will master the exact step-by-step setup to print passport photos on A4, A5, and A6 paper at 100% scale with millimeter accuracy.",
+      sections: [
+        {
+          heading: "The Golden Rule: Never Use 'Fit to Page'",
+          body: "The number one cause of home-printed passport photo rejection is printer scaling. Here is why:",
+          list: [
+            "What happens with 'Fit to Page': Most operating systems (Windows Photos, macOS Preview, or mobile AirPrint) default to 'Fit to Printable Area' or 'Shrink to Fit'. This scales down your image by 4% to 9% to avoid paper edges.",
+            "The Result: A 35x45 mm passport photo shrinks to 32x41 mm, making the head height invalid and leading to immediate rejection at the visa counter.",
+            "The Solution: In your printer dialog, always select 'Actual Size' or manually enter '100% Scale'. Never allow borderless expanding or auto-cropping."
+          ]
+        },
+        {
+          heading: "Print Sheet Layout Capacities & Pixel Dimensions (300 DPI)",
+          body: "Compixor's studio sheet generator arranges portraits at exact 300 DPI resolution with standard cutting borders:",
+          table: {
+            headers: ["Paper Format", "Dimensions (mm)", "Canvas Resolution @ 300 DPI", "Photo Capacity (35x45 mm)", "Photo Capacity (2x2 inch)"],
+            rows: [
+              ["A6 Sheet (Postcard)", "105 x 148 mm", "1240 x 1748 px", "2 photos (side-by-side, 2.5mm gap)", "2 photos (side-by-side)"],
+              ["A5 Sheet (Half A4)", "148 x 210 mm", "1748 x 2480 px", "6 photos (3 cols x 2 rows, 5mm margin)", "4 photos (2x2 grid)"],
+              ["A4 Sheet (Full)", "210 x 297 mm", "2480 x 3508 px", "24 photos (full tiled page)", "12 photos"]
+            ]
+          }
+        },
+        {
+          heading: "Choosing the Right Photo Paper & Inkjet Settings",
+          body: "For embassy-grade physical prints, the physical paper medium is just as vital as the digital file:",
+          list: [
+            "Paper Weight: Use photo paper between 200 GSM and 260 GSM. Standard 80 GSM office copy paper is strictly unacceptable for biometric identity photos.",
+            "Paper Surface: Use semi-gloss, pearl, or satin photo paper. For US and Canadian visas, glossy or semi-gloss is standard. For UK, Schengen, and Pakistan NADRA, matte or satin finishes prevent glare.",
+            "Printer Quality Setting: In your printer driver properties, choose 'High Quality' or 'Photo Paper Glossy' rather than 'Plain Paper / Standard'. This activates fine ink droplets.",
+            "DPI Metadata: Ensure your image file has 300 DPI JFIF/pHYs headers embedded. Compixor injects these headers automatically so your photo software recognizes physical sizing."
+          ]
+        },
+        {
+          heading: "Cutting Your Photos Cleanly with Crop Marks",
+          body: "Compixor sheets feature thin outer corner crop marks. Use a steel ruler and a craft utility knife (or a calibrated rotary paper trimmer) on a cutting mat. Cut along the tick lines rather than freehand with scissors to achieve razor-straight, professional edges."
+        }
+      ],
+      steps: [
+        { stepNumber: 1, title: "Create Your Print Sheet", description: "In Compixor Passport Photo Maker, choose your country preset and click 'A6 - 2 photos' or 'A5 - 6 photos'." },
+        { stepNumber: 2, title: "Download 300 DPI JPEG or Vector PDF", description: "Download the high-resolution JPEG or exact-dimension vector PDF document." },
+        { stepNumber: 3, title: "Configure Print Dialog to 100% Scale", description: "Open the file, press Ctrl+P (or Cmd+P), select your photo paper, and check 'Actual size' (Scale = 100%)." },
+        { stepNumber: 4, title: "Trim Along Outer Crop Marks", description: "Let ink dry for 60 seconds, then trim along the crop marks with a ruler and hobby blade." }
+      ],
+      faqs: [
+        { question: "How many passport photos fit on an A5 sheet?", answer: "An A5 paper sheet (148 x 210 mm) fits exactly 6 standard 35x45 mm passport photos arranged in a 3x2 grid with 2.5 mm gaps and 5 mm minimum paper margins." },
+        { question: "Can I print passport photos on regular printer paper?", answer: "No. Embasies and passport offices require official photo paper (200+ GSM glossy, semi-gloss, or matte). Regular copy paper wrinkles under ink and will be rejected." },
+        { question: "Why do my printed passport photos look too small?", answer: "Your printer dialog likely had 'Fit to page' enabled, which shrinks images to fit non-printable margins. Reprint with 'Actual size' or '100% scale' selected." },
+        { question: "Should I download JPEG or PDF for printing?", answer: "Vector PDF is the most reliable option for printing because PDF documents preserve exact millimeter paper dimensions across all operating systems without scaling bugs." }
+      ]
+    }
+  },
+  {
+    id: "passport-photo-background-colour-by-country",
+    slug: "passport-photo-background-colour-by-country",
+    title: "Passport Photo Background Colour by Country: Official White, Blue & Red Rules",
+    category: "Image & DP Tools",
+    readTime: "7 min read",
+    targetKeyword: "passport photo background colour by country",
+    metaTitle: "Passport Photo Background Colour Rules by Country (2026 Guide)",
+    metaDescription: "Comprehensive guide to passport photo background colour by country. White vs light blue vs royal blue vs red rules for US, UK, Pakistan, India, Canada & more.",
+    excerpt: "Check official background colour rules for 20+ countries: pure white, light blue, royal blue, light gray, and red background passport requirements.",
+    toolPath: "/tools/passport-photo",
+    accentColor: "from-sky-500/20 to-blue-500/20",
+    icon: "Palette",
+    decisionBox: {
+      title: "Quick Background Colour Lookup by Country",
+      items: [
+        {
+          boldText: "United States, United Kingdom, Schengen/EU, India, Canada, Australia",
+          descText: "Plain White (#ffffff) or Light Gray / Off-White (#f8fafc). Solid color, no patterns.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "Pakistan (NADRA MRP & Passports)",
+          descText: "Light Blue (#e0f2fe) or Pure White (#ffffff) accepted by DGIP and Pak-ID portal.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "Philippines (DFA Passport)",
+          descText: "Royal Blue (#1d4ed8 / #438edb) or White depending on issuing department standard.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "Indonesia, Malaysia, or Special Visas",
+          descText: "Certain Asian identity documents and work permits specify Red (#ff0000) or Blue backgrounds.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        }
+      ]
+    },
+    relatedTools: [
+      {
+        title: "Passport Photo Maker",
+        description: "Swap background colors instantly to Classical white, light blue, royal blue, or red.",
+        toolPath: "/tools/passport-photo",
+        icon: "Camera",
+        color: "brand"
+      },
+      {
+        title: "Full DP Maker",
+        description: "Transform portraits with artistic background palettes and stylish blur frames.",
+        toolPath: "/tools/full-dp-maker",
+        icon: "Maximize2",
+        color: "purple"
+      }
+    ],
+    content: {
+      intro: "One of the most frequent reasons passport and visa applications are delayed worldwide is submitting a photo with the wrong background colour. While the United States and European nations enforce strict plain white or off-white backdrops, countries such as Pakistan historically use sky blue, the Philippines standardizes on royal blue, and several Asian jurisdictions specify vibrant red backgrounds for specific identity cards. Below is our verified international reference table detailing official background colour rules by country.",
+      sections: [
+        {
+          heading: "International Passport Photo Background Rules Reference Table",
+          body: "Review the required background colors for major countries before capturing your portrait:",
+          table: {
+            headers: ["Country / Authority", "Dimensions", "Mandatory Background Colour", "Acceptable Alternatives", "Official Source Status"],
+            rows: [
+              ["United States (State Dept)", "2 x 2 inches (51x51 mm)", "Pure White (#ffffff)", "Off-white (strictly no gray shadows)", "Verified official rule"],
+              ["United Kingdom (HMPO)", "35 x 45 mm", "Plain Light Gray or Cream", "Light off-white (pure stark white may fail biometric contrast)", "Verified official rule"],
+              ["Schengen Area / EU", "35 x 45 mm", "Light Gray (#f1f5f9) or White", "Solid neutral background", "Verified official rule"],
+              ["Pakistan (NADRA / DGIP)", "35 x 45 mm", "Light Blue (#e0f2fe) or White", "Both officially accepted", "Verified official rule"],
+              ["India (MEA / Passport Seva)", "2 x 2 inches (51x51 mm)", "Plain White (#ffffff)", "Off-white", "Verified official rule"],
+              ["Canada (IRCC)", "50 x 70 mm", "Plain White (#ffffff)", "Light-coloured plain background", "Verified official rule"],
+              ["Philippines (DFA)", "35 x 45 mm", "Royal Blue (#1d4ed8)", "White (for specific consular e-passports)", "Verified official rule"],
+              ["Australia (Passport Office)", "35 x 45 mm", "Plain White or Light Gray", "Zero shadows or tints", "Verified official rule"],
+              ["China (Consular Affairs)", "33 x 48 mm", "Pure White (#ffffff)", "Light Blue (for some domestic cards)", "Verified official rule"],
+              ["UAE & Gulf States", "40 x 60 mm", "Solid White (#ffffff)", "Light off-white", "Verified official rule"]
+            ]
+          }
+        },
+        {
+          heading: "Why Do Different Countries Require Different Backgrounds?",
+          body: "Biometric passport inspection is designed to maximize contrast between the applicant's hair, ears, shoulders, and background:",
+          list: [
+            "White Background Systems: Used predominantly by the US, Canada, and India to standardize optical character recognition (OCR) and high-speed facial recognition scans.",
+            "Light Gray / Off-White Systems: Standardized in the UK and European Schengen zones to prevent optical flare from white-dressed subjects and highlight fair-haired applicants.",
+            "Blue Background Systems: Adopted in Pakistan and the Philippines to provide high contrast against darker hair tones and formal corporate or cultural attire.",
+            "Red Background Systems: Historically used in Indonesia, Malaysia, and parts of East Asia to distinguish birth years, marital status, or citizenship classifications on domestic national ID cards."
+          ]
+        },
+        {
+          heading: "Handling Unverified or Specific Consular Rules",
+          body: "While the table above reflects verified standards for the primary national passports, regional consulates or third-party visa agencies may introduce specialized requirements. When applying for unusual visas, check the rules of the issuing authority before submitting your photograph."
+        },
+        {
+          heading: "Instant Color Switching in Compixor Studio",
+          body: "Compixor's Passport Photo Maker includes an expanded palette featuring Classical colors (Pure White, Sky Blue, Navy, Red, Cyan), Stylish Solids, and gradients. Switching colors is instantaneous, non-destructive, and happens entirely in your browser without re-running AI background matting."
+        }
+      ],
+      steps: [
+        { stepNumber: 1, title: "Select Destination Country", description: "Choose the target nation from our standard presets (US, UK, Pakistan, India, Canada, etc.)." },
+        { stepNumber: 2, title: "Upload Portrait", description: "Upload any front-facing portrait photo in good lighting." },
+        { stepNumber: 3, title: "Select Background Swatch", description: "Click the official background swatch (e.g. White for US, Light Blue for Pakistan, Royal Blue for Philippines)." },
+        { stepNumber: 4, title: "Export Compliant File", description: "Download the single high-resolution image or a 300 DPI multi-photo print sheet." }
+      ],
+      faqs: [
+        { question: "Can I use an off-white background for a US passport photo?", answer: "Yes. The US Department of State accepts pure white or off-white backgrounds, provided there are no shadows, texture, or discolouration." },
+        { question: "Why does the UK require a light gray background instead of white?", answer: "The UK Passport Office requires light gray or cream backgrounds to ensure fair hair or light-skinned faces remain clearly distinguishable from the backdrop." },
+        { question: "What should I do if my country's background is not listed?", answer: "Use Compixor's custom hex colour picker to enter the exact hex code specified by your consular authority." },
+        { question: "Does changing the background colour reduce image quality?", answer: "No. Background colors are composited in memory on HTML5 Canvas without compressing or downsampling the cropped portrait." }
+      ]
+    }
+  },
+  {
+    id: "change-photo-background-to-white-online",
+    slug: "change-photo-background-to-white-online",
+    title: "How to Change Photo Background to White Online Free: Clean Studio Edge Matting",
+    category: "Image & DP Tools",
+    readTime: "5 min read",
+    targetKeyword: "change photo background to white online free",
+    metaTitle: "Change Photo Background to White Online Free (Studio Cutout)",
+    metaDescription: "Change photo background to pure white online for free. Clean hair and shoulder edges with AI portrait matting, zero edge halos, and 300 DPI exports.",
+    excerpt: "Learn how to transform cluttered portrait backgrounds into solid pure white online for free with edge matting and zero hair halos.",
+    toolPath: "/tools/passport-photo",
+    accentColor: "from-zinc-500/20 to-neutral-500/20",
+    icon: "Sparkles",
+    decisionBox: {
+      title: "When Do You Need a Pure White Background?",
+      items: [
+        {
+          boldText: "Official Passports & Visas",
+          descText: "Mandatory for US 2x2, Schengen 35x45mm, India, Canada, and Australian visas.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "Corporate Resumes & LinkedIn Headshots",
+          descText: "Provides a clean, distraction-free aesthetic that highlights your face and professional attire.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "Student & Employee ID Badges",
+          descText: "Standard company and university requirement for plastic ID card printing.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        }
+      ]
+    },
+    relatedTools: [
+      {
+        title: "Passport Photo Maker",
+        description: "AI edge matting with pure white background replacement and biometric face guidelines.",
+        toolPath: "/tools/passport-photo",
+        icon: "Camera",
+        color: "brand"
+      },
+      {
+        title: "Full DP Maker",
+        description: "Set full portraits on WhatsApp and social apps with clean frames and aesthetic borders.",
+        toolPath: "/tools/full-dp-maker",
+        icon: "Maximize2",
+        color: "purple"
+      }
+    ],
+    content: {
+      intro: "Whether you need a crisp portrait for a passport application, a professional LinkedIn headshot, or a clean corporate badge, changing a cluttered room background to solid pure white (#ffffff) used to require complex Photoshop masking. Poor online background removers often leave ugly fringe artifacts, pixelated edges around flyaway hair, or light halos on dark jackets. In this tutorial, learn how modern AI portrait matting produces seamless white background cutouts without edge halos.",
+      sections: [
+        {
+          heading: "Why White Background Cutouts Often Look Fake (and How to Fix It)",
+          body: "When compositing a person over pure white, semi-transparent edge pixels (especially around hair and shoulders) can retain the color of the old background. This creates an unnatural outline known as edge fringe or color bleeding:",
+          list: [
+            "Foreground Color Estimation: High-quality matting algorithms recalculate true RGB values for semi-transparent boundary pixels, neutralizing original wall tones.",
+            "Alpha Matte Smoothing: Light Gaussian smoothing and morphological cleaning remove rogue background pixels while keeping strand-level hair definition.",
+            "Sub-Pixel Edge Feathering: Softening the boundary by 0.5 to 1.0 pixel allows natural blending against high-contrast pure white backdrops."
+          ]
+        },
+        {
+          heading: "Lighting Tips for Flawless In-Home Portrait Captures",
+          body: "For the cleanest white background conversion, optimize your raw camera shot before uploading:",
+          list: [
+            "Even Illumination: Stand facing a large window during daylight hours. Avoid strong single-side lights that cast deep shadows across one cheek.",
+            "Distance from Wall: Stand at least 3 feet away from your background wall to prevent shadows from falling behind your head.",
+            "Contrast Clothing: Wear a dark jacket, navy blazer, or richly colored shirt. Never wear a pure white shirt when targeting a white background."
+          ]
+        },
+        {
+          heading: "Privacy-Preserving In-Memory Matting",
+          body: "Compixor's background removal pipeline runs in memory on our secure HTTPS server without ever saving your photo to disk, and also includes an on-device browser option. Your portrait is processed in fractions of a second, returned as a transparent PNG cutout, and composited locally with your chosen background color."
+        }
+      ],
+      steps: [
+        { stepNumber: 1, title: "Upload Portrait", description: "Select any JPG, PNG, or WEBP portrait photo taken with your smartphone or camera." },
+        { stepNumber: 2, title: "AI Removes Clutter", description: "Our AI matting engine isolates the subject and eliminates the old background." },
+        { stepNumber: 3, title: "Select Pure White Swatch", description: "Click the solid White (#ffffff) swatch in the Classical palette." },
+        { stepNumber: 4, title: "Export at 300 DPI", description: "Download your clean white portrait as a high-resolution JPEG or PNG." }
+      ],
+      faqs: [
+        { question: "Is changing a photo background to white online completely free?", answer: "Yes. Compixor's background changing and passport studio tools are 100% free with no subscriptions, no watermarks, and no sign-up required." },
+        { question: "How do I prevent white hair fringes on a white background?", answer: "Compixor uses edge color reconstruction to neutralize fringe pixels, ensuring natural hair blending against pure white." },
+        { question: "Can I download my cutout as a transparent PNG?", answer: "Yes. You can select transparent mode or export the cutout to place on any custom background." },
+        { question: "Are my portrait photos saved on external servers?", answer: "No. Matting runs in memory on our secure HTTPS server and nothing is saved, plus an on-device browser processing option is available." }
+      ]
+    }
+  },
+  {
+    id: "passport-size-photo-kaise-banayen",
+    slug: "passport-size-photo-kaise-banayen",
+    title: "Passport Size Photo Kaise Banayen: Mobile Se Online Photo Banane Ka Asan Tarika",
+    category: "Image & DP Tools",
+    readTime: "6 min read",
+    targetKeyword: "passport size photo kaise banayen",
+    metaTitle: "Passport Size Photo Kaise Banayen: Mobile Se Online Tarika (2026)",
+    metaDescription: "Mobile se passport size photo kaise banayen? Asan tareeqa: NADRA CNIC aur passport ke liye 35x45 mm photo, white/blue background change aur free 300 DPI print sheet.",
+    excerpt: "Ghar baithe apne mobile se passport size aur CNIC photo banane ka mukammal tareeqa: dimensions, background colour, aur 300 DPI print sheet download.",
+    toolPath: "/tools/passport-photo",
+    accentColor: "from-emerald-500/20 to-sky-500/20",
+    icon: "Camera",
+    decisionBox: {
+      title: "Mobile Se Photo Banane Ki Zaroori Cheezain",
+      items: [
+        {
+          boldText: "Camera Setting & Roshni (Lighting)",
+          descText: "Saaf roshni mein samne se selfie ya portrait photo khainchain jahan chehre par saya na ho.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "NADRA / CNIC Photo Size",
+          descText: "35 x 45 mm (413 x 531 pixels at 300 DPI), light blue ya white background.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "Print Sheet (A4, A5, A6)",
+          descText: "Photo studio gaye baghair A6 par 2 ya A5 par 6 photos ki printable sheet tayyar karen.",
+          toolName: "Passport Size Photo Maker",
+          toolPath: "/tools/passport-photo"
+        }
+      ]
+    },
+    relatedTools: [
+      {
+        title: "Passport Photo Maker",
+        description: "Mobile se passport aur CNIC photo banayen 300 DPI print sheet ke sath.",
+        toolPath: "/tools/passport-photo",
+        icon: "Camera",
+        color: "brand"
+      },
+      {
+        title: "Full DP Maker",
+        description: "WhatsApp profile picture ko baghair crop kiye full size mein set karen.",
+        toolPath: "/tools/full-dp-maker",
+        icon: "Maximize2",
+        color: "purple"
+      }
+    ],
+    content: {
+      intro: "Aaj kal passport, CNIC (Shanakhti Card), driving license, ya kisi bhi mulk ke visa application ke liye passport size photo ki zaroorat parti hai. Aksar log photo studio ja kar lambi line mein kharay hotay hain aur 500 se 1000 rupay kharch kartay hain. Lekin ab aap apne smartphone se ghar baithe asani se biometric passport photo tayyar kar sakte hain. Is guide mein hum aapko batayen ge ke mobile se sahi dimensions (35x45 mm), white ya light blue background, aur 300 DPI printable sheet kaise banai jati hai.",
+      sections: [
+        {
+          heading: "Passport Size Photo Ke Zaroori Qawaneen (Rules)",
+          body: "Photo khainchtay waqt in zaroori baaton ka khas khayal rakhain taake aapki darkhwast reject na ho:",
+          list: [
+            "Chehra Samne Ho (Neutral Expression): Dono ankhain khuli hon aur munh band ho. Muskurana ya teeth dikhana mana hai.",
+            "Roshni (Even Lighting): Chehre par ya peechay deewar par kisi qisam ka saya (shadow) nahi hona chahiye. Din ke waqt khirki ke samne kharay ho kar photo lain.",
+            "Glasses & Topi (Accessories): Nazar ke glasses ya sunglasses utar kar photo banayen. Topi pehan kar photo allow nahi hai (khawateen ke liye Hijab / Dupatta allow hai bashartiya chehra pura dikhe).",
+            "Kapray (Dress Code): Hamesha dark ya colored kapray pehnain taake white ya light blue background ke sath acha contrast ban sake."
+          ]
+        },
+        {
+          heading: "NADRA aur Visa Photo Ke Sahi Dimensions (Measurement Table)",
+          body: "Har document ka alag size hota hai. Niche diye gaye chart se apna matlooba size check karen:",
+          table: {
+            headers: ["Document / Mulk", "Size (Millimeter)", "Size (Pixels @ 300 DPI)", "Background Colour"],
+            rows: [
+              ["Pakistan Passport / NADRA CNIC", "35 x 45 mm", "413 x 531 px", "Light Blue (#e0f2fe) ya Pure White"],
+              ["US Visa / Green Card", "51 x 51 mm (2x2 inch)", "600 x 600 px", "Pure White (#ffffff)"],
+              ["UK / Schengen Europe Visa", "35 x 45 mm", "413 x 531 px", "Light Gray ya Off-White"],
+              ["Canada Passport", "50 x 70 mm", "590 x 826 px", "Pure White"],
+              ["Gulf / Dubai Visa", "40 x 60 mm", "472 x 708 px", "Pure White"]
+            ]
+          }
+        },
+        {
+          heading: "Compixor AI Se Photo Banane Ka Tareeqa",
+          body: "Compixor ka Passport Photo Maker 100% free hai. Is mein aapki photo memory mein process hoti hai aur kahin save nahi hoti. AI khud hi purana background mita kar official light blue ya white background laga deta hai aur biometric guidelines ke mutabiq face crop kar deta hai."
+        },
+        {
+          heading: "Ghar Par Print Karne Ka Tarika (100% Actual Size)",
+          body: "Jab aap photo download kar lain toh kisi bhi photo paper par print karte waqt printer setting mein hamesha 'Actual Size' ya '100% Scale' select karen. Kabhi bhi 'Fit to page' na karen, warna photo ka size chota ho jaye ga aur official counter par reject ho jaye ga."
+        }
+      ],
+      steps: [
+        { stepNumber: 1, title: "Mobile Se Saaf Photo Lain", description: "Saadi deewar ke samne 4 se 5 feet ki doori par kharay ho kar samne dekhain aur portrait photo click karen." },
+        { stepNumber: 2, title: "Compixor Tool Kholain", description: "Compixor Passport Photo Maker khol kar photo upload karen aur 'Pakistan Passport / NADRA' select karen." },
+        { stepNumber: 3, title: "Background Colour Select Karen", description: "White ya Light Blue background button dabayen. AI khud background tabdeel kar dega." },
+        { stepNumber: 4, title: "Single Photo Ya Sheet Download Karen", description: "Pak-ID ke liye under 50 KB photo ya print ke liye A6 (2 photos) / A5 (6 photos) sheet download karen." }
+      ],
+      faqs: [
+        { question: "Kya mobile se bani passport photo NADRA mein accept hoti hai?", answer: "Haan, agar photo 35x45 mm size, sahi head ratio (32-36 mm), aur saaf roshni mein bani ho toh online Pak-ID portal par accept hoti hai." },
+        { question: "NADRA photo ka background white hona chahiye ya light blue?", answer: "Pak-ID portal par white aur light blue dono accept hotay hain, jabke physical passport office mein aam tor par light blue use hota hai." },
+        { question: "Kya photo edit karne ke paise lagte hain?", answer: "Nahi, Compixor bilkul free hai aur kisi qisam ka watermark ya registration zaroori nahi hai." },
+        { question: "Mobile se A4 ya A5 sheet par photo kaise print karen?", answer: "Compixor se A6 (2 photos) ya A5 (6 photos) sheet download karen aur printer dialog mein 'Actual Size / 100%' par print karen." }
       ]
     }
   }
