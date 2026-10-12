@@ -341,7 +341,7 @@ export interface ColorOption {
   to?: string;
 }
 
-export const classicalColors: ColorOption[] = [
+const classicalColors: ColorOption[] = [
   { label: 'White', value: '#FFFFFF', previewClass: 'bg-white border-zinc-300' },
   { label: 'Off-White', value: '#f8fafc', previewClass: 'bg-slate-50 border-slate-300' },
   { label: 'Light Blue', value: '#e0f2fe', previewClass: 'bg-sky-100 border-sky-300' },
@@ -354,7 +354,7 @@ export const classicalColors: ColorOption[] = [
   { label: 'Transparent', value: 'transparent', previewClass: 'bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:6px_6px] border-zinc-400' },
 ];
 
-export const stylishSolids: ColorOption[] = [
+const stylishSolids: ColorOption[] = [
   { label: 'Peach', value: '#F6BEB2', previewClass: 'bg-[#F6BEB2]' },
   { label: 'Aqua', value: '#B8DDE6', previewClass: 'bg-[#B8DDE6]' },
   { label: 'Sand', value: '#E0B97E', previewClass: 'bg-[#E0B97E]' },
@@ -369,7 +369,7 @@ export const stylishSolids: ColorOption[] = [
   { label: 'Beige', value: '#DFCCB0', previewClass: 'bg-[#DFCCB0]' },
 ];
 
-export const stylishGradients: ColorOption[] = [
+const stylishGradients: ColorOption[] = [
   { label: 'Sky Gradient', value: 'gradient:#6FB9F2:#C1E3FA', isGradient: true, from: '#6FB9F2', to: '#C1E3FA' },
   { label: 'Silver Gradient', value: 'gradient:#A2A2A2:#F5F5F5', isGradient: true, from: '#A2A2A2', to: '#F5F5F5' },
   { label: 'Slate Gradient', value: 'gradient:#7E8597:#A3AABD', isGradient: true, from: '#7E8597', to: '#A3AABD' },
@@ -1518,7 +1518,7 @@ export default function PassportPhotoPage() {
     if (!sheetCanvas) return;
 
     // Handle PDF export for A6 and A5
-    if (formatOverride === 'pdf' || (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') && formatOverride === 'pdf') {
+    if (formatOverride === 'pdf') {
       try {
         setIsDownloading(true);
         toast.info('Generating studio PDF document...');
@@ -1536,7 +1536,7 @@ export default function PassportPhotoPage() {
           activePreset.heightMm,
           activePreset.name
         );
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         const count = layoutV2.actualCount;
@@ -1576,7 +1576,7 @@ export default function PassportPhotoPage() {
         if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
           const rawBuffer = new Uint8Array(await blob.arrayBuffer());
           const withDpi = injectJpegDpi300(rawBuffer);
-          finalBlob = new Blob([withDpi], { type: 'image/jpeg' });
+          finalBlob = new Blob([withDpi.buffer as ArrayBuffer], { type: 'image/jpeg' });
         }
 
         const url = URL.createObjectURL(finalBlob);
@@ -1715,7 +1715,7 @@ export default function PassportPhotoPage() {
 
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           {currentStep === 'edit'
-            ? 'No data leak, no cloud upload — your ID and passport photo is processed entirely on your device. Zero server contact, unlike PhotoGov or PhotoAiD. Create official NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
+            ? 'AI background removal runs in memory on our secure HTTPS server (nothing stored), with an on-device option available. Create official Pakistan NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
             : 'Your biometric photo is processed and print-ready. Download a single image for online portal submissions or a high-res tiled print sheet with cutting guides.'}
         </p>
 
@@ -1726,8 +1726,8 @@ export default function PassportPhotoPage() {
             'US Visa 2x2"',
             'AI Background Removal',
             '300 DPI Print Sheet',
-            'No Data Leak',
-            'Zero Cloud Uploads',
+            'In-Memory Processing',
+            'On-Device Option',
           ].map((tag) => (
             <span
                 key={tag}
@@ -2960,6 +2960,139 @@ export default function PassportPhotoPage() {
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 Formal/business attire recommended. No eyeglasses with glare or non-religious headwear.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Studio & Home Print Sheet Sizes Reference Table ── */}
+      <section className="mt-12">
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-2">
+                <Grid className="w-3.5 h-3.5" />
+                Paper & Layout Specifications
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+                Print Sheet Sizes & Photo Capacities (300 DPI)
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                Generated from active studio presets. Every layout preserves pixel-exact dimensions with corner cutting marks.
+              </p>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-zinc-200 dark:border-zinc-700/80 text-zinc-500 dark:text-zinc-400">
+                  <th className="py-3 px-3 font-semibold">Sheet Option</th>
+                  <th className="py-3 px-3 font-semibold">Paper Dimensions</th>
+                  <th className="py-3 px-3 font-semibold">Paper Pixels @ 300 DPI</th>
+                  <th className="py-3 px-3 font-semibold">Standard 35x45 mm Capacity</th>
+                  <th className="py-3 px-3 font-semibold">US 2x2&quot; Capacity</th>
+                  <th className="py-3 px-3 font-semibold">Canada 50x70 mm Capacity</th>
+                  <th className="py-3 px-3 font-semibold">Features</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300">
+                <tr className="hover:bg-zinc-500/5 transition-colors">
+                  <td className="py-3.5 px-3 font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-brand-500" />
+                    A6 - 2 photos
+                  </td>
+                  <td className="py-3.5 px-3">105 x 148 mm (4.13 x 5.83 in)</td>
+                  <td className="py-3.5 px-3 font-mono text-[11px] sm:text-xs">1240 x 1748 px</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">2 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">2 photos</td>
+                  <td className="py-3.5 px-3 text-amber-600 dark:text-amber-400 font-medium">1 photo (auto-adjusted)</td>
+                  <td className="py-3.5 px-3 text-zinc-500 dark:text-zinc-400 text-xs">Side-by-side, 2.5mm gap, corner crop marks, PDF</td>
+                </tr>
+                <tr className="hover:bg-zinc-500/5 transition-colors">
+                  <td className="py-3.5 px-3 font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    A5 - 6 photos
+                  </td>
+                  <td className="py-3.5 px-3">148 x 210 mm (5.83 x 8.27 in)</td>
+                  <td className="py-3.5 px-3 font-mono text-[11px] sm:text-xs">1748 x 2480 px</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos (3x2 grid)</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">4 photos (2x2 grid)</td>
+                  <td className="py-3.5 px-3 text-amber-600 dark:text-amber-400 font-medium">4 photos (2x2 grid)</td>
+                  <td className="py-3.5 px-3 text-zinc-500 dark:text-zinc-400 text-xs">5mm margin, 2.5mm gap, crop marks, vector PDF</td>
+                </tr>
+                <tr className="hover:bg-zinc-500/5 transition-colors">
+                  <td className="py-3.5 px-3 font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-blue-500" />
+                    A4 Page (Studio)
+                  </td>
+                  <td className="py-3.5 px-3">210 x 297 mm (8.27 x 11.69 in)</td>
+                  <td className="py-3.5 px-3 font-mono text-[11px] sm:text-xs">2480 x 3508 px</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">24 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">12 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos</td>
+                  <td className="py-3.5 px-3 text-zinc-500 dark:text-zinc-400 text-xs">Full-page batch tiling with cutting guides</td>
+                </tr>
+                <tr className="hover:bg-zinc-500/5 transition-colors">
+                  <td className="py-3.5 px-3 font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-violet-500" />
+                    3 per A4
+                  </td>
+                  <td className="py-3.5 px-3">210 x 297 mm (8.27 x 11.69 in)</td>
+                  <td className="py-3.5 px-3 font-mono text-[11px] sm:text-xs">2480 x 3508 px</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos</td>
+                  <td className="py-3.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">6 photos</td>
+                  <td className="py-3.5 px-3 text-zinc-500 dark:text-zinc-400 text-xs">Spaced studio cut strips</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ── How Passport Photo Prints Are Made at a Studio and at Home ── */}
+      <section className="mt-12">
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm space-y-6">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20 mb-2">
+              <Printer className="w-3.5 h-3.5" />
+              Printing &amp; Lab Guide
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+              How Passport Photo Prints Are Made at a Studio and at Home
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              Avoid the most common reason for embassy rejections: incorrect physical scaling and paper distortion.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/50 space-y-3">
+              <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-black">1</span>
+                Studio Mini-Lab Workflow
+              </h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Commercial photo studios rarely print single passport photos. They arrange portraits onto standard photo paper sizes (such as A6 postcard or A5 sheets) at 300 DPI, print them on dye-sublimation or glossy inkjet printers, and cut along calibrated crop marks. Compixor gives you the exact same digital layout without paying studio markups.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/50 space-y-3">
+              <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-black">2</span>
+                Home Printing: The 100% Scale Rule
+              </h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                When printing your downloaded JPEG or vector PDF at home, <strong>never use &quot;Fit to page&quot; or &quot;Shrink to fit&quot;</strong>. Doing so alters the physical millimeter dimensions of the photos, causing immediate rejection by visa officers. Always select <strong>&quot;Actual size&quot;</strong> or set page scaling to <strong>100%</strong> in your printer software.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-800 dark:text-amber-200 flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold">Paper &amp; Finish Recommendation:</span> Use 200–250 GSM semi-gloss or satin photo paper. Matte paper is accepted for Pakistan NADRA, UK, and Schengen passports, while glossy or semi-gloss is standard for US Visas and Indian passports.
             </div>
           </div>
         </div>
