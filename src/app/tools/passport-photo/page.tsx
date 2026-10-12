@@ -55,6 +55,14 @@ import {
   prepareUploadBlob,
   MattingProgress,
 } from '@/utils/backgroundMatting';
+import {
+  computeStudioLayout,
+  renderStudioSheetToCanvas,
+  injectJpegDpi300,
+  injectPngDpi300,
+  generateStudioPdf,
+  SheetLayoutResult,
+} from '@/lib/printSheetsV2';
 
 export interface BiometricSpec {
   headHeightPercent: number; // Crown to chin % of photo height
@@ -302,7 +310,7 @@ const bgColors = [
   { label: 'Transparent (PNG Cutout)', value: 'transparent', class: 'bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:6px_6px] border-zinc-400' },
 ];
 
-type SheetPresetOption = 'a4' | '3-per-a4' | 'custom';
+type SheetPresetOption = 'a4' | '3-per-a4' | 'a6-2' | 'a5-6' | 'custom';
 
 const sizeLimitOptions = [
   { id: 'uncompressed', label: 'Original Quality (Max Resolution)', maxBytes: 0 },
@@ -1070,10 +1078,24 @@ export default function PassportPhotoPage() {
     const photoCanvas = canvasRef.current;
     if (!sheetCanvas || !photoCanvas) return;
 
+    // Delegated V2 Studio Sheets ('a6-2' and 'a5-6')
+    if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+      renderStudioSheetToCanvas(
+        sheetCanvas,
+        photoCanvas,
+        sheetPreset,
+        activePreset.widthMm,
+        activePreset.heightMm,
+        activePreset.name
+      );
+      return;
+    }
+
     let sheetW = 2480; // A4 @ 300 DPI
     let sheetH = 3508;
     let defaultCols = 2;
     let defaultRows = 5;
+
 
     if (sheetPreset === '3-per-a4') {
       sheetW = 2480;
@@ -1374,25 +1396,84 @@ export default function PassportPhotoPage() {
     toast.success(`Photo downloaded! (${Math.round(blob.size / 1024)} KB)`);
   };
 
-  // Export Printable Multi-Sheet (async toBlob — non-blocking, no UI freeze)
-  const downloadPrintableSheet = async () => {
+  // Export Printable Multi-Sheet (async toBlob — non-blocking, with 300 DPI metadata injection)
+  const downloadPrintableSheet = async (formatOverride?: 'jpg' | 'pdf') => {
     const sheetCanvas = sheetCanvasRef.current;
     if (!sheetCanvas) return;
+
+    // Handle PDF export for A6 and A5
+    if (formatOverride === 'pdf' || (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') && formatOverride === 'pdf') {
+      try {
+        setIsDownloading(true);
+        toast.info('Generating studio PDF document...');
+        const singlePhotoCanvas = canvasRef.current;
+        if (!singlePhotoCanvas) {
+          toast.error('Photo canvas not ready');
+          setIsDownloading(false);
+          return;
+        }
+        const photoDataUrl = singlePhotoCanvas.toDataURL(bgColor === 'transparent' ? 'image/png' : 'image/jpeg', 0.98);
+        const pdfBytes = await generateStudioPdf(
+          photoDataUrl,
+          sheetPreset as 'a6-2' | 'a5-6',
+          activePreset.widthMm,
+          activePreset.heightMm,
+          activePreset.name
+        );
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const count = layoutV2.actualCount;
+        const paper = sheetPreset === 'a6-2' ? 'A6' : 'A5';
+        const countrySlug = activePreset.country.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        link.download = `passport-sheet-${count}x-${activePreset.widthMm}x${activePreset.heightMm}mm-${paper}-${countrySlug}.pdf`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        setIsDownloading(false);
+        toast.success('✅ Vector PDF downloaded! Print at 100% / Actual size.');
+        return;
+      } catch (err) {
+        console.error('PDF export error:', err);
+        toast.error('Failed to generate PDF');
+        setIsDownloading(false);
+        return;
+      }
+    }
 
     setIsDownloading(true);
     toast.info('Preparing your print sheet...');
 
-    // toBlob is async and non-blocking — no UI freeze on large 2480×3508px canvas
+    // toBlob is async and non-blocking
     sheetCanvas.toBlob(
-      (blob) => {
+      async (blob) => {
         if (!blob) {
           toast.error('Sheet export failed. Please try again.');
           setIsDownloading(false);
           return;
         }
-        const url = URL.createObjectURL(blob);
+
+        // If A6 or A5, inject 300 DPI JFIF metadata into JPEG bytes
+        let finalBlob = blob;
+        if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+          const rawBuffer = new Uint8Array(await blob.arrayBuffer());
+          const withDpi = injectJpegDpi300(rawBuffer);
+          finalBlob = new Blob([withDpi], { type: 'image/jpeg' });
+        }
+
+        const url = URL.createObjectURL(finalBlob);
         const link = document.createElement('a');
-        link.download = `passport-print-sheet-${sheetPreset}-${activePreset.id}.jpg`;
+        if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+          const count = layoutV2.actualCount;
+          const paper = sheetPreset === 'a6-2' ? 'A6' : 'A5';
+          const countrySlug = activePreset.country.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          link.download = `passport-sheet-${count}x-${activePreset.widthMm}x${activePreset.heightMm}mm-${paper}-${countrySlug}.jpg`;
+        } else {
+          link.download = `passport-print-sheet-${sheetPreset}-${activePreset.id}.jpg`;
+        }
+
         link.href = url;
         document.body.appendChild(link);
         link.click();
@@ -1406,9 +1487,30 @@ export default function PassportPhotoPage() {
     );
   };
 
+  // Layout calculations for V2 studio sheets
+  const layoutV2 = useMemo(() => {
+    if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+      return computeStudioLayout(sheetPreset, activePreset.widthMm, activePreset.heightMm);
+    }
+    return {
+      sheetW: 2480,
+      sheetH: 3508,
+      photoW: 413,
+      photoH: 531,
+      cols: 2,
+      rows: 5,
+      actualCount: 6,
+      targetCount: 6,
+      fitsRequested: true,
+      positions: [],
+    };
+  }, [sheetPreset, activePreset.widthMm, activePreset.heightMm]);
 
   // Computed count of sheet photos
   const sheetPhotoCount = useMemo(() => {
+    if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
+      return layoutV2.actualCount;
+    }
     if (sheetPreset === 'a4') {
       if (activePreset.widthMm <= 35) return 24;
       if (activePreset.widthMm <= 51) return 12;
@@ -1416,7 +1518,8 @@ export default function PassportPhotoPage() {
     }
     if (sheetPreset === '3-per-a4') return 6;
     return customSheetCols * customSheetRows;
-  }, [sheetPreset, activePreset.widthMm, customSheetCols, customSheetRows]);
+  }, [sheetPreset, activePreset.widthMm, customSheetCols, customSheetRows, layoutV2.actualCount]);
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
@@ -2357,11 +2460,11 @@ export default function PassportPhotoPage() {
                   </p>
                 </div>
 
-                {/* Radio Selector: A4 / 3 per A4 / Custom */}
-                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
+                {/* Sheet Selector: A4 / 3 per A4 / A6 - 2 photos / A5 - 6 photos / Custom */}
+                <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 max-w-full overflow-x-auto">
                   <button
                     onClick={() => setSheetPreset('a4')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
                       sheetPreset === 'a4'
                         ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
                         : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -2371,7 +2474,7 @@ export default function PassportPhotoPage() {
                   </button>
                   <button
                     onClick={() => setSheetPreset('3-per-a4')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
                       sheetPreset === '3-per-a4'
                         ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
                         : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -2380,8 +2483,28 @@ export default function PassportPhotoPage() {
                     3 per A4
                   </button>
                   <button
+                    onClick={() => setSheetPreset('a6-2')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
+                      sheetPreset === 'a6-2'
+                        ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
+                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                    }`}
+                  >
+                    A6 - 2 photos
+                  </button>
+                  <button
+                    onClick={() => setSheetPreset('a5-6')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
+                      sheetPreset === 'a5-6'
+                        ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
+                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                    }`}
+                  >
+                    A5 - 6 photos
+                  </button>
+                  <button
                     onClick={() => setSheetPreset('custom')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap min-h-[44px] sm:min-h-0 ${
                       sheetPreset === 'custom'
                         ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
                         : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -2391,6 +2514,14 @@ export default function PassportPhotoPage() {
                   </button>
                 </div>
               </div>
+
+              {/* Warning note if preset dimensions reduce target count on A6 or A5 */}
+              {(sheetPreset === 'a6-2' || sheetPreset === 'a5-6') && layoutV2.reducedMessage && (
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
+                  <span>{layoutV2.reducedMessage}</span>
+                </div>
+              )}
 
               {/* Custom Grid Controls if selected */}
               {sheetPreset === 'custom' && (
@@ -2434,29 +2565,52 @@ export default function PassportPhotoPage() {
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between w-full text-xs text-zinc-500 dark:text-zinc-400">
+                <div className="mt-3 flex flex-col sm:flex-row items-center justify-between gap-2 w-full text-xs text-zinc-500 dark:text-zinc-400">
                   <span className="flex items-center gap-1">
                     <Scissors className="w-3.5 h-3.5 text-brand-500" />
                     Includes thin cutting borders & registration cut marks
                   </span>
                   <span className="font-bold text-zinc-800 dark:text-zinc-200">
-                    {sheetPhotoCount} Copies @ 300 DPI
+                    {sheetPreset === 'a6-2'
+                      ? `A6 - ${sheetPhotoCount} photos - ${activePreset.widthMm}x${activePreset.heightMm} mm - 300 DPI`
+                      : sheetPreset === 'a5-6'
+                      ? `A5 - ${sheetPhotoCount} photos - ${activePreset.widthMm}x${activePreset.heightMm} mm - 300 DPI`
+                      : `${sheetPhotoCount} Copies @ 300 DPI`}
                   </span>
                 </div>
+
+                {/* Print Dialog Guidance Tip */}
+                <p className="mt-2 text-[11px] text-zinc-500 dark:text-zinc-400 text-center italic">
+                  💡 In the print dialog choose <strong className="font-semibold text-zinc-700 dark:text-zinc-300">Actual size / 100%</strong> and turn off <strong className="font-semibold text-zinc-700 dark:text-zinc-300">Fit to page</strong>.
+                </p>
               </div>
 
-              {/* Right Panel Download Button */}
-              <button
-                onClick={downloadPrintableSheet}
-                disabled={isDownloading}
-                className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-sm font-semibold shadow-glow disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {isDownloading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> Preparing Sheet...</>
-                ) : (
-                  <><Printer className="w-4 h-4" /> Download Passport Sheet ({sheetPreset.toUpperCase()})</>
+              {/* Right Panel Download Buttons */}
+              <div className="space-y-2">
+                <button
+                  onClick={() => downloadPrintableSheet('jpg')}
+                  disabled={isDownloading}
+                  className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-sm font-semibold shadow-glow disabled:opacity-70 disabled:cursor-not-allowed min-h-[44px]"
+                >
+                  {isDownloading ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Preparing Sheet...</>
+                  ) : (
+                    <><Printer className="w-4 h-4" /> Download Print Sheet ({sheetPreset === 'a6-2' ? 'A6 JPG' : sheetPreset === 'a5-6' ? 'A5 JPG' : `${sheetPreset.toUpperCase()} JPG`})</>
+                  )}
+                </button>
+
+                {(sheetPreset === 'a6-2' || sheetPreset === 'a5-6') && (
+                  <button
+                    onClick={() => downloadPrintableSheet('pdf')}
+                    disabled={isDownloading}
+                    className="w-full py-3 px-4 rounded-xl border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-bold text-zinc-800 dark:text-zinc-200 flex items-center justify-center gap-2 transition min-h-[44px]"
+                  >
+                    <FileDown className="w-4 h-4 text-emerald-500" />
+                    Download PDF ({sheetPreset === 'a6-2' ? 'A6 105x148 mm' : 'A5 148x210 mm'})
+                  </button>
                 )}
-              </button>
+              </div>
+
             </motion.div>
           </div>
 
