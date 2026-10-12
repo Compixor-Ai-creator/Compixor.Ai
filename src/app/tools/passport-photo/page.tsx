@@ -85,10 +85,14 @@ export interface Preset {
   heightPx: number;
   aspectRatio: number;
   defaultBgColor: string;
+  allowedBgColors: string[];
+  verified: boolean;
+  officialUrl?: string;
   description: string;
   flag: string;
   biometricSpec: BiometricSpec;
 }
+
 
 const standardPresets: Preset[] = [
   {
@@ -101,6 +105,9 @@ const standardPresets: Preset[] = [
     heightPx: 531,
     aspectRatio: 35 / 45,
     defaultBgColor: '#e0f2fe',
+    allowedBgColors: ['#ffffff', '#f8fafc', '#e0f2fe', '#438edb'],
+    verified: true,
+    officialUrl: 'https://onlinemrp.dgip.gov.pk/photo-requirements/',
     description: '35 x 45 mm (NADRA / Passports light blue or white background)',
     flag: '🇵🇰',
     biometricSpec: {
@@ -124,6 +131,9 @@ const standardPresets: Preset[] = [
     heightPx: 600,
     aspectRatio: 1,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc'],
+    verified: true,
+    officialUrl: 'https://travel.state.gov/content/travel/en/passports/how-apply/photos.html',
     description: '2 x 2 inches (51 x 51 mm) at 300 DPI, solid white background',
     flag: '🇺🇸',
     biometricSpec: {
@@ -147,6 +157,9 @@ const standardPresets: Preset[] = [
     heightPx: 531,
     aspectRatio: 35 / 45,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc', '#f1f5f9'],
+    verified: true,
+    officialUrl: 'https://www.gov.uk/photos-for-passports',
     description: '35 x 45 mm standard ICAO 9303 format (Light gray or white)',
     flag: '🇪🇺',
     biometricSpec: {
@@ -170,6 +183,9 @@ const standardPresets: Preset[] = [
     heightPx: 600,
     aspectRatio: 1,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc'],
+    verified: true,
+    officialUrl: 'https://passportindia.gov.in/',
     description: '2 x 2 inches (51 x 51 mm) pure white background',
     flag: '🇮🇳',
     biometricSpec: {
@@ -193,6 +209,9 @@ const standardPresets: Preset[] = [
     heightPx: 826,
     aspectRatio: 50 / 70,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc', '#f1f5f9'],
+    verified: true,
+    officialUrl: 'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html',
     description: '50 x 70 mm (2 x 2.75 inches) white or light gray background',
     flag: '🇨🇦',
     biometricSpec: {
@@ -216,6 +235,9 @@ const standardPresets: Preset[] = [
     heightPx: 531,
     aspectRatio: 35 / 45,
     defaultBgColor: '#1d4ed8',
+    allowedBgColors: ['#1d4ed8', '#438edb', '#ffffff'],
+    verified: true,
+    officialUrl: 'https://dfa-oca.ph/passport/passport-requirements/',
     description: '35 x 45 mm (Royal blue background standard)',
     flag: '🇵🇭',
     biometricSpec: {
@@ -239,6 +261,9 @@ const standardPresets: Preset[] = [
     heightPx: 567,
     aspectRatio: 33 / 48,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#e0f2fe', '#438edb'],
+    verified: true,
+    officialUrl: 'https://www.fmprc.gov.cn/',
     description: '33 x 48 mm biometric specification (White or Blue)',
     flag: '🇨🇳',
     biometricSpec: {
@@ -262,6 +287,9 @@ const standardPresets: Preset[] = [
     heightPx: 531,
     aspectRatio: 35 / 45,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f1f5f9'],
+    verified: true,
+    officialUrl: 'https://www.passports.gov.au/getting-passport-how-it-works/photo-requirements',
     description: '35 x 45 mm (Australian Passport Office light gray/white standard)',
     flag: '🇦🇺',
     biometricSpec: {
@@ -285,6 +313,9 @@ const standardPresets: Preset[] = [
     heightPx: 708,
     aspectRatio: 40 / 60,
     defaultBgColor: '#ffffff',
+    allowedBgColors: ['#ffffff', '#f8fafc'],
+    verified: true,
+    officialUrl: 'https://gdrfad.gov.ae/',
     description: '40 x 60 mm (White background GDRFA format)',
     flag: '🇦🇪',
     biometricSpec: {
@@ -300,15 +331,52 @@ const standardPresets: Preset[] = [
   },
 ];
 
-const bgColors = [
-  { label: 'White (US / UK / EU / India)', value: '#ffffff', class: 'bg-white border-zinc-300' },
-  { label: 'Off-White', value: '#f8fafc', class: 'bg-slate-50 border-slate-300' },
-  { label: 'Light Blue (Pakistan / Gulf)', value: '#e0f2fe', class: 'bg-sky-100 border-sky-300' },
-  { label: 'Royal Blue (Philippines)', value: '#1d4ed8', class: 'bg-blue-700 border-blue-800' },
-  { label: 'Light Gray (Canada / Australia)', value: '#f1f5f9', class: 'bg-slate-100 border-slate-300' },
-  { label: 'Red (Indonesia / Vietnam / China ID)', value: '#dc2626', class: 'bg-red-600 border-red-700' },
-  { label: 'Transparent (PNG Cutout)', value: 'transparent', class: 'bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:6px_6px] border-zinc-400' },
+// Renamed "Light" to "Light Blue" and "Light Gray" as requested in Task 3
+export interface ColorOption {
+  label: string;
+  value: string; // Hex or linear-gradient string
+  previewClass?: string;
+  isGradient?: boolean;
+  from?: string;
+  to?: string;
+}
+
+export const classicalColors: ColorOption[] = [
+  { label: 'White', value: '#FFFFFF', previewClass: 'bg-white border-zinc-300' },
+  { label: 'Off-White', value: '#f8fafc', previewClass: 'bg-slate-50 border-slate-300' },
+  { label: 'Light Blue', value: '#e0f2fe', previewClass: 'bg-sky-100 border-sky-300' },
+  { label: 'Light Gray', value: '#f1f5f9', previewClass: 'bg-slate-100 border-slate-300' },
+  { label: 'Sky Blue', value: '#438EDB', previewClass: 'bg-[#438EDB] border-sky-600' },
+  { label: 'Royal Blue', value: '#1d4ed8', previewClass: 'bg-blue-700 border-blue-800' },
+  { label: 'Navy', value: '#2A385B', previewClass: 'bg-[#2A385B] border-indigo-950' },
+  { label: 'Cyan', value: '#00BFF2', previewClass: 'bg-[#00BFF2] border-cyan-500' },
+  { label: 'Red', value: '#FF0000', previewClass: 'bg-[#FF0000] border-red-700' },
+  { label: 'Transparent', value: 'transparent', previewClass: 'bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:6px_6px] border-zinc-400' },
 ];
+
+export const stylishSolids: ColorOption[] = [
+  { label: 'Peach', value: '#F6BEB2', previewClass: 'bg-[#F6BEB2]' },
+  { label: 'Aqua', value: '#B8DDE6', previewClass: 'bg-[#B8DDE6]' },
+  { label: 'Sand', value: '#E0B97E', previewClass: 'bg-[#E0B97E]' },
+  { label: 'Mint', value: '#CCE2D6', previewClass: 'bg-[#CCE2D6]' },
+  { label: 'Green', value: '#40896E', previewClass: 'bg-[#40896E]' },
+  { label: 'Crimson', value: '#C42134', previewClass: 'bg-[#C42134]' },
+  { label: 'Cobalt', value: '#3F64BF', previewClass: 'bg-[#3F64BF]' },
+  { label: 'Terracotta', value: '#D16541', previewClass: 'bg-[#D16541]' },
+  { label: 'Blush', value: '#FCD9E0', previewClass: 'bg-[#FCD9E0]' },
+  { label: 'Black', value: '#000000', previewClass: 'bg-black' },
+  { label: 'Pale Mint', value: '#CDE9DF', previewClass: 'bg-[#CDE9DF]' },
+  { label: 'Beige', value: '#DFCCB0', previewClass: 'bg-[#DFCCB0]' },
+];
+
+export const stylishGradients: ColorOption[] = [
+  { label: 'Sky Gradient', value: 'gradient:#6FB9F2:#C1E3FA', isGradient: true, from: '#6FB9F2', to: '#C1E3FA' },
+  { label: 'Silver Gradient', value: 'gradient:#A2A2A2:#F5F5F5', isGradient: true, from: '#A2A2A2', to: '#F5F5F5' },
+  { label: 'Slate Gradient', value: 'gradient:#7E8597:#A3AABD', isGradient: true, from: '#7E8597', to: '#A3AABD' },
+];
+
+const bgColors = classicalColors;
+
 
 type SheetPresetOption = 'a4' | '3-per-a4' | 'a6-2' | 'a5-6' | 'custom';
 
@@ -512,6 +580,38 @@ export default function PassportPhotoPage() {
 
   // Background color state
   const [bgColor, setBgColor] = useState('#ffffff');
+  const [customColorsHistory, setCustomColorsHistory] = useState<string[]>([]);
+  const [customHexInput, setCustomHexInput] = useState('#ffffff');
+  const [isStylishPaletteOpen, setIsStylishPaletteOpen] = useState(false);
+
+  // Load last 5 custom colors from localStorage (wrapped in try/catch)
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('compixor-passport-custom-colors');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            setCustomColorsHistory(parsed.slice(0, 5));
+          }
+        }
+      }
+    } catch (_) {}
+  }, []);
+
+  const addCustomColorToHistory = useCallback((colorHex: string) => {
+    const clean = colorHex.trim().toUpperCase();
+    if (!/^#[0-9A-F]{6}$/i.test(clean)) return;
+    setCustomColorsHistory((prev) => {
+      const next = [clean, ...prev.filter((c) => c !== clean)].slice(0, 5);
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('compixor-passport-custom-colors', JSON.stringify(next));
+        }
+      } catch (_) {}
+      return next;
+    });
+  }, []);
 
   // Sync background color when preset changes
   const handlePresetSelect = (preset: Preset) => {
@@ -519,6 +619,7 @@ export default function PassportPhotoPage() {
     setBgColor(preset.defaultBgColor);
     setPreviewTab('background');
   };
+
 
   // Compute active preset object
   const activePreset = useMemo<Preset>(() => {
@@ -563,7 +664,10 @@ export default function PassportPhotoPage() {
       heightPx,
       aspectRatio: aspect,
       defaultBgColor: '#ffffff',
+      allowedBgColors: ['#ffffff', '#f8fafc', '#e0f2fe', '#438edb', '#1d4ed8', '#f1f5f9', '#dc2626'],
+      verified: false,
       description: `${widthPx} × ${heightPx} px @ ${customDpi} DPI`,
+
       flag: '🛠️',
       biometricSpec: {
         headHeightPercent: 70,
@@ -698,13 +802,23 @@ export default function PassportPhotoPage() {
 
     const isTransparent = previewTab === 'cutout' || bgColor === 'transparent';
 
-    // STEP 1: Always fill background first (solid color or pure transparent for cutout PNG export)
+    // STEP 1: Always fill background first (solid color, linear gradient, or pure transparent for cutout PNG export)
     if (isTransparent) {
       ctx.clearRect(0, 0, width, height);
+    } else if (bgColor.startsWith('gradient:')) {
+      const parts = bgColor.split(':');
+      const fromColor = parts[1] || '#6FB9F2';
+      const toColor = parts[2] || '#C1E3FA';
+      const grad = ctx.createLinearGradient(0, 0, 0, height);
+      grad.addColorStop(0, fromColor);
+      grad.addColorStop(1, toColor);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
     } else {
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);
     }
+
 
     // STEP 2: Draw the subject (cutout or raw photo) with transforms
     const subjectSource = enableBgRemoval ? cachedCutoutCanvasRef.current : imageElementRef.current;
@@ -1955,32 +2069,200 @@ export default function PassportPhotoPage() {
                         </button>
                       </div>
 
-                      {/* Solid Colors Palette (active when Background tab is chosen) */}
+                      {/* Solid & Gradient Palette (active when Color Background tab is chosen) */}
                       {previewTab === 'background' && (
-                        <div className="flex flex-wrap items-center gap-2.5">
-                          {bgColors.map((bg) => (
+                        <div className="space-y-3.5 pt-1">
+                          {/* Compliance Warning Note if current color is not accepted for official documents */}
+                          {!activePreset.allowedBgColors.includes(bgColor.toLowerCase()) && bgColor !== 'transparent' && (
+                            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2 animate-in fade-in duration-200">
+                              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
+                              <span>
+                                This colour is not accepted for official {activePreset.country} documents. Use it for personal or social photos.
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Row 1: Recommended for <selected country> */}
+                          <div>
+                            <span className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                              Recommended for {activePreset.country}
+                            </span>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {classicalColors
+                                .filter((c) => activePreset.allowedBgColors.includes(c.value.toLowerCase()))
+                                .map((bg) => (
+                                  <button
+                                    key={`rec-${bg.value}`}
+                                    onClick={() => setBgColor(bg.value)}
+                                    className={`min-h-[44px] px-3 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                                      bgColor.toLowerCase() === bg.value.toLowerCase()
+                                        ? 'border-brand-500 ring-2 ring-brand-500/30 shadow-xs bg-brand-500/10 text-brand-600 dark:text-brand-300 font-bold'
+                                        : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+                                    }`}
+                                  >
+                                    <span className={`w-4 h-4 rounded-full border shadow-2xs ${bg.previewClass}`} />
+                                    <span>{bg.label}</span>
+                                    {bgColor.toLowerCase() === bg.value.toLowerCase() && (
+                                      <Check className="w-3.5 h-3.5 text-brand-500" />
+                                    )}
+                                  </button>
+                                ))}
+                            </div>
+                          </div>
+
+                          {/* Row 2: Classical Palette */}
+                          <div>
+                            <span className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                              Classical Colors
+                            </span>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {classicalColors.map((bg) => (
+                                <button
+                                  key={`class-${bg.value}`}
+                                  onClick={() => setBgColor(bg.value)}
+                                  className={`min-h-[44px] px-3 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                                    bgColor.toLowerCase() === bg.value.toLowerCase()
+                                      ? 'border-brand-500 ring-2 ring-brand-500/30 shadow-xs bg-brand-500/10 text-brand-600 dark:text-brand-300 font-bold'
+                                      : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+                                  }`}
+                                >
+                                  <span className={`w-4 h-4 rounded-full border shadow-2xs ${bg.previewClass}`} />
+                                  <span>{bg.label}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Row 3: Stylish Solids & Gradients (Collapsible) */}
+                          <div className="border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 bg-zinc-50/50 dark:bg-zinc-900/40">
                             <button
-                              key={bg.value}
-                              onClick={() => setBgColor(bg.value)}
-                              className={`h-8 px-3 rounded-lg border text-xs font-semibold flex items-center gap-2 transition-all ${
-                                bgColor === bg.value
-                                  ? 'border-brand-500 ring-2 ring-brand-500/30 shadow-xs bg-brand-500/5'
-                                  : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300'
-                              }`}
+                              type="button"
+                              onClick={() => setIsStylishPaletteOpen(!isStylishPaletteOpen)}
+                              className="w-full flex items-center justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300 min-h-[44px] cursor-pointer"
                             >
-                              <span className={`w-3.5 h-3.5 rounded-full border ${bg.class}`} />
-                              {bg.label.split(' ')[0]}
+                              <span className="flex items-center gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                                Stylish (not for official documents)
+                              </span>
+                              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isStylishPaletteOpen ? 'rotate-180' : ''}`} />
                             </button>
-                          ))}
-                          <input
-                            type="color"
-                            value={bgColor === 'transparent' ? '#ffffff' : bgColor}
-                            onChange={(e) => setBgColor(e.target.value)}
-                            className="w-8 h-8 rounded-lg cursor-pointer border border-zinc-300 dark:border-zinc-700 bg-transparent"
-                            title="Custom color"
-                          />
+
+                            {isStylishPaletteOpen && (
+                              <div className="mt-3 space-y-3 pt-3 border-t border-zinc-200 dark:border-zinc-800 animate-in fade-in duration-200">
+                                <div>
+                                  <span className="block text-[10px] font-semibold uppercase text-zinc-400 mb-1.5">Stylish Solids</span>
+                                  <div className="flex flex-wrap gap-2">
+                                    {stylishSolids.map((bg) => (
+                                      <button
+                                        key={`solid-${bg.value}`}
+                                        onClick={() => setBgColor(bg.value)}
+                                        className={`min-h-[44px] px-2.5 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+                                          bgColor.toUpperCase() === bg.value.toUpperCase()
+                                            ? 'border-brand-500 ring-2 ring-brand-500/30 bg-brand-500/10 font-bold text-brand-600 dark:text-brand-300'
+                                            : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                                        }`}
+                                      >
+                                        <span className="w-4 h-4 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: bg.value }} />
+                                        <span>{bg.label}</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <span className="block text-[10px] font-semibold uppercase text-zinc-400 mb-1.5">Vertical Studio Gradients</span>
+                                  <div className="flex flex-wrap gap-2">
+                                    {stylishGradients.map((bg) => (
+                                      <button
+                                        key={`grad-${bg.value}`}
+                                        onClick={() => setBgColor(bg.value)}
+                                        className={`min-h-[44px] px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+                                          bgColor === bg.value
+                                            ? 'border-brand-500 ring-2 ring-brand-500/30 bg-brand-500/10 font-bold text-brand-600 dark:text-brand-300'
+                                            : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                                        }`}
+                                      >
+                                        <span
+                                          className="w-4 h-4 rounded-full border border-black/10 shrink-0"
+                                          style={{ background: `linear-gradient(to bottom, ${bg.from}, ${bg.to})` }}
+                                        />
+                                        <span>{bg.label}</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Row 4: Custom Rainbow Tile & Hex Input & History */}
+                          <div className="pt-1 flex flex-wrap items-center gap-3">
+                            <label
+                              className="relative min-h-[44px] px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 hover:border-brand-500 bg-white dark:bg-zinc-800 flex items-center gap-2.5 cursor-pointer shadow-2xs transition"
+                              title="Pick any custom color"
+                            >
+                              <span
+                                className="w-5 h-5 rounded-full border border-zinc-300 dark:border-zinc-600 shrink-0 shadow-2xs"
+                                style={{
+                                  background: 'conic-gradient(from 180deg, red, yellow, lime, aqua, blue, magenta, red)',
+                                }}
+                              />
+                              <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">Custom</span>
+                              <input
+                                type="color"
+                                value={bgColor.startsWith('#') ? bgColor : '#ffffff'}
+                                onChange={(e) => {
+                                  const c = e.target.value.toUpperCase();
+                                  setBgColor(c);
+                                  setCustomHexInput(c);
+                                  addCustomColorToHistory(c);
+                                }}
+                                className="sr-only"
+                              />
+                            </label>
+
+                            {/* Hex Text Field */}
+                            <div className="flex items-center gap-1.5 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-2.5 py-1.5 min-h-[44px]">
+                              <span className="text-xs text-zinc-400 font-mono">#</span>
+                              <input
+                                type="text"
+                                maxLength={7}
+                                value={customHexInput.replace('#', '')}
+                                onChange={(e) => {
+                                  const val = '#' + e.target.value.replace(/[^0-9A-Fa-f]/g, '').slice(0, 6);
+                                  setCustomHexInput(val);
+                                  if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                                    setBgColor(val);
+                                    addCustomColorToHistory(val);
+                                  }
+                                }}
+                                placeholder="FFFFFF"
+                                className="w-20 text-xs font-mono font-bold bg-transparent text-zinc-900 dark:text-white outline-hidden uppercase"
+                              />
+                            </div>
+
+                            {/* Last 5 Custom Colors from LocalStorage */}
+                            {customColorsHistory.length > 0 && (
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] text-zinc-400 uppercase font-semibold">Recent:</span>
+                                {customColorsHistory.map((hex, idx) => (
+                                  <button
+                                    key={`hist-${hex}-${idx}`}
+                                    onClick={() => {
+                                      setBgColor(hex);
+                                      setCustomHexInput(hex);
+                                    }}
+                                    className="w-7 h-7 rounded-full border border-black/20 shadow-2xs cursor-pointer hover:scale-110 transition shrink-0"
+                                    style={{ backgroundColor: hex }}
+                                    title={`Recent color: ${hex}`}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
+
 
                       {/* Precision Sliders: Edge Feathering & Alpha Choke */}
                       <div className="p-3.5 rounded-xl bg-brand-500/5 border border-brand-500/15 space-y-3">
