@@ -2110,26 +2110,31 @@ export default function PassportPhotoPage() {
                             </div>
                           </div>
 
-                          {/* Row 2: Classical Palette */}
+                          {/* Row 2: More colours (strictly non-duplicate, excluding those already in Recommended) */}
                           <div>
                             <span className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
-                              Classical Colors
+                              More colours
                             </span>
                             <div className="flex flex-wrap items-center gap-2">
-                              {classicalColors.map((bg) => (
-                                <button
-                                  key={`class-${bg.value}`}
-                                  onClick={() => setBgColor(bg.value)}
-                                  className={`min-h-[44px] px-3 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
-                                    bgColor.toLowerCase() === bg.value.toLowerCase()
-                                      ? 'border-brand-500 ring-2 ring-brand-500/30 shadow-xs bg-brand-500/10 text-brand-600 dark:text-brand-300 font-bold'
-                                      : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800'
-                                  }`}
-                                >
-                                  <span className={`w-4 h-4 rounded-full border shadow-2xs ${bg.previewClass}`} />
-                                  <span>{bg.label}</span>
-                                </button>
-                              ))}
+                              {classicalColors
+                                .filter((c) => !activePreset.allowedBgColors.includes(c.value.toLowerCase()))
+                                .map((bg) => (
+                                  <button
+                                    key={`more-${bg.value}`}
+                                    onClick={() => setBgColor(bg.value)}
+                                    className={`min-h-[44px] px-3 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                                      bgColor.toLowerCase() === bg.value.toLowerCase()
+                                        ? 'border-brand-500 ring-2 ring-brand-500/30 shadow-xs bg-brand-500/10 text-brand-600 dark:text-brand-300 font-bold'
+                                        : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+                                    }`}
+                                  >
+                                    <span className={`w-4 h-4 rounded-full border shadow-2xs ${bg.previewClass}`} />
+                                    <span>{bg.label}</span>
+                                    {bgColor.toLowerCase() === bg.value.toLowerCase() && (
+                                      <Check className="w-3.5 h-3.5 text-brand-500" />
+                                    )}
+                                  </button>
+                                ))}
                             </div>
                           </div>
 
