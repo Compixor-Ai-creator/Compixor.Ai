@@ -94,6 +94,9 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    'max-snippet': -1,
+    'max-image-preview': 'large',
+    'max-video-preview': -1,
     googleBot: {
       index: true,
       follow: true,
@@ -146,6 +149,8 @@ export default function RootLayout({
         <meta name="format-detection" content="telephone=no" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        {/* AI & GEO Discovery */}
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt" />
         {/* JSON-LD Structured Data: WebSite, Organization & ItemList */}
         {homeSchemas.map((schema, index) => (
           <script
@@ -156,6 +161,13 @@ export default function RootLayout({
         ))}
       </head>
       <body className="min-h-screen topo-bg">
+        {/* Accessible Skip to Main Content Link */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-brand-600 focus:text-white focus:rounded-xl focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-brand-400 font-bold text-xs uppercase tracking-wider transition-all"
+        >
+          Skip to main content
+        </a>
         <ThemeProvider>
           <div className="relative min-h-screen flex flex-col">
             {/* Sliding Ambient Blur Glows (Desktop only — disabled on mobile for 60fps scrolling) */}
@@ -170,7 +182,7 @@ export default function RootLayout({
 
             <Navbar />
 
-            <main className="flex-1 pt-16 relative z-10">
+            <main id="main-content" className="flex-1 pt-16 relative z-10">
               {children}
             </main>
 

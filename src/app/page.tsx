@@ -26,6 +26,7 @@ import HomeFaqAccordion from '@/components/HomeFaqAccordion';
 import CustomerTestimonials from '@/components/CustomerTestimonials';
 import WhyChooseCompixor from '@/components/WhyChooseCompixor';
 import HeroCTA from '@/components/HeroCTA';
+import ClientSideGuideSection from '@/components/ClientSideGuideSection';
 
 const tools = [
   {
@@ -526,6 +527,9 @@ export default function HomePage() {
 
       {/* ============ CUSTOMER FEEDBACK & TESTIMONIALS ============ */}
       <CustomerTestimonials />
+
+      {/* ============ CLIENT-SIDE ARCHITECTURE GUIDE ============ */}
+      <ClientSideGuideSection />
 
       {/* ============ FAQ ACCORDION ============ */}
       <section className="py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

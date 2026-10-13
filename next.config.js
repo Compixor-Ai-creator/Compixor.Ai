@@ -62,6 +62,41 @@ const nextConfig = {
 
   async redirects() {
     return [
+      // 301 Permanent Domain Redirects: old Vercel domain -> new official domain
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'compixor-ai.vercel.app',
+          },
+        ],
+        destination: 'https://compixor-ai.cloud/:path*',
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.compixor-ai.vercel.app',
+          },
+        ],
+        destination: 'https://compixor-ai.cloud/:path*',
+        permanent: true,
+      },
+      // 301 Permanent Canonical Domain Redirect: www to apex domain
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.compixor-ai.cloud',
+          },
+        ],
+        destination: 'https://compixor-ai.cloud/:path*',
+        permanent: true,
+      },
       {
         source: '/compress_pdf',
         destination: '/tools/pdf-compressor',
@@ -136,6 +171,40 @@ const nextConfig = {
         source: '/tools/image-to-word',
         destination: '/tools/img-to-word',
         permanent: true,
+      },
+    ];
+  },
+
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' blob: data: https: wss:; worker-src 'self' blob:; frame-ancestors 'self';",
+          },
+        ],
       },
     ];
   },

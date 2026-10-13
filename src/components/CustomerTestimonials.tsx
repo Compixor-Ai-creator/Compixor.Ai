@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Star, CheckCircle2, Quote, Heart } from 'lucide-react';
+import { CheckCircle2, Quote, Heart } from 'lucide-react';
 
 interface Testimonial {
   name: string;
@@ -125,29 +125,33 @@ const testimonials: Testimonial[] = [
   },
 ];
 
+// Consolidated 5-Star Rating SVG (reduces DOM nodes by over 120 elements)
+function FiveStars() {
+  return (
+    <svg className="h-3 w-16 text-amber-400 fill-amber-400 shrink-0" viewBox="0 0 80 14" aria-hidden="true">
+      <path d="M7 0l2.16 4.38 4.84.7-3.5 3.41.83 4.82L7 11.04l-4.33 2.27.83-4.82-3.5-3.41 4.84-.7z" />
+      <path d="M22 0l2.16 4.38 4.84.7-3.5 3.41.83 4.82L22 11.04l-4.33 2.27.83-4.82-3.5-3.41 4.84-.7z" />
+      <path d="M37 0l2.16 4.38 4.84.7-3.5 3.41.83 4.82L37 11.04l-4.33 2.27.83-4.82-3.5-3.41 4.84-.7z" />
+      <path d="M52 0l2.16 4.38 4.84.7-3.5 3.41.83 4.82L52 11.04l-4.33 2.27.83-4.82-3.5-3.41 4.84-.7z" />
+      <path d="M67 0l2.16 4.38 4.84.7-3.5 3.41.83 4.82L67 11.04l-4.33 2.27.83-4.82-3.5-3.41 4.84-.7z" />
+    </svg>
+  );
+}
+
 // Compact Individual Testimonial Card Component
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
     <div className="glass-card p-4 sm:p-4.5 flex flex-col justify-between rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 hover:border-brand-500/30 hover:shadow-lg hover:shadow-brand-500/10 transition-all duration-300 group w-[270px] sm:w-[310px] shrink-0 select-none">
       <div>
-        {/* Top Row: Stars + Rating + Quote */}
+        {/* Top Row: Stars + Rating */}
         <div className="flex items-center justify-between gap-2 mb-2">
-          <div className="flex items-center gap-0.5">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                className={`w-3 h-3 ${
-                  star <= Math.floor(t.rating)
-                    ? 'fill-amber-400 text-amber-400'
-                    : 'fill-amber-400/50 text-amber-400/50'
-                }`}
-              />
-            ))}
-            <span className="ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300">
+          <div className="flex items-center gap-1">
+            <FiveStars />
+            <span className="ml-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300">
               {t.rating.toFixed(1)}
             </span>
           </div>
-          <Quote className="w-4 h-4 text-brand-500/25 group-hover:text-brand-500/50 transition-colors shrink-0" />
+          <span className="text-base text-brand-500/30 font-serif leading-none select-none">&ldquo;&rdquo;</span>
         </div>
 
         {/* Highlight Tag */}
@@ -164,29 +168,23 @@ function TestimonialCard({ t }: { t: Testimonial }) {
       {/* Footer: User Details + Tool Tag */}
       <div className="pt-3 mt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
-          {/* Avatar with fallback */}
-          <div className="relative w-9 h-9 rounded-full shrink-0 overflow-hidden ring-2 ring-brand-500/25 group-hover:ring-brand-500/60 shadow-sm transition-all">
-            <div className={`absolute inset-0 bg-gradient-to-br ${t.avatarColor} flex items-center justify-center text-white text-[10px] font-bold`}>
-              {t.initials}
-            </div>
+          <div className="relative w-9 h-9 rounded-full shrink-0 overflow-hidden ring-2 ring-brand-500/25 shadow-sm">
             <Image
               src={t.avatar}
               alt={t.name}
               width={72}
               height={72}
-              quality={95}
-              unoptimized
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              sizes="72px"
+              quality={90}
+              className="w-full h-full object-cover"
               loading="lazy"
             />
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-1">
-              <p className="text-xs font-bold text-zinc-900 dark:text-white truncate">{t.name}</p>
-              <span className="inline-flex shrink-0">
-                <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-              </span>
-            </div>
+            <p className="text-xs font-bold text-zinc-900 dark:text-white truncate flex items-center gap-1">
+              <span>{t.name}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block shrink-0" title="Verified User" />
+            </p>
             <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">{t.role}</p>
           </div>
         </div>
@@ -222,11 +220,7 @@ export default function CustomerTestimonials() {
         >
           {/* Rating Pill Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/25 backdrop-blur-sm shadow-xs mb-3 animate-float-subtle">
-            <div className="flex items-center gap-0.5">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
+            <FiveStars />
             <span className="font-bold">4.9 / 5.0 Rating</span>
             <span className="text-zinc-400 dark:text-zinc-500">•</span>
             <span>12,000+ Reviews</span>
@@ -271,11 +265,11 @@ export default function CustomerTestimonials() {
           style={{ animation: 'marquee-ltr 36s linear infinite' }}
         >
           {/* First set */}
-          {testimonials.slice(0, 4).map((t, i) => (
+          {testimonials.slice(0, 3).map((t, i) => (
             <TestimonialCard key={`row1-a-${i}`} t={t} />
           ))}
           {/* Duplicate set for seamless continuous loop */}
-          {testimonials.slice(0, 4).map((t, i) => (
+          {testimonials.slice(0, 3).map((t, i) => (
             <TestimonialCard key={`row1-b-${i}`} t={t} />
           ))}
         </div>
@@ -292,11 +286,11 @@ export default function CustomerTestimonials() {
           style={{ animation: 'marquee-rtl 40s linear infinite' }}
         >
           {/* First set */}
-          {testimonials.slice(4).map((t, i) => (
+          {testimonials.slice(3, 6).map((t, i) => (
             <TestimonialCard key={`row2-a-${i}`} t={t} />
           ))}
           {/* Duplicate set for seamless continuous loop */}
-          {testimonials.slice(4).map((t, i) => (
+          {testimonials.slice(3, 6).map((t, i) => (
             <TestimonialCard key={`row2-b-${i}`} t={t} />
           ))}
         </div>
