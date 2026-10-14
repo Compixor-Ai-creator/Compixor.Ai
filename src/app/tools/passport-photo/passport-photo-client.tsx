@@ -1846,17 +1846,33 @@ export default function PassportPhotoPage() {
                   />
                 </div>
 
-                {/* Advanced Adjustments Accordion (Brightness, Contrast, Saturation) */}
-                <details className="group border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 bg-zinc-50/50 dark:bg-zinc-900/30">
-                  <summary className="text-xs font-bold text-zinc-700 dark:text-zinc-300 cursor-pointer list-none flex items-center justify-between">
-                    <span>Advanced adjustments (optional)</span>
-                    <span className="text-zinc-400 group-open:rotate-180 transition-transform">▼</span>
-                  </summary>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 mt-2 border-t border-zinc-200/60 dark:border-zinc-800/60">
-                    <div>
-                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                {/* Lighting & Color Adjustments (Brightness, Contrast, Saturation) */}
+                <div className="border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 bg-zinc-50/60 dark:bg-zinc-900/40 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                      <SlidersHorizontal className="w-3.5 h-3.5 text-brand-500" />
+                      Lighting &amp; Color
+                    </span>
+                    {(brightness !== 100 || contrast !== 100 || saturation !== 100) && (
+                      <button
+                        onClick={() => {
+                          setBrightness(100);
+                          setContrast(100);
+                          setSaturation(100);
+                        }}
+                        className="text-[11px] font-semibold text-brand-600 dark:text-brand-400 hover:underline cursor-pointer"
+                      >
+                        Reset lighting
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {/* Brightness */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400">
                         <span>Brightness</span>
-                        <span>{brightness}%</span>
+                        <span className="font-mono text-zinc-900 dark:text-white">{brightness}%</span>
                       </div>
                       <input
                         type="range"
@@ -1867,10 +1883,12 @@ export default function PassportPhotoPage() {
                         className="w-full slider-blur cursor-pointer"
                       />
                     </div>
-                    <div>
-                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+
+                    {/* Contrast */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400">
                         <span>Contrast</span>
-                        <span>{contrast}%</span>
+                        <span className="font-mono text-zinc-900 dark:text-white">{contrast}%</span>
                       </div>
                       <input
                         type="range"
@@ -1881,10 +1899,12 @@ export default function PassportPhotoPage() {
                         className="w-full slider-blur cursor-pointer"
                       />
                     </div>
-                    <div>
-                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+
+                    {/* Saturation */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400">
                         <span>Saturation</span>
-                        <span>{saturation}%</span>
+                        <span className="font-mono text-zinc-900 dark:text-white">{saturation}%</span>
                       </div>
                       <input
                         type="range"
@@ -1896,7 +1916,7 @@ export default function PassportPhotoPage() {
                       />
                     </div>
                   </div>
-                </details>
+                </div>
 
                 {/* 2-Step AI Matting & Background Engine */}
                 <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
@@ -2847,29 +2867,6 @@ export default function PassportPhotoPage() {
               + Make New Image
             </button>
           </motion.div>
-
-          {/* MOBILE STICKY BOTTOM ACTION BAR */}
-          <div className="fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 p-3 shadow-2xl flex items-center gap-2">
-            <button
-              onClick={downloadSinglePhoto}
-              className="flex-1 btn-primary py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm min-h-[44px]"
-            >
-              <Download className="w-3.5 h-3.5" />
-              Download JPEG
-            </button>
-            <button
-              onClick={() => {
-                const sheetEl = document.querySelector('#print-sheet-panel');
-                if (sheetEl) {
-                  sheetEl.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              className="flex-1 py-2.5 px-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-bold flex items-center justify-center gap-1.5 min-h-[44px]"
-            >
-              <Printer className="w-3.5 h-3.5 text-brand-500" />
-              Print Sheets ↓
-            </button>
-          </div>
         </div>
       )}
 
