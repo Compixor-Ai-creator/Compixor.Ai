@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Check, ShieldCheck, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
+import { Check, ShieldCheck, Sparkles, ArrowRight, Printer, AlertTriangle } from 'lucide-react';
 import PassportPhotoClient from './passport-photo-client';
 import { standardPresets } from './presets';
+import ToolSeoSection from '@/components/ToolSeoSection';
 
 const TITLE = 'Free Passport Size Photo Maker – NADRA 35x45mm | Compixor AI';
 const DESCRIPTION =
@@ -106,7 +107,7 @@ export default function PassportPhotoPage() {
             </span>
           </div>
           <p className="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">
-            Make a passport size photo online in under a minute. Upload a portrait and our AI passport size photo maker removes the background automatically. Choose your country&apos;s passport photo size, including Pakistan NADRA 35 × 45 mm, then pick a background colour such as white, off-white, light blue or sky blue. Use Auto-Align Face and the biometric overlay guides to get the head size and eye line right. Download a single JPEG for online portals, or a print-ready sheet (A4, 3 per A4, A6 or A5) with cut marks.
+            Make a passport size photo online in under a minute. Upload a portrait and our AI passport size photo maker removes the background automatically. Choose your country&apos;s passport photo size, including Pakistan NADRA 35 × 45 mm, then pick a background colour such as white, off-white, light blue or sky blue. Use the positioning controls and biometric overlay guides to get the head size and eye line right. Download a single JPEG for online portals, or a print-ready sheet (A4, 3 per A4, A6 or A5) with cut marks.
           </p>
           <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
             Our biometric passport photo size maker ensures compliance with official passport authority and visa guidelines. Whether you are submitting a digital application or printing at home, this passport size photo online maker gives you precision control over cropping, head height, and background specifications.
@@ -141,7 +142,7 @@ export default function PassportPhotoPage() {
               <span className="w-6 h-6 rounded-lg bg-brand-500/15 text-brand-600 dark:text-brand-400 font-black flex items-center justify-center text-xs shrink-0 mt-0.5">
                 4
               </span>
-              <span>Use Auto-Align Face or adjust position, zoom and rotation, and switch on the biometric overlay guides.</span>
+              <span>Adjust position, zoom and rotation, and switch on the biometric overlay guides.</span>
             </li>
             <li className="flex items-start gap-3.5">
               <span className="w-6 h-6 rounded-lg bg-brand-500/15 text-brand-600 dark:text-brand-400 font-black flex items-center justify-center text-xs shrink-0 mt-0.5">
@@ -239,7 +240,7 @@ export default function PassportPhotoPage() {
             </li>
             <li className="flex items-center gap-2 p-2.5 rounded-xl bg-zinc-50/80 dark:bg-zinc-800/40 border border-zinc-200/50 dark:border-zinc-700/40">
               <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-              <span>Auto-Align Face</span>
+              <span>Biometric positioning &amp; zoom controls</span>
             </li>
             <li className="flex items-center gap-2 p-2.5 rounded-xl bg-zinc-50/80 dark:bg-zinc-800/40 border border-zinc-200/50 dark:border-zinc-700/40">
               <Check className="w-4 h-4 text-emerald-500 shrink-0" />
@@ -293,159 +294,53 @@ export default function PassportPhotoPage() {
           </ul>
         </div>
 
-        {/* C8: Frequently asked questions */}
+        {/* ── How Passport Photo Prints Are Made at a Studio and at Home ── */}
         <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm space-y-6">
-          <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
-            Frequently asked questions
-          </h2>
-          <div className="space-y-4 divide-y divide-zinc-200/70 dark:divide-zinc-800/60">
-            <div className="pt-3 first:pt-0">
-              <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white mb-1.5">
-                Is this passport size photo maker free?
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20 mb-2">
+              <Printer className="w-3.5 h-3.5" />
+              Printing &amp; Lab Guide
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+              How Passport Photo Prints Are Made at a Studio and at Home
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              Avoid the most common reason for embassy rejections: incorrect physical scaling and paper distortion.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/50 space-y-3">
+              <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-black">1</span>
+                Studio Mini-Lab Workflow
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Yes, it is free to use.
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Commercial photo studios rarely print single passport photos. They arrange portraits onto standard photo paper sizes (such as A6 postcard or A5 sheets) at 300 DPI, print them on dye-sublimation or glossy inkjet printers, and cut along calibrated crop marks. Compixor gives you the exact same digital layout without paying studio markups.
               </p>
             </div>
 
-            <div className="pt-4">
-              <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white mb-1.5">
-                What is the Pakistan passport photo size?
+            <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/50 space-y-3">
+              <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-black">2</span>
+                Home Printing: The 100% Scale Rule
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                35 × 45 mm.
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                When printing your downloaded JPEG or vector PDF at home, <strong>never use &quot;Fit to page&quot; or &quot;Shrink to fit&quot;</strong>. Doing so alters the physical millimeter dimensions of the photos, causing immediate rejection by visa officers. Always select <strong>&quot;Actual size&quot;</strong> or set page scaling to <strong>100%</strong> in your printer software.
               </p>
             </div>
+          </div>
 
-            <div className="pt-4">
-              <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white mb-1.5">
-                Can I change the background colour?
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Yes: white, off-white, light blue, sky blue and more.
-              </p>
-            </div>
-
-            <div className="pt-4">
-              <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white mb-1.5">
-                Can I print the photos at home?
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Yes, use the print sheet and print at actual size / 100%.
-              </p>
-            </div>
-
-            <div className="pt-4">
-              <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white mb-1.5">
-                Is my photo uploaded?
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Use Private mode if you don&apos;t want your photo uploaded.
-              </p>
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-800 dark:text-amber-200 flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold">Paper &amp; Finish Recommendation:</span> Use 200–250 GSM semi-gloss or satin photo paper. Matte paper is accepted for Pakistan NADRA, UK, and Schengen passports, while glossy or semi-gloss is standard for US Visas and Indian passports.
             </div>
           </div>
         </div>
 
-        {/* PART D: Internal Links — More Compixor Tools */}
-        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm space-y-4">
-          <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
-            More Compixor tools
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-            Explore our collection of free, high-speed document and image processing utilities.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
-            <Link
-              href="/tools/full-dp-maker"
-              className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-brand-500/50 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition group flex items-center justify-between"
-            >
-              <div>
-                <span className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white block group-hover:text-brand-500 transition-colors">
-                  WhatsApp Full DP Maker
-                </span>
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                  No crop 1:1 profile photos
-                </span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-brand-500 group-hover:translate-x-0.5 transition" />
-            </Link>
-
-            <Link
-              href="/tools/qr-generator"
-              className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-brand-500/50 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition group flex items-center justify-between"
-            >
-              <div>
-                <span className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white block group-hover:text-brand-500 transition-colors">
-                  Vector QR Generator
-                </span>
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                  Permanent static SVG QR codes
-                </span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-brand-500 group-hover:translate-x-0.5 transition" />
-            </Link>
-
-            <Link
-              href="/tools/img-to-word"
-              className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-brand-500/50 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition group flex items-center justify-between"
-            >
-              <div>
-                <span className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white block group-hover:text-brand-500 transition-colors">
-                  Image to Word
-                </span>
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                  OCR converter to editable DOCX
-                </span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-brand-500 group-hover:translate-x-0.5 transition" />
-            </Link>
-
-            <Link
-              href="/tools/pdf-to-word"
-              className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-brand-500/50 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition group flex items-center justify-between"
-            >
-              <div>
-                <span className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white block group-hover:text-brand-500 transition-colors">
-                  PDF to Word
-                </span>
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                  Convert PDF to editable Word
-                </span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-brand-500 group-hover:translate-x-0.5 transition" />
-            </Link>
-
-            <Link
-              href="/tools/pdf-compressor"
-              className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-brand-500/50 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition group flex items-center justify-between"
-            >
-              <div>
-                <span className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white block group-hover:text-brand-500 transition-colors">
-                  PDF Compressor
-                </span>
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                  Reduce PDF size without quality loss
-                </span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-brand-500 group-hover:translate-x-0.5 transition" />
-            </Link>
-
-            <Link
-              href="/tools/pdf-organizer"
-              className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-brand-500/50 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition group flex items-center justify-between"
-            >
-              <div>
-                <span className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white block group-hover:text-brand-500 transition-colors">
-                  PDF Merge &amp; Split
-                </span>
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                  Organize, reorder, merge PDF pages
-                </span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-brand-500 group-hover:translate-x-0.5 transition" />
-            </Link>
-          </div>
-        </div>
+        {/* Previous Rich SEO Section & FAQs */}
+        <ToolSeoSection toolSlug="passport-photo" />
       </section>
     </>
   );

@@ -73,8 +73,6 @@ import {
   type ColorOption,
   standardPresets,
   classicalColors,
-  stylishSolids,
-  stylishGradients,
 } from './presets';
 
 
@@ -282,7 +280,6 @@ export default function PassportPhotoPage() {
   const [bgColor, setBgColor] = useState('#ffffff');
   const [customColorsHistory, setCustomColorsHistory] = useState<string[]>([]);
   const [customHexInput, setCustomHexInput] = useState('#ffffff');
-  const [isStylishPaletteOpen, setIsStylishPaletteOpen] = useState(false);
 
   // Load last 5 custom colors from localStorage (wrapped in try/catch)
   useEffect(() => {
@@ -1778,24 +1775,16 @@ export default function PassportPhotoPage() {
                   </h3>
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={() => autoAlignBiometric('button')}
-                      className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold flex items-center gap-1 transition px-2 py-1 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60 cursor-pointer min-h-[32px]"
-                      title="Automatically center and scale subject into the biometric oval guide"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-brand-500" />
-                      Auto-Align Face
-                    </button>
-                    <button
                       onClick={resetTransform}
-                      className="text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 font-semibold transition"
+                      className="text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 font-semibold transition cursor-pointer"
                     >
                       Reset
                     </button>
                     <button
                       onClick={handleMakeNewImage}
-                      className="text-xs text-brand-500 hover:text-brand-600 font-semibold flex items-center gap-1 transition"
+                      className="text-xs text-brand-500 hover:text-brand-600 font-semibold flex items-center gap-1 transition cursor-pointer"
                     >
-                      <RefreshCw className="w-3.5 h-3.5" />
+                      <Upload className="w-3.5 h-3.5" />
                       Change Photo
                     </button>
                   </div>
@@ -2026,67 +2015,6 @@ export default function PassportPhotoPage() {
                             </div>
                           </div>
 
-                          {/* Row 3: Stylish Solids & Gradients (Collapsible) */}
-                          <div className="border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 bg-zinc-50/50 dark:bg-zinc-900/40">
-                            <button
-                              type="button"
-                              onClick={() => setIsStylishPaletteOpen(!isStylishPaletteOpen)}
-                              className="w-full flex items-center justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300 min-h-[44px] cursor-pointer"
-                            >
-                              <span className="flex items-center gap-1.5">
-                                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                                Stylish (not for official documents)
-                              </span>
-                              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isStylishPaletteOpen ? 'rotate-180' : ''}`} />
-                            </button>
-
-                            {isStylishPaletteOpen && (
-                              <div className="mt-3 space-y-3 pt-3 border-t border-zinc-200 dark:border-zinc-800 animate-in fade-in duration-200">
-                                <div>
-                                  <span className="block text-[10px] font-semibold uppercase text-zinc-400 mb-1.5">Stylish Solids</span>
-                                  <div className="flex flex-wrap gap-2">
-                                    {stylishSolids.map((bg) => (
-                                      <button
-                                        key={`solid-${bg.value}`}
-                                        onClick={() => setBgColor(bg.value)}
-                                        className={`min-h-[44px] px-2.5 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
-                                          bgColor.toUpperCase() === bg.value.toUpperCase()
-                                            ? 'border-brand-500 ring-2 ring-brand-500/30 bg-brand-500/10 font-bold text-brand-600 dark:text-brand-300'
-                                            : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                                        }`}
-                                      >
-                                        <span className="w-4 h-4 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: bg.value }} />
-                                        <span>{bg.label}</span>
-                                      </button>
-                                    ))}
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <span className="block text-[10px] font-semibold uppercase text-zinc-400 mb-1.5">Vertical Studio Gradients</span>
-                                  <div className="flex flex-wrap gap-2">
-                                    {stylishGradients.map((bg) => (
-                                      <button
-                                        key={`grad-${bg.value}`}
-                                        onClick={() => setBgColor(bg.value)}
-                                        className={`min-h-[44px] px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
-                                          bgColor === bg.value
-                                            ? 'border-brand-500 ring-2 ring-brand-500/30 bg-brand-500/10 font-bold text-brand-600 dark:text-brand-300'
-                                            : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                                        }`}
-                                      >
-                                        <span
-                                          className="w-4 h-4 rounded-full border border-black/10 shrink-0"
-                                          style={{ background: `linear-gradient(to bottom, ${bg.from}, ${bg.to})` }}
-                                        />
-                                        <span>{bg.label}</span>
-                                      </button>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
 
                           {/* Row 4: Custom Rainbow Tile & Hex Input & History */}
                           <div className="pt-1 flex flex-wrap items-center gap-3">
@@ -2494,14 +2422,6 @@ export default function PassportPhotoPage() {
               {imageSrc && (
                 <div className="flex items-center justify-center gap-2 pt-1">
                   <button
-                    onClick={() => autoAlignBiometric('button')}
-                    className="px-3 py-1.5 rounded-xl bg-brand-50 hover:bg-brand-100 dark:bg-brand-950/40 dark:hover:bg-brand-900/40 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[36px]"
-                    title="Automatically fit portrait to biometric spec"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-brand-500" />
-                    Auto-fit
-                  </button>
-                  <button
                     onClick={() => setIsAdjustMode(!isAdjustMode)}
                     className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[36px] ${
                       isAdjustMode
@@ -2654,7 +2574,7 @@ export default function PassportPhotoPage() {
                 onClick={handleMakeNewImage}
                 className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 flex items-center gap-1.5 transition cursor-pointer min-h-[40px] px-3 py-1.5 rounded-xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/60"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <Upload className="w-3.5 h-3.5" />
                 Change photo
               </button>
             </div>
