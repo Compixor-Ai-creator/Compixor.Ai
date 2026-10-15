@@ -120,7 +120,7 @@ function startFakeProgress(
  */
 async function callApi(
   files: File[],
-  language: OcrLanguage,
+  language: OcrLanguage = 'eng+urd',
   onProgress?: (e: OcrProgressEvent) => void,
 ): Promise<ImgToWordResult> {
   const t0 = performance.now();
@@ -129,9 +129,10 @@ async function callApi(
   const isLarge = files.length > 3 || files.reduce((s, f) => s + f.size, 0) > 5_000_000;
 
   const stopProgress = startFakeProgress(onProgress, [
-    { status: 'Uploading images…',     from: 0.00, to: 0.25, durationMs: isLarge ? 3000 : 1500 },
-    { status: 'Running PaddleOCR…',    from: 0.25, to: 0.80, durationMs: isLarge ? 10000 : 5000 },
-    { status: 'Finalizing document…',  from: 0.80, to: 0.95, durationMs: isLarge ? 2000 : 1000 },
+    { status: 'AI is working: Uploading image…',             from: 0.00, to: 0.20, durationMs: isLarge ? 2500 : 1200 },
+    { status: 'AI is working: Scanning layout & tables…',     from: 0.20, to: 0.55, durationMs: isLarge ? 8000 : 4000 },
+    { status: 'AI is reading data & multilingual text…',     from: 0.55, to: 0.85, durationMs: isLarge ? 8000 : 4000 },
+    { status: 'Reconstructing editable Word (.docx) document…', from: 0.85, to: 0.98, durationMs: isLarge ? 2000 : 1000 },
   ]);
 
   try {
@@ -168,7 +169,7 @@ async function callApi(
     const wordCount = parseInt(res.headers.get('X-Word-Count') ?? '0', 10);
     const pageCount = parseInt(res.headers.get('X-Page-Count') ?? `${files.length}`, 10);
 
-    onProgress?.({ status: 'Done!', progress: 1 });
+    onProgress?.({ status: 'Document ready!', progress: 1 });
 
     return {
       docxBlob,
@@ -195,7 +196,7 @@ export async function convertImageToWord(
   file: File,
   options: ImgToWordOptions = {},
 ): Promise<ImgToWordResult> {
-  const { language = 'eng', onProgress } = options;
+  const { language = 'eng+urd', onProgress } = options;
   return callApi([file], language, onProgress);
 }
 

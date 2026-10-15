@@ -12,14 +12,9 @@ import {
   Loader2,
   FileText,
   ScanText,
-  Zap,
   ShieldCheck,
   ArrowRight,
-  Languages,
   Eye,
-  X,
-  Plus,
-  Layers,
   FileCheck2,
 } from 'lucide-react';
 import WordIcon from '@/components/WordIcon';
@@ -31,20 +26,14 @@ import { ImgToWordPreviewMockup } from '@/components/VisualProofMockup';
 import { formatFileSize } from '@/utils/fileHelpers';
 import {
   convertImageToWord,
-  convertImagesToWord,
-  LANGUAGE_OPTIONS,
-  OcrLanguage,
   OcrProgressEvent,
 } from '@/utils/imgToWordEngine';
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
-function getOutputFileName(files: File[]): string {
-  if (files.length === 1) {
-    const base = files[0].name.replace(/\.[^.]+$/, '');
-    return `${base}-converted.docx`;
-  }
-  return `compixor-img-to-word-${files.length}-images.docx`;
+function getOutputFileName(file: File): string {
+  const base = file.name.replace(/\.[^.]+$/, '');
+  return `${base}-converted.docx`;
 }
 
 const ACCEPTED_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.gif', '.tif', '.tiff'];
@@ -65,9 +54,8 @@ function isValidImageFile(f: File): boolean {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function ImgToWordPage() {
-  const [files, setFiles] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [language, setLanguage] = useState<OcrLanguage>('eng');
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -84,87 +72,68 @@ export default function ImgToWordPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // ── File handling ──────────────────────────────────────────────────────────
+  // ── File handling (Single File Focus) ───────────────────────────────────────
 
-  const addFiles = useCallback((newFiles: File[]) => {
-    const valid = newFiles.filter((f) => {
-      if (!isValidImageFile(f)) {
-        toast.error(`"${f.name}" is not a supported image format.`);
-        return false;
-      }
-      if (f.size > 25 * 1024 * 1024) {
-        toast.error(`"${f.name}" exceeds the 25 MB limit.`);
-        return false;
-      }
-      return true;
-    });
-    if (!valid.length) return;
-
-    setFiles((prev) => {
-      const combined = [...prev, ...valid].slice(0, 10);
-      const newUrls = valid
-        .slice(0, combined.length - prev.length)
-        .map((f) => URL.createObjectURL(f));
-      setPreviewUrls((p) => [...p, ...newUrls].slice(0, 10));
-      return combined;
-    });
+  const setSingleFile = useCallback((newFile: File) => {
+    if (!isValidImageFile(newFile)) {
+      toast.error(`"${newFile.name}" is not a supported image format.`);
+      return;
+    }
+    if (newFile.size > 25 * 1024 * 1024) {
+      toast.error(`"${newFile.name}" exceeds the 25 MB limit.`);
+      return;
+    }
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    const url = URL.createObjectURL(newFile);
+    setFile(newFile);
+    setPreviewUrl(url);
     setResult(null);
     setError(null);
-  }, []);
+  }, [previewUrl]);
 
-  const handleFileDrop = useCallback((f: File) => addFiles([f]), [addFiles]);
+  const handleFileDrop = useCallback((f: File) => setSingleFile(f), [setSingleFile]);
 
-  const handleMultipleFiles = useCallback(
+  const handleFileInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files) addFiles(Array.from(e.target.files));
+      const selected = e.target.files?.[0];
+      if (selected) setSingleFile(selected);
       e.target.value = '';
     },
-    [addFiles],
+    [setSingleFile],
   );
 
-  const removeFile = useCallback((index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-    setPreviewUrls((prev) => {
-      URL.revokeObjectURL(prev[index]);
-      return prev.filter((_, i) => i !== index);
-    });
-    setResult(null);
-  }, []);
-
   const reset = useCallback(() => {
-    previewUrls.forEach((u) => URL.revokeObjectURL(u));
-    setFiles([]);
-    setPreviewUrls([]);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setFile(null);
+    setPreviewUrl(null);
     setResult(null);
     setError(null);
     setProgress(0);
     setProgressLabel('');
     setPreviewText(null);
     setShowPreview(false);
-  }, [previewUrls]);
+  }, [previewUrl]);
 
-  // ── Conversion ─────────────────────────────────────────────────────────────
+  // ── Conversion (Universal AI Engine v10) ────────────────────────────────────
 
   const handleConvert = useCallback(async () => {
-    if (!files.length) return;
+    if (!file) return;
     setIsProcessing(true);
     setResult(null);
     setError(null);
     setProgress(0);
-    setProgressLabel('Starting…');
+    setProgressLabel('AI is working: Uploading image…');
 
     const onProgress = (evt: OcrProgressEvent) => {
       setProgress(Math.round(evt.progress * 100));
-      setProgressLabel(evt.status.charAt(0).toUpperCase() + evt.status.slice(1));
+      setProgressLabel(evt.status);
     };
 
     try {
-      const res =
-        files.length === 1
-          ? await convertImageToWord(files[0], { language, onProgress })
-          : await convertImagesToWord(files, { language, onProgress });
-
-      const outputName = getOutputFileName(files);
+      const res = await convertImageToWord(file, { onProgress });
+      const outputName = getOutputFileName(file);
 
       setResult({
         blob: res.docxBlob,
@@ -175,25 +144,16 @@ export default function ImgToWordPage() {
       });
       setPreviewText(res.textContent);
 
-      // Instant browser download trigger (in-memory Blob)
-      const downloadUrl = URL.createObjectURL(res.docxBlob);
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = outputName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(downloadUrl), 60000);
-
-      toast.success('Word document generated and downloaded!');
+      // Manual download only: Do NOT automatically trigger browser download
+      toast.success('Word document generated successfully! Click below to download.');
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'OCR failed unexpectedly.';
+      const msg = err instanceof Error ? err.message : 'OCR conversion failed unexpectedly.';
       setError(msg);
       toast.error(msg);
     } finally {
       setIsProcessing(false);
     }
-  }, [files, language]);
+  }, [file]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -205,8 +165,7 @@ export default function ImgToWordPage() {
     setTimeout(() => URL.revokeObjectURL(url), 30_000);
   }, [result]);
 
-  const hasFiles = files.length > 0;
-  const totalOriginalSize = files.reduce((acc, f) => acc + f.size, 0);
+  const hasFile = file !== null;
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -216,8 +175,8 @@ export default function ImgToWordPage() {
       <DropAnywhere
         onFileDrop={handleFileDrop}
         accept={ACCEPTED_EXTS.join(',')}
-        title="Drop image(s) anywhere"
-        subtitle="to convert to editable Word (.docx) with OCR instantly (up to 10 images)"
+        title="Drop image anywhere"
+        subtitle="to convert to editable Word (.docx) with Universal AI OCR instantly"
       />
 
       {/* Header */}
@@ -284,7 +243,7 @@ export default function ImgToWordPage() {
         {/* Animated Badge Pill */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/25 mb-4 animate-float-subtle shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-violet-500 animate-spin-slow" />
-          Tesseract WebAssembly OCR &amp; Batch Image to DOCX
+          Universal AI Document Engine &amp; Image to DOCX
         </div>
 
         {/* H1 with Option 3 Vibrant Prism (Violet-Fuchsia-Pink) Gradient + Floating Particles */}
@@ -341,60 +300,41 @@ export default function ImgToWordPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        {/* Upload Dropzone (When no files in batch) */}
-        {!hasFiles && (
-          <div className="space-y-5">
+        {/* Upload Dropzone (When no file selected) */}
+        {!hasFile && (
+          <div className="space-y-4">
             <FileDropZone
               accept="image/*,.jpg,.jpeg,.png,.webp,.bmp,.gif,.tif,.tiff"
               onFileDrop={handleFileDrop}
               maxSizeMB={25}
-              title="Drop your Image(s) here"
-              subtitle="or click to browse from your device (Up to 10 images, max 25MB each)"
+              title="Drop your Image here"
+              subtitle="or click to browse from your device (Single image, max 25MB)"
             />
-
-            {/* Language Selector Bar Below Dropzone */}
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/70 dark:border-zinc-700/60 text-xs text-zinc-600 dark:text-zinc-300">
-              <div className="flex items-center gap-2 font-medium">
-                <Languages className="w-4 h-4 text-violet-500 shrink-0" />
-                <span>Default Recognition Language:</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <select
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value as OcrLanguage)}
-                  className="px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs font-semibold text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 cursor-pointer shadow-xs"
-                >
-                  {LANGUAGE_OPTIONS.map(({ value, label }) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-                <span className="text-[11px] text-zinc-400 hidden sm:inline">• 10+ Languages Supported</span>
-              </div>
+            <div className="flex items-center justify-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 pt-1">
+              <Sparkles className="w-3.5 h-3.5 text-violet-500 shrink-0" />
+              <span>Universal AI Engine auto-detects tables, English, Urdu &amp; Arabic text</span>
             </div>
           </div>
         )}
 
-        {/* When Files Exist in Batch Queue */}
-        {hasFiles && (
+        {/* When File is Selected */}
+        {hasFile && file && (
           <div className="space-y-6">
             {/* Top Toolbar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-zinc-100/80 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold">
-                  <Layers className="w-5 h-5" />
+                  <FileText className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-zinc-900 dark:text-white">
-                    {files.length} Image{files.length > 1 ? 's' : ''} in Batch Queue
+                  <h3 className="font-bold text-sm text-zinc-900 dark:text-white truncate max-w-xs sm:max-w-md">
+                    {file.name}
                   </h3>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Total Original Size: {formatFileSize(totalOriginalSize)}
+                    File Size: {formatFileSize(file.size)}
                     {result && (
                       <span className="text-emerald-600 dark:text-emerald-400 font-semibold ml-2">
-                        • {result.wordCount.toLocaleString()} words extracted in{' '}
-                        {(result.timeMs / 1000).toFixed(1)}s
+                        • Processed in {(result.timeMs / 1000).toFixed(1)}s
                       </span>
                     )}
                   </p>
@@ -402,96 +342,56 @@ export default function ImgToWordPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                {files.length < 10 && !isProcessing && (
-                  <label className="cursor-pointer text-xs font-semibold px-3 py-1.5 rounded-lg border border-violet-500/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 transition">
-                    + Add More
-                    <input
-                      type="file"
-                      accept={ACCEPTED_EXTS.join(',')}
-                      multiple
-                      className="hidden"
-                      onChange={handleMultipleFiles}
-                    />
-                  </label>
+                {!isProcessing && (
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="cursor-pointer text-xs font-semibold px-3 py-1.5 rounded-lg border border-violet-500/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 transition"
+                  >
+                    Change Image
+                  </button>
                 )}
                 <button
                   onClick={reset}
                   disabled={isProcessing}
                   className="text-xs font-semibold px-3 py-1.5 rounded-lg text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition disabled:opacity-30 cursor-pointer"
                 >
-                  Clear All
+                  Clear
                 </button>
               </div>
             </div>
 
-            {/* Language Selector Option */}
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-violet-500/5 dark:bg-violet-950/20 border border-violet-500/20 text-xs">
-              <div className="flex items-center gap-2">
-                <Languages className="w-4 h-4 text-violet-500 shrink-0" />
-                <span className="font-semibold text-zinc-800 dark:text-zinc-200">
-                  Select OCR Recognition Language:
-                </span>
-              </div>
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as OcrLanguage)}
-                disabled={isProcessing}
-                className="px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs font-semibold text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 cursor-pointer shadow-xs disabled:opacity-50"
-              >
-                {LANGUAGE_OPTIONS.map(({ value, label }) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Grid of uploaded images */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-              {files.map((f, i) => (
-                <div
-                  key={i}
-                  className="relative group rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-700 aspect-square bg-zinc-100 dark:bg-zinc-800 shadow-xs"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={previewUrls[i]} alt={f.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-2">
-                    <p className="text-white text-[10px] text-center font-medium leading-tight line-clamp-2">
-                      {f.name}
-                    </p>
-                    <p className="text-zinc-300 text-[9px]">{formatFileSize(f.size)}</p>
-                  </div>
-                  <button
-                    onClick={() => removeFile(i)}
-                    disabled={isProcessing}
-                    aria-label={`Remove ${f.name}`}
-                    className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-500/90 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm disabled:opacity-30 cursor-pointer"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
-
-              {files.length < 10 && !isProcessing && (
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="aspect-square rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-violet-500 hover:bg-violet-500/5 flex flex-col items-center justify-center gap-1.5 text-zinc-400 dark:text-zinc-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer"
-                >
-                  <Plus className="w-6 h-6" />
-                  <span className="text-[11px] font-semibold">Add more</span>
-                </button>
-              )}
-            </div>
+            {/* Hidden File Input for Change Image */}
             <input
               ref={fileInputRef}
               type="file"
               accept={ACCEPTED_EXTS.join(',')}
-              multiple
               className="sr-only"
-              onChange={handleMultipleFiles}
+              onChange={handleFileInputChange}
             />
 
-            {/* Processing Progress Bar */}
+            {/* Single Image Preview Card */}
+            {previewUrl && (
+              <div className="p-4 rounded-2xl border border-zinc-200/80 dark:border-zinc-700/80 bg-zinc-50/50 dark:bg-zinc-800/30 flex flex-col sm:flex-row items-center gap-4">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 shrink-0 shadow-xs relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={previewUrl} alt={file.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="space-y-1.5 text-center sm:text-left flex-1 min-w-0">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-500/20">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Single Document Ready for AI Conversion</span>
+                  </div>
+                  <h4 className="font-bold text-sm text-zinc-900 dark:text-white truncate">
+                    {file.name}
+                  </h4>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    Universal layout preservation, table grid detection, and bilingual script extraction.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Processing Progress Bar with Word Logo and AI Status Text */}
             <AnimatePresence>
               {isProcessing && (
                 <motion.div
@@ -499,18 +399,29 @@ export default function ImgToWordPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="pt-2"
+                  className="p-5 rounded-2xl bg-violet-500/5 dark:bg-violet-950/20 border border-violet-500/20 space-y-4"
                 >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-500" />
-                      <span className="font-semibold">{progressLabel || 'Processing OCR…'}</span>
+                  {/* Center Word & AI Conversion Animation */}
+                  <div className="flex items-center justify-center gap-4 py-1">
+                    <div className="w-10 h-10 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-600 dark:text-violet-400 animate-pulse">
+                      <ImageIcon className="w-5 h-5" />
+                    </div>
+                    <div className="text-violet-400 font-bold text-sm">&rarr;</div>
+                    <div className="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center p-2 shadow-sm">
+                      <WordIcon className="w-6 h-6" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin text-violet-600 dark:text-violet-400 shrink-0" />
+                      <span className="font-semibold">{progressLabel || 'AI is working: Analyzing document…'}</span>
                     </span>
                     <span className="text-xs font-mono font-bold text-violet-600 dark:text-violet-400">
                       {progress}%
                     </span>
                   </div>
-                  <div className="h-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden shadow-inner">
+                  <div className="h-2.5 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden shadow-inner">
                     <motion.div
                       className="h-full rounded-full bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600"
                       initial={{ width: 0 }}
@@ -518,8 +429,8 @@ export default function ImgToWordPage() {
                       transition={{ ease: 'linear' }}
                     />
                   </div>
-                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 text-center mt-2">
-                    Tesseract.js WebAssembly OCR running in local browser RAM — zero bytes leave your device.
+                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 text-center">
+                    Universal Engine v10 • Scanning tables, reading text &amp; constructing Microsoft Word .docx
                   </p>
                 </motion.div>
               )}
@@ -544,7 +455,7 @@ export default function ImgToWordPage() {
               )}
             </AnimatePresence>
 
-            {/* Success / Result Card */}
+            {/* Success / Result Card (Manual Download + Prominent Word Logo) */}
             <AnimatePresence>
               {result && (
                 <motion.div
@@ -555,17 +466,17 @@ export default function ImgToWordPage() {
                   className="rounded-2xl bg-gradient-to-br from-emerald-50/90 to-teal-50/90 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/70 dark:border-emerald-800/50 p-5 sm:p-6 shadow-sm"
                 >
                   <div className="flex items-center gap-3.5 mb-5">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20">
-                      <FileCheck2 className="w-6 h-6" />
+                    {/* Prominent Word Logo in Result Header */}
+                    <div className="w-12 h-12 rounded-2xl bg-blue-600/15 border border-blue-500/25 p-2 flex items-center justify-center shrink-0 shadow-sm">
+                      <WordIcon className="w-8 h-8" />
                     </div>
                     <div>
                       <h4 className="font-bold text-zinc-900 dark:text-white text-base">
                         Word Document Successfully Generated!
                       </h4>
                       <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                        {result.wordCount.toLocaleString()} words extracted across {result.pageCount}{' '}
-                        page{result.pageCount !== 1 ? 's' : ''} in{' '}
-                        {(result.timeMs / 1000).toFixed(1)}s
+                        {result.outputName} • Ready to download (Generated in{' '}
+                        {(result.timeMs / 1000).toFixed(1)}s)
                       </p>
                     </div>
                   </div>
@@ -576,7 +487,7 @@ export default function ImgToWordPage() {
                       className="flex-1 min-w-[200px] inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:via-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-violet-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                     >
                       <Download className="w-4 h-4" />
-                      <span>Download .docx Document</span>
+                      <span>Download Word Document (.docx)</span>
                       <WordIcon className="w-4 h-4" />
                     </button>
                     {previewText && (
@@ -593,7 +504,7 @@ export default function ImgToWordPage() {
                       className="inline-flex items-center gap-1.5 px-4 py-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors cursor-pointer shadow-xs"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
-                      <span>New</span>
+                      <span>Convert Another</span>
                     </button>
                   </div>
 
@@ -624,18 +535,18 @@ export default function ImgToWordPage() {
               <div className="pt-2">
                 <button
                   onClick={handleConvert}
-                  disabled={!hasFiles || isProcessing}
+                  disabled={!file || isProcessing}
                   className="w-full py-4 px-6 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:via-indigo-500 hover:to-purple-500 text-white rounded-2xl text-base font-bold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:scale-[1.005] active:scale-[0.99] flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   {isProcessing ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Extracting OCR Typography…</span>
+                      <span>{progressLabel || 'Extracting Typography…'}</span>
                     </>
                   ) : (
                     <>
                       <ScanText className="w-5 h-5" />
-                      <span>Convert Image{files.length > 1 ? 's' : ''} to Word (.docx)</span>
+                      <span>Convert Image to Word (.docx)</span>
                       <ArrowRight className="w-5 h-5" />
                     </>
                   )}
@@ -680,18 +591,18 @@ export default function ImgToWordPage() {
           </div>
         </div>
 
-        {/* Card 3: Multi-Language Batching */}
+        {/* Card 3: Multi-Language & Layouts */}
         <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
           <div>
             <div className="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 p-2.5 flex items-center justify-center mb-4 border border-indigo-500/20">
-              <Layers className="w-6 h-6" />
+              <Sparkles className="w-6 h-6" />
             </div>
             <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
-              Multi-Language &amp; Batch
+              Multi-Language &amp; Layouts
             </h3>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Process up to 10 photos concurrently across English, Urdu, Arabic, Spanish, French, German,
-              and stitch pages into a unified document.
+              Universal AI recognition extracts English, Urdu, Arabic, numbers, and tabular data with
+              accurate spatial reconstruction into Word.
             </p>
           </div>
         </div>
