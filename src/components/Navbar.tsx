@@ -286,7 +286,7 @@ export default function Navbar() {
                 {/* Dropdown Floating Menu */}
                 {pdfDropdownOpen && (
                   <div
-                    className="absolute left-0 mt-2.5 w-[560px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass animate-in fade-in zoom-in-95 duration-150"
+                    className="absolute left-0 mt-2.5 w-[560px] rounded-[22px] p-4 sm:p-5 z-50 dropdown-glass animate-in fade-in slide-in-from-top-2 duration-200"
                   >
                       {/* Top Header Tag */}
                       <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-white/60 dark:border-white/10">
@@ -465,7 +465,7 @@ export default function Navbar() {
 
                 {wordDropdownOpen && (
                   <div
-                    className="absolute left-0 mt-2.5 w-[380px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass animate-in fade-in zoom-in-95 duration-150"
+                    className="absolute left-0 mt-2.5 w-[380px] rounded-[22px] p-4 sm:p-5 z-50 dropdown-glass animate-in fade-in slide-in-from-top-2 duration-200"
                   >
                       {/* Top Header Tag */}
                       <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/60 dark:border-white/10">
@@ -608,7 +608,7 @@ export default function Navbar() {
       {/* Mobile Drawer with Ultra-Frosted Glassmorphism Effect */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 top-16 z-40 mobile-drawer-glass lg:hidden p-5 sm:p-6 flex flex-col justify-between border-t border-white/50 dark:border-white/10 shadow-2xl overflow-y-auto animate-in fade-in duration-200"
+          className="fixed inset-0 top-16 z-40 mobile-drawer-glass lg:hidden p-5 sm:p-6 flex flex-col justify-between border-t border-white/50 dark:border-white/10 shadow-2xl overflow-y-auto animate-in fade-in slide-in-from-top-3 duration-200"
         >
           <div className="space-y-3">
             {/* Mobile PDF Tools Accordion */}

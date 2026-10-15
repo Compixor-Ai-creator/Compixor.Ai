@@ -141,7 +141,7 @@ function FiveStars() {
 // Compact Individual Testimonial Card Component
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <div className="glass-card p-4 sm:p-4.5 flex flex-col justify-between rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 hover:border-brand-500/30 hover:shadow-lg hover:shadow-brand-500/10 transition-all duration-300 group w-[270px] sm:w-[310px] shrink-0 select-none">
+    <div className="glass-card p-4 sm:p-4.5 flex flex-col justify-between rounded-2xl hover:shadow-lg hover:shadow-brand-500/10 transition-all duration-300 group w-[270px] sm:w-[310px] shrink-0 select-none">
       <div>
         {/* Top Row: Stars + Rating */}
         <div className="flex items-center justify-between gap-2 mb-2">

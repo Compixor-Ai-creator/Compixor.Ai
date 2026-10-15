@@ -325,26 +325,26 @@ export default function HomePage() {
             >
               <div className="relative">
                 {/* Floating Top-Left Micro Tag */}
-                <div className="absolute -top-3.5 -left-3.5 z-20 hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-white/95 dark:bg-zinc-800/95 border border-brand-500/30 text-brand-600 dark:text-brand-300 shadow-lg shadow-brand-500/10 backdrop-blur-md animate-float-subtle">
+                <div className="absolute -top-3.5 -left-3.5 z-20 hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold glass-pill text-brand-600 dark:text-brand-300 animate-float-subtle">
                   <Sparkles className="w-3 h-3 text-brand-500" />
                   <span>100% In-Browser RAM</span>
                 </div>
 
                 {/* Floating Bottom-Right Micro Tag */}
-                <div className="absolute -bottom-3.5 -right-3.5 z-20 hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-white/95 dark:bg-zinc-800/95 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 shadow-lg shadow-emerald-500/10 backdrop-blur-md">
+                <div className="absolute -bottom-3.5 -right-3.5 z-20 hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold glass-pill text-emerald-600 dark:text-emerald-400">
                   <CheckCircle2 className="w-3 h-3 text-emerald-500" />
                   <span>Zero Cloud Uploads</span>
                 </div>
 
                 {/* The Showcase Glass Card */}
-                <div className="glass-card p-5 sm:p-6 rounded-3xl border border-white/90 dark:border-white/10 shadow-[0_25px_70px_-15px_rgba(124,58,237,0.20),0_0_0_1px_rgba(255,255,255,0.8)_inset,0_15px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_25px_70px_rgba(0,0,0,0.65)] backdrop-blur-2xl relative overflow-hidden flex flex-col hover:shadow-brand-500/25 transition-all duration-300">
+                <div className="glass-panel p-5 sm:p-6 rounded-[22px] relative overflow-hidden flex flex-col hover:border-brand-500/30 transition-all duration-300">
                   {/* Top Border Luxury Dual-Tone Highlight Beam */}
                   <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand-500/70 via-rose-400/60 to-transparent pointer-events-none" />
                   {/* Subtle Inner Glass Warm Sheen */}
                   <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-gradient-to-br from-rose-500/15 via-amber-400/10 to-transparent blur-2xl pointer-events-none" />
 
                   {/* Header Row with dynamic tool count */}
-                  <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-zinc-200/70 dark:border-zinc-800/70 shrink-0">
+                  <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-white/60 dark:border-white/10 shrink-0">
                     <div className="flex items-center gap-2.5">
                       <span className="relative flex h-2.5 w-2.5">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -370,7 +370,7 @@ export default function HomePage() {
                         <Link
                           key={feat.href}
                           href={feat.href}
-                          className="group flex items-center gap-3.5 p-2.5 sm:p-3 rounded-2xl transition-all duration-200 hover:bg-gradient-to-r hover:from-white/90 hover:to-brand-50/40 dark:hover:bg-zinc-800/80 hover:shadow-sm border border-transparent hover:border-brand-500/20"
+                          className="group flex items-center gap-3.5 p-2.5 sm:p-3 rounded-2xl transition-all duration-200 hover:bg-white/70 dark:hover:bg-white/10 hover:shadow-xs border border-transparent hover:border-white/80 dark:hover:border-white/10"
                         >
                           <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${feat.color} flex items-center justify-center text-white shrink-0 shadow-sm shadow-brand-500/20 group-hover:scale-105 transition-transform duration-200`}>
                             <Icon className="w-5 h-5" />
@@ -392,7 +392,7 @@ export default function HomePage() {
                   </div>
 
                   {/* Sleek Bottom Fadeout Hint */}
-                  <div className="pointer-events-none -mx-6 -mb-6 mt-2 pt-4 pb-2 bg-gradient-to-t from-white/95 dark:from-zinc-900/95 to-transparent flex items-center justify-center">
+                  <div className="pointer-events-none -mx-6 -mb-6 mt-2 pt-4 pb-2 bg-gradient-to-t from-white/80 dark:from-surface-950/80 to-transparent flex items-center justify-center">
                     <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 flex items-center gap-1">
                       <span>Scroll to view all tools</span>
                       <span>↓</span>
@@ -435,13 +435,13 @@ export default function HomePage() {
               return (
                 <motion.div key={tool.href} variants={itemVariants}>
                   <Link href={tool.href} className="block group h-full">
-                    <div className="glass-card p-7 sm:p-8 h-full flex flex-col justify-between rounded-3xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/10 hover:border-brand-500/30">
+                    <div className="glass-card p-7 sm:p-8 h-full flex flex-col justify-between rounded-[22px] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/10">
                       <div>
                         <div className="flex items-start justify-between gap-4 mb-6">
                           <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-1 transition-all duration-300 shadow-md`}>
                             <Icon className="w-7 h-7 text-white" />
                           </div>
-                          <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors group-hover:bg-brand-500/10 group-hover:text-brand-600 dark:group-hover:text-brand-300">
+                          <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full glass-pill text-zinc-700 dark:text-zinc-200 transition-colors group-hover:border-brand-500/40 group-hover:text-brand-600 dark:group-hover:text-brand-300">
                             {tool.badge}
                           </span>
                         </div>

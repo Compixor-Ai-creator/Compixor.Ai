@@ -103,7 +103,7 @@ export default function WhyChooseCompixor() {
         {/* ================= CARD 1: ONE COMPLETE WORKSPACE ================= */}
         <motion.div
           variants={cardVariants}
-          className="group relative flex flex-col rounded-3xl p-6 sm:p-7 bg-white/80 dark:bg-surface-900/60 backdrop-blur-md border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-500/10 hover:border-brand-500/40 transition-all duration-500 ease-out"
+          className="group relative flex flex-col rounded-[22px] p-6 sm:p-7 glass-card shadow-xs hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-500/10 hover:border-brand-500/40 transition-all duration-500 ease-out"
         >
           {/* Card Visual Mockup Container */}
           <div className="h-68 rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/70 dark:from-surface-850/80 dark:to-surface-800/60 border border-zinc-200/60 dark:border-zinc-700/50 p-4 flex items-center justify-center relative overflow-hidden mb-6">
@@ -159,7 +159,7 @@ export default function WhyChooseCompixor() {
         {/* ================= CARD 2: ACCURACY & SPEED YOU CAN TRUST ================= */}
         <motion.div
           variants={cardVariants}
-          className="group relative flex flex-col rounded-3xl p-6 sm:p-7 bg-white/80 dark:bg-surface-900/60 backdrop-blur-md border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/10 hover:border-emerald-500/40 transition-all duration-500 ease-out"
+          className="group relative flex flex-col rounded-[22px] p-6 sm:p-7 glass-card shadow-xs hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/10 hover:border-emerald-500/40 transition-all duration-500 ease-out"
         >
           {/* Card Visual Mockup Container */}
           <div className="h-68 rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/70 dark:from-surface-850/80 dark:to-surface-800/60 border border-zinc-200/60 dark:border-zinc-700/50 p-4 flex items-center justify-center relative overflow-hidden mb-6">
@@ -231,7 +231,7 @@ export default function WhyChooseCompixor() {
         {/* ================= CARD 3: BUILT-IN SECURITY ================= */}
         <motion.div
           variants={cardVariants}
-          className="group relative flex flex-col rounded-3xl p-6 sm:p-7 bg-white/80 dark:bg-surface-900/60 backdrop-blur-md border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-500/40 transition-all duration-500 ease-out"
+          className="group relative flex flex-col rounded-[22px] p-6 sm:p-7 glass-card shadow-xs hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-500/40 transition-all duration-500 ease-out"
         >
           {/* Card Visual Mockup Container */}
           <div className="h-68 rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/70 dark:from-surface-850/80 dark:to-surface-800/60 border border-zinc-200/60 dark:border-zinc-700/50 p-4 flex items-center justify-center relative overflow-hidden mb-6">
