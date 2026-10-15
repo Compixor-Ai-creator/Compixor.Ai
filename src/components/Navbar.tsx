@@ -608,11 +608,11 @@ export default function Navbar() {
       {/* Mobile Drawer with Slide Blur Effect */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 top-16 z-40 bg-white/90 dark:bg-surface-950/90 backdrop-blur-2xl lg:hidden p-6 flex flex-col justify-between border-t border-zinc-200/60 dark:border-zinc-800/60 shadow-2xl overflow-y-auto animate-in fade-in duration-200"
+          className="fixed inset-0 top-16 z-40 mobile-drawer-glass lg:hidden p-5 sm:p-6 flex flex-col justify-between border-t border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl overflow-y-auto animate-in fade-in duration-200"
         >
           <div className="space-y-3">
             {/* Mobile PDF Tools Accordion */}
-            <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-surface-900/40 overflow-hidden">
+            <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/60 shadow-xs overflow-hidden backdrop-blur-md">
               <button
                 type="button"
                 onClick={() => setMobilePdfAccordionOpen((prev) => !prev)}
@@ -683,7 +683,7 @@ export default function Navbar() {
               </div>
 
               {/* Mobile Word Tools Accordion */}
-              <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-surface-900/40 overflow-hidden">
+              <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/60 shadow-xs overflow-hidden backdrop-blur-md">
                 <button
                   type="button"
                   onClick={() => setMobileWordAccordionOpen((prev) => !prev)}
