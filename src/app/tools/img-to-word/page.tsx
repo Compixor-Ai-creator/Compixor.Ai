@@ -430,7 +430,7 @@ export default function ImgToWordPage() {
               onChange={handleFileInputChange}
             />
 
-            {/* Laser Scan AI Animation During Processing */}
+            {/* Laser Scan AI Animation During Processing (Theme Adaptive) */}
             <AnimatePresence>
               {isProcessing && (
                 <motion.div
@@ -438,42 +438,42 @@ export default function ImgToWordPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="p-6 sm:p-7 rounded-2xl bg-zinc-900 border border-violet-500/40 space-y-5 shadow-xl"
+                  className="p-6 sm:p-7 rounded-2xl bg-white/90 dark:bg-zinc-900/90 border border-violet-200 dark:border-violet-500/40 space-y-5 shadow-xl backdrop-blur-sm"
                 >
                   {/* Large Transformation Cards with Continuous Laser Scan Beam */}
                   <div className="flex items-center justify-center gap-5 sm:gap-8 py-3">
                     {/* Left: Document Card with Laser Scanning Beam */}
-                    <div className="relative w-20 h-28 sm:w-24 sm:h-32 rounded-2xl bg-zinc-800 border-2 border-violet-500/60 overflow-hidden flex flex-col items-center justify-center shadow-xl shadow-violet-500/20">
+                    <div className="relative w-20 h-28 sm:w-24 sm:h-32 rounded-2xl bg-zinc-100 dark:bg-zinc-800 border-2 border-violet-400/70 dark:border-violet-500/60 overflow-hidden flex flex-col items-center justify-center shadow-lg shadow-violet-500/10 dark:shadow-violet-500/20">
                       {previewUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={previewUrl} alt={file.name} className="w-full h-full object-cover opacity-75" />
+                        <img src={previewUrl} alt={file.name} className="w-full h-full object-cover opacity-90 dark:opacity-75" />
                       ) : (
-                        <FileText className="w-9 h-9 text-violet-400" />
+                        <FileText className="w-9 h-9 text-violet-500 dark:text-violet-400" />
                       )}
-                      <div className="absolute inset-0 bg-violet-950/25 pointer-events-none" />
+                      <div className="absolute inset-0 bg-violet-600/5 dark:bg-violet-950/25 pointer-events-none" />
                       
                       {/* Continuous Moving Laser Scanning Beam */}
                       <motion.div
-                        className="absolute inset-x-0 h-1.5 bg-gradient-to-r from-cyan-400 via-violet-300 to-fuchsia-400 shadow-[0_0_14px_#c084fc] z-20 pointer-events-none"
+                        className="absolute inset-x-0 h-1.5 bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400 shadow-[0_0_14px_#c084fc] z-20 pointer-events-none"
                         animate={{ top: ['4%', '92%', '4%'] }}
                         transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
                       />
                       
-                      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-white bg-black/75 px-1.5 py-0.5 rounded backdrop-blur-xs z-20 uppercase tracking-widest">
+                      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-white bg-zinc-900/80 dark:bg-black/75 px-1.5 py-0.5 rounded backdrop-blur-xs z-20 uppercase tracking-widest shadow-xs">
                         Scanning
                       </span>
                     </div>
 
                     {/* Dynamic Arrow */}
-                    <div className="flex flex-col items-center gap-1 text-violet-400">
+                    <div className="flex flex-col items-center gap-1 text-violet-600 dark:text-violet-400">
                       <span className="text-2xl sm:text-3xl font-bold animate-pulse">&rarr;</span>
-                      <span className="text-[10px] font-mono font-bold text-violet-300">AI OCR</span>
+                      <span className="text-[10px] font-mono font-bold text-violet-600 dark:text-violet-300">AI OCR</span>
                     </div>
 
                     {/* Right: Word DOCX Victory Card with Word Logo */}
-                    <div className="relative w-20 h-28 sm:w-24 sm:h-32 rounded-2xl bg-blue-600/20 border-2 border-blue-500/50 flex flex-col items-center justify-center shadow-xl shadow-blue-500/20">
+                    <div className="relative w-20 h-28 sm:w-24 sm:h-32 rounded-2xl bg-blue-50/90 dark:bg-blue-600/20 border-2 border-blue-400/70 dark:border-blue-500/50 flex flex-col items-center justify-center shadow-lg shadow-blue-500/10 dark:shadow-blue-500/20">
                       <WordIcon className="w-12 h-12" />
-                      <span className="text-[9px] font-bold text-blue-300 uppercase tracking-widest mt-2">
+                      <span className="text-[9px] font-bold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/50 px-1.5 py-0.5 rounded uppercase tracking-widest mt-2">
                         DOCX
                       </span>
                     </div>
@@ -481,22 +481,22 @@ export default function ImgToWordPage() {
 
                   {/* AI Progress Label with Ping Dot */}
                   <div className="text-center space-y-1.5">
-                    <div className="inline-flex items-center gap-2 text-xs font-bold text-violet-200 bg-violet-500/20 px-3.5 py-1.5 rounded-full border border-violet-500/40 shadow-xs">
-                      <span className="w-2 h-2 rounded-full bg-violet-400 animate-ping" />
+                    <div className="inline-flex items-center gap-2 text-xs font-bold text-violet-700 dark:text-violet-200 bg-violet-500/10 dark:bg-violet-500/20 px-3.5 py-1.5 rounded-full border border-violet-500/25 dark:border-violet-500/40 shadow-xs">
+                      <span className="w-2 h-2 rounded-full bg-violet-600 dark:bg-violet-400 animate-ping" />
                       <span>{progressLabel || 'AI is working: Scanning image layout & table grids...'}</span>
                     </div>
-                    <p className="text-[11px] text-zinc-400">
+                    <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
                       Ephemeral RAM buffer • Auto-purged after conversion
                     </p>
                   </div>
 
                   {/* Animated Gradient Progress Bar */}
                   <div className="space-y-1">
-                    <div className="flex justify-between text-xs text-zinc-400 font-mono">
+                    <div className="flex justify-between text-xs text-zinc-600 dark:text-zinc-400 font-mono">
                       <span>Neural Extraction</span>
-                      <span className="text-violet-400 font-bold">{progress}%</span>
+                      <span className="text-violet-600 dark:text-violet-400 font-bold">{progress}%</span>
                     </div>
-                    <div className="h-2 rounded-full bg-zinc-800 overflow-hidden shadow-inner">
+                    <div className="h-2.5 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden shadow-inner">
                       <motion.div
                         className="h-full rounded-full bg-gradient-to-r from-violet-600 via-indigo-500 to-purple-600"
                         initial={{ width: 0 }}
