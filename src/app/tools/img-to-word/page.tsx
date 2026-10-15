@@ -346,37 +346,47 @@ export default function ImgToWordPage() {
         {/* When File is Selected */}
         {hasFile && file && (
           <div className="space-y-6">
-            {/* Unified Document Card (Only shown before conversion completion) */}
-            {!result && (
-              <div className="p-4 sm:p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-700/80 bg-zinc-50/70 dark:bg-zinc-800/40 flex flex-col sm:flex-row items-center gap-4">
-                {/* Thumbnail with Laser Scanning Beam during processing */}
+            {/* Uploaded Source Document Card (Always visible when file is loaded) */}
+            <div className="p-4 sm:p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-700/80 bg-zinc-50/70 dark:bg-zinc-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5 min-w-0">
+                {/* Thumbnail with Source Image */}
                 {previewUrl ? (
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 shrink-0 shadow-xs relative group">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 shrink-0 shadow-xs relative group">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={previewUrl} alt={file.name} className="w-full h-full object-cover" />
-                    {isProcessing && (
-                      <div className="absolute inset-0 bg-violet-600/15 pointer-events-none overflow-hidden">
-                        <div className="w-full h-1 bg-gradient-to-r from-transparent via-violet-400 to-transparent shadow-[0_0_8px_#8b5cf6] animate-pulse absolute top-0 left-0 right-0 animate-bounce" />
-                      </div>
-                    )}
                   </div>
                 ) : (
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold shrink-0">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold shrink-0">
                     <FileText className="w-8 h-8" />
                   </div>
                 )}
 
                 {/* File Details & Badges */}
-                <div className="space-y-1.5 text-center sm:text-left flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
-                      <CheckCircle2 className="w-3 h-3" />
-                      Single Document Mode
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-violet-600 dark:text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-md border border-violet-500/20">
-                      <ShieldCheck className="w-3 h-3" />
-                      Zero Data Leak
-                    </span>
+                <div className="space-y-1.5 min-w-0">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {result ? (
+                      <>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 bg-zinc-200/70 dark:bg-zinc-700/60 px-2 py-0.5 rounded-md border border-zinc-300/80 dark:border-zinc-600">
+                          <ImageIcon className="w-3 h-3 text-violet-500" />
+                          Uploaded Original Image
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Converted Successfully
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Single Document Mode
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-violet-600 dark:text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-md border border-violet-500/20">
+                          <ShieldCheck className="w-3 h-3" />
+                          Zero Data Leak
+                        </span>
+                      </>
+                    )}
                   </div>
                   <h3 className="font-bold text-sm text-zinc-900 dark:text-white truncate max-w-xs sm:max-w-md">
                     {file.name}
@@ -385,31 +395,31 @@ export default function ImgToWordPage() {
                     File Size: {formatFileSize(file.size)} • Auto-detects tables, English &amp; Urdu
                   </p>
                 </div>
-
-                {/* Actions: Change Image (with icon) & Remove (with icon) */}
-                <div className="flex items-center gap-2 shrink-0">
-                  {!isProcessing && (
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="inline-flex items-center gap-1.5 cursor-pointer text-xs font-semibold px-3 py-2 rounded-xl border border-violet-500/30 text-violet-600 dark:text-violet-400 bg-violet-500/5 hover:bg-violet-500/15 transition shadow-xs"
-                      title="Select a different image"
-                    >
-                      <Upload className="w-3.5 h-3.5" />
-                      <span>Change Image</span>
-                    </button>
-                  )}
-                  <button
-                    onClick={reset}
-                    disabled={isProcessing}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl text-zinc-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition disabled:opacity-30 cursor-pointer"
-                    title="Remove image"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Remove</span>
-                  </button>
-                </div>
               </div>
-            )}
+
+              {/* Actions: Change Image (with icon) & Remove (with icon) */}
+              <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                {!isProcessing && (
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="inline-flex items-center gap-1.5 cursor-pointer text-xs font-semibold px-3 py-2 rounded-xl border border-violet-500/30 text-violet-600 dark:text-violet-400 bg-violet-500/5 hover:bg-violet-500/15 transition shadow-xs"
+                    title="Select a different image"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Change Image</span>
+                  </button>
+                )}
+                <button
+                  onClick={reset}
+                  disabled={isProcessing}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl text-zinc-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition disabled:opacity-30 cursor-pointer"
+                  title="Remove image"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Remove</span>
+                </button>
+              </div>
+            </div>
 
             {/* Hidden File Input for Change Image */}
             <input
@@ -420,7 +430,7 @@ export default function ImgToWordPage() {
               onChange={handleFileInputChange}
             />
 
-            {/* Processing Progress Bar with Word Logo and AI Status Text */}
+            {/* Laser Scan AI Animation During Processing */}
             <AnimatePresence>
               {isProcessing && (
                 <motion.div
@@ -428,39 +438,73 @@ export default function ImgToWordPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="p-5 rounded-2xl bg-violet-500/5 dark:bg-violet-950/20 border border-violet-500/20 space-y-4"
+                  className="p-6 sm:p-7 rounded-2xl bg-zinc-900 border border-violet-500/40 space-y-5 shadow-xl"
                 >
-                  {/* Center Word & AI Conversion Animation */}
-                  <div className="flex items-center justify-center gap-4 py-1">
-                    <div className="w-10 h-10 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-600 dark:text-violet-400 animate-pulse">
-                      <ImageIcon className="w-5 h-5" />
+                  {/* Large Transformation Cards with Continuous Laser Scan Beam */}
+                  <div className="flex items-center justify-center gap-5 sm:gap-8 py-3">
+                    {/* Left: Document Card with Laser Scanning Beam */}
+                    <div className="relative w-20 h-28 sm:w-24 sm:h-32 rounded-2xl bg-zinc-800 border-2 border-violet-500/60 overflow-hidden flex flex-col items-center justify-center shadow-xl shadow-violet-500/20">
+                      {previewUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={previewUrl} alt={file.name} className="w-full h-full object-cover opacity-75" />
+                      ) : (
+                        <FileText className="w-9 h-9 text-violet-400" />
+                      )}
+                      <div className="absolute inset-0 bg-violet-950/25 pointer-events-none" />
+                      
+                      {/* Continuous Moving Laser Scanning Beam */}
+                      <motion.div
+                        className="absolute inset-x-0 h-1.5 bg-gradient-to-r from-cyan-400 via-violet-300 to-fuchsia-400 shadow-[0_0_14px_#c084fc] z-20 pointer-events-none"
+                        animate={{ top: ['4%', '92%', '4%'] }}
+                        transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                      />
+                      
+                      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-white bg-black/75 px-1.5 py-0.5 rounded backdrop-blur-xs z-20 uppercase tracking-widest">
+                        Scanning
+                      </span>
                     </div>
-                    <div className="text-violet-400 font-bold text-sm">&rarr;</div>
-                    <div className="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center p-2 shadow-sm">
-                      <WordIcon className="w-6 h-6" />
+
+                    {/* Dynamic Arrow */}
+                    <div className="flex flex-col items-center gap-1 text-violet-400">
+                      <span className="text-2xl sm:text-3xl font-bold animate-pulse">&rarr;</span>
+                      <span className="text-[10px] font-mono font-bold text-violet-300">AI OCR</span>
+                    </div>
+
+                    {/* Right: Word DOCX Victory Card with Word Logo */}
+                    <div className="relative w-20 h-28 sm:w-24 sm:h-32 rounded-2xl bg-blue-600/20 border-2 border-blue-500/50 flex flex-col items-center justify-center shadow-xl shadow-blue-500/20">
+                      <WordIcon className="w-12 h-12" />
+                      <span className="text-[9px] font-bold text-blue-300 uppercase tracking-widest mt-2">
+                        DOCX
+                      </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin text-violet-600 dark:text-violet-400 shrink-0" />
-                      <span className="font-semibold">{progressLabel || 'AI is working: Analyzing document…'}</span>
-                    </span>
-                    <span className="text-xs font-mono font-bold text-violet-600 dark:text-violet-400">
-                      {progress}%
-                    </span>
+                  {/* AI Progress Label with Ping Dot */}
+                  <div className="text-center space-y-1.5">
+                    <div className="inline-flex items-center gap-2 text-xs font-bold text-violet-200 bg-violet-500/20 px-3.5 py-1.5 rounded-full border border-violet-500/40 shadow-xs">
+                      <span className="w-2 h-2 rounded-full bg-violet-400 animate-ping" />
+                      <span>{progressLabel || 'AI is working: Scanning image layout & table grids...'}</span>
+                    </div>
+                    <p className="text-[11px] text-zinc-400">
+                      Ephemeral RAM buffer • Auto-purged after conversion
+                    </p>
                   </div>
-                  <div className="h-2.5 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden shadow-inner">
-                    <motion.div
-                      className="h-full rounded-full bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progress}%` }}
-                      transition={{ ease: 'linear' }}
-                    />
+
+                  {/* Animated Gradient Progress Bar */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs text-zinc-400 font-mono">
+                      <span>Neural Extraction</span>
+                      <span className="text-violet-400 font-bold">{progress}%</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-zinc-800 overflow-hidden shadow-inner">
+                      <motion.div
+                        className="h-full rounded-full bg-gradient-to-r from-violet-600 via-indigo-500 to-purple-600"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ ease: 'linear' }}
+                      />
+                    </div>
                   </div>
-                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 text-center">
-                    Universal Engine v10 • Scanning tables, reading text &amp; constructing Microsoft Word .docx
-                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
