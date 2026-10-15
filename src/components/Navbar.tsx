@@ -286,10 +286,10 @@ export default function Navbar() {
                 {/* Dropdown Floating Menu */}
                 {pdfDropdownOpen && (
                   <div
-                    className="absolute left-0 mt-2.5 w-[560px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-zinc-700/60 shadow-2xl shadow-purple-950/15 dark:shadow-black/70 animate-in fade-in zoom-in-95 duration-150"
+                    className="absolute left-0 mt-2.5 w-[560px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass animate-in fade-in zoom-in-95 duration-150"
                   >
                       {/* Top Header Tag */}
-                      <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-zinc-100 dark:border-zinc-800/80">
+                      <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-white/60 dark:border-white/10">
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                           <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
@@ -321,8 +321,8 @@ export default function Navbar() {
                                       onClick={() => setPdfDropdownOpen(false)}
                                       className={`group flex items-center gap-3 p-2 rounded-2xl transition-all duration-150 ${
                                         isCurrent
-                                          ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300'
-                                          : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/70 hover:text-brand-600 dark:hover:text-brand-400'
+                                          ? 'bg-brand-500/15 text-brand-600 dark:text-brand-300 font-semibold shadow-xs'
+                                          : 'text-zinc-800 dark:text-zinc-200 hover:bg-white/70 dark:hover:bg-white/10 hover:text-brand-600 dark:hover:text-brand-400'
                                       }`}
                                     >
                                       {/* Vibrant Rounded Icon Badge */}
@@ -372,8 +372,8 @@ export default function Navbar() {
                                     onClick={() => setPdfDropdownOpen(false)}
                                     className={`group flex items-center gap-3 p-2 rounded-2xl transition-all duration-150 ${
                                       isCurrent
-                                        ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300'
-                                        : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/70 hover:text-brand-600 dark:hover:text-brand-400'
+                                        ? 'bg-brand-500/15 text-brand-600 dark:text-brand-300 font-semibold shadow-xs'
+                                        : 'text-zinc-800 dark:text-zinc-200 hover:bg-white/70 dark:hover:bg-white/10 hover:text-brand-600 dark:hover:text-brand-400'
                                     }`}
                                   >
                                     <div
@@ -465,10 +465,10 @@ export default function Navbar() {
 
                 {wordDropdownOpen && (
                   <div
-                    className="absolute left-0 mt-2.5 w-[380px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-zinc-700/60 shadow-2xl shadow-purple-950/15 dark:shadow-black/70 animate-in fade-in zoom-in-95 duration-150"
+                    className="absolute left-0 mt-2.5 w-[380px] rounded-3xl p-4 sm:p-5 z-50 dropdown-glass animate-in fade-in zoom-in-95 duration-150"
                   >
                       {/* Top Header Tag */}
-                      <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/80">
+                      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/60 dark:border-white/10">
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                           <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
@@ -491,8 +491,8 @@ export default function Navbar() {
                               onClick={() => setWordDropdownOpen(false)}
                               className={`group flex items-start gap-3 p-2.5 rounded-2xl transition-all duration-150 cursor-pointer ${
                                 isCurrent
-                                  ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300'
-                                  : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/70 hover:text-brand-600 dark:hover:text-brand-400'
+                                  ? 'bg-brand-500/15 text-brand-600 dark:text-brand-300 font-semibold shadow-xs'
+                                  : 'text-zinc-800 dark:text-zinc-200 hover:bg-white/70 dark:hover:bg-white/10 hover:text-brand-600 dark:hover:text-brand-400'
                               }`}
                             >
                               <div
