@@ -65,7 +65,7 @@ export interface HomepageSeoData {
 
 export const BASE_URL = 'https://compixor-ai.cloud';
 export const AUTHOR_NAME = 'Haroon Ali';
-export const OG_IMAGE_URL = `${BASE_URL}/images/og-banner.png`;
+export const OG_IMAGE_URL = `${BASE_URL}/images/og-banner-v2.png`;
 
 export const homepageSeoData: HomepageSeoData = {
   title: 'Free Online PDF Tools No Upload - Privacy First | Compixor',
