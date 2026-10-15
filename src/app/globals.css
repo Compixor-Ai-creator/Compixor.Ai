@@ -10,11 +10,11 @@
   }
 
   :root {
-    --topo-color: rgba(124, 58, 237, 0.06);
-    --glass-bg: rgba(255, 255, 255, 0.62);
-    --glass-border: rgba(255, 255, 255, 0.7);
-    --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.65);
-    --glow-color: rgba(124, 58, 237, 0.15);
+    --topo-color: transparent;
+    --glass-bg: rgba(255, 255, 255, 0.78);
+    --glass-border: rgba(255, 255, 255, 0.75);
+    --glass-shadow: 0 8px 30px rgba(35, 25, 80, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    --glow-color: rgba(124, 58, 237, 0.12);
     --surface-primary: #ffffff;
     --surface-secondary: #f4f4f5;
     --text-primary: #18181b;
@@ -23,11 +23,11 @@
   }
 
   .dark {
-    --topo-color: rgba(124, 58, 237, 0.08);
-    --glass-bg: rgba(15, 12, 36, 0.65);
+    --topo-color: transparent;
+    --glass-bg: rgba(18, 15, 38, 0.80);
     --glass-border: rgba(255, 255, 255, 0.12);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    --glow-color: rgba(124, 58, 237, 0.25);
+    --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    --glow-color: rgba(124, 58, 237, 0.20);
     --surface-primary: #0f0c24;
     --surface-secondary: #16132a;
     --text-primary: #fafafa;
@@ -95,22 +95,20 @@
 
 @layer components {
 
-  /* Topographic Background Pattern */
+  /* Topographic Background Pattern - disabled to ensure 100% clean, grain-free glass blur */
   .topo-bg {
-    background-image: url("data:image/svg+xml,%3Csvg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%237c3aed' stroke-width='0.7' opacity='0.028'%3E%3Cellipse cx='300' cy='300' rx='280' ry='180'/%3E%3Cellipse cx='300' cy='300' rx='240' ry='150'/%3E%3Cellipse cx='300' cy='300' rx='200' ry='120'/%3E%3Cellipse cx='300' cy='300' rx='160' ry='95'/%3E%3Cellipse cx='300' cy='300' rx='120' ry='70'/%3E%3Cellipse cx='300' cy='300' rx='80' ry='45'/%3E%3Cellipse cx='300' cy='300' rx='40' ry='22'/%3E%3Cellipse cx='150' cy='150' rx='130' ry='85' transform='rotate(-25 150 150)'/%3E%3Cellipse cx='150' cy='150' rx='100' ry='65' transform='rotate(-25 150 150)'/%3E%3Cellipse cx='150' cy='150' rx='70' ry='45' transform='rotate(-25 150 150)'/%3E%3Cellipse cx='150' cy='150' rx='40' ry='25' transform='rotate(-25 150 150)'/%3E%3Cellipse cx='450' cy='450' rx='140' ry='90' transform='rotate(30 450 450)'/%3E%3Cellipse cx='450' cy='450' rx='110' ry='70' transform='rotate(30 450 450)'/%3E%3Cellipse cx='450' cy='450' rx='80' ry='50' transform='rotate(30 450 450)'/%3E%3Cellipse cx='450' cy='450' rx='50' ry='30' transform='rotate(30 450 450)'/%3E%3Cellipse cx='500' cy='120' rx='100' ry='65' transform='rotate(15 500 120)'/%3E%3Cellipse cx='500' cy='120' rx='70' ry='45' transform='rotate(15 500 120)'/%3E%3Cellipse cx='500' cy='120' rx='40' ry='25' transform='rotate(15 500 120)'/%3E%3Cellipse cx='100' cy='480' rx='110' ry='70' transform='rotate(-20 100 480)'/%3E%3Cellipse cx='100' cy='480' rx='80' ry='50' transform='rotate(-20 100 480)'/%3E%3Cellipse cx='100' cy='480' rx='50' ry='30' transform='rotate(-20 100 480)'/%3E%3C/g%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 600px 600px;
+    background-image: none;
   }
 
   .dark .topo-bg {
-    background-image: url("data:image/svg+xml,%3Csvg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%237c3aed' stroke-width='0.8' opacity='0.1'%3E%3Cellipse cx='300' cy='300' rx='280' ry='180'/%3E%3Cellipse cx='300' cy='300' rx='240' ry='150'/%3E%3Cellipse cx='300' cy='300' rx='200' ry='120'/%3E%3Cellipse cx='300' cy='300' rx='160' ry='95'/%3E%3Cellipse cx='300' cy='300' rx='120' ry='70'/%3E%3Cellipse cx='300' cy='300' rx='80' ry='45'/%3E%3Cellipse cx='300' cy='300' rx='40' ry='22'/%3E%3Cellipse cx='150' cy='150' rx='130' ry='85' transform='rotate(-25 150 150)'/%3E%3Cellipse cx='150' cy='150' rx='100' ry='65' transform='rotate(-25 150 150)'/%3E%3Cellipse cx='150' cy='150' rx='70' ry='45' transform='rotate(-25 150 150)'/%3E%3Cellipse cx='150' cy='150' rx='40' ry='25' transform='rotate(-25 150 150)'/%3E%3Cellipse cx='450' cy='450' rx='140' ry='90' transform='rotate(30 450 450)'/%3E%3Cellipse cx='450' cy='450' rx='110' ry='70' transform='rotate(30 450 450)'/%3E%3Cellipse cx='450' cy='450' rx='80' ry='50' transform='rotate(30 450 450)'/%3E%3Cellipse cx='450' cy='450' rx='50' ry='30' transform='rotate(30 450 450)'/%3E%3Cellipse cx='500' cy='120' rx='100' ry='65' transform='rotate(15 500 120)'/%3E%3Cellipse cx='500' cy='120' rx='70' ry='45' transform='rotate(15 500 120)'/%3E%3Cellipse cx='500' cy='120' rx='40' ry='25' transform='rotate(15 500 120)'/%3E%3Cellipse cx='100' cy='480' rx='110' ry='70' transform='rotate(-20 100 480)'/%3E%3Cellipse cx='100' cy='480' rx='80' ry='50' transform='rotate(-20 100 480)'/%3E%3Cellipse cx='100' cy='480' rx='50' ry='30' transform='rotate(-20 100 480)'/%3E%3C/g%3E%3C/svg%3E");
+    background-image: none;
   }
 
-  /* Glassmorphism Cards */
+  /* Clean Frosted Glass Cards */
   .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
     border-radius: 20px;
@@ -118,133 +116,123 @@
   }
 
   .glass-card:hover {
-    box-shadow: 0 14px 40px rgba(31, 38, 135, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 25px var(--glow-color);
-    border-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 14px 40px rgba(35, 25, 80, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.90), 0 0 25px var(--glow-color);
+    border-color: rgba(255, 255, 255, 0.90);
     transform: translateY(-2px);
   }
 
   .dark .glass-card:hover {
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 25px var(--glow-color);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 25px var(--glow-color);
     border-color: rgba(255, 255, 255, 0.22);
     transform: translateY(-2px);
   }
 
-  /* Premium Glass Panel (Core Toolkit, Showcase, Large Floating Panels) */
+  /* Premium Clean Frosted Glass Panel (Core Toolkit, Showcase, Large Floating Panels) */
   .glass-panel {
-    background: rgba(255, 255, 255, 0.62);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 20px;
     box-shadow:
-      0 8px 32px rgba(31, 38, 135, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.65);
+      0 8px 30px rgba(35, 25, 80, 0.07),
+      inset 0 1px 0 rgba(255, 255, 255, 0.80);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark .glass-panel {
-    background: rgba(15, 12, 36, 0.65);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    background: rgba(18, 15, 38, 0.82);
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 22px;
+    border-radius: 20px;
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.35),
+      0 8px 30px rgba(0, 0, 0, 0.40),
       inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
 
   .glass-panel:hover {
     box-shadow:
-      0 14px 40px rgba(31, 38, 135, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      0 14px 40px rgba(35, 25, 80, 0.10),
+      inset 0 1px 0 rgba(255, 255, 255, 0.90),
       0 0 25px var(--glow-color);
-    border-color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.90);
   }
 
   .dark .glass-panel:hover {
     box-shadow:
-      0 14px 40px rgba(0, 0, 0, 0.45),
+      0 14px 40px rgba(0, 0, 0, 0.50),
       inset 0 1px 0 rgba(255, 255, 255, 0.25),
       0 0 25px var(--glow-color);
     border-color: rgba(255, 255, 255, 0.22);
   }
 
-  /* Glass Navigation */
+  /* Clean Glass Navigation Bar */
   .glass-nav {
-    background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.55);
-    box-shadow: 0 4px 20px -2px rgba(31, 38, 135, 0.05);
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 4px 20px -2px rgba(35, 25, 80, 0.04);
   }
 
   .dark .glass-nav {
-    background: rgba(15, 12, 36, 0.78);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    background: rgba(15, 12, 36, 0.84);
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.40);
   }
 
-  /* Ultra-Frosted Glass Dropdown Menu (Floating Translucent Glass Panel) */
+  /* Ultra-Clean Frosted Glass Dropdown Menu (Floating Translucent Glass Panel) */
   .dropdown-glass {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.68) 0%,
-      rgba(255, 255, 255, 0.52) 100%
-    );
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(24px) saturate(130%);
+    -webkit-backdrop-filter: blur(24px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
     box-shadow: 
-      0 16px 40px -4px rgba(31, 38, 135, 0.12),
-      0 4px 12px -2px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+      0 20px 45px -8px rgba(35, 25, 80, 0.12),
+      0 6px 16px -4px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    isolation: isolate;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   .dark .dropdown-glass {
-    background: linear-gradient(
-      135deg,
-      rgba(26, 22, 50, 0.75) 0%,
-      rgba(15, 12, 36, 0.70) 100%
-    );
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    background: rgba(18, 15, 38, 0.90);
+    backdrop-filter: blur(24px) saturate(130%);
+    -webkit-backdrop-filter: blur(24px) saturate(130%);
     border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 22px;
+    border-radius: 20px;
     box-shadow: 
-      0 20px 50px -4px rgba(0, 0, 0, 0.65),
-      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      0 24px 50px -8px rgba(0, 0, 0, 0.70),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    isolation: isolate;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Ultra-Glassmorphism Mobile Navigation Drawer */
+  /* Clean Frosted Mobile Navigation Drawer */
   .mobile-drawer-glass {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.75) 0%,
-      rgba(255, 255, 255, 0.55) 100%
-    );
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.70);
     box-shadow: 
-      0 20px 50px -10px rgba(31, 38, 135, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+      0 20px 50px -10px rgba(35, 25, 80, 0.10),
+      inset 0 1px 0 rgba(255, 255, 255, 0.90);
   }
 
   .dark .mobile-drawer-glass {
-    background: linear-gradient(
-      135deg,
-      rgba(26, 22, 50, 0.75) 0%,
-      rgba(15, 12, 36, 0.70) 100%
-    );
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    background: rgba(15, 12, 36, 0.88);
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.14);
     box-shadow: 
       0 25px 60px -12px rgba(0, 0, 0, 0.65),
-      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      inset 0 1px 0 rgba(255, 255, 255, 0.20);
   }
 
   /* Frosted Sub-Card for Inner Menu Items */
@@ -836,31 +824,23 @@
       -webkit-backdrop-filter: none !important;
     }
 
-    /* Enforce true Ultra-Glass on mobile drawer matching user reference */
+    /* Clean Frosted Mobile Navigation Drawer */
     .mobile-drawer-glass {
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.78) 0%,
-        rgba(255, 255, 255, 0.58) 100%
-      ) !important;
-      backdrop-filter: blur(32px) saturate(210%) !important;
-      -webkit-backdrop-filter: blur(32px) saturate(210%) !important;
+      background: rgba(255, 255, 255, 0.86) !important;
+      backdrop-filter: blur(24px) saturate(135%) !important;
+      -webkit-backdrop-filter: blur(24px) saturate(135%) !important;
       box-shadow: 
-        inset 0 2px 2px 0 rgba(255, 255, 255, 0.85),
-        0 20px 50px -10px rgba(79, 70, 229, 0.25) !important;
+        0 20px 50px -10px rgba(35, 25, 80, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.90) !important;
     }
 
     .dark .mobile-drawer-glass {
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.12) 0%,
-        rgba(255, 255, 255, 0.04) 100%
-      ), rgba(15, 12, 36, 0.88) !important;
-      backdrop-filter: blur(32px) saturate(210%) !important;
-      -webkit-backdrop-filter: blur(32px) saturate(210%) !important;
+      background: rgba(15, 12, 36, 0.88) !important;
+      backdrop-filter: blur(24px) saturate(135%) !important;
+      -webkit-backdrop-filter: blur(24px) saturate(135%) !important;
       box-shadow: 
-        inset 0 2px 2px 0 rgba(255, 255, 255, 0.3),
-        0 25px 60px -12px rgba(0, 0, 0, 0.6) !important;
+        0 25px 60px -12px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
     }
 
     .ultra-subcard {
