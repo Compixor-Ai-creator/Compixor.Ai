@@ -302,7 +302,7 @@ export default function ImgToWordPage() {
             { label: 'Table Grid Reconstruction', icon: CheckCircle2 },
             { label: 'English & Urdu Multilingual', icon: CheckCircle2 },
             { label: 'Native Word DOCX', icon: CheckCircle2 },
-            { label: '100% In-Memory RAM', icon: CheckCircle2 },
+            { label: 'In-Memory Processing', icon: CheckCircle2 },
           ].map(({ label, icon: Icon, highlight }) => (
             <span
               key={label}

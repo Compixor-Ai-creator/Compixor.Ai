@@ -605,14 +605,14 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Drawer with Slide Blur Effect */}
+      {/* Mobile Drawer with Ultra-Frosted Glassmorphism Effect */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 top-16 z-40 mobile-drawer-glass lg:hidden p-5 sm:p-6 flex flex-col justify-between border-t border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl overflow-y-auto animate-in fade-in duration-200"
+          className="fixed inset-0 top-16 z-40 mobile-drawer-glass lg:hidden p-5 sm:p-6 flex flex-col justify-between border-t border-white/50 dark:border-white/10 shadow-2xl overflow-y-auto animate-in fade-in duration-200"
         >
           <div className="space-y-3">
             {/* Mobile PDF Tools Accordion */}
-            <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/60 shadow-xs overflow-hidden backdrop-blur-md">
+            <div className="rounded-2xl ultra-subcard overflow-hidden">
               <button
                 type="button"
                 onClick={() => setMobilePdfAccordionOpen((prev) => !prev)}
@@ -683,7 +683,7 @@ export default function Navbar() {
               </div>
 
               {/* Mobile Word Tools Accordion */}
-              <div className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/60 shadow-xs overflow-hidden backdrop-blur-md">
+              <div className="rounded-2xl ultra-subcard overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setMobileWordAccordionOpen((prev) => !prev)}
@@ -753,10 +753,10 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className={`flex items-center gap-3 p-3.5 rounded-2xl text-base font-semibold transition-all duration-200 ${
+                    className={`flex items-center gap-3 p-3.5 rounded-2xl ultra-subcard text-base font-semibold transition-all duration-200 ${
                       isActive
                         ? 'bg-brand-500 text-white shadow-glow'
-                        : 'text-zinc-700 dark:text-zinc-300 hover:bg-brand-500/10 hover:text-brand-600 dark:hover:text-brand-300'
+                        : 'text-zinc-800 dark:text-zinc-200 hover:bg-white/80 dark:hover:bg-white/10'
                     }`}
                   >
                     <Icon className="w-5 h-5 shrink-0" />
