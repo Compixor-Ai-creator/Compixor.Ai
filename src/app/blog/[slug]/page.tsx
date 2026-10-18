@@ -81,7 +81,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonicalUrl = blog.canonicalUrl || `https://compixor-ai.cloud/blog/${blog.slug}`;
 
   return {
-    title: `${blog.metaTitle}`,
+    title: {
+      absolute: blog.metaTitle,
+    },
     description: blog.metaDescription,
     keywords: [
       blog.targetKeyword,
@@ -172,6 +174,11 @@ export default function BlogPostPage({ params }: PageProps) {
     '@type': 'Article',
     headline: blog.title,
     description: blog.metaDescription,
+    image: [
+      blog.thumbnail
+        ? `https://compixor-ai.cloud${blog.thumbnail}`
+        : 'https://compixor-ai.cloud/icon.png',
+    ],
     datePublished: blog.datePublished || '2026-10-18T00:00:00.000Z',
     dateModified: blog.dateModified || '2026-10-18T00:00:00.000Z',
     author: {
@@ -558,7 +565,7 @@ export default function BlogPostPage({ params }: PageProps) {
                       <div className="relative w-full rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900/90 flex items-center justify-center p-2 sm:p-4">
                         <Image
                           src="/blog/passport-print-sheet-sample.jpg"
-                          alt="Passport size photo maker online free sample: A5 printable sheet with 6 Pakistan NADRA 35x45mm photos, corner cut marks, and 300 DPI layout"
+                          alt="A5 passport photo sheet with 6 Pakistan NADRA 35x45mm photos, corner cut marks, and 300 DPI layout"
                           width={1000}
                           height={700}
                           className="w-full h-auto rounded-xl object-contain shadow-md"

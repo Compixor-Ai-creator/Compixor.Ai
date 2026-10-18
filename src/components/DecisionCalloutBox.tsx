@@ -51,9 +51,9 @@ export default function DecisionCalloutBox({
         </div>
 
         <div className="space-y-3 flex-1 min-w-0">
-          <h3 className="font-bold text-base sm:text-lg text-blue-900 dark:text-blue-200 tracking-tight">
+          <p className="font-bold text-base sm:text-lg text-blue-900 dark:text-blue-200 tracking-tight m-0">
             {title}
-          </h3>
+          </p>
 
           <ul className="space-y-2.5 text-xs sm:text-sm leading-relaxed">
             {decisionItems.map((item, idx) => (
