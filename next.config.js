@@ -103,6 +103,21 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/blog/passport-photo-size-pakistan',
+        destination: '/blog/passport-size-photo-maker-online-free',
+        permanent: true,
+      },
+      {
+        source: '/blog/change-photo-background-to-white-online',
+        destination: '/blog/passport-size-photo-maker-online-free',
+        permanent: true,
+      },
+      {
+        source: '/blog/passport-size-photo-kaise-banayen',
+        destination: '/blog/passport-size-photo-maker-online-free',
+        permanent: true,
+      },
+      {
         source: '/compress_pdf',
         destination: '/tools/pdf-compressor',
         permanent: true,

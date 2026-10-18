@@ -23,13 +23,10 @@ This document provides the complete keyword mapping, search intent, metadata def
 
 All articles contain between 800 and 1,200 words, structured HTML tables, step-by-step walkthroughs, decision boxes, and bidirectional internal links to `/tools/passport-photo`.
 
-### Guide 1: Pakistan Passport & NADRA Requirements
-- **Target URL**: `https://compixor-ai.cloud/blog/passport-photo-size-pakistan`
-- **Target Keyword**: `passport photo size pakistan nadra`
-- **Exact `<title>`**: `Passport Photo Size in Pakistan: Official NADRA & CNIC Guide (2026) | Compixor AI`
-- **H1**: `Passport Photo Size in Pakistan: Complete NADRA, CNIC & Online Visa Requirements Guide`
-- **Meta Description**: `Official guide to Pakistan passport photo size for NADRA & CNIC. Exact mm (35x45), inches, 300 DPI pixels (413x531), white vs blue background, and online tools.`
-- **Key Coverage**: DGIP MRP & E-Passport, Pak-ID online mobile app limit (<50 KB JPEG), 35x45 mm (413x531 px @ 300 DPI), Light Blue (#e0f2fe) vs Pure White (#ffffff), Hijab / face oval guidelines.
+### Master Educational Guide: Complete Passport Size Photo Maker Online Guide
+- **Target URL**: `https://compixor-ai.cloud/blog/passport-size-photo-maker-online-free`
+- **Target Keyword**: `passport size photo maker online free`
+- **Consolidated Coverage**: Includes complete Pakistan NADRA & Pak-ID guidelines (formerly `/blog/passport-photo-size-pakistan`), AI studio edge matting & white background cutouts (formerly `/blog/change-photo-background-to-white-online`), and mobile photography & printer scaling rules (formerly `/blog/passport-size-photo-kaise-banayen`). 301 permanent redirects configured in `next.config.js`.
 
 ### Guide 2: Home & Studio Printing Setup
 - **Target URL**: `https://compixor-ai.cloud/blog/how-to-print-passport-photos-at-home`
@@ -46,22 +43,6 @@ All articles contain between 800 and 1,200 words, structured HTML tables, step-b
 - **H1**: `Passport Photo Background Colour by Country: Official White, Blue & Red Rules`
 - **Meta Description**: `Comprehensive guide to passport photo background colour by country. White vs light blue vs royal blue vs red rules for US, UK, Pakistan, India, Canada & more.`
 - **Key Coverage**: Verified rules for 10 nations: USA (White), UK (Light Gray/Cream), Schengen (Light Gray/White), Pakistan (Light Blue/White), India (White), Canada (White), Philippines (Royal Blue #1d4ed8), Australia (White/Light Gray), China (White), UAE (White).
-
-### Guide 4: Change Photo Background to White Online
-- **Target URL**: `https://compixor-ai.cloud/blog/change-photo-background-to-white-online`
-- **Target Keyword**: `change photo background to white online free`
-- **Exact `<title>`**: `Change Photo Background to White Online Free (Studio Cutout) | Compixor AI`
-- **H1**: `How to Change Photo Background to White Online Free: Clean Studio Edge Matting`
-- **Meta Description**: `Change photo background to pure white online for free. Clean hair and shoulder edges with AI portrait matting, zero edge halos, and 300 DPI exports.`
-- **Key Coverage**: Foreground color estimation to eliminate light edge halos, alpha matte cleaning, camera lighting recommendations, in-memory HTTPS processing privacy.
-
-### Guide 5: Urdu / Roman Urdu Mobile Guide
-- **Target URL**: `https://compixor-ai.cloud/blog/passport-size-photo-kaise-banayen`
-- **Target Keyword**: `passport size photo kaise banayen`
-- **Exact `<title>`**: `Passport Size Photo Kaise Banayen: Mobile Se Online Tarika (2026) | Compixor AI`
-- **H1**: `Passport Size Photo Kaise Banayen: Mobile Se Online Photo Banane Ka Asan Tarika`
-- **Meta Description**: `Mobile se passport size photo kaise banayen? Asan tareeqa: NADRA CNIC aur passport ke liye 35x45 mm photo, white/blue background change aur free 300 DPI print sheet.`
-- **Key Coverage**: Roman Urdu walkthrough for Pakistanis and overseas diaspora, mobile selfie photography rules, NADRA CNIC 35x45 mm crop, under 50 KB Pak-ID download, printing at 100% scale.
 
 ---
 
