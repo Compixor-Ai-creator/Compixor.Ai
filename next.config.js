@@ -118,6 +118,16 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/blog/how-to-print-passport-photos-at-home',
+        destination: '/blog/passport-size-photo-maker-online-free',
+        permanent: true,
+      },
+      {
+        source: '/blog/passport-photo-background-colour-by-country',
+        destination: '/blog/passport-size-photo-maker-online-free',
+        permanent: true,
+      },
+      {
         source: '/compress_pdf',
         destination: '/tools/pdf-compressor',
         permanent: true,
