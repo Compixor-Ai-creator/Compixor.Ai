@@ -166,11 +166,19 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link
+                  href="/about#contact"
+                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                >
+                  Contact Page
+                </Link>
+              </li>
+              <li>
                 <a
                   href="mailto:support@compixor-ai.online"
                   className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
-                  Contact Us
+                  support@compixor-ai.online
                 </a>
               </li>
               <li>
@@ -209,12 +217,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Guarantee */}
+          {/* Guarantee & Social */}
           <div>
             <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
-              Privacy Promise
+              Privacy &amp; Social
             </p>
-            <div className="glass-card p-4 rounded-2xl space-y-2 border-emerald-500/20">
+            <div className="glass-card p-4 rounded-2xl space-y-2 border-emerald-500/20 mb-4">
               <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="w-4 h-4" />
                 Zero Cloud Uploads
@@ -223,13 +231,47 @@ export default function Footer() {
                 Every calculation is carried out in browser memory. Documents are never stored or reviewed.
               </p>
             </div>
+
+            {/* Official Social Profile Links */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Connect with Us</p>
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://x.com/compixor_ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Compixor AI on X (Twitter)"
+                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
+                >
+                  <span className="text-xs font-bold">𝕏</span>
+                </a>
+                <a
+                  href="https://github.com/Compixor-Ai-creator"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Compixor AI on GitHub"
+                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
+                >
+                  <span className="text-xs font-bold">GH</span>
+                </a>
+                <a
+                  href="https://linkedin.com/company/compixor"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Compixor AI on LinkedIn"
+                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
+                >
+                  <span className="text-xs font-bold">in</span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
+        {/* Bottom bar with Physical/Digital Address */}
         <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            © 2026 Compixor AI. Architecture by <span className="font-semibold text-zinc-700 dark:text-zinc-300">Haroon Ali</span>. Engineered for 100% Client-Side Privacy.
+            © 2026 Compixor AI. Architecture by <span className="font-semibold text-zinc-700 dark:text-zinc-300">Haroon Ali</span>. Compixor AI Digital Studio • Global Cloud Services.
           </p>
           <p className="text-xs text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 shrink-0">
             Updated October 2026 · Zero Server Storage Policy

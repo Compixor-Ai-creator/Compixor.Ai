@@ -1730,6 +1730,14 @@ export function getHomepageSchemas(): Record<string, any>[] {
       logo: `${BASE_URL}/icon.png`,
     },
     image: OG_IMAGE_URL,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
   };
 
   const organizationSchema = {

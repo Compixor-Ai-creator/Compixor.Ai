@@ -56,7 +56,7 @@ export const blogsData: BlogItem[] = [
     readTime: "7 min read",
     targetKeyword: "passport size photo maker online free",
     metaTitle: "Free Passport Size Photo Maker Online | Compixor AI",
-    metaDescription: "Make a passport size photo online free with AI. Remove backgrounds, set white or blue, resize for Pakistan, India, US and UK, and export 300 DPI sheets.",
+    metaDescription: "Create compliant passport and visa photos online for free in 60 seconds. AI removes backgrounds, sets official sizes, and downloads 300 DPI A4 print sheets.",
     canonicalUrl: "https://compixor-ai.cloud/blog/passport-size-photo-maker-online-free",
     datePublished: "2026-10-18T00:00:00.000Z",
     dateModified: "2026-10-18T00:00:00.000Z",
@@ -169,7 +169,7 @@ export const blogsData: BlogItem[] = [
               ["UAE & Gulf Visa", "40 × 60 mm", "472 × 708 px", "Plain White", "30–38 mm (60–70%)"]
             ]
           },
-          tableNote: "Important: Dimension and background regulations can change. Always confirm specific requirements with the official embassy or passport office before submitting your application."
+          tableNote: "Official Verification: Specifications can change periodically. Always verify your portrait against the latest consular directives at the official portals: US State Department Travel (https://travel.state.gov/content/travel/en/passports/how-apply/photos.html), UK HM Passport Office (https://www.gov.uk/photos-for-passports), and Pakistan NADRA Pak-ID (https://id.nadra.gov.pk/)."
         },
         {
           heading: "Print Passport Photos on an A4 Sheet",
@@ -200,7 +200,7 @@ export const blogsData: BlogItem[] = [
           body: "Common questions regarding online passport photo creation, background changes, printing, and official embassy acceptance:"
         },
         {
-          heading: "Conclusion with CTA",
+          heading: "Final Thoughts: Create Your Passport Photo Today",
           body: "Creating a compliant, print-ready passport or visa portrait no longer requires driving to an expensive studio or waiting in line. With Compixor's passport size photo maker online free, you can take a quick portrait on your smartphone, remove the background with AI, calibrate official Pakistan NADRA, Indian, US, or European dimensions, and download single 300 DPI photos or tiled print sheets in seconds.\n\nEnjoy a fast, zero-friction experience with no sign-up, no hidden fees, and no watermarks. Whether you need a digital upload for an online portal or an A4 print sheet for physical submission, try our free passport photo maker now and get your verified passport photo in under 60 seconds.",
           cta: {
             text: "Make Your Passport Photo Now — 100% Free",

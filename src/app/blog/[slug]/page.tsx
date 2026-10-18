@@ -184,7 +184,8 @@ export default function BlogPostPage({ params }: PageProps) {
     author: {
       '@type': 'Organization',
       name: 'Compixor AI Team',
-      url: 'https://compixor-ai.cloud',
+      url: 'https://compixor-ai.cloud/about',
+      jobTitle: 'AI Imaging & Document Compliance Team',
     },
     publisher: {
       '@type': 'Organization',
@@ -599,7 +600,9 @@ export default function BlogPostPage({ params }: PageProps) {
                           key={lIdx}
                           className="flex items-start gap-3 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed"
                         >
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                          <span className="w-4 h-4 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 select-none">
+                            ✓
+                          </span>
                           <span>
                             {hasPrefix && (
                               <strong className="text-zinc-900 dark:text-white font-bold">
@@ -682,10 +685,46 @@ export default function BlogPostPage({ params }: PageProps) {
                   </div>
                 )}
 
-                {/* Table Explanatory Note */}
+                {/* Table Explanatory Note with External Citations */}
                 {section.tableNote && (
-                  <div className="mt-3 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs leading-relaxed not-prose">
-                    {section.tableNote}
+                  <div className="mt-3 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 dark:text-amber-200 text-xs leading-relaxed not-prose">
+                    <p className="font-semibold mb-1 flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                      Official Consular Verification &amp; Standards
+                    </p>
+                    <p className="m-0 text-zinc-700 dark:text-zinc-300">
+                      Specifications can change periodically. Always verify your portrait against the latest consular directives at official government portals:{' '}
+                      <a
+                        href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline font-bold text-amber-800 dark:text-amber-300 hover:text-brand-600 dark:hover:text-brand-400 inline-flex items-center gap-0.5"
+                      >
+                        US State Dept Photos
+                        <ExternalLink className="w-3 h-3 inline" />
+                      </a>
+                      {', '}
+                      <a
+                        href="https://www.gov.uk/photos-for-passports"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline font-bold text-amber-800 dark:text-amber-300 hover:text-brand-600 dark:hover:text-brand-400 inline-flex items-center gap-0.5"
+                      >
+                        UK HMPO Rules
+                        <ExternalLink className="w-3 h-3 inline" />
+                      </a>
+                      {', and '}
+                      <a
+                        href="https://id.nadra.gov.pk/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline font-bold text-amber-800 dark:text-amber-300 hover:text-brand-600 dark:hover:text-brand-400 inline-flex items-center gap-0.5"
+                      >
+                        Pakistan NADRA Pak-ID
+                        <ExternalLink className="w-3 h-3 inline" />
+                      </a>
+                      .
+                    </p>
                   </div>
                 )}
 
@@ -784,6 +823,73 @@ export default function BlogPostPage({ params }: PageProps) {
                 <BlogFaqAccordion faqs={blog.content.faqs} />
               </section>
             )}
+
+            {/* ============ EDITORIAL REVIEW & AUTHOR CREDENTIALS BOX (E-E-A-T) ============ */}
+            <div className="my-10 glass-card p-6 sm:p-7 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-900/60 not-prose">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200/70 dark:border-zinc-800/70">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-600 to-indigo-600 text-white font-black flex items-center justify-center text-base shadow-md">
+                    CA
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-zinc-900 dark:text-white m-0">
+                      Compixor AI Team
+                    </p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 m-0">
+                      Reviewed by AI Imaging &amp; Document Compliance Specialists
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    ICAO 9303 Compliant
+                  </span>
+                  <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    300 DPI Verified
+                  </span>
+                  <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                    100% In-Browser Privacy
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-zinc-600 dark:text-zinc-400">
+                <p className="m-0">
+                  Standards strictly mapped against ISO/IEC 19794-5 &amp; ICAO Doc 9303 consular biometric criteria.
+                </p>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="font-semibold text-zinc-800 dark:text-zinc-200">Share this guide:</span>
+                  <a
+                    href={`https://x.com/intent/tweet?url=${encodeURIComponent(canonicalUrl)}&text=${encodeURIComponent(blog.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Share on X (Twitter)"
+                    className="w-7 h-7 rounded-lg bg-zinc-200/80 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-brand-500 dark:hover:text-brand-400 transition-colors font-bold text-xs"
+                  >
+                    𝕏
+                  </a>
+                  <a
+                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${blog.title} - ${canonicalUrl}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Share on WhatsApp"
+                    className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center hover:bg-emerald-500/30 transition-colors font-bold text-xs"
+                  >
+                    WA
+                  </a>
+                  <a
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Share on LinkedIn"
+                    className="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-500/30 transition-colors font-bold text-xs"
+                  >
+                    in
+                  </a>
+                </div>
+              </div>
+            </div>
 
             {/* ============ RELATED TOOLS AT A GLANCE (dpdf style) ============ */}
             <RelatedToolsGrid

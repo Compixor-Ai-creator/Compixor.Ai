@@ -38,7 +38,7 @@ export default function ArticleHeroBanner({
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
           src="/blog/passport-photo-maker-thumbnail.jpg"
-          alt={title}
+          alt="Passport size photo maker online free: instant biometric transformation and 300 DPI sheet"
           fill
           priority
           sizes="(max-width: 1200px) 100vw, 1200px"
