@@ -1180,7 +1180,7 @@ export default function QrGeneratorPage() {
               <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                 Quick Brand &amp; Utility Badges
               </label>
-              <div className="grid grid-cols-7 gap-2">
+              <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
                 {brandLogos.map((brand) => {
                   const isSelected = selectedBrandLogoId === brand.id && logoImage === brand.svgDataUri;
                   return (
