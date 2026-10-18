@@ -112,6 +112,15 @@ export default function PassportPhotoPage() {
           <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
             Our biometric passport photo size maker ensures compliance with official passport authority and visa guidelines. Whether you are submitting a digital application or printing at home, this passport size photo online maker gives you precision control over cropping, head height, and background specifications.
           </p>
+          <p className="text-xs text-brand-600 dark:text-brand-400 font-medium pt-1">
+            Need a detailed step-by-step tutorial?{' '}
+            <Link
+              href="/blog/passport-size-photo-maker-online-free"
+              className="underline hover:text-brand-700 dark:hover:text-brand-300 font-semibold"
+            >
+              Read our passport photo guide
+            </Link>
+          </p>
         </div>
 
         {/* C3: How to make a passport size photo online */}

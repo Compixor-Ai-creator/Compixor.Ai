@@ -12,6 +12,9 @@ export interface BlogItem {
   accentColor: string;
   icon: string;
   thumbnail?: string;
+  canonicalUrl?: string;
+  datePublished?: string;
+  dateModified?: string;
   decisionBox?: {
     title?: string;
     items: {
@@ -34,7 +37,10 @@ export interface BlogItem {
       heading: string;
       body: string;
       list?: string[];
+      orderedList?: string[];
       table?: { headers: string[]; rows: string[][] };
+      tableNote?: string;
+      cta?: { text: string; href: string };
     }[];
     steps: { stepNumber: number; title: string; description: string }[];
     faqs: { question: string; answer: string }[];
@@ -43,58 +49,197 @@ export interface BlogItem {
 
 export const blogsData: BlogItem[] = [
   {
-    id: "passport-photo-maker",
-    slug: "how-to-make-passport-photo-online",
-    title: "How to Make Passport Size Photos Online for Free",
+    id: "passport-size-photo-maker-online-free",
+    slug: "passport-size-photo-maker-online-free",
+    title: "Free Passport Size Photo Maker Online: Make a Print-Ready Passport Photo in 60 Seconds",
     category: "Image & DP Tools",
-    readTime: "3 min read",
-    targetKeyword: "make passport photo online free",
-    metaTitle: "How to Make Passport Size Photos Online for Free (Fast & Private)",
-    metaDescription: "Learn how to resize, frame, and export standard 2x2 and 35x45mm ID photos online for free with 100% in-browser privacy.",
-    excerpt: "Create compliant biometric passport, visa, and ID photos from smartphone portraits in seconds without cloud uploads.",
+    readTime: "7 min read",
+    targetKeyword: "passport size photo maker online free",
+    metaTitle: "Free Passport Size Photo Maker Online – No Watermark | Compixor AI",
+    metaDescription: "Make a passport size photo online for free. AI removes the background, sets white or blue, resizes for Pakistan, India, US, UK and more, and gives a print-ready A4 sheet.",
+    canonicalUrl: "https://compixor-ai.cloud/blog/passport-size-photo-maker-online-free",
+    datePublished: "2026-10-18T00:00:00.000Z",
+    dateModified: "2026-10-18T00:00:00.000Z",
+    excerpt: "Need a compliant passport, visa, or national ID photo fast? Using our passport size photo maker online free, you can remove backgrounds automatically with AI, select official country dimensions, and download print-ready sheets at 300 DPI with zero watermarks.",
     toolPath: "/tools/passport-photo",
     accentColor: "from-sky-500/20 to-indigo-500/20",
     icon: "Camera",
+    thumbnail: "/blog/passport-photo-maker-thumbnail.jpg",
+    decisionBox: {
+      title: "What Kind of Passport or ID Photo Do You Need? (10-Second Guide)",
+      items: [
+        {
+          boldText: "Pakistan Passport or NADRA CNIC / NICOP",
+          descText: "Select Pakistan 35 × 45 mm with light blue (#e0f2fe) or pure white background and 70–80% head ratio.",
+          toolName: "Passport Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "Indian Passport, OCI Card, or US Visa",
+          descText: "Select standard 2 × 2 inches (51 × 51 mm) at 300 DPI with pure white background and biometric head guides.",
+          toolName: "Passport Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "UK, Schengen, or European Union Travel Document",
+          descText: "Select 35 × 45 mm ICAO 9303 standard with light gray or white background and 65–76% facial height.",
+          toolName: "Passport Photo Maker",
+          toolPath: "/tools/passport-photo"
+        },
+        {
+          boldText: "Printing at Home or a Local Print Lab",
+          descText: "Generate a multi-photo A4 sheet, A5 6-photo sheet, or A6 2-photo card with corner crop marks ready to cut.",
+          toolName: "Passport Photo Maker",
+          toolPath: "/tools/passport-photo"
+        }
+      ]
+    },
+    relatedTools: [
+      {
+        title: "Passport Photo Maker",
+        description: "Crop and generate biometric passport, visa, and ID photos at 300 DPI for print and digital submission.",
+        toolPath: "/tools/passport-photo",
+        icon: "Camera"
+      },
+      {
+        title: "WhatsApp Full DP Maker",
+        description: "Resize vertical smartphone portraits into uncropped 1:1 square profile avatars with ambient blur borders.",
+        toolPath: "/tools/full-dp-maker",
+        icon: "Maximize2"
+      },
+      {
+        title: "PDF Compressor",
+        description: "Compress official visa application packets and PDF passport copies down to email and portal limits.",
+        toolPath: "/tools/pdf-compressor",
+        icon: "FileArchive"
+      }
+    ],
     content: {
-      intro: "Getting an official passport, visa, or identity card photo usually means driving to a local photo studio, waiting in line, and paying hefty fees for a basic 2x2 print. Doing it yourself often leads to embassy rejections due to wrong dimensions or bad face ratios. Compixor's Passport Photo Maker lets you generate compliant, print-ready photos directly in your browser with zero data leaks.",
+      intro: "Looking for a reliable passport size photo maker online free to create official biometric portraits without visiting an expensive photo studio? Whether applying for a Pakistan NADRA CNIC or passport, an Indian passport or OCI card, a US green card, or a European Schengen visa, submitting an incorrect photo leads to delays and rejected applications. Compixor provides a modern, fast, and completely free online passport size photo maker directly in your browser. With automated AI background removal, official millimeter country presets, and print-ready sheets at 300 DPI, you can make your passport photo now in under 60 seconds with zero watermarks and no registration required.",
       sections: [
         {
-          heading: "Official Passport Photo Requirements You Must Follow",
-          body: "Before cropping, ensure your raw portrait satisfies universal biometric standards:",
+          heading: "Why Use an Online Passport Size Photo Maker?",
+          body: "Traditional passport photography is inconvenient, time-consuming, and surprisingly costly. Local pharmacies and commercial studios frequently charge $15 to $25 for a single strip of two prints, often requiring appointments and lengthy waiting lines. Conversely, trying to crop smartphone selfies manually using standard photo editors often results in rejected documents due to distorted aspect ratios, improper face-to-frame ratios, incorrect background hues, or blurry low-resolution files.\n\nA dedicated passport photo size maker online free solves these frustrations. With Compixor, your portrait is processed in memory to create your result and is never stored on external servers, while users wanting additional isolation can enable the optional on-device browser mode. You receive instant, studio-grade background segmentation, exact government millimeter presets, and high-resolution 300 DPI downloads. Unlike many online tools that place intrusive watermarks or require paid subscriptions before releasing your files, Compixor offers clean, full-resolution JPEG exports and print sheets with zero sign-up friction.",
           list: [
-            "Neutral Facial Expression: Look straight into the camera lens with your mouth closed and eyes fully open.",
-            "Balanced Lighting: Avoid harsh shadows across your cheeks, nose, or background.",
-            "No Headwear or Reflective Glasses: Remove hats and sunglasses (religious headwear is permitted if face oval is visible).",
-            "Head Proportions: The head from chin to hair must occupy 50% to 70% of total image height."
+            "Instant In-Browser Speed: Transform a simple smartphone portrait into a compliant biometric photo in less than 60 seconds.",
+            "No Login & No Signup: Access all editing tools, background swatches, and export formats immediately without creating an account or entering an email.",
+            "Zero Watermarks: Download clean, professional photos without branding stamps, promotional logos, or payment walls.",
+            "Strict In-Memory Privacy: Your photo is used only to create your result and is discarded immediately after processing.",
+            "Studio-Grade 300 DPI Prints: Export individual digital portraits or tiled sheets with corner crop marks ready for scissors or rotary cutters."
           ]
         },
         {
-          heading: "Standard International ID & Visa Sizes",
-          body: "Select the exact dimension matching your target authority:",
-          table: {
-            headers: ["Country / Document", "Dimensions (Inches / mm)", "Pixel Resolution (300 DPI)"],
-            rows: [
-              ["US Passport & Green Card", "2 x 2 inches (51 x 51 mm)", "600 x 600 px"],
-              ["Schengen Visa & Europe", "35 x 45 mm", "413 x 531 px"],
-              ["UK Passport", "35 x 45 mm", "413 x 531 px"],
-              ["India & Pakistan Passport", "35 x 45 mm / 2 x 2 inches", "413 x 531 px / 600 x 600 px"],
-              ["Online Job / Student ID", "Custom / 1.5 x 1.5 inches", "450 x 450 px"]
-            ]
-          }
+          heading: "How to Make a Passport Size Photo Online Free (Step by Step)",
+          body: "Creating an official ID portrait from home is straightforward when you follow our step-by-step workflow. Use this ordered guide to prepare your picture with our free passport size photo maker:",
+          orderedList: [
+            "Take a Clear Smartphone Portrait: Stand approximately 4 to 5 feet away from your camera in bright, indirect natural daylight. Keep your shoulders square to the lens, look straight ahead with a neutral facial expression (mouth closed, eyes open and clearly visible), and avoid wearing tinted glasses or decorative headwear.",
+            "Upload Your Photo to Compixor: Open our passport size photo maker AI online free and drop your image into the workspace. The intelligent matting model automatically isolates you from your existing environment in seconds.",
+            "Choose Your Country & Document Preset: Select your destination from our verified presets, including Pakistan Passport / NADRA (35 × 45 mm), India Passport / OCI (51 × 51 mm / 2 × 2 inches), US Visa, UK / Schengen, Canada, or Australia.",
+            "Select Your Required Background Colour: Pick official plain white, off-white, light blue, sky blue, or royal blue depending on your issuing authority's specific consular rules.",
+            "Align Facial Proportions with Biometric Overlay Guides: Turn on the biometric overlay tool to ensure your chin rests along the chin guide and the crown of your head fits within the required percentage boundary (such as 70% to 80% for Pakistan and India). Adjust zoom and rotation as needed.",
+            "Download Your Photo or Print Sheet: Export a high-resolution individual JPEG for digital government portals or select a tiled print sheet (A4, A5 with 6 photos, or A6 with 2 photos) with calibrated cut marks and 300 DPI metadata ready for home printing."
+          ]
         },
         {
-          heading: "Why In-Browser Processing Protects Your Identity",
-          body: "Most online photo converters upload your biometric face data to cloud servers. Compixor processes your image 100% locally inside your device RAM. Not a single byte of your face portrait ever leaves your machine, preventing identity theft."
+          heading: "Passport Photo with White Background, Blue Background, or Any Colour",
+          body: "Consular authorities enforce strict rules regarding background color. Submitting an off-white photo to an embassy requiring royal blue, or a patterned wall texture to an agency requiring pure white, causes automatic rejection. Compixor's passport size photo maker with white background and with blue background features let you switch to official color swatches in a single click.\n\nOur smart portrait matting cleanly separates complex hair strands, ears, and clothing contours without leaving jagged halos or ghost fringes. Once isolated, you can choose from verified consular palettes:",
+          list: [
+            "Pure White (#FFFFFF): Mandated for US Passports and Visas, Indian Passports, OCI Cards, Canadian Passports, Australian Passports, and UAE Visas.",
+            "Light Blue (#E0F2FE) & Sky Blue (#438EDB): Officially permitted and widely used for Pakistan MRP Passports and NADRA CNIC / NICOP identity cards.",
+            "Royal Blue (#1D4ED8): Standard requirement for Philippines Passports and specific Southeast Asian consular documents.",
+            "Light Gray / Off-White (#F1F5F9 / #F8FAFC): Accepted across UK HM Passport Office and European Schengen visa jurisdictions to prevent high-contrast glare.",
+            "Stylish Solids & Gradients: Available for student IDs, employee badges, corporate resumes, and digital profiles where government standards do not apply."
+          ]
+        },
+        {
+          heading: "Passport Photo Sizes by Country",
+          body: "Embassy and passport office specifications vary considerably around the world. A standard 2x2 inch American photo will not be accepted for a European Schengen visa, and a 35x45 mm print will not fit an Indian passport submission form. Review the verified dimensions below before exporting your document from our passport photo size maker online free:",
+          table: {
+            headers: ["Country / Authority", "Standard Dimensions", "Pixel Resolution (300 DPI)", "Official Background", "Biometric Head Height"],
+            rows: [
+              ["Pakistan Passport & NADRA CNIC", "35 × 45 mm", "413 × 531 px", "Light Blue (#e0f2fe) or White", "32–36 mm (70–80%)"],
+              ["India Passport / OCI / Visa", "51 × 51 mm (2 × 2 in)", "600 × 600 px", "Pure White (#ffffff)", "35–40 mm (70–80%)"],
+              ["United States (Passport / Visa)", "51 × 51 mm (2 × 2 in)", "600 × 600 px", "Pure White (#ffffff)", "25–35 mm (50–69%)"],
+              ["UK, Schengen & EU Countries", "35 × 45 mm", "413 × 531 px", "Light Gray or Plain White", "29–34 mm (65–76%)"],
+              ["Canada Passport", "50 × 70 mm", "590 × 826 px", "Plain White or Light Gray", "31–36 mm (44–51%)"],
+              ["Philippines Passport", "35 × 45 mm", "413 × 531 px", "Royal Blue (#1d4ed8)", "30–35 mm (67–78%)"],
+              ["China Passport", "33 × 48 mm", "390 × 567 px", "Plain White or Blue", "28–33 mm (58–68%)"],
+              ["Australia Passport", "35 × 45 mm", "413 × 531 px", "Plain White or Light Gray", "32–36 mm (71–80%)"],
+              ["UAE & Gulf Visa", "40 × 60 mm", "472 × 708 px", "Plain White", "30–38 mm (60–70%)"]
+            ]
+          },
+          tableNote: "Important: Dimension and background regulations can change. Always confirm specific requirements with the official embassy or passport office before submitting your application."
+        },
+        {
+          heading: "Print Passport Photos on an A4 Sheet",
+          body: "When you need physical prints for paper application forms, paying a local photo center to print an individual 2x2 portrait often triggers high passport photo surcharges. A much more economical approach is to print multiple passport photos on one A4 page or a standard postcard sheet, then cut them yourself using sharp scissors or a paper trimmer.\n\nCompixor includes built-in studio print sheets engineered to exact physical millimeter dimensions at 300 DPI. Each layout includes hairline corner crop marks so you can slice straight edges without measuring by hand:",
+          list: [
+            "Full A4 Page Layout: Tiles multiple rows and columns across standard A4 paper (210 × 297 mm), allowing you to print dozens of photos in a single run.",
+            "3 per A4 Strip: Arranges a compact row of photos across standard paper, ideal when you only need a few copies for immediate submission.",
+            "A5 Sheet (6 Photos): Generates a 6 passport size photo maker layout (arranged in a 3 × 2 grid) on A5 paper (148 × 210 mm) with 2.5 mm gutters and outer crop marks.",
+            "A6 Sheet (2 Photos): Places 2 passport photos side-by-side on compact A6 paper (105 × 148 mm), suitable for standard small-format photo printers.",
+            "Embedded 300 DPI Metadata: Every exported JPEG includes standard JFIF 300 DPI tags, and vector PDF exports embed high-resolution portraits at exact millimeter coordinates so printers reproduce true physical dimensions without scaling errors.",
+            "Printer Sizing Rule: When printing, always set your printer dialog to 'Actual Size' or '100% Scale', and ensure options like 'Fit to Page' or 'Shrink to Printable Area' are disabled."
+          ]
+        },
+        {
+          heading: "Tips for a Photo That Won't Be Rejected",
+          body: "Biometric screening software used by passport authorities automatically flags improper portraits. To guarantee high acceptance rates for Pakistan NADRA, Indian Passport Seva, US State Department, and global embassies, keep these essential practical tips in mind:",
+          list: [
+            "Even Facial Lighting: Face a window with soft, diffused daylight. Avoid directional lamps or harsh sunlight that cast dark shadows under your eyes, nose, or chin.",
+            "Neutral Expression: Look directly into the camera lens with both eyes open, eyebrows relaxed, and lips closed. Natural smiles with visible teeth or tilted heads are common rejection reasons.",
+            "Direct Eye Contact & Camera Height: Position your phone at eye level. Looking upward or downward alters facial geometry and distorts biometric measurements.",
+            "Eyeglasses & Glare: Remove glasses before taking the photo. Even non-prescription lenses can produce flash reflections or obscure eye contours.",
+            "Religious Headwear: Religious head coverings such as hijabs, turbans, or yarmulkes are permitted by most authorities, provided the entire facial oval—from the tip of the chin to the top of the forehead and both cheek contours—is unobstructed.",
+            "Contrasting Clothing: Wear everyday clothing that contrasts with your background (for example, wear dark clothing against white or light blue backgrounds) so your shoulders remain clearly visible."
+          ]
+        },
+        {
+          heading: "Frequently Asked Questions",
+          body: "Common questions regarding online passport photo creation, background changes, printing, and official embassy acceptance:"
+        },
+        {
+          heading: "Conclusion with CTA",
+          body: "Creating a compliant, print-ready passport or visa portrait no longer requires driving to an expensive studio or waiting in line. With Compixor's passport size photo maker online free, you can take a quick portrait on your smartphone, remove the background with AI, calibrate official Pakistan NADRA, Indian, US, or European dimensions, and download single 300 DPI photos or tiled print sheets in seconds.\n\nEnjoy a fast, zero-friction experience with no sign-up, no hidden fees, and no watermarks. Whether you need a digital upload for an online portal or an A4 print sheet for physical submission, try our free passport photo maker now and get your verified passport photo in under 60 seconds.",
+          cta: {
+            text: "Make Your Passport Photo Now — 100% Free",
+            href: "/tools/passport-photo"
+          }
         }
       ],
       steps: [
-        { stepNumber: 1, title: "Upload Portrait", description: "Drag and drop any clear selfie or portrait photograph into the tool." },
-        { stepNumber: 2, title: "Adjust Frame & Size", description: "Select your country preset and align the biometric head guide over your face." },
-        { stepNumber: 3, title: "Export Single or 4x6 Sheet", description: "Download an HD individual photo or a 4x6 printable grid ready for local printing." }
+        { stepNumber: 1, title: "Take Portrait Photo", description: "Capture a clear portrait in bright natural light looking directly into your camera." },
+        { stepNumber: 2, title: "Upload to Compixor", description: "Drop your image into the tool. AI detects and removes your background in memory." },
+        { stepNumber: 3, title: "Select Country Preset", description: "Choose Pakistan 35x45mm, India 51x51mm, US 2x2 inch, UK/Schengen, or custom size." },
+        { stepNumber: 4, title: "Pick Background Colour", description: "Select official pure white, light blue, royal blue, or light gray with one click." },
+        { stepNumber: 5, title: "Align Biometric Guide", description: "Position and zoom your face to match official crown-to-chin percentage guidelines." },
+        { stepNumber: 6, title: "Download HD Photo or Sheet", description: "Save individual 300 DPI JPEGs or ready-to-print A4, A5, and A6 sheets with cut marks." }
       ],
       faqs: [
-        { question: "Can I take the photo using my smartphone?", answer: "Yes. Stand 4 feet away against a plain wall in natural daylight and take the photo at eye level." },
-        { question: "Does this tool save or store my picture?", answer: "No. The editing executes 100% client-side in your browser memory. No pictures are ever saved on any server." }
+        {
+          question: "Is this passport size photo maker really free?",
+          answer: "Yes, 100% free with no credit card, no subscription, and no hidden payment screens. You can generate unlimited individual biometric photos and print sheets without cost."
+        },
+        {
+          question: "Can I make an Indian passport size photo online free?",
+          answer: "Yes. Select the India preset (51 x 51 mm / 2 x 2 inches at 300 DPI, or 35 x 45 mm for specific state/visa forms), align your facial portrait with the biometric guidelines, select pure white background, and download for online submission or print."
+        },
+        {
+          question: "Do I need to sign up or log in?",
+          answer: "No. Compixor does not require sign-up, email registration, account creation, or login. You can upload and format your photo immediately in your web browser."
+        },
+        {
+          question: "Can I change the background colour to white or blue?",
+          answer: "Yes. The built-in AI background remover detects your portrait boundaries and lets you apply official white, light blue, royal blue, off-white, light gray, or custom solid tones with a single click."
+        },
+        {
+          question: "Can I print multiple passport photos on one A4 page?",
+          answer: "Yes. You can export print-ready A4 sheets with tiled photos and corner cut marks, or use dedicated studio formats like A5 (6 photos) and A6 (2 photos) formatted at 300 DPI for home or photo lab printing."
+        },
+        {
+          question: "Will my photo be accepted?",
+          answer: "Compixor presets follow international ICAO 9303 standards and official government dimension specifications (including Pakistan NADRA, India, US, UK, and Schengen). However, passport offices evaluate expressions, lighting, and attire strictly, so always verify your final print against the latest official guidelines of your issuing authority."
+        }
       ]
     }
   },

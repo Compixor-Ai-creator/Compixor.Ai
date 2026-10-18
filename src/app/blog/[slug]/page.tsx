@@ -38,6 +38,7 @@ import TableOfContents from '@/components/TableOfContents';
 import RelatedToolsGrid from '@/components/RelatedToolsGrid';
 import PasswordComparisonVisual from '@/components/PasswordComparisonVisual';
 import DocumentLayersVisual from '@/components/DocumentLayersVisual';
+import PassportBeforeAfter from '@/components/PassportBeforeAfter';
 
 interface PageProps {
   params: {
@@ -77,10 +78,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const canonicalUrl = `https://compixor-ai.cloud/blog/${blog.slug}`;
+  const canonicalUrl = blog.canonicalUrl || `https://compixor-ai.cloud/blog/${blog.slug}`;
 
   return {
-    title: `${blog.metaTitle} | Compixor AI`,
+    title: `${blog.metaTitle}`,
     description: blog.metaDescription,
     keywords: [
       blog.targetKeyword,
@@ -93,6 +94,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical: canonicalUrl,
     },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+      },
+    },
     openGraph: {
       title: blog.metaTitle,
       description: blog.metaDescription,
@@ -100,6 +110,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       siteName: 'Compixor AI',
       type: 'article',
       locale: 'en_US',
+      publishedTime: blog.datePublished || '2026-10-18T00:00:00.000Z',
+      modifiedTime: blog.dateModified || '2026-10-18T00:00:00.000Z',
       images: [
         {
           url: blog.thumbnail
@@ -133,6 +145,10 @@ export default function BlogPostPage({ params }: PageProps) {
 
   const IconComponent = iconMap[blog.icon] || FileText;
   const relatedArticles = getRelatedBlogs(blog.slug, 3);
+  const canonicalUrl = blog.canonicalUrl || `https://compixor-ai.cloud/blog/${blog.slug}`;
+
+  const hasInContentFaqs = blog.content.sections.some((s) => s.heading === 'Frequently Asked Questions');
+  const hasInContentSteps = blog.content.sections.some((s) => s.orderedList && s.orderedList.length > 0);
 
   // Dynamic Table of Contents items
   const tocItems = [
@@ -141,10 +157,10 @@ export default function BlogPostPage({ params }: PageProps) {
       id: `section-${idx}`,
       label: section.heading,
     })),
-    ...(blog.content.steps && blog.content.steps.length > 0
+    ...(!hasInContentSteps && blog.content.steps && blog.content.steps.length > 0
       ? [{ id: 'steps', label: 'Step-by-Step Tutorial' }]
       : []),
-    ...(blog.content.faqs && blog.content.faqs.length > 0
+    ...(!hasInContentFaqs && blog.content.faqs && blog.content.faqs.length > 0
       ? [{ id: 'faqs', label: 'Frequently Asked Questions' }]
       : []),
     { id: 'related-tools', label: 'Related Tools at a Glance' },
@@ -156,9 +172,11 @@ export default function BlogPostPage({ params }: PageProps) {
     '@type': 'Article',
     headline: blog.title,
     description: blog.metaDescription,
+    datePublished: blog.datePublished || '2026-10-18T00:00:00.000Z',
+    dateModified: blog.dateModified || '2026-10-18T00:00:00.000Z',
     author: {
       '@type': 'Organization',
-      name: 'Compixor AI',
+      name: 'Compixor AI Team',
       url: 'https://compixor-ai.cloud',
     },
     publisher: {
@@ -171,7 +189,7 @@ export default function BlogPostPage({ params }: PageProps) {
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://compixor-ai.cloud/blog/${blog.slug}`,
+      '@id': canonicalUrl,
     },
   };
 
@@ -201,17 +219,31 @@ export default function BlogPostPage({ params }: PageProps) {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'Blogs',
+        name: 'Blog',
         item: 'https://compixor-ai.cloud/blog',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: blog.title,
-        item: `https://compixor-ai.cloud/blog/${blog.slug}`,
+        item: canonicalUrl,
       },
     ],
   };
+
+  const webAppSchema = blog.slug === 'passport-size-photo-maker-online-free' ? {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Compixor AI Passport Photo Maker',
+    url: 'https://compixor-ai.cloud/tools/passport-photo',
+    applicationCategory: 'MultimediaApplication',
+    operatingSystem: 'Web',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+  } : null;
 
   return (
     <div className="relative pt-24 pb-20 overflow-x-clip">
@@ -228,6 +260,12 @@ export default function BlogPostPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      {webAppSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
+        />
+      )}
 
       {/* Ambient Aurora Glow */}
       <div
@@ -379,6 +417,11 @@ export default function BlogPostPage({ params }: PageProps) {
                 {/* Multi-Layer Pipeline Architecture (Document, Encryption, Watermark, Flatten) */}
                 {blog.slug === 'password-protect-pdf-files-online' && idx === 1 && (
                   <DocumentLayersVisual />
+                )}
+
+                {/* Passport Photo Before / After Biometric Transformation */}
+                {blog.slug === 'passport-size-photo-maker-online-free' && idx === 0 && (
+                  <PassportBeforeAfter />
                 )}
 
                 {/* PDF Compression Efficiency Benchmark Diagram */}
@@ -539,6 +582,37 @@ export default function BlogPostPage({ params }: PageProps) {
                   </ul>
                 )}
 
+                {/* Styled Ordered List */}
+                {section.orderedList && (
+                  <ol className="my-6 space-y-4 not-prose pl-0">
+                    {section.orderedList.map((stepItem, sIdx) => {
+                      const colonIndex = stepItem.indexOf(':');
+                      const hasPrefix = colonIndex > 0;
+                      const prefix = hasPrefix ? stepItem.slice(0, colonIndex + 1) : '';
+                      const rest = hasPrefix ? stepItem.slice(colonIndex + 1) : stepItem;
+
+                      return (
+                        <li
+                          key={sIdx}
+                          className="flex items-start gap-3.5 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed p-4 rounded-2xl bg-zinc-50/80 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60"
+                        >
+                          <span className="w-6 h-6 rounded-lg bg-brand-500/15 text-brand-600 dark:text-brand-400 font-black flex items-center justify-center text-xs shrink-0 mt-0.5">
+                            {sIdx + 1}
+                          </span>
+                          <span>
+                            {hasPrefix && (
+                              <strong className="text-zinc-900 dark:text-white font-bold block sm:inline mr-1">
+                                {prefix}
+                              </strong>
+                            )}
+                            {rest}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                )}
+
                 {/* Comparison / Specification Table */}
                 {section.table && (
                   <div className="my-7 overflow-x-auto rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs not-prose">
@@ -575,11 +649,38 @@ export default function BlogPostPage({ params }: PageProps) {
                     </table>
                   </div>
                 )}
+
+                {/* Table Explanatory Note */}
+                {section.tableNote && (
+                  <div className="mt-3 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs leading-relaxed not-prose">
+                    {section.tableNote}
+                  </div>
+                )}
+
+                {/* In-Section FAQ Accordion */}
+                {section.heading === 'Frequently Asked Questions' && blog.content.faqs && (
+                  <div className="mt-6 not-prose">
+                    <BlogFaqAccordion faqs={blog.content.faqs} />
+                  </div>
+                )}
+
+                {/* In-Section CTA Button */}
+                {section.cta && (
+                  <div className="mt-8 not-prose text-center sm:text-left">
+                    <Link
+                      href={section.cta.href}
+                      className="btn-primary inline-flex items-center gap-2 px-8 py-3.5 text-sm font-bold shadow-md cursor-pointer"
+                    >
+                      <span>{section.cta.text}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                )}
               </section>
             ))}
 
             {/* ============ STEP-BY-STEP VISUAL TUTORIAL ============ */}
-            {blog.content.steps && blog.content.steps.length > 0 && (
+            {!hasInContentSteps && blog.content.steps && blog.content.steps.length > 0 && (
               <section id="steps" className="my-14 not-prose scroll-mt-24">
                 <div className="mb-6">
                   <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
@@ -637,7 +738,7 @@ export default function BlogPostPage({ params }: PageProps) {
             </div>
 
             {/* ============ FAQS ACCORDION SECTION ============ */}
-            {blog.content.faqs && blog.content.faqs.length > 0 && (
+            {!hasInContentFaqs && blog.content.faqs && blog.content.faqs.length > 0 && (
               <section id="faqs" className="my-14 not-prose scroll-mt-24">
                 <div className="mb-6">
                   <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">

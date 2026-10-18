@@ -98,6 +98,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/blog/how-to-make-passport-photo-online',
+        destination: '/blog/passport-size-photo-maker-online-free',
+        permanent: true,
+      },
+      {
         source: '/compress_pdf',
         destination: '/tools/pdf-compressor',
         permanent: true,

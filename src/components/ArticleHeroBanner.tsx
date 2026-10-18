@@ -33,6 +33,21 @@ export default function ArticleHeroBanner({
   category,
   accentColor,
 }: ArticleHeroBannerProps) {
+  if (id === 'passport-size-photo-maker-online-free' || id === 'passport-photo-maker') {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
+        <Image
+          src="/blog/passport-photo-maker-thumbnail.jpg"
+          alt={title}
+          fill
+          priority
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          className="object-cover"
+        />
+      </div>
+    );
+  }
+
   if (id === 'protect-pdf') {
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
@@ -180,7 +195,7 @@ export default function ArticleHeroBanner({
         )}
 
         {/* Scenario 3: Passport Photo Maker */}
-        {id === 'passport-photo-maker' && (
+        {(id === 'passport-photo-maker' || id === 'passport-size-photo-maker-online-free') && (
           <div className="flex items-center justify-center gap-5 sm:gap-8 w-full">
             <div className="glass-card p-4 rounded-2xl border border-sky-500/40 bg-zinc-900/80 text-white flex flex-col items-center text-center">
               <div className="w-24 h-24 rounded-xl border-2 border-dashed border-sky-400/80 flex flex-col items-center justify-center relative overflow-hidden bg-sky-500/10 mb-2">
