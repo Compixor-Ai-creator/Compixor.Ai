@@ -30,6 +30,12 @@ import { toast } from 'sonner';
 import RelatedTools from '@/components/RelatedTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
 import { QrGeneratorPreviewMockup } from '@/components/VisualProofMockup';
+import {
+  brandLogos,
+  brandPresets,
+  BrandStylePreset,
+  BrandLogoItem,
+} from '@/utils/qrBrandAssets';
 
 type TabType = 'url' | 'text' | 'wifi' | 'contact' | 'email' | 'phone';
 type DotType = 'square' | 'dots' | 'rounded' | 'classy' | 'extra-rounded';
@@ -385,6 +391,7 @@ export default function QrGeneratorPage() {
   const [fgColor, setFgColor] = useState('#0f172a');
   const [bgColor, setBgColor] = useState('#ffffff');
   const [cornerColor, setCornerColor] = useState('#0f172a');
+  const [cornerDotColor, setCornerDotColor] = useState('#0f172a');
   const [dotType, setDotType] = useState<DotType>('square');
   const [cornerType, setCornerType] = useState<CornerType>('square');
   const [ecLevel, setEcLevel] = useState<ErrorCorrectionLevel>('M');
@@ -396,6 +403,7 @@ export default function QrGeneratorPage() {
 
   // Logo / Image in center
   const [logoImage, setLogoImage] = useState<string | null>(null);
+  const [selectedBrandLogoId, setSelectedBrandLogoId] = useState<string | null>(null);
   const [logoSize, setLogoSize] = useState(0.35);
   const [logoMargin, setLogoMargin] = useState(6);
 
@@ -406,11 +414,13 @@ export default function QrGeneratorPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const presetsScrollRef = useRef<HTMLDivElement>(null);
   const gradientScrollRef = useRef<HTMLDivElement>(null);
+  const brandScrollRef = useRef<HTMLDivElement>(null);
 
   // Enable horizontal scrolling with mouse wheel over presets rows
   useEffect(() => {
     const el1 = presetsScrollRef.current;
     const el2 = gradientScrollRef.current;
+    const el3 = brandScrollRef.current;
 
     const createWheelHandler = (el: HTMLDivElement | null) => (e: WheelEvent) => {
       if (el && el.scrollWidth > el.clientWidth && e.deltaY !== 0 && !e.shiftKey) {
@@ -421,25 +431,68 @@ export default function QrGeneratorPage() {
 
     const handler1 = createWheelHandler(el1);
     const handler2 = createWheelHandler(el2);
+    const handler3 = createWheelHandler(el3);
 
     if (el1) el1.addEventListener('wheel', handler1, { passive: false });
     if (el2) el2.addEventListener('wheel', handler2, { passive: false });
+    if (el3) el3.addEventListener('wheel', handler3, { passive: false });
 
     return () => {
       if (el1) el1.removeEventListener('wheel', handler1);
       if (el2) el2.removeEventListener('wheel', handler2);
+      if (el3) el3.removeEventListener('wheel', handler3);
     };
   }, []);
 
-  // Apply a preset
+  // Apply a standard preset
   const applyPreset = (preset: StylePreset) => {
     setFgColor(preset.fgColor);
     setBgColor(preset.bgColor);
     setCornerColor(preset.cornerColor);
+    setCornerDotColor(preset.cornerColor);
     setDotType(preset.dotType);
     setCornerType(preset.cornerType);
     setGradient(preset.gradient || null);
     toast.success(`Applied ${preset.name} style preset!`);
+  };
+
+  // Apply an artistic brand preset
+  const applyBrandPreset = (preset: BrandStylePreset) => {
+    setFgColor(preset.fgColor);
+    setBgColor(preset.bgColor);
+    setCornerColor(preset.cornerColor);
+    setCornerDotColor(preset.cornerDotColor || preset.cornerColor);
+    setDotType(preset.dotType);
+    setCornerType(preset.cornerType);
+    setGradient(preset.gradient || null);
+
+    if (preset.logoId) {
+      const logo = brandLogos.find((l) => l.id === preset.logoId);
+      if (logo) {
+        setLogoImage(logo.svgDataUri);
+        setSelectedBrandLogoId(logo.id);
+        setEcLevel('H');
+        setLogoSize(preset.logoSize || 0.35);
+        setLogoMargin(preset.logoMargin ?? 6);
+      }
+    }
+    toast.success(`Applied ${preset.name} brand template!`);
+  };
+
+  // Handle Quick Brand Logo selection
+  const handleSelectBrandLogo = (logo: BrandLogoItem) => {
+    if (selectedBrandLogoId === logo.id && logoImage === logo.svgDataUri) {
+      setLogoImage(null);
+      setSelectedBrandLogoId(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      toast.info('Logo removed.');
+    } else {
+      setLogoImage(logo.svgDataUri);
+      setSelectedBrandLogoId(logo.id);
+      setEcLevel('H');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      toast.success(`${logo.name} logo applied! (Error correction set to High)`);
+    }
   };
 
   // Compute final QR payload
@@ -475,6 +528,7 @@ export default function QrGeneratorPage() {
     const reader = new FileReader();
     reader.onload = (event) => {
       setLogoImage(event.target?.result as string);
+      setSelectedBrandLogoId(null);
       // Auto-bump error correction to High for reliable scanning with logos
       setEcLevel('H');
       toast.success('Logo added to QR center (Error correction upgraded to High).');
@@ -512,7 +566,8 @@ export default function QrGeneratorPage() {
             gradient: gradient || undefined,
           },
           cornersDotOptions: {
-            color: cornerColor,
+            color: cornerDotColor || cornerColor,
+            type: cornerType === 'extra-rounded' ? 'dot' : (cornerType === 'dot' ? 'dot' : 'square'),
             gradient: gradient || undefined,
           },
           qrOptions: {
@@ -571,6 +626,7 @@ export default function QrGeneratorPage() {
     fgColor,
     bgColor,
     cornerColor,
+    cornerDotColor,
     dotType,
     cornerType,
     ecLevel,
@@ -812,6 +868,38 @@ export default function QrGeneratorPage() {
                 {preset.name}
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* Row 3: Artistic Brand Templates */}
+        <div
+          ref={brandScrollRef}
+          className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
+        >
+          <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
+            <Sparkles className="w-3.5 h-3.5 text-purple-500 animate-spin-slow" /> BRAND TEMPLATES:
+          </span>
+          <div className="flex items-center gap-2 shrink-0">
+            {brandPresets.map((preset) => {
+              const brandLogo = brandLogos.find((l) => l.id === preset.logoId);
+              return (
+                <button
+                  key={preset.id}
+                  onClick={() => applyBrandPreset(preset)}
+                  title={preset.description}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-full border border-purple-200/80 dark:border-purple-800/60 bg-gradient-to-r from-purple-50/70 via-pink-50/60 to-amber-50/50 dark:from-purple-950/40 dark:via-pink-950/30 dark:to-amber-950/20 hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-300 transition shadow-sm flex items-center gap-2 shrink-0 whitespace-nowrap group"
+                >
+                  {brandLogo && (
+                    <img
+                      src={brandLogo.svgDataUri}
+                      alt={brandLogo.name}
+                      className="w-4 h-4 object-contain rounded-full shadow-xs shrink-0"
+                    />
+                  )}
+                  <span>{preset.name}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -1070,12 +1158,13 @@ export default function QrGeneratorPage() {
             <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-emerald-500" />
-                Center Logo & Icon
+                Center Logo &amp; Icon
               </span>
               {logoImage && (
                 <button
                   onClick={() => {
                     setLogoImage(null);
+                    setSelectedBrandLogoId(null);
                     if (fileInputRef.current) fileInputRef.current.value = '';
                     toast.info('Logo removed.');
                   }}
@@ -1086,8 +1175,49 @@ export default function QrGeneratorPage() {
               )}
             </h3>
 
+            {/* Quick Brand Badges Selector */}
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                Quick Brand &amp; Utility Badges
+              </label>
+              <div className="grid grid-cols-7 gap-2">
+                {brandLogos.map((brand) => {
+                  const isSelected = selectedBrandLogoId === brand.id && logoImage === brand.svgDataUri;
+                  return (
+                    <button
+                      key={brand.id}
+                      type="button"
+                      onClick={() => handleSelectBrandLogo(brand)}
+                      title={`${brand.name} badge`}
+                      className={`relative p-2 rounded-xl border flex flex-col items-center justify-center transition aspect-square group ${
+                        isSelected
+                          ? 'border-brand-500 bg-brand-50/80 dark:bg-brand-950/40 ring-2 ring-brand-500 shadow-sm'
+                          : 'border-zinc-200 dark:border-zinc-700/80 bg-white/70 dark:bg-zinc-800/60 hover:border-brand-400 dark:hover:border-brand-400'
+                      }`}
+                    >
+                      <img
+                        src={brand.svgDataUri}
+                        alt={brand.name}
+                        className="w-6 h-6 object-contain transition-transform group-hover:scale-110"
+                      />
+                      {isSelected && (
+                        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-brand-500 rounded-full flex items-center justify-center text-[9px] text-white font-bold">
+                          ✓
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {!logoImage ? (
-              <div>
+              <div className="space-y-3 pt-1">
+                <div className="relative flex py-1 items-center">
+                  <div className="flex-grow border-t border-zinc-200 dark:border-zinc-700"></div>
+                  <span className="shrink-0 px-2 text-[11px] text-zinc-400 uppercase font-semibold">Or upload custom</span>
+                  <div className="flex-grow border-t border-zinc-200 dark:border-zinc-700"></div>
+                </div>
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -1167,16 +1297,16 @@ export default function QrGeneratorPage() {
           <div className="glass-card p-6 rounded-2xl space-y-6">
             <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
               <Palette className="w-4 h-4 text-cyan-500" />
-              Colors & Matrix Patterns
+              Colors &amp; Matrix Patterns
             </h3>
 
-            {/* Colors */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Colors (4 columns: Pattern, Outer Corner Eye, Inner Eye Pupil, Background) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
                   Pattern Color
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <input
                     type="color"
                     value={fgColor}
@@ -1184,17 +1314,17 @@ export default function QrGeneratorPage() {
                       setFgColor(e.target.value);
                       setGradient(null);
                     }}
-                    className="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl cursor-pointer border-0 bg-transparent shrink-0"
                   />
-                  <span className="text-xs font-mono text-zinc-700 dark:text-zinc-300 uppercase">{fgColor}</span>
+                  <span className="text-[11px] sm:text-xs font-mono text-zinc-700 dark:text-zinc-300 uppercase truncate">{fgColor}</span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
-                  Corner Eye Color
+                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Outer Corner Eye Ring">
+                  Corner Ring
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <input
                     type="color"
                     value={cornerColor}
@@ -1202,24 +1332,42 @@ export default function QrGeneratorPage() {
                       setCornerColor(e.target.value);
                       setGradient(null);
                     }}
-                    className="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl cursor-pointer border-0 bg-transparent shrink-0"
                   />
-                  <span className="text-xs font-mono text-zinc-700 dark:text-zinc-300 uppercase">{cornerColor}</span>
+                  <span className="text-[11px] sm:text-xs font-mono text-zinc-700 dark:text-zinc-300 uppercase truncate">{cornerColor}</span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Inner Corner Eye Pupil">
+                  Eye Pupil
+                </label>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <input
+                    type="color"
+                    value={cornerDotColor}
+                    onChange={(e) => {
+                      setCornerDotColor(e.target.value);
+                      setGradient(null);
+                    }}
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl cursor-pointer border-0 bg-transparent shrink-0"
+                  />
+                  <span className="text-[11px] sm:text-xs font-mono text-zinc-700 dark:text-zinc-300 uppercase truncate">{cornerDotColor}</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
                   Background
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <input
                     type="color"
                     value={bgColor}
                     onChange={(e) => setBgColor(e.target.value)}
-                    className="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl cursor-pointer border-0 bg-transparent shrink-0"
                   />
-                  <span className="text-xs font-mono text-zinc-700 dark:text-zinc-300 uppercase">{bgColor}</span>
+                  <span className="text-[11px] sm:text-xs font-mono text-zinc-700 dark:text-zinc-300 uppercase truncate">{bgColor}</span>
                 </div>
               </div>
             </div>
