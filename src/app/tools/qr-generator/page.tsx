@@ -25,7 +25,11 @@ import { QrCode,
   X,
   Image as ImageIcon,
   Wand2,
-  CheckCircle2 } from 'lucide-react';
+  CheckCircle2,
+  MessageCircle,
+  CreditCard,
+  LayoutTemplate,
+  Scan } from 'lucide-react';
 import { toast } from 'sonner';
 import RelatedTools from '@/components/RelatedTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
@@ -37,10 +41,11 @@ import {
   BrandLogoItem,
 } from '@/utils/qrBrandAssets';
 
-type TabType = 'url' | 'text' | 'wifi' | 'contact' | 'email' | 'phone';
+type TabType = 'url' | 'whatsapp' | 'payment' | 'text' | 'wifi' | 'contact' | 'email' | 'phone';
 type DotType = 'square' | 'dots' | 'rounded' | 'classy' | 'extra-rounded';
 type CornerType = 'square' | 'dot' | 'extra-rounded';
 type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H';
+type FrameStyle = 'none' | 'bottom-banner' | 'top-header' | 'polaroid' | 'speech-bubble' | 'minimal-tag';
 
 interface StylePreset {
   id: string;
@@ -357,6 +362,8 @@ const stylePresets: StylePreset[] = [...solidPresets, ...gradientPresets];
 
 const tabs = [
   { id: 'url' as TabType, label: 'Website URL', icon: LinkIcon },
+  { id: 'whatsapp' as TabType, label: 'WhatsApp Chat', icon: MessageCircle },
+  { id: 'payment' as TabType, label: 'Payments & UPI', icon: CreditCard },
   { id: 'text' as TabType, label: 'Plain Text', icon: Type },
   { id: 'wifi' as TabType, label: 'Wi-Fi Network', icon: Wifi },
   { id: 'contact' as TabType, label: 'vCard Contact', icon: User },
@@ -369,6 +376,14 @@ export default function QrGeneratorPage() {
 
   // Input states
   const [urlInput, setUrlInput] = useState('https://compixor.ai');
+  const [waPhone, setWaPhone] = useState('');
+  const [waMessage, setWaMessage] = useState('Hi! I am contacting you via Compixor QR.');
+
+  const [payType, setPayType] = useState<'paypal' | 'upi' | 'crypto'>('paypal');
+  const [payRecipient, setPayRecipient] = useState('');
+  const [payAmount, setPayAmount] = useState('');
+  const [payNote, setPayNote] = useState('');
+
   const [textInput, setTextInput] = useState('');
   const [wifiSsid, setWifiSsid] = useState('');
   const [wifiPassword, setWifiPassword] = useState('');
@@ -406,6 +421,12 @@ export default function QrGeneratorPage() {
   const [selectedBrandLogoId, setSelectedBrandLogoId] = useState<string | null>(null);
   const [logoSize, setLogoSize] = useState(0.35);
   const [logoMargin, setLogoMargin] = useState(6);
+
+  // CTA Frame & Badges ("SCAN ME") State
+  const [frameStyle, setFrameStyle] = useState<FrameStyle>('none');
+  const [frameText, setFrameText] = useState('SCAN ME');
+  const [frameColor, setFrameColor] = useState('#0f172a');
+  const [frameTextColor, setFrameTextColor] = useState('#ffffff');
 
   const [copied, setCopied] = useState(false);
 
@@ -450,6 +471,7 @@ export default function QrGeneratorPage() {
     setBgColor(preset.bgColor);
     setCornerColor(preset.cornerColor);
     setCornerDotColor(preset.cornerColor);
+    setFrameColor(preset.cornerColor || preset.fgColor);
     setDotType(preset.dotType);
     setCornerType(preset.cornerType);
     setGradient(preset.gradient || null);
@@ -462,6 +484,7 @@ export default function QrGeneratorPage() {
     setBgColor(preset.bgColor);
     setCornerColor(preset.cornerColor);
     setCornerDotColor(preset.cornerDotColor || preset.cornerColor);
+    setFrameColor(preset.cornerColor || preset.fgColor);
     setDotType(preset.dotType);
     setCornerType(preset.cornerType);
     setGradient(preset.gradient || null);
@@ -500,6 +523,27 @@ export default function QrGeneratorPage() {
     switch (activeTab) {
       case 'url':
         return urlInput.trim() || 'https://compixor.ai';
+      case 'whatsapp': {
+        const cleanPhone = waPhone.replace(/[^\d+]/g, '').replace(/^\+/, '');
+        const encodedMsg = encodeURIComponent(waMessage.trim());
+        return cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodedMsg}` : 'https://wa.me/';
+      }
+      case 'payment': {
+        if (payType === 'paypal') {
+          const cleanUser = payRecipient.replace(/^@/, '').trim();
+          return payAmount
+            ? `https://paypal.me/${cleanUser}/${payAmount}`
+            : `https://paypal.me/${cleanUser}`;
+        } else if (payType === 'upi') {
+          const pa = encodeURIComponent(payRecipient.trim());
+          const am = payAmount ? `&am=${encodeURIComponent(payAmount.trim())}` : '';
+          const tn = payNote ? `&tn=${encodeURIComponent(payNote.trim())}` : '';
+          return `upi://pay?pa=${pa}&pn=${pa}${am}${tn}&cu=INR`;
+        } else {
+          const addr = payRecipient.trim();
+          return payAmount ? `bitcoin:${addr}?amount=${payAmount}` : `bitcoin:${addr}`;
+        }
+      }
       case 'text':
         return textInput.trim() || 'CompixorAi Client-Side Tools';
       case 'wifi':
@@ -609,6 +653,12 @@ export default function QrGeneratorPage() {
   }, [
     activeTab,
     urlInput,
+    waPhone,
+    waMessage,
+    payType,
+    payRecipient,
+    payAmount,
+    payNote,
     textInput,
     wifiSsid,
     wifiPassword,
@@ -636,9 +686,265 @@ export default function QrGeneratorPage() {
     logoMargin,
   ]);
 
+  // Framed PNG Generator Helper
+  const createFramedBlob = async (mime: 'image/png'): Promise<Blob | null> => {
+    if (!qrRef.current) return null;
+    const svgEl = qrRef.current.querySelector('svg');
+    if (!svgEl) return null;
+
+    return new Promise((resolve) => {
+      const svgData = new XMLSerializer().serializeToString(svgEl);
+      const img = new Image();
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+
+      img.onload = () => {
+        const qrSize = 800;
+        let cardWidth = 1000;
+        let cardHeight = 1000;
+        let qrX = 100;
+        let qrY = 100;
+
+        if (frameStyle === 'bottom-banner') {
+          cardWidth = 1000;
+          cardHeight = 1200;
+          qrX = 100;
+          qrY = 70;
+        } else if (frameStyle === 'top-header') {
+          cardWidth = 1000;
+          cardHeight = 1200;
+          qrX = 100;
+          qrY = 280;
+        } else if (frameStyle === 'polaroid') {
+          cardWidth = 1000;
+          cardHeight = 1250;
+          qrX = 100;
+          qrY = 100;
+        } else if (frameStyle === 'speech-bubble') {
+          cardWidth = 1000;
+          cardHeight = 1200;
+          qrX = 100;
+          qrY = 280;
+        } else if (frameStyle === 'minimal-tag') {
+          cardWidth = 1000;
+          cardHeight = 1150;
+          qrX = 100;
+          qrY = 90;
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = cardWidth;
+        canvas.height = cardHeight;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return resolve(null);
+
+        // Fill background
+        ctx.fillStyle = frameStyle === 'polaroid' ? '#ffffff' : (bgColor || '#ffffff');
+        ctx.fillRect(0, 0, cardWidth, cardHeight);
+
+        // Border decoration
+        if (frameStyle === 'bottom-banner' || frameStyle === 'top-header') {
+          ctx.strokeStyle = frameColor;
+          ctx.lineWidth = 14;
+          ctx.strokeRect(7, 7, cardWidth - 14, cardHeight - 14);
+        } else if (frameStyle === 'polaroid') {
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 4;
+          ctx.strokeRect(2, 2, cardWidth - 4, cardHeight - 4);
+        }
+
+        // Top header
+        if (frameStyle === 'top-header') {
+          ctx.fillStyle = frameColor;
+          ctx.fillRect(0, 0, cardWidth, 190);
+          ctx.fillStyle = frameTextColor;
+          ctx.font = 'bold 54px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText((frameText || 'SCAN ME').toUpperCase(), cardWidth / 2, 95);
+        }
+
+        // Speech bubble
+        if (frameStyle === 'speech-bubble') {
+          ctx.fillStyle = frameColor;
+          const bubbleW = 560;
+          const bubbleH = 110;
+          const bx = (cardWidth - bubbleW) / 2;
+          const by = 60;
+          ctx.beginPath();
+          ctx.roundRect(bx, by, bubbleW, bubbleH, 55);
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.moveTo(cardWidth / 2 - 25, by + bubbleH);
+          ctx.lineTo(cardWidth / 2 + 25, by + bubbleH);
+          ctx.lineTo(cardWidth / 2, by + bubbleH + 30);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = frameTextColor;
+          ctx.font = 'bold 44px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText((frameText || 'SCAN ME').toUpperCase(), cardWidth / 2, by + bubbleH / 2);
+        }
+
+        // Draw QR code image
+        ctx.drawImage(img, qrX, qrY, qrSize, qrSize);
+
+        // Bottom banner
+        if (frameStyle === 'bottom-banner') {
+          ctx.fillStyle = frameColor;
+          ctx.fillRect(0, 950, cardWidth, 250);
+          ctx.fillStyle = frameTextColor;
+          ctx.font = 'bold 56px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText((frameText || 'SCAN ME').toUpperCase(), cardWidth / 2, 1075);
+        }
+
+        // Polaroid caption
+        if (frameStyle === 'polaroid') {
+          ctx.fillStyle = frameColor;
+          ctx.font = 'bold 58px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText((frameText || 'SCAN ME').toUpperCase(), cardWidth / 2, 1080);
+        }
+
+        // Minimal tag
+        if (frameStyle === 'minimal-tag') {
+          ctx.fillStyle = frameColor;
+          const tagW = 480;
+          const tagH = 90;
+          const tx = (cardWidth - tagW) / 2;
+          const ty = 980;
+          ctx.beginPath();
+          ctx.roundRect(tx, ty, tagW, tagH, 45);
+          ctx.fill();
+          ctx.fillStyle = frameTextColor;
+          ctx.font = 'bold 42px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText((frameText || 'SCAN ME').toUpperCase(), cardWidth / 2, ty + tagH / 2);
+        }
+
+        canvas.toBlob((blob) => resolve(blob), mime);
+      };
+
+      img.onerror = () => resolve(null);
+    });
+  };
+
+  // Framed SVG Generator Helper
+  const createFramedSvgString = (): string | null => {
+    if (!qrRef.current) return null;
+    const svgEl = qrRef.current.querySelector('svg');
+    if (!svgEl) return null;
+
+    const qrInner = svgEl.innerHTML;
+    let cardW = 1000;
+    let cardH = 1000;
+    let qrX = 100;
+    let qrY = 100;
+    let frameMarkup = '';
+
+    const safeText = (frameText || 'SCAN ME').toUpperCase();
+
+    if (frameStyle === 'bottom-banner') {
+      cardW = 1000;
+      cardH = 1200;
+      qrX = 100;
+      qrY = 70;
+      frameMarkup = `
+        <rect x="7" y="7" width="986" height="1186" rx="28" fill="none" stroke="${frameColor}" stroke-width="14"/>
+        <path d="M0,950 L1000,950 L1000,1172 A28,28 0 0 1 972,1200 L28,1200 A28,28 0 0 1 0,1172 Z" fill="${frameColor}"/>
+        <text x="500" y="1085" fill="${frameTextColor}" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="56" text-anchor="middle">${safeText}</text>
+      `;
+    } else if (frameStyle === 'top-header') {
+      cardW = 1000;
+      cardH = 1200;
+      qrX = 100;
+      qrY = 280;
+      frameMarkup = `
+        <rect x="7" y="7" width="986" height="1186" rx="28" fill="none" stroke="${frameColor}" stroke-width="14"/>
+        <path d="M28,0 L972,0 A28,28 0 0 1 1000,28 L1000,190 L0,190 L0,28 A28,28 0 0 1 28,0 Z" fill="${frameColor}"/>
+        <text x="500" y="115" fill="${frameTextColor}" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="56" text-anchor="middle">${safeText}</text>
+      `;
+    } else if (frameStyle === 'polaroid') {
+      cardW = 1000;
+      cardH = 1250;
+      qrX = 100;
+      qrY = 100;
+      frameMarkup = `
+        <rect x="3" y="3" width="994" height="1244" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="6"/>
+        <text x="500" y="1085" fill="${frameColor}" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="58" text-anchor="middle">${safeText}</text>
+      `;
+    } else if (frameStyle === 'speech-bubble') {
+      cardW = 1000;
+      cardH = 1200;
+      qrX = 100;
+      qrY = 280;
+      frameMarkup = `
+        <rect x="220" y="60" width="560" height="110" rx="55" fill="${frameColor}"/>
+        <polygon points="475,170 525,170 500,200" fill="${frameColor}"/>
+        <text x="500" y="132" fill="${frameTextColor}" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="44" text-anchor="middle">${safeText}</text>
+      `;
+    } else if (frameStyle === 'minimal-tag') {
+      cardW = 1000;
+      cardH = 1150;
+      qrX = 100;
+      qrY = 90;
+      frameMarkup = `
+        <rect x="260" y="980" width="480" height="90" rx="45" fill="${frameColor}"/>
+        <text x="500" y="1040" fill="${frameTextColor}" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="42" text-anchor="middle">${safeText}</text>
+      `;
+    }
+
+    const bgFill = frameStyle === 'polaroid' ? '#ffffff' : (bgColor || '#ffffff');
+    return `
+      <svg width="${cardW}" height="${cardH}" viewBox="0 0 ${cardW} ${cardH}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="${cardW}" height="${cardH}" fill="${bgFill}"/>
+        <g transform="translate(${qrX}, ${qrY}) scale(4)">
+          ${qrInner}
+        </g>
+        ${frameMarkup}
+      </svg>
+    `.trim();
+  };
+
   const handleDownload = async (extension: 'png' | 'svg') => {
     if (!qrCodeInstance.current) return;
     try {
+      if (frameStyle !== 'none') {
+        if (extension === 'png') {
+          const blob = await createFramedBlob('image/png');
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `compixor-qr-framed-${Date.now()}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast.success('Framed QR code downloaded as high-res PNG!');
+            return;
+          }
+        } else {
+          const svgString = createFramedSvgString();
+          if (svgString) {
+            const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `compixor-qr-framed-${Date.now()}.svg`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast.success('Framed QR code downloaded as vector SVG!');
+            return;
+          }
+        }
+      }
+
+      // Standard Download without frame
       if (extension === 'png') {
         qrCodeInstance.current.update({ width: 1000, height: 1000, margin: 40 });
         await qrCodeInstance.current.download({
@@ -661,6 +967,19 @@ export default function QrGeneratorPage() {
   const handleCopy = async () => {
     if (!qrRef.current) return;
     try {
+      if (frameStyle !== 'none') {
+        const blob = await createFramedBlob('image/png');
+        if (blob) {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob }),
+          ]);
+          setCopied(true);
+          toast.success('Framed QR code copied to clipboard!');
+          setTimeout(() => setCopied(false), 2000);
+          return;
+        }
+      }
+
       const svg = qrRef.current.querySelector('svg');
       if (svg) {
         const svgData = new XMLSerializer().serializeToString(svg);
@@ -953,6 +1272,224 @@ export default function QrGeneratorPage() {
                     placeholder="https://example.com/promo"
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
                   />
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'whatsapp' && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                    WhatsApp Phone Number (with Country Code)
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
+                      <MessageCircle className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <input
+                      type="tel"
+                      value={waPhone}
+                      onChange={(e) => setWaPhone(e.target.value)}
+                      placeholder="+1 (555) 234-5678 or 923001234567"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
+                    />
+                  </div>
+                  <p className="text-[11px] text-zinc-400 mt-1">
+                    Enter digits with country code (e.g. +1 for US, +44 for UK, +92 for PK)
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                    Pre-filled Message (Optional)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={waMessage}
+                    onChange={(e) => setWaMessage(e.target.value)}
+                    placeholder="Hi! I want to inquire about your products / services..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition resize-none"
+                  />
+                  <p className="text-[11px] text-zinc-400 mt-1">
+                    When scanned, opens WhatsApp with this message ready in chat!
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={brandLogos.find((b) => b.id === 'whatsapp')?.svgDataUri}
+                      alt="WhatsApp"
+                      className="w-6 h-6 shrink-0"
+                    />
+                    <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                      Apply WhatsApp Official Theme &amp; Frame?
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const waPreset = brandPresets.find((b) => b.id === 'brand-whatsapp');
+                      if (waPreset) applyBrandPreset(waPreset);
+                      setFrameStyle('bottom-banner');
+                      setFrameText('CHAT ON WHATSAPP');
+                      setFrameColor('#25D366');
+                      setFrameTextColor('#ffffff');
+                    }}
+                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-xs"
+                  >
+                    Apply Theme
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'payment' && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                    Payment Method
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'paypal', label: 'PayPal.Me' },
+                      { id: 'upi', label: 'UPI / GPay / Paytm' },
+                      { id: 'crypto', label: 'Crypto Wallet' },
+                    ].map((p) => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setPayType(p.id as any)}
+                        className={`py-2 px-3 rounded-xl text-xs font-bold transition ${
+                          payType === p.id
+                            ? 'bg-brand-500 text-white shadow-sm'
+                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200'
+                        }`}
+                      >
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {payType === 'paypal' && (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                        PayPal Username / Link
+                      </label>
+                      <input
+                        type="text"
+                        value={payRecipient}
+                        onChange={(e) => setPayRecipient(e.target.value)}
+                        placeholder="e.g. yourname or paypal.me/yourname"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                        Amount (Optional)
+                      </label>
+                      <input
+                        type="number"
+                        value={payAmount}
+                        onChange={(e) => setPayAmount(e.target.value)}
+                        placeholder="e.g. 25.00"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {payType === 'upi' && (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                        UPI ID / VPA
+                      </label>
+                      <input
+                        type="text"
+                        value={payRecipient}
+                        onChange={(e) => setPayRecipient(e.target.value)}
+                        placeholder="e.g. merchant@okaxis or mobile@paytm"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                          Amount INR (Optional)
+                        </label>
+                        <input
+                          type="number"
+                          value={payAmount}
+                          onChange={(e) => setPayAmount(e.target.value)}
+                          placeholder="e.g. 500"
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                          Note / Remark
+                        </label>
+                        <input
+                          type="text"
+                          value={payNote}
+                          onChange={(e) => setPayNote(e.target.value)}
+                          placeholder="e.g. Invoice payment"
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {payType === 'crypto' && (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                        Crypto Wallet Address (BTC / ETH / USDT)
+                      </label>
+                      <input
+                        type="text"
+                        value={payRecipient}
+                        onChange={(e) => setPayRecipient(e.target.value)}
+                        placeholder="e.g. 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
+                        Crypto Amount (Optional)
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        value={payAmount}
+                        onChange={(e) => setPayAmount(e.target.value)}
+                        placeholder="e.g. 0.05"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-between gap-3">
+                  <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">
+                    Apply matching &quot;SCAN TO PAY&quot; frame?
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFrameStyle('bottom-banner');
+                      setFrameText('SCAN TO PAY');
+                      setFrameColor('#7c3aed');
+                      setFrameTextColor('#ffffff');
+                    }}
+                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition shadow-xs"
+                  >
+                    Apply Frame
+                  </button>
                 </div>
               </div>
             )}
@@ -1417,6 +1954,126 @@ export default function QrGeneratorPage() {
               </div>
             </div>
           </div>
+
+          {/* CTA Frame & Badges ("SCAN ME") */}
+          <div className="glass-card p-6 rounded-2xl space-y-5">
+            <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <LayoutTemplate className="w-4 h-4 text-purple-500" />
+                Call-to-Action Frame (&quot;SCAN ME&quot;)
+              </span>
+              {frameStyle !== 'none' && (
+                <button
+                  type="button"
+                  onClick={() => setFrameStyle('none')}
+                  className="text-xs text-red-500 hover:underline flex items-center gap-1 font-semibold"
+                >
+                  <X className="w-3.5 h-3.5" /> Remove Frame
+                </button>
+              )}
+            </h3>
+
+            {/* Frame Styles Selector */}
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              {[
+                { id: 'none', label: 'No Frame' },
+                { id: 'bottom-banner', label: 'Bottom Banner' },
+                { id: 'top-header', label: 'Top Header' },
+                { id: 'polaroid', label: 'Polaroid Card' },
+                { id: 'speech-bubble', label: 'Speech Bubble' },
+                { id: 'minimal-tag', label: 'Minimal Tag' },
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setFrameStyle(f.id as FrameStyle)}
+                  className={`p-2.5 rounded-xl border text-center flex flex-col items-center justify-center gap-1 transition ${
+                    frameStyle === f.id
+                      ? 'border-brand-500 bg-brand-50/80 dark:bg-brand-950/40 ring-2 ring-brand-500 shadow-sm text-brand-600 dark:text-brand-300 font-bold'
+                      : 'border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 text-xs font-semibold'
+                  }`}
+                >
+                  <span className="text-[11px] leading-tight">{f.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {frameStyle !== 'none' && (
+              <div className="space-y-4 pt-2 border-t border-zinc-200 dark:border-zinc-800">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                    Frame Text Caption
+                  </label>
+                  <input
+                    type="text"
+                    value={frameText}
+                    onChange={(e) => setFrameText(e.target.value)}
+                    placeholder="e.g. SCAN ME"
+                    maxLength={30}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition uppercase font-bold"
+                  />
+                  {/* Quick Text Suggestions */}
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {[
+                      'SCAN ME',
+                      'SCAN FOR MENU',
+                      'CONNECT WI-FI',
+                      'SCAN TO PAY',
+                      'CHAT ON WHATSAPP',
+                      'FOLLOW US',
+                    ].map((txt) => (
+                      <button
+                        key={txt}
+                        type="button"
+                        onClick={() => setFrameText(txt)}
+                        className={`text-[10px] font-bold px-2.5 py-1 rounded-full border transition ${
+                          frameText === txt
+                            ? 'border-brand-500 bg-brand-500 text-white'
+                            : 'border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:border-brand-400'
+                        }`}
+                      >
+                        {txt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+                      Frame Color
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={frameColor}
+                        onChange={(e) => setFrameColor(e.target.value)}
+                        className="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent"
+                      />
+                      <span className="text-xs font-mono text-zinc-700 dark:text-zinc-300 uppercase">{frameColor}</span>
+                    </div>
+                  </div>
+
+                  {frameStyle !== 'polaroid' && (
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+                        Text Color
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="color"
+                          value={frameTextColor}
+                          onChange={(e) => setFrameTextColor(e.target.value)}
+                          className="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent"
+                        />
+                        <span className="text-xs font-mono text-zinc-700 dark:text-zinc-300 uppercase">{frameTextColor}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Live Preview & Export (5 cols) */}
@@ -1427,12 +2084,93 @@ export default function QrGeneratorPage() {
             </h3>
 
             {/* QR Canvas Container with Clean High-Contrast Stage for Dark Mode Scanning */}
-            <div className="flex items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 shadow-inner min-h-[230px] max-w-[250px] mx-auto">
+            <div className="flex items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 shadow-inner min-h-[240px] max-w-[280px] mx-auto overflow-hidden">
               <div
-                className="p-2 rounded-xl shadow-lg border border-zinc-200/80 dark:border-zinc-600/60 flex items-center justify-center transition-colors"
-                style={{ backgroundColor: bgColor || '#ffffff' }}
+                className={`transition-all duration-300 flex flex-col items-center justify-center ${
+                  frameStyle === 'bottom-banner'
+                    ? 'rounded-2xl overflow-hidden shadow-xl border-2'
+                    : frameStyle === 'top-header'
+                    ? 'rounded-2xl overflow-hidden shadow-xl border-2'
+                    : frameStyle === 'polaroid'
+                    ? 'rounded-2xl p-3 pb-3.5 shadow-2xl border-2 bg-white dark:bg-zinc-900'
+                    : frameStyle === 'speech-bubble'
+                    ? 'rounded-2xl p-2.5 shadow-xl border-2 flex flex-col items-center'
+                    : frameStyle === 'minimal-tag'
+                    ? 'rounded-2xl p-2.5 shadow-xl border-2 flex flex-col items-center gap-2'
+                    : 'p-2 rounded-xl shadow-lg border border-zinc-200/80 dark:border-zinc-600/60'
+                }`}
+                style={{
+                  backgroundColor: frameStyle === 'polaroid' ? '#ffffff' : (bgColor || '#ffffff'),
+                  borderColor: frameStyle !== 'none' ? frameColor : 'transparent',
+                }}
               >
-                <div ref={qrRef} className="flex items-center justify-center" />
+                {/* Top header if active */}
+                {frameStyle === 'top-header' && (
+                  <div
+                    className="w-full py-1.5 px-3 flex items-center justify-center gap-1.5 font-bold text-xs uppercase tracking-wider text-center"
+                    style={{ backgroundColor: frameColor, color: frameTextColor }}
+                  >
+                    <Scan className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">{frameText || 'SCAN ME'}</span>
+                  </div>
+                )}
+
+                {/* Speech bubble header if active */}
+                {frameStyle === 'speech-bubble' && (
+                  <div className="flex flex-col items-center mb-1">
+                    <div
+                      className="py-1 px-3 rounded-full font-bold text-xs uppercase tracking-wider flex items-center gap-1 shadow-sm"
+                      style={{ backgroundColor: frameColor, color: frameTextColor }}
+                    >
+                      <Scan className="w-3 h-3 shrink-0" />
+                      <span>{frameText || 'SCAN ME'}</span>
+                    </div>
+                    <div
+                      className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px]"
+                      style={{ borderTopColor: frameColor }}
+                    />
+                  </div>
+                )}
+
+                {/* The QR Canvas itself */}
+                <div
+                  className="p-1 rounded-lg flex items-center justify-center"
+                  style={{ backgroundColor: bgColor || '#ffffff' }}
+                >
+                  <div ref={qrRef} className="flex items-center justify-center" />
+                </div>
+
+                {/* Bottom banner if active */}
+                {frameStyle === 'bottom-banner' && (
+                  <div
+                    className="w-full py-2 px-3 flex items-center justify-center gap-1.5 font-bold text-xs uppercase tracking-wider text-center"
+                    style={{ backgroundColor: frameColor, color: frameTextColor }}
+                  >
+                    <Scan className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">{frameText || 'SCAN ME'}</span>
+                  </div>
+                )}
+
+                {/* Polaroid caption if active */}
+                {frameStyle === 'polaroid' && (
+                  <div
+                    className="w-full pt-2 pb-0.5 font-bold text-xs uppercase tracking-wider text-center font-display"
+                    style={{ color: frameColor }}
+                  >
+                    {frameText || 'SCAN ME'}
+                  </div>
+                )}
+
+                {/* Minimal tag if active */}
+                {frameStyle === 'minimal-tag' && (
+                  <div
+                    className="py-0.5 px-2.5 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-xs"
+                    style={{ backgroundColor: frameColor, color: frameTextColor }}
+                  >
+                    <Scan className="w-3 h-3 shrink-0" />
+                    <span>{frameText || 'SCAN ME'}</span>
+                  </div>
+                )}
               </div>
             </div>
 
