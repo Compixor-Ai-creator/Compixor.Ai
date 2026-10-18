@@ -551,6 +551,31 @@ export default function BlogPostPage({ params }: PageProps) {
                   </div>
                 )}
 
+                {/* Passport Print Sheet Sample Graphic (A5 6-Photo Grid with Crop Marks & 300 DPI) */}
+                {blog.slug === 'passport-size-photo-maker-online-free' && idx === 4 && (
+                  <div className="my-8 not-prose w-full">
+                    <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-6 shadow-2xl overflow-hidden backdrop-blur-xl">
+                      <div className="relative w-full rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900/90 flex items-center justify-center p-2 sm:p-4">
+                        <Image
+                          src="/blog/passport-print-sheet-sample.jpg"
+                          alt="Passport size photo maker online free sample: A5 printable sheet with 6 Pakistan NADRA 35x45mm photos, corner cut marks, and 300 DPI layout"
+                          width={1000}
+                          height={700}
+                          className="w-full h-auto rounded-xl object-contain shadow-md"
+                        />
+                      </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-3 px-2 text-xs text-zinc-400 gap-2">
+                        <span className="font-semibold text-zinc-200">
+                          Sample Output: A5 Sheet with 6 Biometric 35 × 45 mm Photos (Pakistan NADRA / Visa)
+                        </span>
+                        <span className="text-[11px] font-mono text-zinc-400">
+                          300 DPI JFIF • 3 × 2 Grid • Hairline Crosshair Cut Marks
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
 
 
                 {/* Styled Bullet Points */}
