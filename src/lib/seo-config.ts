@@ -1349,11 +1349,11 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: FileText,
     title: 'Convert PDF to Word Online Free - Editable DOCX | Compixor',
     description:
-      'Convert PDF to Word online free without uploading files. Turn digital or scanned PDFs into editable DOCX in your browser with OCR support. 100% private.',
+      'Convert PDF to Word online free with no signup. Turn digital or scanned PDFs into editable DOCX with OCR for English, Urdu and Arabic. Nothing is stored.',
     canonicalUrl: `${BASE_URL}/tools/pdf-to-word`,
     primaryKeyword: 'convert pdf to word online free',
     searchIntent:
-      'Users looking to convert digital or scanned PDF files into editable Microsoft Word documents (.docx) without entering email addresses, paying subscriptions, or uploading documents.',
+      'Users looking to convert digital or scanned PDF files into editable Microsoft Word documents (.docx) without entering email addresses or paying subscriptions.',
     secondaryKeywords: [
       'pdf to word',
       'convert pdf to word online free',
@@ -1411,12 +1411,12 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     faqs: [
       {
-        q: 'How can I convert PDF to Word online free without uploading files?',
-        a: 'Compixor AI uses client-side JavaScript and WebAssembly to parse PDF content streams directly inside your browser memory. Your documents are never sent across the internet to external servers.',
+        q: 'How can I convert PDF to Word online free without an account?',
+        a: 'Drop the PDF and click convert — no email, no signup, no watermark. Your file is converted in our server memory and discarded right after; nothing is kept on our side.',
       },
       {
-        q: 'What is the difference between No OCR and OCR mode?',
-        a: 'No OCR mode is lightning-fast and ideal for digital PDFs where you can highlight text with your cursor. OCR mode uses browser-based optical character recognition to read scanned paper contracts and image-based PDFs.',
+        q: 'Do I have to choose between OCR and no-OCR modes?',
+        a: 'No. One engine inspects every page, recognises the characters with OCR and then rebuilds the layout, so digital and scanned PDFs follow the same single click.',
       },
       {
         q: 'Does this converter preserve formatting, tables, and headings?',
@@ -1424,7 +1424,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         q: 'Can I convert Urdu, Arabic, or foreign language PDFs to Word?',
-        a: 'Yes. Our browser OCR engine supports multi-language recognition including Urdu, Arabic, French, German, Spanish, and English.',
+        a: 'Yes. Our OCR engine supports multi-language recognition including Urdu, Arabic, French, German, Spanish, and English.',
       },
       {
         q: 'Do I need to enter an email address or register an account?',
@@ -1433,16 +1433,16 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     features: [
       {
-        title: 'Dual Engine OCR & Digital',
-        description: 'Instant native conversion for selectable PDFs plus in-browser OCR recognition for scanned pages.',
+        title: 'Single-Pass OCR Engine',
+        description: 'One click handles selectable-text PDFs and image-based scans with the same recognition pipeline.',
       },
       {
         title: 'Standard DOCX Output',
         description: 'Exports ISO/IEC 29500 compliant Word documents fully compatible with Microsoft Word and Google Docs.',
       },
       {
-        title: 'Client-Side Local Privacy',
-        description: 'Processing runs in your browser tab with zero server uploads, keeping confidential files safe.',
+        title: 'No Storage On Our Side',
+        description: 'Files are converted in memory and dropped immediately — no account, no file history.',
       },
     ],
     relatedToolSlugs: ['img-to-word', 'word-compressor', 'pdf-compressor'],
@@ -1450,9 +1450,9 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     operatingSystem: 'Any (Web Browser)',
     featureList: [
       'Convert PDF to editable DOCX online',
-      'Dual-engine No OCR and in-browser OCR modes',
+      'Automatic handling of digital and scanned PDFs',
       'Multi-language OCR support including Urdu and Arabic',
-      'Zero server upload privacy',
+      'No account and no stored files',
       'Standard ISO/IEC 29500 OpenXML output',
     ],
   },

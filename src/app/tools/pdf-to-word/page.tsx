@@ -10,11 +10,9 @@ import {
   Sparkles,
   CheckCircle2,
   AlertCircle,
-  Loader2,
   ArrowRight,
   FileType,
   ScanText,
-  Zap,
   ShieldCheck,
   Globe,
   ArrowUpRight,
@@ -33,48 +31,17 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
-import ClientSideTrustSection from '@/components/ClientSideTrustSection';
 import ToolFeedback from '@/components/ToolFeedback';
 import { incrementFilesDone } from '@/lib/feedbackCounter';
 import { formatFileSize, validatePdfFile, downloadBlob } from '@/utils/fileHelpers';
-import { convertPdfToDocx, convertScannedPdfToDocx, inspectPdfText, ConversionResult } from '@/utils/pdfToWordEngine';
-
-// ── Mode selector data ─────────────────────────────────────────────────────────
-const MODES = [
-  {
-    id: 'no-ocr',
-    title: 'No OCR',
-    badge: 'Recommended',
-    badgeColor: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
-    borderActive: 'border-emerald-500',
-    bgActive: 'bg-emerald-500/5 dark:bg-emerald-500/10',
-    icon: Zap,
-    iconColor: 'text-emerald-500',
-    desc: 'For digital PDFs with selectable text. Fast, accurate, preserves formatting.',
-    tip: 'Try Ctrl+C on your PDF — if text copies, use this mode.',
-  },
-  {
-    id: 'ocr',
-    title: 'OCR Mode',
-    badge: 'Scanned PDFs',
-    badgeColor: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
-    borderActive: 'border-amber-500',
-    bgActive: 'bg-amber-500/5 dark:bg-amber-500/10',
-    icon: ScanText,
-    iconColor: 'text-amber-500',
-    desc: 'For scanned documents & image-based PDFs. Runs on our secure OCR server (English, Urdu, Arabic + 75 languages).',
-    tip: 'Can\'t select text in your PDF? This mode is for you.',
-  },
-];
+import { convertScannedPdfToDocx, inspectPdfText, ConversionResult } from '@/utils/pdfToWordEngine';
 
 export default function PdfToWordPage() {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [statusMessage, setStatusMessage] = useState('');
   const [result, setResult] = useState<ConversionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [mode, setMode] = useState<string>('no-ocr');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const converterRef = useRef<HTMLDivElement>(null);
@@ -88,7 +55,6 @@ export default function PdfToWordPage() {
     setFile(incomingFile);
     setResult(null);
     setError(null);
-    setProgress(0);
     toast.success(`PDF Loaded: ${incomingFile.name}`);
     setTimeout(() => {
       converterRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -99,62 +65,32 @@ export default function PdfToWordPage() {
     if (!file) return;
 
     setIsProcessing(true);
-    setProgress(5);
     setStatusMessage('Reading PDF file...');
     setError(null);
     setResult(null);
 
     try {
-      const arrayBuffer = await file.arrayBuffer();
-
-      setStatusMessage('Checking for selectable text...');
-      setProgress(8);
-      const { pageCount, textChars } = await inspectPdfText(arrayBuffer);
-      const scanned = textChars < 20 * Math.min(pageCount, 3);
-
-      if (mode === 'ocr' || scanned) {
-        if (file.size > 25 * 1024 * 1024) {
-          throw new Error('OCR mode supports PDFs up to 25 MB. Please split the file or use No OCR mode.');
-        }
-        if (pageCount > 15) {
-          toast.info(`OCR mode converts the first 15 pages (this PDF has ${pageCount}).`);
-        }
-        if (scanned && mode !== 'ocr') {
-          toast.info('Scanned PDF detected — switching to OCR mode automatically.');
-        }
-        setStatusMessage(
-          scanned
-            ? 'Scanned PDF: reading text with OCR on our secure server...'
-            : 'Running OCR on our secure server...',
-        );
-        setProgress(15);
-
-        const ocrResult = await convertScannedPdfToDocx(file, ({ percent, message }) => {
-          setStatusMessage(message);
-          setProgress(Math.min(95, percent));
-        });
-
-        setResult({
-          blob: ocrResult.blob,
-          pageCount: ocrResult.pageCount || pageCount,
-          totalWords: ocrResult.totalWords,
-          fileName: ocrResult.fileName,
-        });
-        toast.success('Scanned PDF converted to editable Word document!');
-        return;
+      if (file.size > 25 * 1024 * 1024) {
+        throw new Error('Your PDF is larger than 25 MB. Please split it into smaller files and try again.');
       }
 
-      const conversionResult = await convertPdfToDocx(
-        arrayBuffer,
-        file.name,
-        ({ percent, message }) => {
-          setProgress(percent);
-          setStatusMessage(message);
-        }
-      );
+      const arrayBuffer = await file.arrayBuffer();
+      const { pageCount } = await inspectPdfText(arrayBuffer);
+      if (pageCount > 15) {
+        toast.info(`The first 15 pages will be converted (this PDF has ${pageCount}).`);
+      }
 
-      setResult(conversionResult);
-      toast.success('PDF successfully converted to editable Word document!');
+      const ocrResult = await convertScannedPdfToDocx(file, ({ message }) => {
+        setStatusMessage(message);
+      });
+
+      setResult({
+        blob: ocrResult.blob,
+        pageCount: ocrResult.pageCount || pageCount,
+        totalWords: ocrResult.totalWords,
+        fileName: ocrResult.fileName,
+      });
+      toast.success('Your document is now editable in Word!');
     } catch (err: unknown) {
       console.error('PDF to Word conversion error:', err);
       const msg = err instanceof Error ? err.message : 'Failed to convert PDF document.';
@@ -163,7 +99,7 @@ export default function PdfToWordPage() {
     } finally {
       setIsProcessing(false);
     }
-  }, [file, mode]);
+  }, [file]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -176,7 +112,6 @@ export default function PdfToWordPage() {
     setFile(null);
     setResult(null);
     setError(null);
-    setProgress(0);
     setStatusMessage('');
     if (fileInputRef.current) fileInputRef.current.value = '';
   }, []);
@@ -243,7 +178,7 @@ export default function PdfToWordPage() {
         >
           <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 animate-spin-slow" />
           <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
-            100% In-Browser • No OCR &amp; OCR Modes • Zero Cloud Uploads
+            Smart OCR • English, Urdu &amp; Arabic + 75 languages
           </span>
         </motion.div>
 
@@ -275,9 +210,8 @@ export default function PdfToWordPage() {
           className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto"
         >
           Transform PDFs into editable <code className="text-blue-600 dark:text-blue-400 font-mono text-xs">.docx</code> files.
-          Choose <strong className="text-zinc-800 dark:text-zinc-200">No OCR</strong> for digital PDFs or{' '}
-          <strong className="text-zinc-800 dark:text-zinc-200">OCR mode</strong> for scanned documents —
-          100% private, no signup required.
+          Digital <strong className="text-zinc-800 dark:text-zinc-200">and scanned</strong> PDFs both — one click, no settings to
+          choose, no signup required.
         </motion.p>
 
         {/* Clean Keyword Badges / Tags */}
@@ -285,10 +219,10 @@ export default function PdfToWordPage() {
           {[
             'PDF to Word',
             'Editable DOCX',
-            'Table Preserved',
-            'OCR Scanned PDF',
-            '100% In-Browser',
-            'Zero Cloud Uploads',
+            'Table Rebuild',
+            'Scanned PDF Support',
+            'Urdu & Arabic OCR',
+            'No Sign-Up',
           ].map((tag) => (
             <span
               key={tag}
@@ -300,68 +234,6 @@ export default function PdfToWordPage() {
           ))}
         </div>
       </div>
-
-      {/* ── H2: Choose Mode ─────────────────────────────────────────────────── */}
-      <motion.section
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.12 }}
-        aria-labelledby="mode-heading"
-      >
-        <h2
-          id="mode-heading"
-          className="text-center text-sm font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-4"
-        >
-          Step 1 — Choose Conversion Mode
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {MODES.map((m) => {
-            const Icon = m.icon;
-            const selected = mode === m.id;
-            return (
-              <div
-                key={m.id}
-                role="button"
-                tabIndex={0}
-                aria-pressed={selected}
-                onClick={() => setMode(m.id)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setMode(m.id);
-                  }
-                }}
-                className={`relative rounded-2xl border-2 p-5 transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-                  selected
-                    ? `${m.borderActive} ${m.bgActive}`
-                    : 'border-zinc-200 dark:border-zinc-800 opacity-60 hover:opacity-90'
-                }`}
-              >
-                {selected && (
-                  <span className="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
-                    Selected
-                  </span>
-                )}
-                <div className="flex items-start gap-4">
-                  <div className={`mt-0.5 w-10 h-10 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center shrink-0 shadow-sm border border-zinc-100 dark:border-zinc-800`}>
-                    <Icon className={`w-5 h-5 ${m.iconColor}`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="font-bold text-sm text-zinc-900 dark:text-white">{m.title}</span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${m.badgeColor}`}>
-                        {m.badge}
-                      </span>
-                    </div>
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">{m.desc}</p>
-                    <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1.5 italic">{m.tip}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </motion.section>
 
       {/* ── H2: Main Converter Tool ─────────────────────────────────────────── */}
       <motion.section
@@ -437,22 +309,64 @@ export default function PdfToWordPage() {
                 </div>
 
                 {isProcessing ? (
-                  <div className="space-y-3 py-4">
-                    <div className="flex items-center justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                      <span className="flex items-center gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                        {statusMessage || 'Converting document...'}
-                      </span>
-                      <span className="font-mono text-blue-600 dark:text-blue-400">{progress}%</span>
+                  <div className="py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10 shrink-0">
+                        <span className="absolute inset-0 rounded-full border-2 border-blue-600/15" />
+                        <motion.span
+                          className="absolute inset-0 rounded-full border-2 border-transparent border-t-blue-600"
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 1.1, ease: 'linear' }}
+                        />
+                        <ScanText className="absolute inset-0 m-auto w-4 h-4 text-blue-600" />
+                      </div>
+                      <div className="min-w-0">
+                        <AnimatePresence mode="wait">
+                          <motion.p
+                            key={statusMessage}
+                            initial={{ opacity: 0, y: 6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            transition={{ duration: 0.25 }}
+                            className="text-sm font-semibold text-zinc-800 dark:text-zinc-100"
+                          >
+                            {statusMessage || 'Converting your document...'}
+                          </motion.p>
+                        </AnimatePresence>
+                        <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                          Rebuilding your layout page by page — please keep this tab open.
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="w-full h-2.5 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+                    <div className="relative mt-4 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
                       <motion.div
-                        className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progress}%` }}
-                        transition={{ ease: 'easeOut', duration: 0.2 }}
+                        className="absolute inset-y-0 w-1/3 rounded-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600"
+                        animate={{ x: ['-110%', '310%'] }}
+                        transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
                       />
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-3 gap-3" aria-hidden="true">
+                      {[0, 1, 2].map((page) => (
+                        <div
+                          key={page}
+                          className="space-y-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 p-2"
+                        >
+                          {[0, 1, 2, 3].map((row) => (
+                            <motion.div
+                              key={row}
+                              className="h-1.5 rounded bg-zinc-300 dark:bg-zinc-600"
+                              animate={{ opacity: [0.3, 1, 0.3] }}
+                              transition={{
+                                repeat: Infinity,
+                                duration: 1.8,
+                                delay: page * 0.15 + row * 0.12,
+                              }}
+                            />
+                          ))}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ) : (
@@ -588,8 +502,8 @@ export default function PdfToWordPage() {
             <Clock className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">&lt; 10s</p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Avg. conversion time</p>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">15</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Pages per conversion</p>
           </div>
         </div>
         <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
@@ -606,8 +520,8 @@ export default function PdfToWordPage() {
             <Layers className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">100%</p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">In-browser privacy</p>
+            <p className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">0</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Files kept on our side</p>
           </div>
         </div>
         <div className="p-5 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs flex flex-col justify-between">
@@ -621,9 +535,6 @@ export default function PdfToWordPage() {
         </div>
       </div>
 
-      {/* ── Trust Section ──────────────────────────────────────────────────── */}
-      <ClientSideTrustSection />
-
       {/* ── H2: Why Use Compixor PDF to Word ─────────────────────────────── */}
       {/* SEO skill: H2 with semantic keywords, answer user intent */}
       <section aria-labelledby="why-heading" className="space-y-8">
@@ -635,7 +546,7 @@ export default function PdfToWordPage() {
             Why Use Compixor to Convert PDF to Word?
           </h2>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto">
-            Unlike iLovePDF, Smallpdf, or Adobe — your documents <strong>never leave your device</strong>.
+            Unlike iLovePDF, Smallpdf, or Adobe — your PDF is <strong>processed and discarded</strong>, never stored.
           </p>
         </div>
 
@@ -652,15 +563,15 @@ export default function PdfToWordPage() {
               icon: ShieldCheck,
               color: 'text-emerald-500',
               bg: 'bg-emerald-500/10',
-              title: '100% Private — Zero Uploads',
-              desc: 'Your PDF is processed inside device RAM. Zero bytes are uploaded to any server, ever. Perfect for confidential financial reports.',
+              title: 'Nothing Is Kept On Our Side',
+              desc: 'Your PDF is converted in server memory and dropped immediately — no account, no file history, no reuse of your data.',
             },
             {
               icon: Globe,
               color: 'text-blue-500',
               bg: 'bg-blue-500/10',
               title: '80+ Language OCR Support',
-              desc: 'OCR mode reads English, Urdu, Arabic, Chinese, and 75+ other languages from scanned PDFs into editable DOCX text.',
+              desc: 'The engine reads English, Urdu, Arabic, Chinese, and 75+ other languages from scanned pages into editable DOCX text.',
             },
             {
               icon: RotateCcw,

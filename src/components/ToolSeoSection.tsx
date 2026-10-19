@@ -23,6 +23,9 @@ interface ToolSeoSectionProps {
   toolSlug: ToolSlug;
 }
 
+/** Tools whose work is done by our OCR server, so "zero uploads" copy must not be used. */
+const SERVER_OCR_TOOLS = new Set<string>(['pdf-to-word', 'img-to-word']);
+
 export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
   const tool = seoConfig[toolSlug];
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -42,7 +45,9 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
         <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
           {toolSlug === 'passport-photo'
             ? `${tool.h1} — Official Biometric Standards`
-            : `${tool.h1} — Safe, Fast & 100% Client-Side`}
+            : SERVER_OCR_TOOLS.has(toolSlug || '')
+              ? `${tool.h1} — Accurate OCR, Nothing Stored`
+              : `${tool.h1} — Safe, Fast & 100% Client-Side`}
         </h2>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
           {tool.introParagraph}
@@ -52,7 +57,11 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
         <div className="mt-6 pt-5 border-t border-zinc-100 dark:border-zinc-800/60 flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            {toolSlug === 'passport-photo' ? 'In-Memory / On-Device Privacy' : 'Zero Server Uploads'}
+            {toolSlug === 'passport-photo'
+              ? 'In-Memory / On-Device Privacy'
+              : SERVER_OCR_TOOLS.has(toolSlug || '')
+                ? 'No Files Kept On Our Side'
+                : 'Zero Server Uploads'}
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />

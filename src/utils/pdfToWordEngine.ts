@@ -652,25 +652,37 @@ const OCR_API_BASE =
 const OCR_ENDPOINT = `${OCR_API_BASE}/api/convert-pdf-to-docx`;
 
 /**
- * Server-side OCR for scanned (no text layer) PDFs. The file is uploaded to the
- * Image-to-Word engine, which renders pages and runs Tesseract + Gemini refinement.
- * Long PDFs can take minutes, so progress is time-based while we await the response.
+ * Server-side OCR for PDFs. The file is uploaded to the Image-to-Word engine,
+ * which renders pages and runs Tesseract + Gemini refinement.
+ * Wall-clock time varies wildly with page count and queue depth, so the caller
+ * gets qualitative stage messages instead of an ETA.
  */
+const OCR_STAGES: { afterSec: number; message: string }[] = [
+  { afterSec: 0, message: 'Uploading your PDF securely...' },
+  { afterSec: 3, message: 'Rendering pages and detecting columns, tables and text blocks...' },
+  { afterSec: 9, message: 'Reading text with OCR and AI cleanup...' },
+  { afterSec: 22, message: 'Rebuilding headings, paragraphs and tables...' },
+  { afterSec: 45, message: 'Packaging your editable Word document...' },
+  { afterSec: 90, message: 'Large document — finishing up, this keeps the layout accurate...' },
+];
+
 export async function convertScannedPdfToDocx(
   file: File,
   onProgress?: (p: ConversionProgress) => void,
 ): Promise<ConversionResult> {
   const t0 = Date.now();
-  onProgress?.({ percent: 6, message: 'Uploading scanned PDF to OCR engine...' });
-
-  const timer = window.setInterval(() => {
+  let stage = -1;
+  const emitStage = () => {
     const secs = (Date.now() - t0) / 1000;
-    const percent = Math.min(93, 8 + secs * 0.9);
-    onProgress?.({
-      percent,
-      message: `OCR engine is reading the pages — ${secs.toFixed(0)}s elapsed...`,
-    });
-  }, 2000);
+    let next = 0;
+    for (let i = 0; i < OCR_STAGES.length; i++) if (secs >= OCR_STAGES[i].afterSec) next = i;
+    if (next === stage) return;
+    stage = next;
+    onProgress?.({ percent: 12 + stage * 14, message: OCR_STAGES[stage].message });
+  };
+  emitStage();
+
+  const timer = window.setInterval(emitStage, 1000);
 
   try {
     const form = new FormData();
@@ -690,7 +702,7 @@ export async function convertScannedPdfToDocx(
 
     const blob = await res.blob();
     const pageCount = parseInt(res.headers.get('X-Pages-Converted') ?? '1', 10);
-    onProgress?.({ percent: 100, message: 'OCR conversion completed!' });
+    onProgress?.({ percent: 100, message: 'Word document is ready!' });
 
     return {
       blob,
