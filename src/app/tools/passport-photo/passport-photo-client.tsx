@@ -1411,6 +1411,7 @@ export default function PassportPhotoPage() {
           activePreset.name
         );
         const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: 'application/pdf' });
+        incrementFilesDone();
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         const count = layoutV2.actualCount;
@@ -2872,6 +2873,9 @@ export default function PassportPhotoPage() {
               + Make New Image
             </button>
           </motion.div>
+
+          {/* Tool Feedback Component directly below download screen */}
+          <ToolFeedback toolName="passport-photo" />
         </div>
       )}
 
@@ -3164,9 +3168,6 @@ export default function PassportPhotoPage() {
           )}
         </div>
       )}
-
-      {/* Tool Feedback Component */}
-      <ToolFeedback toolName="passport-photo" />
     </div>
   );
 }
