@@ -531,9 +531,15 @@ export default function PdfToWordPage() {
                     Extracted{' '}
                     <span className="font-bold text-zinc-700 dark:text-zinc-300">
                       {result.pageCount} page{result.pageCount > 1 ? 's' : ''}
-                    </span>{' '}
-                    &amp;{' '}
-                    <span className="font-bold text-zinc-700 dark:text-zinc-300">{result.totalWords} words</span>{' '}
+                    </span>
+                    {result.totalWords > 0 && (
+                      <>
+                        {' '}&amp;{' '}
+                        <span className="font-bold text-zinc-700 dark:text-zinc-300">
+                          {result.totalWords} words
+                        </span>
+                      </>
+                    )}{' '}
                     into editable Word format
                   </motion.p>
 
