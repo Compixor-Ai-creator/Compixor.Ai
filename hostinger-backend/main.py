@@ -17,6 +17,9 @@ Endpoints: GET /health, POST /convert, POST /api/convert-img-to-docx
 """
 import io
 import os
+import glob
+import subprocess
+import tempfile
 
 # Lock OpenMP threads to 1 per worker to prevent CPU thrashing on 2-core VPS
 os.environ.setdefault("OMP_THREAD_LIMIT", "1")
@@ -58,6 +61,14 @@ log = logging.getLogger("img2docx")
 MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_MB", "15")) * 1024 * 1024
 MAX_BATCH_FILES = int(os.getenv("MAX_BATCH_FILES", "10"))
 ALLOWED_EXT = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff"}
+# Scanned PDFs: rendered to page images and pushed through the same OCR pipeline.
+# Pages and Gemini calls are capped hard - OCR is far slower than text-layer extraction.
+MAX_PDF_BYTES = int(os.getenv("MAX_PDF_MB", "25")) * 1024 * 1024
+MAX_PDF_PAGES = int(os.getenv("MAX_PDF_PAGES", "15"))
+PDF_DPI = int(os.getenv("PDF_DPI", "200"))
+PDF_AI_BUDGET = int(os.getenv("PDF_AI_BUDGET", "3"))
+PDF_FULL_QUALITY_PAGES = int(os.getenv("PDF_FULL_QUALITY_PAGES", "3"))
+MAX_TOTAL_PAGES = int(os.getenv("MAX_TOTAL_PAGES", "30"))
 ALLOWED_ORIGINS = [
     o.strip()
     for o in os.getenv(
@@ -354,6 +365,47 @@ def has_horizontal_underline(gray_img: np.ndarray, x0: int, x1: int, y_top: int,
     return int(np.sum(col_has))
 
 
+def render_pdf_pages(data: bytes) -> List[bytes]:
+    """Render up to MAX_PDF_PAGES pages of a PDF to PNG bytes for the OCR pipeline."""
+    pages: List[bytes] = []
+    try:
+        import pymupdf
+
+        with pymupdf.open(stream=data, filetype="pdf") as doc:
+            if doc.needs_pass:
+                raise HTTPException(status_code=400, detail="PDF is password protected")
+            zoom = PDF_DPI / 72.0
+            for page in list(doc)[:MAX_PDF_PAGES]:
+                pix = page.get_pixmap(matrix=pymupdf.Matrix(zoom, zoom), alpha=False)
+                pages.append(pix.tobytes("png"))
+        if pages:
+            return pages
+    except HTTPException:
+        raise
+    except Exception:
+        log.warning("pymupdf render failed, falling back to pdftoppm", exc_info=True)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        src = os.path.join(tmp, "in.pdf")
+        with open(src, "wb") as f:
+            f.write(data)
+        cmd = ["pdftoppm", "-png", "-r", str(PDF_DPI), "-f", "1", "-l", str(MAX_PDF_PAGES), src,
+               os.path.join(tmp, "p")]
+        try:
+            subprocess.run(cmd, check=True, capture_output=True, timeout=180)
+        except FileNotFoundError:
+            log.error("neither pymupdf nor pdftoppm can render this PDF")
+            raise HTTPException(status_code=500, detail="PDF rendering is unavailable on this server")
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            raise HTTPException(status_code=400, detail="Corrupted or unreadable PDF")
+        for p in sorted(glob.glob(os.path.join(tmp, "p-*.png")) + glob.glob(os.path.join(tmp, "p*.png"))):
+            with open(p, "rb") as f:
+                pages.append(f.read())
+    if not pages:
+        raise HTTPException(status_code=400, detail="Corrupted or unreadable PDF")
+    return pages[:MAX_PDF_PAGES]
+
+
 def decode_image(data: bytes) -> np.ndarray:
     img = cv2.imdecode(np.frombuffer(data, np.uint8), cv2.IMREAD_UNCHANGED)
     if img is None:
@@ -621,15 +673,16 @@ def gemini_ocr(img: np.ndarray) -> Optional[str]:
 
 
 class OCR:
-    def __init__(self, lang: str):
+    def __init__(self, lang: str, ai_budget: Optional[int] = None):
         self.lang = lang
         self.urdu = "urd" in lang or "ara" in lang
         self.ai_calls = 0
+        self.max_ai_calls = MAX_AI_CALLS if ai_budget is None else ai_budget
         self.lock = threading.Lock()
 
     def _take_ai(self) -> bool:
         with self.lock:
-            if self.ai_calls < MAX_AI_CALLS:
+            if self.ai_calls < self.max_ai_calls:
                 self.ai_calls += 1
                 return True
         return False
@@ -1659,9 +1712,9 @@ def process_single_image(data: bytes, ocr: OCR) -> Tuple[List[Block], List[Table
     return text_blocks + pic_blocks, tables, W
 
 
-def run_pipeline(images_data: List[bytes], lang: str) -> Tuple[bytes, float]:
+def run_pipeline(images_data: List[bytes], lang: str, ai_budget: Optional[int] = None) -> Tuple[bytes, float]:
     t0 = time.perf_counter()
-    ocr = OCR(lang)
+    ocr = OCR(lang, ai_budget=ai_budget)
     doc = create_empty_docx()
 
     for idx, data in enumerate(images_data):
@@ -1698,10 +1751,14 @@ def health():
         "gemini_enabled": bool(GEMINI_API_KEY),
         "gemini_models": GEMINI_MODELS,
         "max_batch_files": MAX_BATCH_FILES,
+        "accepts_pdf": True,
+        "max_pdf_pages": MAX_PDF_PAGES,
+        "max_total_pages": MAX_TOTAL_PAGES,
     }
 
 
 @app.post("/api/convert-img-to-docx")
+@app.post("/api/convert-pdf-to-docx")
 @app.post("/convert")
 def convert(
     files: Optional[List[UploadFile]] = File(None),
@@ -1720,20 +1777,31 @@ def convert(
         raise HTTPException(status_code=400, detail=f"Maximum {MAX_BATCH_FILES} images allowed per batch")
 
     images_data: List[bytes] = []
+    has_pdf = False
     for u in uploads:
         ext = Path(u.filename or "").suffix.lower()
-        if ext not in ALLOWED_EXT:
+        if ext not in ALLOWED_EXT and ext != ".pdf":
             raise HTTPException(status_code=400, detail=f"Unsupported file type: {u.filename}")
-        data = u.file.read(MAX_UPLOAD_BYTES + 1)
-        if len(data) > MAX_UPLOAD_BYTES:
+        limit = MAX_PDF_BYTES if ext == ".pdf" else MAX_UPLOAD_BYTES
+        data = u.file.read(limit + 1)
+        if len(data) > limit:
             raise HTTPException(status_code=413, detail=f"File too large: {u.filename}")
-        images_data.append(data)
+        if ext == ".pdf" or data[:5] == b"%PDF-":
+            has_pdf = True
+            images_data.extend(render_pdf_pages(data))
+        else:
+            images_data.append(data)
+    if len(images_data) > MAX_TOTAL_PAGES:
+        raise HTTPException(status_code=400, detail=f"Too many pages: {MAX_TOTAL_PAGES} is the limit per request")
 
     ocr_lang = resolve_lang(language or lang)
+    # Short PDFs get the full refinement budget (best quality); long ones are throttled
+    # per page so a 30-page scan cannot monopolise the 2-core box or the Gemini quota.
+    ai_budget = PDF_AI_BUDGET if has_pdf and len(images_data) > PDF_FULL_QUALITY_PAGES else None
     if not CONVERT_SLOTS.acquire(timeout=20):
         raise HTTPException(status_code=503, detail="Server is busy, please try again in a minute")
     try:
-        out, elapsed = run_pipeline(images_data, ocr_lang)
+        out, elapsed = run_pipeline(images_data, ocr_lang, ai_budget=ai_budget)
     except HTTPException:
         raise
     except Exception:

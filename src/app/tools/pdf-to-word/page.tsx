@@ -37,8 +37,7 @@ import ClientSideTrustSection from '@/components/ClientSideTrustSection';
 import ToolFeedback from '@/components/ToolFeedback';
 import { incrementFilesDone } from '@/lib/feedbackCounter';
 import { formatFileSize, validatePdfFile, downloadBlob } from '@/utils/fileHelpers';
-import { convertPdfToDocx, inspectPdfText, ConversionResult } from '@/utils/pdfToWordEngine';
-import { convertImageToWord } from '@/utils/imgToWordEngine';
+import { convertPdfToDocx, convertScannedPdfToDocx, inspectPdfText, ConversionResult } from '@/utils/pdfToWordEngine';
 
 // ── Mode selector data ─────────────────────────────────────────────────────────
 const MODES = [
@@ -130,19 +129,16 @@ export default function PdfToWordPage() {
         );
         setProgress(15);
 
-        const ocrResult = await convertImageToWord(file, {
-          language: 'eng+urd',
-          onProgress: ({ status, progress }) => {
-            setStatusMessage(status);
-            setProgress(Math.min(95, 15 + Math.round(progress * 80)));
-          },
+        const ocrResult = await convertScannedPdfToDocx(file, ({ percent, message }) => {
+          setStatusMessage(message);
+          setProgress(Math.min(95, percent));
         });
 
         setResult({
-          blob: ocrResult.docxBlob,
+          blob: ocrResult.blob,
           pageCount: ocrResult.pageCount || pageCount,
-          totalWords: ocrResult.wordCount,
-          fileName: `${file.name.replace(/\.pdf$/i, '')}_ocr_converted.docx`,
+          totalWords: ocrResult.totalWords,
+          fileName: ocrResult.fileName,
         });
         toast.success('Scanned PDF converted to editable Word document!');
         return;

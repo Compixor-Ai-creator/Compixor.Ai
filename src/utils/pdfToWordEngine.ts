@@ -646,3 +646,59 @@ export async function isScannedPdf(pdfBuffer: ArrayBuffer): Promise<boolean> {
   const sampled = Math.min(pageCount, 3);
   return textChars < 20 * sampled;
 }
+
+const OCR_API_BASE =
+  process.env.NEXT_PUBLIC_IMG2WORD_API_URL?.replace(/\/$/, '') ?? 'https://api.compixor-ai.cloud';
+const OCR_ENDPOINT = `${OCR_API_BASE}/api/convert-pdf-to-docx`;
+
+/**
+ * Server-side OCR for scanned (no text layer) PDFs. The file is uploaded to the
+ * Image-to-Word engine, which renders pages and runs Tesseract + Gemini refinement.
+ * Long PDFs can take minutes, so progress is time-based while we await the response.
+ */
+export async function convertScannedPdfToDocx(
+  file: File,
+  onProgress?: (p: ConversionProgress) => void,
+): Promise<ConversionResult> {
+  const t0 = Date.now();
+  onProgress?.({ percent: 6, message: 'Uploading scanned PDF to OCR engine...' });
+
+  const timer = window.setInterval(() => {
+    const secs = (Date.now() - t0) / 1000;
+    const percent = Math.min(93, 8 + secs * 0.9);
+    onProgress?.({
+      percent,
+      message: `OCR engine is reading the pages — ${secs.toFixed(0)}s elapsed...`,
+    });
+  }, 2000);
+
+  try {
+    const form = new FormData();
+    form.append('files', file, file.name);
+    form.append('language', 'eng+urd');
+
+    const res = await fetch(OCR_ENDPOINT, { method: 'POST', body: form });
+    if (!res.ok) {
+      let detail = `Server error ${res.status}`;
+      try {
+        detail = (await res.json())?.detail ?? detail;
+      } catch {
+        detail = res.statusText || detail;
+      }
+      throw new Error(detail);
+    }
+
+    const blob = await res.blob();
+    const pageCount = parseInt(res.headers.get('X-Pages-Converted') ?? '1', 10);
+    onProgress?.({ percent: 100, message: 'OCR conversion completed!' });
+
+    return {
+      blob,
+      pageCount,
+      totalWords: 0,
+      fileName: `${file.name.replace(/\.pdf$/i, '')}_ocr_converted.docx`,
+    };
+  } finally {
+    window.clearInterval(timer);
+  }
+}
