@@ -4,23 +4,24 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-  FileDown,
   FileText,
-  Camera,
+  FileArchive,
+  Combine,
   QrCode,
   Shield,
   Zap,
   Lock,
-  Unlock,
+  LockOpen,
   ArrowRight,
   Sparkles,
   MonitorSmartphone,
   CheckCircle2,
-  Files,
   Stamp,
   Eraser,
+  IdCard,
+  Crop,
+  ScanText,
 } from 'lucide-react';
-import { WhatsAppIcon } from '@/components/SocialIcons';
 import { FaqJsonLd } from '@/components/JsonLd';
 import HomeFaqAccordion from '@/components/HomeFaqAccordion';
 import WhyTrustCompixor from '@/components/WhyTrustCompixor';
@@ -51,7 +52,7 @@ const tools = [
   },
   {
     href: '/tools/pdf-organizer',
-    icon: Files,
+    icon: Combine,
     title: 'Smart PDF Merge & Split',
     tagline: '100% Client-Side Privacy',
     description: 'Combine multiple PDF files in custom order or extract exact page ranges into separate documents with visual page previews.',
@@ -61,7 +62,7 @@ const tools = [
   },
   {
     href: '/tools/pdf-compressor',
-    icon: FileDown,
+    icon: FileArchive,
     title: 'Smart PDF Compressor',
     tagline: '100% Client-Side Privacy',
     description: 'Compress heavy PDF documents client-side with full visual quality preservation and customizable compression levels.',
@@ -81,7 +82,7 @@ const tools = [
   },
   {
     href: '/tools/unlock-pdf',
-    icon: Unlock,
+    icon: LockOpen,
     title: 'Unlock PDF',
     tagline: '100% Client-Side Privacy',
     description: 'Instantly strip password security and remove permission restrictions from PDF files you own directly in your browser.',
@@ -91,7 +92,7 @@ const tools = [
   },
   {
     href: '/tools/word-compressor',
-    icon: FileText,
+    icon: FileArchive,
     title: 'Smart Word Compressor',
     tagline: '100% Client-Side Privacy',
     description: 'Shrink Microsoft Word .docx files by inspecting and re-compressing embedded high-res images without altering styles.',
@@ -111,7 +112,7 @@ const tools = [
   },
   {
     href: '/tools/img-to-word',
-    icon: FileText,
+    icon: ScanText,
     title: 'Image to Word Converter',
     tagline: 'Tesseract OCR · 100% Client-Side',
     description: 'Convert JPG, PNG, WEBP, or scanned image files into fully editable Word (.docx) documents using in-browser Tesseract OCR.',
@@ -121,7 +122,7 @@ const tools = [
   },
   {
     href: '/tools/passport-photo',
-    icon: Camera,
+    icon: IdCard,
     title: 'Biometric Passport Photo Maker',
     tagline: 'NADRA, US Visa & Schengen Compliant',
     description: 'Crop and scale portraits to Pakistan NADRA, US 2x2", UK/EU 35x45mm, and Gulf specs with biometric face guides and 300 DPI printable sheets.',
@@ -131,7 +132,7 @@ const tools = [
   },
   {
     href: '/tools/full-dp-maker',
-    icon: WhatsAppIcon,
+    icon: Crop,
     title: 'No-Crop Full DP Resizer',
     tagline: 'Resize & Fit WhatsApp, Instagram & Facebook Profile Pictures',
     description: 'Resize & fit WhatsApp, Instagram & Facebook profile pictures without cropping (Blur background / 1:1 square canvas).',

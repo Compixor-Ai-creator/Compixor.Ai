@@ -4,8 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-  FileDown,
-  Files,
+  FileArchive,
+  Combine,
   Stamp,
   Eraser,
   ArrowRight,
@@ -13,7 +13,7 @@ import {
   ShieldCheck,
   LucideIcon,
   Lock,
-  Unlock,
+  LockOpen,
   FileText,
 } from 'lucide-react';
 
@@ -69,7 +69,7 @@ export const PDF_TOOLS: PdfToolConfig[] = [
     badge: 'Popular',
     stat: 'Avg 75% Reduction',
     href: '/tools/pdf-compressor',
-    icon: FileDown,
+    icon: FileArchive,
     color: 'from-brand-500 to-indigo-600',
     tagline: '100% Client-Side Privacy',
     description: 'Compress heavy PDF documents client-side with native vector preservation and zero quality loss.',
@@ -80,7 +80,7 @@ export const PDF_TOOLS: PdfToolConfig[] = [
     badge: 'Popular',
     stat: 'Zero Cloud Uploads',
     href: '/tools/pdf-organizer',
-    icon: Files,
+    icon: Combine,
     color: 'from-cyan-500 to-indigo-600',
     tagline: '100% Client-Side Privacy',
     description: 'Combine multiple PDFs or extract exact page ranges into separate documents with visual previews.',
@@ -102,7 +102,7 @@ export const PDF_TOOLS: PdfToolConfig[] = [
     badge: 'New',
     stat: '100% Local Decrypt',
     href: '/tools/unlock-pdf',
-    icon: Unlock,
+    icon: LockOpen,
     color: 'from-purple-500 to-pink-600',
     tagline: '100% Client-Side Privacy',
     description: 'Instantly remove passwords and security restrictions from PDF files you own without cloud uploads.',

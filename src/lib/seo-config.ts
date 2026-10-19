@@ -1,4 +1,18 @@
 import type { Metadata } from 'next';
+import type { LucideIcon } from 'lucide-react';
+import {
+  FileText,
+  FileArchive,
+  Combine,
+  QrCode,
+  Stamp,
+  Eraser,
+  Lock,
+  LockOpen,
+  IdCard,
+  Crop,
+  ScanText,
+} from 'lucide-react';
 
 export type ToolSlug =
   | 'pdf-compressor'
@@ -32,6 +46,7 @@ export interface FeatureItem {
 export interface ToolSeoData {
   slug: ToolSlug;
   name: string;
+  icon: LucideIcon;
   title: string; // Max 60 chars, primary keyword near start
   description: string; // Exactly 150-160 chars
   canonicalUrl: string;
@@ -118,6 +133,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'pdf-compressor': {
     slug: 'pdf-compressor',
     name: 'PDF Compressor',
+    icon: FileArchive,
     title: 'Compress PDF Online Free - Reduce File Size | Compixor',
     description:
       'Compress PDF online free without uploading files. Reduce PDF size to 100kb, 200kb, or 1mb with no quality loss. Fast, private, works in your browser today.',
@@ -228,7 +244,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'All operations execute inside your browser memory. Your files never touch external cloud servers.',
       },
     ],
-    relatedToolSlugs: ['pdf-to-word', 'pdf-organizer', 'protect-pdf', 'word-compressor'],
+    relatedToolSlugs: ['pdf-to-word', 'pdf-organizer', 'protect-pdf'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -243,6 +259,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'pdf-organizer': {
     slug: 'pdf-organizer',
     name: 'PDF Merge & Split',
+    icon: Combine,
     title: 'Merge PDF Online Free - Combine & Split Pages | Compixor',
     description:
       'Merge PDF online free without upload. Combine PDF files into one, split pages, or extract sheets with no watermark. Free, no signup, works in your browser.',
@@ -345,7 +362,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'All merging and splitting takes place in your browser buffer with zero data transferred online.',
       },
     ],
-    relatedToolSlugs: ['pdf-to-word', 'pdf-compressor', 'add-watermark', 'protect-pdf'],
+    relatedToolSlugs: ['pdf-to-word', 'pdf-compressor', 'add-watermark'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -360,6 +377,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'add-watermark': {
     slug: 'add-watermark',
     name: 'Add PDF Watermark',
+    icon: Stamp,
     title: 'Add Watermark to PDF Online Free - Text & Logo | Compixor',
     description:
       'Add watermark to PDF online free without upload. Stamp custom text or transparent logo images with full privacy. Free, no signup, works in your browser now.',
@@ -466,7 +484,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Client-side stamping ensures client contracts and financial records remain 100% confidential.',
       },
     ],
-    relatedToolSlugs: ['remove-watermark', 'protect-pdf', 'pdf-organizer', 'pdf-compressor'],
+    relatedToolSlugs: ['remove-watermark', 'protect-pdf', 'pdf-organizer'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -481,6 +499,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'remove-watermark': {
     slug: 'remove-watermark',
     name: 'Remove PDF Watermark',
+    icon: Eraser,
     title: 'Remove Watermark from PDF Free - Erase Stamps | Compixor',
     description:
       'Remove watermark from PDF free without upload or Adobe Acrobat. Erase stamps, logos, and text overlays in seconds. Free, no signup, works in your browser.',
@@ -587,7 +606,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Process private legal briefs and academic papers with 100% local browser execution.',
       },
     ],
-    relatedToolSlugs: ['add-watermark', 'pdf-compressor', 'unlock-pdf', 'pdf-organizer'],
+    relatedToolSlugs: ['add-watermark', 'unlock-pdf', 'pdf-compressor'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -602,6 +621,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'protect-pdf': {
     slug: 'protect-pdf',
     name: 'Protect PDF',
+    icon: Lock,
     title: 'Password Protect PDF Online Free - AES-256 | Compixor',
     description:
       'Password protect PDF online free with strong AES-256 encryption. Lock PDF files, restrict editing and printing safely. Free, no signup, no upload required.',
@@ -700,7 +720,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Passwords and encryption keys are generated in local browser memory and never stored.',
       },
     ],
-    relatedToolSlugs: ['unlock-pdf', 'pdf-compressor', 'add-watermark', 'pdf-organizer'],
+    relatedToolSlugs: ['unlock-pdf', 'pdf-compressor', 'pdf-organizer'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -715,6 +735,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'unlock-pdf': {
     slug: 'unlock-pdf',
     name: 'Unlock PDF',
+    icon: LockOpen,
     title: 'Unlock PDF Online Free - Remove Password | Compixor',
     description:
       'Unlock PDF online free without uploading files. Remove PDF password security and printing restrictions instantly. 100% private, works in your browser today.',
@@ -813,7 +834,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Passwords and sensitive financial records are processed locally in RAM with zero cloud exposure.',
       },
     ],
-    relatedToolSlugs: ['protect-pdf', 'pdf-compressor', 'remove-watermark', 'pdf-organizer'],
+    relatedToolSlugs: ['protect-pdf', 'pdf-compressor', 'remove-watermark'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -828,6 +849,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'word-compressor': {
     slug: 'word-compressor',
     name: 'Word Compressor',
+    icon: FileArchive,
     title: 'Compress Word Document Online Free - Reduce DOCX | Compixor',
     description:
       'Compress Word document online free without losing quality. Reduce DOCX file size with embedded images for email attachments. Free, no upload, works in browser.',
@@ -930,7 +952,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Unzips, optimizes, and repacks DOCX files inside your browser tab with zero cloud exposure.',
       },
     ],
-    relatedToolSlugs: ['pdf-to-word', 'pdf-compressor', 'pdf-organizer', 'qr-generator'],
+    relatedToolSlugs: ['img-to-word', 'pdf-to-word', 'pdf-compressor'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -945,6 +967,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'passport-photo': {
     slug: 'passport-photo',
     name: 'Passport Photo Maker',
+    icon: IdCard,
     title: 'Passport Size Photo Maker Online Free - 300 DPI | Compixor',
     description:
       'Free passport size photo maker online. Create compliant 35x45 mm, NADRA CNIC & 2x2 inch photos. Print on A4, A5 & A6 sheets at 300 DPI with crop marks.',
@@ -1078,7 +1101,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Pixel-exact tiled print sheets with cutting borders, corner crop marks, 300 DPI metadata, and vector PDF.',
       },
     ],
-    relatedToolSlugs: ['full-dp-maker', 'qr-generator', 'pdf-compressor', 'word-compressor'],
+    relatedToolSlugs: ['full-dp-maker', 'qr-generator', 'img-to-word'],
     applicationCategory: 'MultimediaApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -1095,6 +1118,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'full-dp-maker': {
     slug: 'full-dp-maker',
     name: 'Full DP Maker',
+    icon: Crop,
     title: 'WhatsApp DP Without Crop - Full Size Photo | Compixor',
     description:
       'WhatsApp DP without crop maker online. Post full size profile pictures for Instagram & WhatsApp with stylish blur backgrounds. Free, works in your browser.',
@@ -1193,7 +1217,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'High-speed local rendering in WebP, PNG, or high-quality JPEG with zero server waiting.',
       },
     ],
-    relatedToolSlugs: ['passport-photo', 'qr-generator', 'add-watermark', 'pdf-compressor'],
+    relatedToolSlugs: ['passport-photo', 'qr-generator', 'img-to-word'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -1208,6 +1232,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'qr-generator': {
     slug: 'qr-generator',
     name: 'QR Code Generator',
+    icon: QrCode,
     title: 'QR Code Generator Free No Signup - SVG & Logo | Compixor',
     description:
       'QR code generator free no signup required. Create custom color QR codes with logos for URLs, WiFi, and WhatsApp links in SVG or PNG. Works in your browser.',
@@ -1306,7 +1331,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Upload your company logo and adjust gradient dots, eye patterns, and custom palettes.',
       },
     ],
-    relatedToolSlugs: ['pdf-compressor', 'passport-photo', 'full-dp-maker', 'word-compressor'],
+    relatedToolSlugs: ['full-dp-maker', 'passport-photo', 'pdf-compressor'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -1321,6 +1346,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'pdf-to-word': {
     slug: 'pdf-to-word',
     name: 'PDF to Word Converter',
+    icon: FileText,
     title: 'Convert PDF to Word Online Free - Editable DOCX | Compixor',
     description:
       'Convert PDF to Word online free without uploading files. Turn digital or scanned PDFs into editable DOCX in your browser with OCR support. 100% private.',
@@ -1364,19 +1390,19 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     h1: 'Convert PDF to Word Online Free',
     introParagraph:
-      'Convert PDF to Word online free without uploading files or submitting email addresses. Compixor AI is a client-side document converter that turns digital and scanned PDFs into clean, fully editable Microsoft Word (.docx) files. Featuring a dual-engine architecture, it offers a No OCR mode for instant digital text extraction and an in-browser OCR mode powered by Tesseract to recognize text from scanned books, invoices, and multi-language documents including Urdu and Arabic. Enjoy an authentic in-browser converter: free, no signup, no upload, works in your browser with zero server data transfer, keeping your sensitive documents private on your own device.',
+      'Convert PDF to Word online free with no email address or account required. Compixor AI turns digital and scanned PDFs into clean, fully editable Microsoft Word (.docx) files. A single OCR engine — Tesseract with an AI cleanup pass — reads text, columns and tables from ordinary PDFs as well as scans, including English, Urdu and Arabic documents. Files are processed on our own secure server, never stored, and the editable Word file is handed straight back to your browser.',
     howToSteps: [
       {
         name: 'Drop Your PDF Document',
         text: 'Select or drag and drop your PDF file into the secure drop zone.',
       },
       {
-        name: 'Choose Conversion Mode',
-        text: 'Select No OCR for digital PDFs with selectable text, or OCR Mode for scanned pages and images.',
+        name: 'Click Convert',
+        text: 'No modes to choose — the engine detects the layout, text and tables of every page automatically.',
       },
       {
-        name: 'In-Browser Extraction',
-        text: 'Compixor extracts text lines, font styling, and layout coordinates locally inside browser RAM.',
+        name: 'OCR Text Recognition',
+        text: 'Compixor renders each page, recognises the characters and rebuilds headings, columns and tables.',
       },
       {
         name: 'Download Editable DOCX',
@@ -1419,7 +1445,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Processing runs in your browser tab with zero server uploads, keeping confidential files safe.',
       },
     ],
-    relatedToolSlugs: ['word-compressor', 'pdf-compressor', 'pdf-organizer', 'add-watermark'],
+    relatedToolSlugs: ['img-to-word', 'word-compressor', 'pdf-compressor'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [
@@ -1434,6 +1460,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'img-to-word': {
     slug: 'img-to-word',
     name: 'Image to Word Converter',
+    icon: ScanText,
     title: 'Image to Word Converter Online Free — JPG PNG to DOCX | Compixor',
     description:
       'Convert JPG, PNG, or WEBP images to editable Word .docx files free online. In-browser Tesseract OCR, zero upload, 10+ languages. Instant download, no signup.',
@@ -1540,7 +1567,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Convert up to 10 images simultaneously into a single merged Word document — ideal for multi-page scanned contracts.',
       },
     ],
-    relatedToolSlugs: ['pdf-to-word', 'word-compressor', 'pdf-compressor', 'pdf-organizer'],
+    relatedToolSlugs: ['pdf-to-word', 'word-compressor', 'full-dp-maker'],
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [

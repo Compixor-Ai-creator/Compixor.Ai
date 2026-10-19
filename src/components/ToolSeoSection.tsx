@@ -226,32 +226,69 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-          {tool.relatedToolSlugs.map((relSlug) => {
-            const relTool = seoConfig[relSlug];
-            if (!relTool) return null;
-            return (
-              <Link
-                key={relSlug}
-                href={`/tools/${relSlug}`}
-                className="glass-card p-4 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60 hover:border-brand-500/40 hover:shadow-md transition-all group flex flex-col justify-between"
-              >
-                <div>
-                  <p className="text-sm font-bold text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
-                    {relTool.name}
-                  </p>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 mt-1 leading-snug">
-                    {relTool.primaryKeyword}
-                  </p>
-                </div>
-                <div className="pt-3 mt-3 border-t border-zinc-100 dark:border-zinc-800/50 flex items-center justify-between text-[11px] font-semibold text-brand-600 dark:text-brand-400">
-                  <span>Open Tool</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+        {(() => {
+          // Select exactly 3 related tools by relevance, never showing the current tool
+          const availableSlugs = (Object.keys(seoConfig) as ToolSlug[]).filter((s) => s !== tool.slug);
+          const primaryRelated = (tool.relatedToolSlugs || []).filter(
+            (s) => s !== tool.slug && seoConfig[s]
+          );
+          const selectedSlugs: ToolSlug[] = [];
+          for (const s of primaryRelated) {
+            if (!selectedSlugs.includes(s) && selectedSlugs.length < 3) {
+              selectedSlugs.push(s);
+            }
+          }
+          for (const s of availableSlugs) {
+            if (!selectedSlugs.includes(s) && selectedSlugs.length < 3) {
+              selectedSlugs.push(s);
+            }
+          }
+
+          return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {selectedSlugs.map((relSlug) => {
+                const relTool = seoConfig[relSlug];
+                if (!relTool) return null;
+                const RelIcon = relTool.icon;
+
+                return (
+                  <Link
+                    key={relSlug}
+                    href={`/tools/${relSlug}`}
+                    className="glass-card p-5 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60 hover:border-brand-500/40 hover:shadow-lg hover:shadow-brand-500/5 hover:-translate-y-[2px] transition-all duration-200 group flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+                  >
+                    <div>
+                      {/* Top-left icon inside 44x44px rounded square (12px radius) */}
+                      {RelIcon && (
+                        <div
+                          className="w-[44px] h-[44px] rounded-[12px] bg-brand-500/10 dark:bg-brand-400/10 flex items-center justify-center mb-3.5 transition-colors duration-200 group-hover:bg-brand-600 dark:group-hover:bg-brand-500"
+                        >
+                          <RelIcon
+                            className="w-[22px] h-[22px] text-brand-600 dark:text-brand-400 group-hover:text-white transition-colors duration-200"
+                            strokeWidth={2}
+                            aria-hidden="true"
+                          />
+                        </div>
+                      )}
+
+                      <p className="text-sm font-bold text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                        {relTool.name}
+                      </p>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 mt-1 leading-snug">
+                        {relTool.primaryKeyword}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 mt-3 border-t border-zinc-100 dark:border-zinc-800/50 flex items-center justify-between text-[11px] font-semibold text-brand-600 dark:text-brand-400">
+                      <span>Open Tool</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-[3px] transition-transform duration-200" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          );
+        })()}
       </div>
     </section>
   );

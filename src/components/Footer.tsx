@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Sparkles, ShieldCheck, Heart, ArrowUpRight, MessageSquarePlus } from 'lucide-react';
+import { seoConfig, ToolSlug } from '@/lib/seo-config';
 
 export default function Footer() {
   return (
@@ -36,94 +37,21 @@ export default function Footer() {
               Tools Suite
             </p>
             <ul className="space-y-2.5">
-              <li>
-                <Link
-                  href="/tools/add-watermark"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  Add PDF Watermark
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/remove-watermark"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  Remove PDF Watermark
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/pdf-organizer"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  PDF Merge & Split
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/pdf-compressor"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  PDF Compressor
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/protect-pdf"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  Protect PDF
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/unlock-pdf"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  Unlock PDF
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/word-compressor"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  Word Compressor
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/pdf-to-word"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  PDF to Word Converter
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/passport-photo"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  Passport Photo Maker
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/full-dp-maker"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  Full DP Maker
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/tools/qr-generator"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
-                >
-                  QR Code Generator
-                </Link>
-              </li>
+              {(Object.keys(seoConfig) as ToolSlug[]).map((slug) => {
+                const tool = seoConfig[slug];
+                const Icon = tool.icon;
+                return (
+                  <li key={slug}>
+                    <Link
+                      href={`/tools/${slug}`}
+                      className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors flex items-center gap-2 group"
+                    >
+                      <Icon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-brand-500 transition-colors shrink-0" aria-hidden="true" />
+                      <span>{tool.name}</span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
