@@ -40,6 +40,7 @@ export interface BlogItem {
       orderedList?: string[];
       table?: { headers: string[]; rows: string[][] };
       tableNote?: string;
+      images?: { src: string; alt: string; caption: string }[];
       cta?: { text: string; href: string };
     }[];
     steps: { stepNumber: number; title: string; description: string }[];
@@ -543,6 +544,39 @@ export const blogsData: BlogItem[] = [
             "UPI & Contactless Payment Barcodes: Generate universal payment QR codes for fast retail checkout. Compatible with standard UPI payment URI schemes (upi://pay?pa=...&pn=...) across regional banking apps.",
             "vCard 3.0 Digital Business Cards: Share your complete corporate identity—including full name, phone number, email address, job title, company name, and website—directly into the recipient's phone address book in one tap.",
             "Pre-Filled SMS & Email Messages: Generate automated customer support or RSVP prompts with pre-populated recipient addresses, subject lines, and pre-composed inquiry text."
+          ]
+        },
+        {
+          heading: "Brand QR Code Templates: Instagram, YouTube, Netflix & Starbucks Style",
+          body: "A brand QR code template is a ready-made color, eye-shape and logo preset that styles your code in a single click—no design skills, no Canva subscription and no manual hex picking. Choose a template such as Instagram Sunset, YouTube Crimson, Netflix Red Stream or Starbucks Emerald and the generator instantly applies the matching duotone palette, rounded finder eyes and centered emblem. Searches for \"branded QR code generator\", \"Instagram QR code with logo\", \"YouTube QR code template\" and \"custom logo QR code free\" all describe this exact workflow: your link plus an official-looking brand style, exported as a permanent static code that never expires.\n\nThe four samples below were produced with Compixor's brand templates in under ten seconds each. Use the template that matches the channel you are driving traffic to—recognizable color plus emblem is what lifts scan rates on printed menus, product packaging, business cards, event standees and Instagram story highlights. Trademark note: brand palettes and emblems are for personal pages and lawful promotional use of your own profiles; never imply sponsorship by the brand itself.",
+          images: [
+            {
+              src: "/blog/qr-brand-template-instagram.png",
+              alt: "Instagram Sunset brand QR code template with gradient magenta-to-orange modules and centered Instagram glyph logo",
+              caption: "Instagram Sunset — gradient brand palette for profile, reel and story-highlight links"
+            },
+            {
+              src: "/blog/qr-brand-template-youtube.png",
+              alt: "YouTube Crimson brand QR code template with red modules, black rounded finder eyes and centered YouTube play button logo",
+              caption: "YouTube Crimson — high-contrast red code for channel, video and subscribe links"
+            },
+            {
+              src: "/blog/qr-brand-template-netflix.png",
+              alt: "Netflix Red Stream brand QR code template with red and black modules and centered Netflix N emblem",
+              caption: "Netflix Red Stream — cinematic red-on-dark style for watch-list and campaign pages"
+            },
+            {
+              src: "/blog/qr-brand-template-starbucks.png",
+              alt: "Starbucks Emerald brand QR code template with deep green modules and centered circular Starbucks siren emblem",
+              caption: "Starbucks Emerald — retail green template for loyalty, menu and café table-tent QR codes"
+            }
+          ],
+          list: [
+            "Instagram QR Code with Logo: Point the template at your profile URL (instagram.com/your-handle) and print it on packaging, door hangers or story-highlight covers so visitors follow with one camera tap.",
+            "YouTube QR Code with Logo: Encode a video, playlist or channel link, then place the crimson code on thumbnails, posters and merch for instant offline-to-YouTube traffic.",
+            "Netflix-Style Red QR Code: Ideal for movie-night invites, watch-lists and streaming landing pages where a dark canvas and red modules match the viewing context.",
+            "Starbucks-Style Green QR Code: Perfect for cafés, loyalty sign-ups and feedback forms—order counters and table tents scan best with a deep green palette on a white quiet zone.",
+            "How To Apply A Template: Open the QR generator, paste your link, pick a brand template from the preset row, verify contrast, then export SVG for print or PNG for social."
           ]
         },
         {

@@ -635,6 +635,33 @@ export default function BlogPostPage({ params }: PageProps) {
 
 
 
+                {/* Sample / Template Image Gallery */}
+                {section.images && (
+                  <div className="my-8 not-prose">
+                    <div className="grid grid-cols-2 gap-4 sm:gap-5">
+                      {section.images.map((img, iIdx) => (
+                        <figure
+                          key={iIdx}
+                          className="m-0 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/70 dark:bg-zinc-900/60 p-3 sm:p-4 shadow-sm"
+                        >
+                          <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-700/60">
+                            <Image
+                              src={img.src}
+                              alt={img.alt}
+                              fill
+                              sizes="(max-width: 640px) 46vw, 300px"
+                              className="object-contain"
+                            />
+                          </div>
+                          <figcaption className="pt-2.5 text-[11px] sm:text-xs leading-snug text-zinc-600 dark:text-zinc-400 text-center font-medium">
+                            {img.caption}
+                          </figcaption>
+                        </figure>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Styled Bullet Points */}
                 {section.list && (
                   <ul className="my-5 space-y-3 not-prose pl-0">
