@@ -4,6 +4,8 @@ import ToolSeoSection from "@/components/ToolSeoSection";
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ToolFeedback from '@/components/ToolFeedback';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import { QrCode,
   Link as LinkIcon,
   Type,
@@ -914,6 +916,7 @@ export default function QrGeneratorPage() {
 
   const handleDownload = async (extension: 'png' | 'svg') => {
     if (!qrCodeInstance.current) return;
+    incrementFilesDone();
     try {
       if (frameStyle !== 'none') {
         if (extension === 'png') {
@@ -2230,6 +2233,9 @@ export default function QrGeneratorPage() {
           </div>
         </div>
       </div>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="qr-generator" />
 
       {/* Feature Highlights Grid */}
       <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">

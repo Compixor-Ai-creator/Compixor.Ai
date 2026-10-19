@@ -1,6 +1,7 @@
 import ToolSeoSection from "@/components/ToolSeoSection";
 import React from 'react';
 import PdfWatermarkClient from '@/components/PdfWatermarkClient';
+import ToolFeedback from '@/components/ToolFeedback';
 import { Eraser, Shield, Sliders, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function RemoveWatermarkPage() {
@@ -106,6 +107,9 @@ export default function RemoveWatermarkPage() {
       <main>
         <PdfWatermarkClient initialMode="remove" hideHeader={true} />
       </main>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="remove-watermark" />
 
       <ToolSeoSection toolSlug="remove-watermark" />
     </div>

@@ -23,6 +23,8 @@ import {
   Edit3,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import ToolFeedback from '@/components/ToolFeedback';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import DropAnywhere from '@/components/DropAnywhere';
 import { formatFileSize, validatePdfFile } from '@/utils/fileHelpers';
 import { getPdfLib, getPdfEncrypt } from '@/utils/pdfLoader';
@@ -246,6 +248,7 @@ export default function ProtectPdfClient() {
 
   const handleDownload = useCallback(() => {
     if (!result) return;
+    incrementFilesDone();
     const a = document.createElement('a');
     a.href = result.downloadUrl;
     a.download = result.fileName;
@@ -512,6 +515,9 @@ export default function ProtectPdfClient() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="protect-pdf" />
     </div>
   );
 }

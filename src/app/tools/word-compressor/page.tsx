@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import WordIcon from '@/components/WordIcon';
 import { toast } from 'sonner';
+import ToolFeedback from '@/components/ToolFeedback';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import ProgressRing from '@/components/ProgressRing';
@@ -206,6 +208,7 @@ export default function WordCompressorPage() {
 
   const handleDownload = useCallback(() => {
     if (!result || !file) return;
+    incrementFilesDone();
     const url = URL.createObjectURL(result.blob);
     const a = document.createElement('a');
     a.href = url;
@@ -517,6 +520,9 @@ export default function WordCompressorPage() {
           </div>
         )}
       </motion.div>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="word-compressor" />
 
       {/* 4 Stat Metric Cards (SlideSpeak Style) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">

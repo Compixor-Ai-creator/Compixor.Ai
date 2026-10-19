@@ -7,6 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
+        disallow: ['/admin', '/admin/'],
       },
       {
         userAgent: [
@@ -21,6 +22,7 @@ export default function robots(): MetadataRoute.Robots {
           'Googlebot-Image',
         ],
         allow: '/',
+        disallow: ['/admin', '/admin/'],
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,

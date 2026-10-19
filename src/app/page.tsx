@@ -23,8 +23,8 @@ import {
 import { WhatsAppIcon } from '@/components/SocialIcons';
 import { FaqJsonLd } from '@/components/JsonLd';
 import HomeFaqAccordion from '@/components/HomeFaqAccordion';
-import CustomerTestimonials from '@/components/CustomerTestimonials';
-import WhyChooseCompixor from '@/components/WhyChooseCompixor';
+import WhyTrustCompixor from '@/components/WhyTrustCompixor';
+import WhatUsersSay from '@/components/WhatUsersSay';
 import HeroCTA from '@/components/HeroCTA';
 import ClientSideGuideSection from '@/components/ClientSideGuideSection';
 
@@ -522,11 +522,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ============ WHY CHOOSE COMPIXOR AI ============ */}
-      <WhyChooseCompixor />
+      {/* ============ WHY TRUST COMPIXOR ============ */}
+      <WhyTrustCompixor />
 
-      {/* ============ CUSTOMER FEEDBACK & TESTIMONIALS ============ */}
-      <CustomerTestimonials />
+      {/* ============ WHAT USERS SAY ============ */}
+      <WhatUsersSay />
 
       {/* ============ CLIENT-SIDE ARCHITECTURE GUIDE ============ */}
       <ClientSideGuideSection />

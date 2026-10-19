@@ -613,3 +613,36 @@ export async function convertPdfToDocx(
     fileName: finalFileName,
   };
 }
+
+/**
+ * Samples the first pages of a PDF to decide whether it carries a real text layer.
+ * Scanned/image-only PDFs return ~0 characters and must go through server-side OCR.
+ */
+export async function inspectPdfText(
+  pdfBuffer: ArrayBuffer,
+  samplePages = 3,
+): Promise<{ pageCount: number; textChars: number }> {
+  const pdfjs = await getPdfJs();
+  const pdfDoc = await pdfjs.getDocument({ data: new Uint8Array(pdfBuffer.slice(0)) }).promise;
+  const pageCount = pdfDoc.numPages;
+  let textChars = 0;
+  const limit = Math.min(pageCount, samplePages);
+  for (let i = 1; i <= limit; i++) {
+    const page = await pdfDoc.getPage(i);
+    const content = await page.getTextContent();
+    textChars += content.items
+      .map((it) => ('str' in it ? it.str : ''))
+      .join('')
+      .replace(/\s/g, '').length;
+    page.cleanup();
+  }
+  await pdfDoc.destroy();
+  return { pageCount, textChars };
+}
+
+/** True when the PDF has no usable text layer (i.e. it is a scan). */
+export async function isScannedPdf(pdfBuffer: ArrayBuffer): Promise<boolean> {
+  const { pageCount, textChars } = await inspectPdfText(pdfBuffer);
+  const sampled = Math.min(pageCount, 3);
+  return textChars < 20 * sampled;
+}

@@ -11,6 +11,7 @@
   "dependencies": {
     "@imgly/background-removal": "^1.7.0",
     "@mediapipe/selfie_segmentation": "^0.1.1675465747",
+    "@supabase/supabase-js": "^2.109.0",
     "@types/pako": "^1.0.7",
     "@vercel/analytics": "^2.0.1",
     "docx": "^9.7.2",

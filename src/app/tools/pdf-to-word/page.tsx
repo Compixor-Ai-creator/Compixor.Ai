@@ -34,8 +34,11 @@ import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
+import ToolFeedback from '@/components/ToolFeedback';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import { formatFileSize, validatePdfFile, downloadBlob } from '@/utils/fileHelpers';
-import { convertPdfToDocx, ConversionResult } from '@/utils/pdfToWordEngine';
+import { convertPdfToDocx, inspectPdfText, ConversionResult } from '@/utils/pdfToWordEngine';
+import { convertImageToWord } from '@/utils/imgToWordEngine';
 
 // ── Mode selector data ─────────────────────────────────────────────────────────
 const MODES = [
@@ -60,7 +63,7 @@ const MODES = [
     bgActive: 'bg-amber-500/5 dark:bg-amber-500/10',
     icon: ScanText,
     iconColor: 'text-amber-500',
-    desc: 'For scanned documents & image-based PDFs. OCR reads non-selectable text.',
+    desc: 'For scanned documents & image-based PDFs. Runs on our secure OCR server (English, Urdu, Arabic + 75 languages).',
     tip: 'Can\'t select text in your PDF? This mode is for you.',
   },
 ];
@@ -72,6 +75,7 @@ export default function PdfToWordPage() {
   const [statusMessage, setStatusMessage] = useState('');
   const [result, setResult] = useState<ConversionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<string>('no-ocr');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const converterRef = useRef<HTMLDivElement>(null);
@@ -104,6 +108,46 @@ export default function PdfToWordPage() {
     try {
       const arrayBuffer = await file.arrayBuffer();
 
+      setStatusMessage('Checking for selectable text...');
+      setProgress(8);
+      const { pageCount, textChars } = await inspectPdfText(arrayBuffer);
+      const scanned = textChars < 20 * Math.min(pageCount, 3);
+
+      if (mode === 'ocr' || scanned) {
+        if (file.size > 25 * 1024 * 1024) {
+          throw new Error('OCR mode supports PDFs up to 25 MB. Please split the file or use No OCR mode.');
+        }
+        if (pageCount > 15) {
+          toast.info(`OCR mode converts the first 15 pages (this PDF has ${pageCount}).`);
+        }
+        if (scanned && mode !== 'ocr') {
+          toast.info('Scanned PDF detected — switching to OCR mode automatically.');
+        }
+        setStatusMessage(
+          scanned
+            ? 'Scanned PDF: reading text with OCR on our secure server...'
+            : 'Running OCR on our secure server...',
+        );
+        setProgress(15);
+
+        const ocrResult = await convertImageToWord(file, {
+          language: 'eng+urd',
+          onProgress: ({ status, progress }) => {
+            setStatusMessage(status);
+            setProgress(Math.min(95, 15 + Math.round(progress * 80)));
+          },
+        });
+
+        setResult({
+          blob: ocrResult.docxBlob,
+          pageCount: ocrResult.pageCount || pageCount,
+          totalWords: ocrResult.wordCount,
+          fileName: `${file.name.replace(/\.pdf$/i, '')}_ocr_converted.docx`,
+        });
+        toast.success('Scanned PDF converted to editable Word document!');
+        return;
+      }
+
       const conversionResult = await convertPdfToDocx(
         arrayBuffer,
         file.name,
@@ -123,10 +167,11 @@ export default function PdfToWordPage() {
     } finally {
       setIsProcessing(false);
     }
-  }, [file]);
+  }, [file, mode]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
+    incrementFilesDone();
     downloadBlob(result.blob, result.fileName);
     toast.success('Download started!');
   }, [result]);
@@ -274,26 +319,46 @@ export default function PdfToWordPage() {
           Step 1 — Choose Conversion Mode
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {MODES.map((mode) => {
-            const Icon = mode.icon;
+          {MODES.map((m) => {
+            const Icon = m.icon;
+            const selected = mode === m.id;
             return (
               <div
-                key={mode.id}
-                className={`relative rounded-2xl border-2 p-5 transition-all duration-200 ${mode.borderActive} ${mode.bgActive}`}
+                key={m.id}
+                role="button"
+                tabIndex={0}
+                aria-pressed={selected}
+                onClick={() => setMode(m.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setMode(m.id);
+                  }
+                }}
+                className={`relative rounded-2xl border-2 p-5 transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
+                  selected
+                    ? `${m.borderActive} ${m.bgActive}`
+                    : 'border-zinc-200 dark:border-zinc-800 opacity-60 hover:opacity-90'
+                }`}
               >
+                {selected && (
+                  <span className="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                    Selected
+                  </span>
+                )}
                 <div className="flex items-start gap-4">
                   <div className={`mt-0.5 w-10 h-10 rounded-xl bg-white dark:bg-zinc-900 flex items-center justify-center shrink-0 shadow-sm border border-zinc-100 dark:border-zinc-800`}>
-                    <Icon className={`w-5 h-5 ${mode.iconColor}`} />
+                    <Icon className={`w-5 h-5 ${m.iconColor}`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="font-bold text-sm text-zinc-900 dark:text-white">{mode.title}</span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${mode.badgeColor}`}>
-                        {mode.badge}
+                      <span className="font-bold text-sm text-zinc-900 dark:text-white">{m.title}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${m.badgeColor}`}>
+                        {m.badge}
                       </span>
                     </div>
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">{mode.desc}</p>
-                    <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1.5 italic">{mode.tip}</p>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">{m.desc}</p>
+                    <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1.5 italic">{m.tip}</p>
                   </div>
                 </div>
               </div>
@@ -510,6 +575,9 @@ export default function PdfToWordPage() {
           </AnimatePresence>
         </div>
       </motion.section>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="pdf-to-word" />
 
       {/* ── 4 Stat Metric Cards (SlideSpeak Style) ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

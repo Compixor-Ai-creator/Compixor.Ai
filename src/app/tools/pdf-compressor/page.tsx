@@ -28,6 +28,8 @@ import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
+import ToolFeedback from '@/components/ToolFeedback';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import { PdfCompressorPreviewMockup } from '@/components/VisualProofMockup';
 
 import { formatFileSize, validatePdfFile } from '@/utils/fileHelpers';
@@ -805,6 +807,7 @@ export default function PdfCompressorPage() {
   // Download individual file
   const handleDownloadSingle = useCallback(async (item: BatchFileItem) => {
     if (!item.result?.blob) return;
+    incrementFilesDone();
     const baseName = item.file.name.replace(/\.pdf$/i, '');
     const filename = `${baseName}_compressed.pdf`;
     try {
@@ -829,6 +832,8 @@ export default function PdfCompressorPage() {
   const handleDownloadAllZip = useCallback(async () => {
     const doneItems = batchItems.filter((it) => it.status === 'done' && it.result?.blob);
     if (doneItems.length === 0) return;
+
+    incrementFilesDone();
 
     if (doneItems.length === 1) {
       handleDownloadSingle(doneItems[0]);
@@ -1319,6 +1324,9 @@ export default function PdfCompressorPage() {
           </div>
         )}
       </motion.div>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="pdf-compressor" />
 
       {/* Feature Highlights Grid with custom icons */}
       <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">

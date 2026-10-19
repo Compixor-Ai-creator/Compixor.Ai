@@ -1,6 +1,7 @@
 import ToolSeoSection from "@/components/ToolSeoSection";
 import React from 'react';
 import PdfWatermarkClient from '@/components/PdfWatermarkClient';
+import ToolFeedback from '@/components/ToolFeedback';
 import { Stamp, Shield, Sliders, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function AddWatermarkPage() {
@@ -105,6 +106,9 @@ export default function AddWatermarkPage() {
       <main>
         <PdfWatermarkClient initialMode="add" hideHeader={true} />
       </main>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="add-watermark" />
 
       <ToolSeoSection toolSlug="add-watermark" />
     </div>

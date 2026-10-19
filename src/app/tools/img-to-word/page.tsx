@@ -24,6 +24,8 @@ import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import ToolSeoSection from '@/components/ToolSeoSection';
+import ToolFeedback from '@/components/ToolFeedback';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import { ImgToWordPreviewMockup } from '@/components/VisualProofMockup';
 import { formatFileSize } from '@/utils/fileHelpers';
 import {
@@ -179,6 +181,7 @@ export default function ImgToWordPage() {
 
   const handleDownload = useCallback(() => {
     if (!result) return;
+    incrementFilesDone();
     const url = URL.createObjectURL(result.blob);
     const a = document.createElement('a');
     a.href = url;
@@ -636,6 +639,9 @@ export default function ImgToWordPage() {
           </div>
         )}
       </motion.div>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="img-to-word" />
 
       {/* ── 3 Feature Highlight Cards (Directly below Workspace, matching PDF Compressor standard) ── */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">

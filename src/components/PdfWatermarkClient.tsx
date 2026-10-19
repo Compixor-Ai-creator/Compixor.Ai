@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import {
   FileText,
   Upload,
@@ -899,6 +900,8 @@ export default function PdfWatermarkClient({
       const baseName = pdfFile.name.replace(/\.pdf$/i, '');
       const suffix = activeMode === 'add' ? '_watermarked' : '_cleaned';
       const outputName = `${baseName}${suffix}.pdf`;
+
+      incrementFilesDone();
 
       const blob = new Blob([exportBytes as BlobPart], { type: 'application/pdf' });
       

@@ -20,6 +20,8 @@ import {
   Info,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import ToolFeedback from '@/components/ToolFeedback';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import DropAnywhere from '@/components/DropAnywhere';
 import { formatFileSize, validatePdfFile, isPdfPasswordError } from '@/utils/fileHelpers';
 import { getPdfLib, getPdfEncrypt } from '@/utils/pdfLoader';
@@ -175,6 +177,7 @@ export default function UnlockPdfClient() {
 
   const handleDownload = useCallback(() => {
     if (!result) return;
+    incrementFilesDone();
     const a = document.createElement('a');
     a.href = result.downloadUrl;
     a.download = result.fileName;
@@ -399,6 +402,9 @@ export default function UnlockPdfClient() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="unlock-pdf" />
     </div>
   );
 }

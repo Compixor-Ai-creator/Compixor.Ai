@@ -1,6 +1,8 @@
 'use client';
 
 import ToolSeoSection from "@/components/ToolSeoSection";
+import ToolFeedback from "@/components/ToolFeedback";
+import { incrementFilesDone } from "@/lib/feedbackCounter";
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -643,6 +645,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
 
   const handleDownloadMerged = () => {
     if (!mergeResultBlob) return;
+    incrementFilesDone();
     const url = URL.createObjectURL(mergeResultBlob);
     const a = document.createElement('a');
     a.href = url;
@@ -1203,6 +1206,7 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
 
   const handleDownloadSplit = () => {
     if (!splitResultBlob) return;
+    incrementFilesDone();
     const url = URL.createObjectURL(splitResultBlob);
     const a = document.createElement('a');
     a.href = url;
@@ -2330,6 +2334,9 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
           </div>
         </motion.div>
       )}
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="pdf-organizer" />
 
       {/* ============================================================== */}
       {/* FEATURE GRID: "Engineered with Zero Compromise"                 */}

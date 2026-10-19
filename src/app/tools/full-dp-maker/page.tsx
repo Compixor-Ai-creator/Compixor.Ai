@@ -4,6 +4,8 @@ import ToolSeoSection from "@/components/ToolSeoSection";
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ToolFeedback from '@/components/ToolFeedback';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import {
   Maximize,
   Upload,
@@ -640,6 +642,7 @@ export default function FullDpMakerPage() {
             toast.error('Failed to export image.');
             return;
           }
+          incrementFilesDone();
           const sizeKb = Math.round(blob.size / 1024);
           const url = URL.createObjectURL(blob);
           const link = document.createElement('a');
@@ -1447,6 +1450,9 @@ export default function FullDpMakerPage() {
           </div>
         </motion.div>
       </div>
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="full-dp-maker" />
 
       {/* Feature Highlights Grid */}
       <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">

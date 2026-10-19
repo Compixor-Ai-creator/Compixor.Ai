@@ -3,6 +3,8 @@
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ToolFeedback from '@/components/ToolFeedback';
+import { incrementFilesDone } from '@/lib/feedbackCounter';
 import {
   Camera,
   Upload,
@@ -1365,6 +1367,8 @@ export default function PassportPhotoPage() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    incrementFilesDone();
+
     const limitConfig = sizeLimitOptions.find((o) => o.id === selectedSizeLimit) ?? sizeLimitOptions[0];
     const blob = await compressCanvasToLimit(canvas, limitConfig.maxBytes);
     const isPng = bgColor === 'transparent' || previewTab === 'cutout';
@@ -1449,6 +1453,7 @@ export default function PassportPhotoPage() {
           finalBlob = new Blob([withDpi.buffer as ArrayBuffer], { type: 'image/jpeg' });
         }
 
+        incrementFilesDone();
         const url = URL.createObjectURL(finalBlob);
         const link = document.createElement('a');
         if (sheetPreset === 'a6-2' || sheetPreset === 'a5-6') {
@@ -3159,6 +3164,9 @@ export default function PassportPhotoPage() {
           )}
         </div>
       )}
+
+      {/* Tool Feedback Component */}
+      <ToolFeedback toolName="passport-photo" />
     </div>
   );
 }
