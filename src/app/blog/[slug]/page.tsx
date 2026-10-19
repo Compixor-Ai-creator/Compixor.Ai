@@ -239,19 +239,62 @@ export default function BlogPostPage({ params }: PageProps) {
     ],
   };
 
-  const webAppSchema = blog.slug === 'passport-size-photo-maker-online-free' ? {
-    '@context': 'https://schema.org',
-    '@type': 'WebApplication',
-    name: 'Compixor AI Passport Photo Maker',
-    url: 'https://compixor-ai.cloud/tools/passport-photo',
-    applicationCategory: 'MultimediaApplication',
-    operatingSystem: 'Web',
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-    },
-  } : null;
+  const howToSchema =
+    blog.content.steps && blog.content.steps.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'HowTo',
+          name: blog.title,
+          description: blog.metaDescription,
+          image: blog.thumbnail
+            ? `https://compixor-ai.cloud${blog.thumbnail}`
+            : 'https://compixor-ai.cloud/icon.png',
+          step: blog.content.steps.map((s) => ({
+            '@type': 'HowToStep',
+            position: s.stepNumber,
+            name: s.title,
+            text: s.description,
+          })),
+        }
+      : null;
+
+  const webAppSchema =
+    blog.slug === 'passport-size-photo-maker-online-free'
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: 'Compixor AI Passport Photo Maker',
+          url: 'https://compixor-ai.cloud/tools/passport-photo',
+          applicationCategory: 'MultimediaApplication',
+          operatingSystem: 'Web',
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'USD',
+          },
+        }
+      : blog.slug === 'how-to-create-custom-qr-code-with-logo'
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: 'Compixor AI Custom QR Code Generator with Logo',
+          url: 'https://compixor-ai.cloud/tools/qr-generator',
+          applicationCategory: 'UtilitiesApplication',
+          operatingSystem: 'All (Web Browser)',
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'USD',
+          },
+          featureList: [
+            'Create custom QR codes with central logo and brand colors',
+            'Permanent static QR codes with zero expiration date',
+            'Reed-Solomon Level H (30%) Error Correction',
+            'Scalable vector SVG and high-resolution PNG export',
+            '100% in-browser client-side privacy with zero uploads',
+          ],
+        }
+      : null;
 
   return (
     <div className="relative pt-24 pb-20 overflow-x-clip">
@@ -268,6 +311,12 @@ export default function BlogPostPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      {howToSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+        />
+      )}
       {webAppSchema && (
         <script
           type="application/ld+json"
