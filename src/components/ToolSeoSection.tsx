@@ -73,7 +73,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            {toolSlug === 'passport-photo' ? '300 DPI Studio Quality' : 'Runs in Browser Memory'}
+            {toolSlug === 'passport-photo' ? '300 DPI Studio Quality' : SERVER_OCR_TOOLS.has(toolSlug || '') ? 'Converted In Memory, Then Dropped' : 'Runs in Browser Memory'}
           </span>
         </div>
       </div>
@@ -172,7 +172,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
             Frequently Asked Questions
           </h2>
           <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-            Common questions about {tool.name} and client-side processing
+            Common questions about {tool.name}
           </p>
         </div>
 

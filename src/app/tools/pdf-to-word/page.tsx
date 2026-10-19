@@ -653,7 +653,7 @@ export default function PdfToWordPage() {
             </span>
             <span>•</span>
             <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-              100% Local In-Browser Processing
+              Nothing Stored After Conversion
             </span>
           </div>
         </div>
