@@ -638,22 +638,22 @@ export default function BlogPostPage({ params }: PageProps) {
                 {/* Sample / Template Image Gallery */}
                 {section.images && (
                   <div className="my-8 not-prose">
-                    <div className="grid grid-cols-2 gap-4 sm:gap-5">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                       {section.images.map((img, iIdx) => (
                         <figure
                           key={iIdx}
-                          className="m-0 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/70 dark:bg-zinc-900/60 p-3 sm:p-4 shadow-sm"
+                          className="m-0 rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 bg-white/70 dark:bg-zinc-900/60 p-2 sm:p-2.5 shadow-sm"
                         >
-                          <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-700/60">
+                          <div className="relative w-full max-w-[140px] mx-auto aspect-square rounded-lg overflow-hidden bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-700/60">
                             <Image
                               src={img.src}
                               alt={img.alt}
                               fill
-                              sizes="(max-width: 640px) 46vw, 300px"
+                              sizes="(max-width: 640px) 32vw, 140px"
                               className="object-contain"
                             />
                           </div>
-                          <figcaption className="pt-2.5 text-[11px] sm:text-xs leading-snug text-zinc-600 dark:text-zinc-400 text-center font-medium">
+                          <figcaption className="pt-2 text-[10px] sm:text-[11px] leading-snug text-zinc-600 dark:text-zinc-400 text-center font-medium">
                             {img.caption}
                           </figcaption>
                         </figure>
