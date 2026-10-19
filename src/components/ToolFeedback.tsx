@@ -204,10 +204,11 @@ export default function ToolFeedback({ toolName }: ToolFeedbackProps) {
                 <button
                   type="button"
                   onClick={handleMaybeLater}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition active:scale-95 ml-1"
                   aria-label="Close modal"
+                  title="Close"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4 stroke-[2.5]" />
                 </button>
               )}
             </div>
@@ -365,12 +366,6 @@ export default function ToolFeedback({ toolName }: ToolFeedbackProps) {
           aria-modal="true"
           aria-labelledby="feedback-dialog-title"
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm print:hidden animate-in fade-in duration-200"
-          onClick={(e) => {
-            // Dismiss if clicking backdrop outside dialog card
-            if (e.target === e.currentTarget) {
-              handleMaybeLater();
-            }
-          }}
         >
           <div className="relative w-full max-w-xl overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
             {/* Subtle glow orb */}
