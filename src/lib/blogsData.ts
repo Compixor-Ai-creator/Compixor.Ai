@@ -60,7 +60,7 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Create compliant passport and visa photos online for free in 60 seconds. AI removes backgrounds, sets official sizes, and downloads 300 DPI A4 print sheets.",
     canonicalUrl: "https://compixor-ai.cloud/blog/passport-size-photo-maker-online-free",
     datePublished: "2026-10-18T00:00:00.000Z",
-    dateModified: "2026-10-18T00:00:00.000Z",
+    dateModified: "2026-10-20T11:30:00.000Z",
     excerpt: "Need a compliant passport, visa, or national ID photo fast? Using our passport size photo maker online free, you can remove backgrounds automatically with AI, select official country dimensions, and download print-ready sheets at 300 DPI with zero watermarks.",
     toolPath: "/tools/passport-photo",
     accentColor: "from-sky-500/20 to-indigo-500/20",
