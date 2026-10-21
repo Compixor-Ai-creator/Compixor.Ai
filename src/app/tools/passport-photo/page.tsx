@@ -5,7 +5,7 @@ import PassportPhotoClient from './passport-photo-client';
 import { standardPresets } from './presets';
 import ToolSeoSection from '@/components/ToolSeoSection';
 
-const TITLE = 'Free Passport Size Photo Maker – NADRA 35x45mm | Compixor AI';
+const TITLE = 'Free Passport Size Photo Maker – NADRA 35x45mm';
 const DESCRIPTION =
   'Free passport size photo maker online. AI removes the background, fits Pakistan NADRA 35x45 mm and 8 more countries, plus a print-ready A4 sheet.';
 const CANONICAL_URL = 'https://compixor-ai.cloud/tools/passport-photo';
