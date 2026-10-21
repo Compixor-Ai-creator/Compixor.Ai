@@ -285,7 +285,7 @@ export default function ArticleHeroBanner({
                 {category}
               </span>
               <p className="text-base font-bold text-white">{title}</p>
-              <p className="text-xs text-zinc-400">100% Client-Side In-Browser Execution</p>
+              <p className="text-xs text-zinc-400">Privacy-First Architecture</p>
             </div>
           </div>
         )}
@@ -294,7 +294,7 @@ export default function ArticleHeroBanner({
       {/* Floating Trust Badge */}
       <div className="absolute bottom-3 right-4 sm:bottom-4 sm:right-6 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-white/90 dark:bg-zinc-800/90 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/80 shadow-md backdrop-blur-md">
         <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-        <span>Zero Server Uploads</span>
+        <span>Privacy First</span>
       </div>
     </div>
   );

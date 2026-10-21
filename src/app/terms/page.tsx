@@ -1,7 +1,23 @@
-'use client';
-
 import React from 'react';
-import { FileText, CheckCircle, AlertCircle, ShieldAlert } from 'lucide-react';
+import type { Metadata } from 'next';
+import { FileText } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+  description:
+    'Compixor AI Terms of Service. Review the terms, conditions, and acceptable use policies for our free document and media conversion tools.',
+  alternates: {
+    canonical: 'https://compixor-ai.cloud/terms',
+  },
+  openGraph: {
+    title: 'Terms of Service | Compixor AI',
+    description:
+      'Compixor AI Terms of Service. Review the terms, conditions, and acceptable use policies for our free document and media conversion tools.',
+    url: 'https://compixor-ai.cloud/terms',
+    siteName: 'Compixor AI',
+    type: 'website',
+  },
+};
 
 export default function TermsPage() {
   return (
@@ -15,7 +31,7 @@ export default function TermsPage() {
           Terms of Service
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
-          Last Updated: August 2026 • Please read carefully before using CompixorAi
+          Last Updated: August 2026 • Please read carefully before using Compixor
         </p>
       </div>
 
@@ -25,17 +41,25 @@ export default function TermsPage() {
             1. Acceptance of Terms
           </h2>
           <p>
-            By accessing or utilizing the CompixorAi web platform and client-side tool suite, you acknowledge and agree to be bound by these Terms of Service and all applicable laws. If you do not agree to these terms, you must discontinue use of the website immediately.
+            By accessing or utilizing the Compixor web platform and tool suite, you acknowledge and agree to be bound by these Terms of Service and all applicable laws. If you do not agree to these terms, you must discontinue use of the website immediately.
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-xl font-bold font-display text-zinc-900 dark:text-white">
-            2. Permitted Use & Intellectual Property
+            2. File Handling & Intellectual Property
           </h2>
           <p>
-            You are free to utilize all tools (including PDF compression, Word optimization, Passport photo generation, and QR code creation) for both personal and commercial projects without licensing fees. You retain 100% full ownership and copyrights of all files, documents, and assets created or transformed using our tools.
+            You retain 100% full ownership, rights, and copyright of all files, documents, and assets transformed or created using our tools:
           </p>
+          <ul className="list-disc pl-5 space-y-1.5 text-zinc-600 dark:text-zinc-400 text-sm">
+            <li>
+              <strong>Client-Side Tools (9 Tools):</strong> For PDF Compressor, PDF Merge & Split, Add Watermark, Remove Watermark, Protect PDF, Unlock PDF, Word Compressor, WhatsApp Full DP Maker, and QR Code Generator, computation runs entirely in your local browser memory. Files never leave your device.
+            </li>
+            <li>
+              <strong>Server-Assisted Tools (3 Tools):</strong> For Biometric Passport Photo Maker (with an on-device Private Mode option), Image to Word, and PDF to Word, files are transmitted over secure HTTPS solely to complete the requested processing and are deleted immediately thereafter. For Urdu/Arabic text recognition in Image to Word and PDF to Word, image portions may be processed by Google&apos;s Gemini AI service as a third-party processor. We do not store your files or log their contents. Standard technical logs (IP address, request status, processing time) are kept. We claim no intellectual property rights over your uploaded or converted assets.
+            </li>
+          </ul>
         </section>
 
         <section className="space-y-3">
@@ -43,7 +67,7 @@ export default function TermsPage() {
             3. Disclaimer of Warranties
           </h2>
           <p>
-            CompixorAi is provided on an &quot;as is&quot; and &quot;as available&quot; basis without warranties of any kind, whether express or implied. While we strive for absolute precision and standard biometric compliance, you are solely responsible for ensuring your passport or official documentation meets specific local embassy guidelines before submission.
+            Compixor is provided on an &quot;as is&quot; and &quot;as available&quot; basis without warranties of any kind, whether express or implied. While we strive for absolute precision and standard biometric compliance, you are solely responsible for ensuring your passport or official documentation meets specific local authority and embassy guidelines before submission.
           </p>
         </section>
 
@@ -52,7 +76,7 @@ export default function TermsPage() {
             4. Limitation of Liability
           </h2>
           <p>
-            Under no circumstances shall CompixorAi, its creators, or affiliates be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use this service or loss of files.
+            Under no circumstances shall Compixor, its creators, or affiliates be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use this service.
           </p>
         </section>
       </div>

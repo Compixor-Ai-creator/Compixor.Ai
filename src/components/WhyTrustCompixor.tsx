@@ -7,8 +7,8 @@ import { Cpu, UserX, LayoutGrid, CheckCircle } from 'lucide-react';
 const trustPoints = [
   {
     icon: Cpu,
-    title: 'In-Browser Processing',
-    description: 'Files are processed in your browser, not uploaded to our servers.',
+    title: 'Privacy-First Architecture',
+    description: '9 tools run entirely in your browser memory with zero uploads. Server tools delete files immediately.',
     color: 'from-brand-500 to-indigo-500',
     iconColor: 'text-brand-500',
   },

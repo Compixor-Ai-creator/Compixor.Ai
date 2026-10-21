@@ -1,13 +1,19 @@
 /**
- * Compixor AI — Pure Backend Image to Word Engine (v10.4 Argon Client)
- * File: src/utils/imgToWordEngine.ts
- *
- * Key Fixes:
- * 1. Pure backend execution (no local Tesseract.js fallback that causes damaged output).
- * 2. Defaults to 'eng' instead of 'eng+urd' unless explicitly selected by the user,
- *    cutting 2-Core VPS OCR time by ~60% and preventing LTR/RTL character corruption.
- * 3. Adds explicit 90-second AbortController timeout and clear user-facing error messages.
+ * imgToWordEngine.ts
+ * Dedicated Backend API client for Image to Word (.docx) conversion.
+ * 
+ * 100% Server-Assisted: All OCR and DOCX synthesis execute on the secure
+ * Compixor backend API. No local/browser-based fallback.
  */
+
+import {
+  API_ENDPOINTS,
+  validateDocxBlob,
+  isDocxContentType,
+  getFriendlyErrorMessage,
+  TIMEOUTS,
+  checkFileSize,
+} from '@/lib/api-config';
 
 export type OcrLanguage =
   | 'eng'
@@ -26,7 +32,7 @@ export type OcrLanguage =
 
 export interface OcrProgressEvent {
   status: string;
-  progress: number; // 0-1
+  progress: number; // 0–1
 }
 
 export interface ImgToWordResult {
@@ -44,143 +50,162 @@ export interface ImgToWordOptions {
 }
 
 export const LANGUAGE_OPTIONS: { value: OcrLanguage; label: string }[] = [
-  { value: 'eng', label: 'English (Fast & Accurate)' },
+  { value: 'eng',     label: 'English (Fast & Accurate)' },
   { value: 'eng+urd', label: 'English + Urdu (Mixed)' },
-  { value: 'urd', label: 'Urdu Only' },
+  { value: 'urd',     label: 'Urdu Only' },
   { value: 'eng+ara', label: 'English + Arabic' },
-  { value: 'ara', label: 'Arabic Only' },
-  { value: 'fra', label: 'French' },
-  { value: 'deu', label: 'German' },
-  { value: 'spa', label: 'Spanish' },
-  { value: 'por', label: 'Portuguese' },
-  { value: 'ita', label: 'Italian' },
-  { value: 'rus', label: 'Russian' },
+  { value: 'ara',     label: 'Arabic Only' },
+  { value: 'fra',     label: 'French' },
+  { value: 'deu',     label: 'German' },
+  { value: 'spa',     label: 'Spanish' },
+  { value: 'por',     label: 'Portuguese' },
+  { value: 'ita',     label: 'Italian' },
+  { value: 'rus',     label: 'Russian' },
   { value: 'chi_sim', label: 'Chinese (Simplified)' },
-  { value: 'jpn', label: 'Japanese' },
+  { value: 'jpn',     label: 'Japanese' },
 ];
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_IMG2WORD_API_URL?.replace(/\/$/, '') ??
-  'https://api.compixor-ai.cloud';
+function startFakeProgress(
+  onProgress: ((e: OcrProgressEvent) => void) | undefined,
+  phases: { status: string; from: number; to: number; durationMs: number }[],
+): () => void {
+  if (!onProgress) return () => {};
 
-const ENDPOINT = `${API_BASE}/api/convert-img-to-docx`;
-const REQUEST_TIMEOUT_MS = 90_000; // 90 seconds timeout
+  let phaseIdx = 0;
+  let phaseStart = performance.now();
+  let stopped = false;
 
-async function callBackendOcrApi(
+  const tick = () => {
+    if (stopped) return;
+    const phase = phases[phaseIdx];
+    if (!phase) return;
+
+    const elapsed = performance.now() - phaseStart;
+    const pct = Math.min(elapsed / phase.durationMs, 1);
+    const progress = phase.from + pct * (phase.to - phase.from);
+
+    onProgress({ status: phase.status, progress });
+
+    if (pct >= 1) {
+      phaseIdx++;
+      phaseStart = performance.now();
+      if (phaseIdx >= phases.length) return;
+    }
+    requestAnimationFrame(tick);
+  };
+
+  requestAnimationFrame(tick);
+  return () => { stopped = true; };
+}
+
+async function callApi(
   files: File[],
-  options: ImgToWordOptions = {}
+  options: ImgToWordOptions = {},
 ): Promise<ImgToWordResult> {
   if (!files || files.length === 0) {
     throw new Error('Please select at least one image file to convert.');
   }
 
-  // Default to 'eng' instead of 'eng+urd' to prevent slow multi-model loading and script mixing
+  // Pre-flight client-side size check before sending any request
+  for (const file of files) {
+    checkFileSize(file);
+  }
+
   const language: OcrLanguage = options.language ?? 'eng';
   const onProgress = options.onProgress;
 
-  const startTime = performance.now();
-  onProgress?.({
-    status: 'Uploading image to Compixor AI v10.4 Argon server...',
-    progress: 0.2,
-  });
+  const t0 = performance.now();
+  const isLarge = files.length > 3 || files.reduce((s, f) => s + f.size, 0) > 5_000_000;
 
-  const form = new FormData();
-  for (const file of files) {
-    form.append('files', file, file.name);
-  }
-  form.append('language', language);
+  const stopProgress = startFakeProgress(onProgress, [
+    { status: 'Uploading image securely over HTTPS…',                    from: 0.00, to: 0.15, durationMs: isLarge ? 3000 : 1500 },
+    { status: 'Converting... large or scanned files can take a few minutes.', from: 0.15, to: 0.45, durationMs: isLarge ? 12000 : 5000 },
+    { status: 'Scanning layout, columns, and tables…',                   from: 0.45, to: 0.70, durationMs: isLarge ? 15000 : 6000 },
+    { status: 'Recognizing typography with neural OCR…',                 from: 0.70, to: 0.90, durationMs: isLarge ? 15000 : 6000 },
+    { status: 'Packaging editable Word (.docx) document…',               from: 0.90, to: 0.98, durationMs: isLarge ? 4000 : 2000 },
+  ]);
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.imgToDocxMs);
 
   try {
-    onProgress?.({
-      status: 'Extracting text, tables & formatting on server...',
-      progress: 0.55,
-    });
+    const form = new FormData();
+    for (const file of files) {
+      form.append('files', file, file.name);
+    }
+    form.append('language', language);
 
-    const res = await fetch(ENDPOINT, {
-      method: 'POST',
-      body: form,
-      signal: controller.signal,
-    });
+    let res: Response;
+    try {
+      res = await fetch(API_ENDPOINTS.convertImgToDocx, {
+        method: 'POST',
+        body: form,
+        signal: controller.signal,
+      });
+    } catch (networkErr: unknown) {
+      if (controller.signal.aborted) {
+        throw new Error(getFriendlyErrorMessage(504, 'timeout'));
+      }
+      throw new Error(getFriendlyErrorMessage(undefined, 'Network error. Please check your internet connection.'));
+    }
 
-    if (!res.ok) {
+    if (res.status !== 200) {
       let detail = '';
       try {
-        const errJson = await res.json();
-        detail = errJson?.detail || errJson?.error || '';
+        const json = await res.json();
+        detail = json?.detail || json?.error || '';
       } catch {
-        detail = await res.text().catch(() => '');
+        detail = res.statusText || '';
       }
-      throw new Error(
-        detail ||
-          `Conversion server is temporarily busy (HTTP ${res.status}). Please try again in a few moments.`
-      );
+      throw new Error(getFriendlyErrorMessage(res.status, detail));
     }
 
-    onProgress?.({
-      status: 'Building clean Word (.docx) document...',
-      progress: 0.9,
-    });
+    const contentType = res.headers.get('content-type');
+    if (!isDocxContentType(contentType)) {
+      throw new Error('Conversion failed. Server returned an invalid response format.');
+    }
 
     const docxBlob = await res.blob();
-    if (!docxBlob || docxBlob.size < 100) {
-      throw new Error(
-        'Server returned an incomplete document. Please try again in a few moments.'
-      );
+    if (!docxBlob || docxBlob.size === 0) {
+      throw new Error('Conversion failed. Received an empty document from the server.');
     }
 
-    const wordCount =
-      parseInt(res.headers.get('X-Word-Count') ?? '0', 10) || 0;
-    const pageCount =
-      parseInt(res.headers.get('X-Page-Count') ?? `${files.length}`, 10) ||
-      files.length;
-    const serverTimeMs =
-      parseInt(res.headers.get('X-Processing-Time-Ms') ?? '0', 10) ||
-      Math.round(performance.now() - startTime);
+    const isValidZip = await validateDocxBlob(docxBlob);
+    if (!isValidZip) {
+      throw new Error('Conversion failed. The returned document file is corrupted.');
+    }
 
-    onProgress?.({
-      status: 'Completed!',
-      progress: 1,
-    });
+    const processingTimeMs =
+      parseInt(res.headers.get('X-Processing-Time-Ms') ?? '0', 10) ||
+      Math.round(performance.now() - t0);
+    const wordCount = parseInt(res.headers.get('X-Word-Count') ?? '0', 10);
+    const pageCount = parseInt(res.headers.get('X-Page-Count') ?? `${files.length}`, 10);
+
+    onProgress?.({ status: 'Word document ready to download!', progress: 1 });
 
     return {
       docxBlob,
       textContent: '',
-      pageCount,
-      wordCount,
-      processingTimeMs: serverTimeMs,
+      pageCount: isNaN(pageCount) || pageCount < 1 ? files.length : pageCount,
+      wordCount: isNaN(wordCount) ? 0 : wordCount,
+      processingTimeMs,
     };
-  } catch (err: unknown) {
-    if (err instanceof DOMException && err.name === 'AbortError') {
-      throw new Error(
-        'Server took too long to respond (timeout). Please try again in a few moments.'
-      );
-    }
-    if (err instanceof TypeError && err.message.includes('fetch')) {
-      throw new Error(
-        'Could not connect to the conversion server. Please try again in a few moments.'
-      );
-    }
-    throw err instanceof Error
-      ? err
-      : new Error('Server error during conversion. Please try again shortly.');
   } finally {
     clearTimeout(timeoutId);
+    stopProgress();
   }
 }
 
 export async function convertImageToWord(
   file: File,
-  options: ImgToWordOptions = {}
+  options: ImgToWordOptions = {},
 ): Promise<ImgToWordResult> {
-  return callBackendOcrApi([file], options);
+  return callApi([file], options);
 }
 
 export async function convertImagesToWord(
   files: File[],
-  options: ImgToWordOptions = {}
+  options: ImgToWordOptions = {},
 ): Promise<ImgToWordResult> {
-  return callBackendOcrApi(files, options);
+  return callApi(files, options);
 }

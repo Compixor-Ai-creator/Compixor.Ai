@@ -5,7 +5,7 @@ import PassportPhotoClient from './passport-photo-client';
 import { standardPresets } from './presets';
 import ToolSeoSection from '@/components/ToolSeoSection';
 
-const TITLE = 'Free Passport Size Photo Maker – NADRA 35x45mm | Compixor AI';
+const TITLE = 'Free Passport Size Photo Maker – NADRA 35x45mm';
 const DESCRIPTION =
   'Free passport size photo maker online. AI removes the background, fits Pakistan NADRA 35x45 mm and 8 more countries, plus a print-ready A4 sheet.';
 const CANONICAL_URL = 'https://compixor-ai.cloud/tools/passport-photo';
@@ -107,7 +107,7 @@ export default function PassportPhotoPage() {
             </span>
           </div>
           <p className="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">
-            Make a passport size photo online in under a minute. Upload a portrait and our AI passport size photo maker removes the background automatically. Choose your country&apos;s passport photo size, including Pakistan NADRA 35 × 45 mm, then pick a background colour such as white, off-white, light blue or sky blue. Use the positioning controls and biometric overlay guides to get the head size and eye line right. Download a single JPEG for online portals, or a print-ready sheet (A4, 3 per A4, A6 or A5) with cut marks.
+            Make a passport size photo online in under a minute. Upload a portrait and our AI passport size photo maker removes the background automatically. Your photo is sent to a secure server over encrypted HTTPS for AI background removal and deleted immediately after processing (an on-device Private Mode option is also available). Choose your country&apos;s passport photo size, including Pakistan NADRA 35 × 45 mm, then pick a background colour such as white, off-white, light blue or sky blue. Use the positioning controls and biometric overlay guides to get the head size and eye line right. Download a single JPEG for online portals, or a print-ready sheet (A4, 3 per A4, A6 or A5) with cut marks.
           </p>
           <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
             Our biometric passport photo size maker ensures compliance with official passport authority and visa guidelines. Whether you are submitting a digital application or printing at home, this passport size photo online maker gives you precision control over cropping, head height, and background specifications.

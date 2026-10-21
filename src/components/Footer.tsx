@@ -3,9 +3,17 @@
 import React from 'react';
 import Link from 'next/link';
 import { Sparkles, ShieldCheck, Heart, ArrowUpRight, MessageSquarePlus } from 'lucide-react';
-import { seoConfig, ToolSlug } from '@/lib/seo-config';
+import { tools } from '@/data/tools';
+import { SITE_URL, SITE_SHARE_TEXT, CONTACT_EMAIL, getShareUrls } from '@/lib/config';
+import {
+  LinkedInIcon,
+  TwitterXIcon,
+  WhatsAppIcon,
+  FacebookIcon,
+} from '@/components/SocialIcons';
 
 export default function Footer() {
+  const shareUrls = getShareUrls(SITE_URL, SITE_SHARE_TEXT);
   return (
     <footer className="relative mt-24 border-t border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-surface-900/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -23,7 +31,7 @@ export default function Footer() {
             </Link>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm leading-relaxed">
               Professional-grade document and media tools engineered for privacy and speed.
-              Client-side by default with private memory-only AI processing.
+              Most tools run 100% locally in your browser with zero file uploads.
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -37,13 +45,12 @@ export default function Footer() {
               Tools Suite
             </p>
             <ul className="space-y-2.5">
-              {(Object.keys(seoConfig) as ToolSlug[]).map((slug) => {
-                const tool = seoConfig[slug];
+              {tools.map((tool) => {
                 const Icon = tool.icon;
                 return (
-                  <li key={slug}>
+                  <li key={tool.href}>
                     <Link
-                      href={`/tools/${slug}`}
+                      href={tool.href}
                       className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors flex items-center gap-2 group"
                     >
                       <Icon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-brand-500 transition-colors shrink-0" aria-hidden="true" />
@@ -98,20 +105,20 @@ export default function Footer() {
                   href="/about#contact"
                   className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
-                  Contact Page
+                  Contact Us
                 </Link>
               </li>
               <li>
                 <a
-                  href="mailto:support@compixor-ai.online"
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
-                  support@compixor-ai.online
+                  {CONTACT_EMAIL}
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:support@compixor-ai.online?subject=Feature%20Request%20-%20Compixor%20AI&body=Describe%20the%20tool%20or%20feature%20you%20would%20like%20to%20see%3A"
+                  href={`mailto:${CONTACT_EMAIL}?subject=Feature%20Request%20-%20Compixor%20AI&body=Describe%20the%20tool%20or%20feature%20you%20would%20like%20to%20see%3A`}
                   onClick={(e) => {
                     if (typeof window !== 'undefined') {
                       e.preventDefault();
@@ -128,7 +135,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:support@compixor-ai.online?subject=General%20Feedback%20-%20Compixor%20AI&body=Your%20feedback%20or%20suggestions%3A"
+                  href={`mailto:${CONTACT_EMAIL}?subject=General%20Feedback%20-%20Compixor%20AI&body=Your%20feedback%20or%20suggestions%3A`}
                   onClick={(e) => {
                     if (typeof window !== 'undefined') {
                       e.preventDefault();
@@ -153,26 +160,60 @@ export default function Footer() {
             <div className="glass-card p-4 rounded-2xl space-y-2 border-emerald-500/20 mb-4">
               <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="w-4 h-4" />
-                Zero Cloud Uploads
+                Privacy-First Architecture
               </div>
               <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
-                Every calculation is carried out in browser memory. Documents are never stored or reviewed.
+                9 tools run 100% locally in your browser. Server tools process files in memory and delete them immediately.
               </p>
             </div>
 
-            {/* Official Social Profile Links */}
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Connect with Us</p>
-              <div className="flex items-center gap-3">
+            {/* Share Compixor */}
+            <div className="space-y-2 mb-4">
+              <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Share Compixor</p>
+              <div className="flex items-center gap-2">
                 <a
-                  href="https://x.com/compixor_ai"
+                  href={shareUrls.linkedIn}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Compixor AI on X (Twitter)"
-                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
+                  aria-label="Share Compixor AI on LinkedIn"
+                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[#0A66C2] hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
                 >
-                  <span className="text-xs font-bold">𝕏</span>
+                  <LinkedInIcon className="w-4 h-4" />
                 </a>
+                <a
+                  href={shareUrls.x}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Share Compixor AI on X"
+                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <TwitterXIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={shareUrls.whatsApp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Share Compixor AI on WhatsApp"
+                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[#25D366] hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <WhatsAppIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={shareUrls.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Share Compixor AI on Facebook"
+                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[#1877F2] hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <FacebookIcon className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
+            {/* Official Open Source Link */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Open Source</p>
+              <div className="flex items-center gap-3">
                 <a
                   href="https://github.com/Compixor-Ai-creator"
                   target="_blank"
@@ -181,15 +222,6 @@ export default function Footer() {
                   className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
                 >
                   <span className="text-xs font-bold">GH</span>
-                </a>
-                <a
-                  href="https://linkedin.com/company/compixor"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Compixor AI on LinkedIn"
-                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
-                >
-                  <span className="text-xs font-bold">in</span>
                 </a>
               </div>
             </div>

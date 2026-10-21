@@ -34,7 +34,8 @@ import DropAnywhere from '@/components/DropAnywhere';
 import ToolFeedback from '@/components/ToolFeedback';
 import { incrementFilesDone } from '@/lib/feedbackCounter';
 import { formatFileSize, validatePdfFile, downloadBlob } from '@/utils/fileHelpers';
-import { convertScannedPdfToDocx, inspectPdfText, ConversionResult } from '@/utils/pdfToWordEngine';
+import { convertPdfToDocx, ConversionResult } from '@/utils/pdfToWordEngine';
+import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_MB, FILE_TOO_LARGE_MSG } from '@/lib/api-config';
 
 export default function PdfToWordPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -47,7 +48,11 @@ export default function PdfToWordPage() {
   const converterRef = useRef<HTMLDivElement>(null);
 
   const handleFileSelect = useCallback((incomingFile: File) => {
-    const validationError = validatePdfFile(incomingFile, 100);
+    if (incomingFile.size > MAX_FILE_SIZE_BYTES) {
+      toast.error(FILE_TOO_LARGE_MSG);
+      return;
+    }
+    const validationError = validatePdfFile(incomingFile, MAX_FILE_SIZE_MB);
     if (validationError) {
       toast.error(validationError);
       return;
@@ -62,44 +67,40 @@ export default function PdfToWordPage() {
   }, []);
 
   const handleConvert = useCallback(async () => {
-    if (!file) return;
+    if (!file || isProcessing) return;
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setError(FILE_TOO_LARGE_MSG);
+      toast.error(FILE_TOO_LARGE_MSG);
+      return;
+    }
 
     setIsProcessing(true);
-    setStatusMessage('Reading PDF file...');
+    setStatusMessage('Converting... large or scanned files can take a few minutes.');
     setError(null);
     setResult(null);
 
     try {
-      if (file.size > 25 * 1024 * 1024) {
-        throw new Error('Your PDF is larger than 25 MB. Please split it into smaller files and try again.');
-      }
-
-      const arrayBuffer = await file.arrayBuffer();
-      const { pageCount } = await inspectPdfText(arrayBuffer);
-      if (pageCount > 15) {
-        toast.info(`The first 15 pages will be converted (this PDF has ${pageCount}).`);
-      }
-
-      const ocrResult = await convertScannedPdfToDocx(file, ({ message }) => {
+      const ocrResult = await convertPdfToDocx(file, ({ message }) => {
         setStatusMessage(message);
       });
 
       setResult({
         blob: ocrResult.blob,
-        pageCount: ocrResult.pageCount || pageCount,
+        pageCount: ocrResult.pageCount,
         totalWords: ocrResult.totalWords,
         fileName: ocrResult.fileName,
       });
       toast.success('Your document is now editable in Word!');
     } catch (err: unknown) {
       console.error('PDF to Word conversion error:', err);
-      const msg = err instanceof Error ? err.message : 'Failed to convert PDF document.';
+      const msg = err instanceof Error ? err.message : 'Conversion failed. Our server is busy or unavailable. Please try again in a moment.';
       setError(msg);
-      toast.error(`Conversion failed: ${msg}`);
+      toast.error(msg);
     } finally {
       setIsProcessing(false);
     }
-  }, [file]);
+  }, [file, isProcessing]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -271,8 +272,11 @@ export default function PdfToWordPage() {
                   title="Upload your file here"
                   subtitle="Drag and drop a PDF file to convert to editable Word (.docx)."
                   buttonText="Choose File"
-                  maxSizeMB={100}
+                  maxSizeMB={MAX_FILE_SIZE_MB}
                 />
+                <p className="text-[11px] text-center text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto mt-3">
+                  Files are processed over secure HTTPS and deleted from our server immediately after processing. For Urdu/Arabic text recognition, image portions may be sent to Google&apos;s Gemini AI service for transcription.
+                </p>
               </motion.div>
             ) : !result ? (
               /* ── Converting State ── */
@@ -334,7 +338,7 @@ export default function PdfToWordPage() {
                           </motion.p>
                         </AnimatePresence>
                         <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                          Rebuilding your layout page by page — please keep this tab open.
+                          Converting... large or scanned files can take a few minutes.
                         </p>
                       </div>
                     </div>
@@ -372,7 +376,8 @@ export default function PdfToWordPage() {
                 ) : (
                   <button
                     onClick={handleConvert}
-                    className="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 text-white rounded-2xl text-sm font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    disabled={isProcessing}
+                    className="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 text-white rounded-2xl text-sm font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     <Sparkles className="w-4 h-4" />
                     <span>Convert PDF to Word (.docx)</span>
@@ -381,11 +386,25 @@ export default function PdfToWordPage() {
                 )}
 
                 {error && (
-                  <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>{error}</span>
+                  <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-700 dark:text-rose-400 text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                      <span className="truncate">{error}</span>
+                    </div>
+                    <button
+                      onClick={handleConvert}
+                      disabled={isProcessing}
+                      className="self-end sm:self-auto inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition shadow-sm cursor-pointer disabled:opacity-40 shrink-0"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Retry</span>
+                    </button>
                   </div>
                 )}
+
+                <p className="text-[11px] text-center text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto pt-1">
+                  Files are processed over secure HTTPS and deleted from our server immediately after processing. For Urdu/Arabic text recognition, image portions may be sent to Google&apos;s Gemini AI service for transcription.
+                </p>
               </motion.div>
             ) : (
               /* ── Victory / Success State ── */

@@ -494,7 +494,7 @@ export const blogsData: BlogItem[] = [
       },
       {
         title: "Protect PDF",
-        description: "Lock confidential PDF files, business proposals, and contracts with robust client-side AES-256 encryption.",
+        description: "Lock confidential PDF files, business proposals, and contracts with AES-256 encryption.",
         toolPath: "/tools/protect-pdf",
         icon: "Lock"
       }
@@ -876,7 +876,7 @@ export const blogsData: BlogItem[] = [
       items: [
         {
           boldText: "Set a password so unauthorized people cannot open the file",
-          descText: "Set an Open Password using client-side AES-256 bit encryption via Protect PDF.",
+          descText: "Set an Open Password using AES-256 encryption via Protect PDF.",
           toolName: "Protect PDF",
           toolPath: "/tools/protect-pdf"
         },
@@ -1084,7 +1084,7 @@ export const blogsData: BlogItem[] = [
       },
       {
         title: "Protect PDF",
-        description: "Lock documents with military-grade AES-256 encryption and passwords.",
+        description: "Lock documents with AES-256 encryption and passwords.",
         toolPath: "/tools/protect-pdf",
         icon: "Lock"
       }
@@ -1283,20 +1283,20 @@ export const blogsData: BlogItem[] = [
     targetKeyword: "free image to word ocr converter online",
     metaTitle: "How to Convert Image to Editable Word (DOCX) Online Free",
     metaDescription: "Turn scanned pages, receipts, and screenshots into editable Word documents with browser-based OCR.",
-    excerpt: "Extract non-selectable text from images, receipts, and screenshots into editable Word documents via local browser OCR.",
+    excerpt: "Extract non-selectable text from images, receipts, and screenshots into editable Word documents with high-accuracy neural OCR.",
     toolPath: "/tools/image-to-word",
     accentColor: "from-teal-500/20 to-emerald-500/20",
     icon: "ScanText",
     content: {
-      intro: "Taking photos of printed book pages, invoices, paper contracts, or screenshots leaves you with non-selectable text. Manually retyping data character by character takes hours and introduces costly typos. Compixor's Image to Word Converter uses browser-based Optical Character Recognition (OCR) to convert pixels into fully editable Microsoft Word (.docx) files.",
+      intro: "Taking photos of printed book pages, invoices, paper contracts, or screenshots leaves you with non-selectable text. Manually retyping data character by character takes hours and introduces costly typos. Compixor's Image to Word Converter uses high-accuracy Optical Character Recognition (OCR) to convert pixels into fully editable Microsoft Word (.docx) files.",
       sections: [
         {
-          heading: "How Browser-Based OCR Works",
+          heading: "How Neural OCR Works",
           body: "OCR algorithms analyze letter boundaries, line spacing, and shapes to build structured text:",
           list: [
             "Heading & Paragraph Detection: Distinguishes titles and bullet points from regular body text.",
             "Table Reconstruction: Maps detected horizontal and vertical grid lines into native editable Word tables.",
-            "Zero Cloud Exposure: Extracts sensitive data from receipts and IDs locally in browser memory without server uploads."
+            "Secure Transmission: Processes data over encrypted HTTPS and deletes file buffers immediately after conversion."
           ]
         },
         {
@@ -1311,12 +1311,12 @@ export const blogsData: BlogItem[] = [
       ],
       steps: [
         { stepNumber: 1, title: "Upload Image", description: "Drop your JPG, PNG, or WEBP image or screenshot into the tool." },
-        { stepNumber: 2, title: "Run Local OCR", description: "Click Convert to let the client-side OCR engine parse text and tables." },
+        { stepNumber: 2, title: "Run Neural OCR", description: "Click Convert to let the neural OCR engine parse text and tables." },
         { stepNumber: 3, title: "Download DOCX File", description: "Open the generated Word document to edit, format, and search the text." }
       ],
       faqs: [
         { question: "Can I convert smartphone photos of receipts?", answer: "Yes. As long as the receipt text is in focus and legible, the engine will extract line items and numbers." },
-        { question: "Will my confidential documents be kept private?", answer: "Yes. The OCR engine executes completely inside your browser session with zero data uploaded to any server." }
+        { question: "Will my confidential documents be kept private?", answer: "Yes. Files are processed securely over encrypted HTTPS and deleted from our servers immediately after processing." }
       ]
     }
   }

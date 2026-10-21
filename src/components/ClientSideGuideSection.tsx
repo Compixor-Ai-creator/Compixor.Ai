@@ -15,7 +15,7 @@ export default function ClientSideGuideSection() {
             How Client-Side In-Browser Processing Protects Your Data
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Most online document converters require uploading your private files to remote cloud servers, creating security risks, network delays, and subscription paywalls. Compixor AI takes a fundamentally different architectural approach. Every conversion, compression, and biometric transformation executes directly inside your browser memory using WebAssembly and HTML5 Canvas.
+            Most online document converters require uploading all files to remote cloud servers, creating security risks, network delays, and subscription paywalls. Compixor takes a privacy-first approach: 9 of our tools execute 100% locally inside your browser memory using WebAssembly and HTML5 Canvas, while our 3 server tools process files over HTTPS and delete them immediately.
           </p>
         </div>
 
@@ -43,7 +43,7 @@ export default function ClientSideGuideSection() {
               Sandboxed RAM Isolation &amp; Total Privacy
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Every document you open is loaded into an isolated TypedArray in your browser RAM. Neither our servers nor any third party ever receives your files. Once you finish downloading your processed output or close the browser tab, the allocated memory buffer is instantly released and purged by your operating system garbage collector, leaving zero trace behind.
+              For our 9 client-side tools, neither our servers nor any third party ever receives your files. Memory buffers are purged by your browser garbage collector immediately after use, leaving zero trace behind.
             </p>
           </div>
 
@@ -56,7 +56,7 @@ export default function ClientSideGuideSection() {
               Enterprise Compliance &amp; Confidentiality
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Corporate attorneys, medical researchers, and financial analysts regularly handle non-disclosure agreements, patient records, and tax filings that strictly prohibit third-party cloud uploads. Because Compixor AI acts entirely on the client side, using our platform violates zero data protection policies, ensuring strict alignment with GDPR, HIPAA, and corporate confidentiality requirements.
+              With 9 tools operating completely client-side and server utilities featuring zero permanent storage, Compixor ensures strict alignment with data protection and confidentiality requirements.
             </p>
           </div>
 
@@ -66,10 +66,10 @@ export default function ClientSideGuideSection() {
               <FileCheck className="w-5 h-5" />
             </div>
             <h3 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
-              Military-Grade Cryptography &amp; Quality
+              Standard 256-Bit Cryptography &amp; Quality
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Our tools deliver uncompromising accuracy. PDF files are encrypted using standard 256-bit AES cryptographic algorithms, biometric passport portraits are verified against official government guidelines (35x45mm and 2x2 inch standards at 300 DPI), and vector QR codes are exported as infinite-resolution SVG vectors ready for commercial billboard printing.
+              Our tools deliver uncompromising accuracy. PDF files are encrypted using AES-256 encryption, biometric passport portraits are verified against official government guidelines (35x45mm and 2x2 inch standards at 300 DPI), and vector QR codes are exported as infinite-resolution SVG vectors ready for commercial billboard printing.
             </p>
           </div>
         </div>

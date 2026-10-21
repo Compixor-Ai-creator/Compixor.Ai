@@ -87,7 +87,7 @@ export default function BlogSection() {
           </h2>
 
           <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Learn how to convert, compress, protect, and optimize files locally in your browser with zero server uploads.
+            Learn how to convert, compress, protect, and optimize documents and media with maximum privacy and speed.
           </p>
         </div>
 

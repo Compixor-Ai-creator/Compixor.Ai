@@ -26,128 +26,15 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
-
-export interface PdfToolItem {
-  href: string;
-  label: string;
-  subtitle: string;
-  icon: React.ComponentType<{ className?: string }>;
-  gradient: string;
-  badge?: string;
-}
-
-export interface PdfCategoryGroup {
-  category: string;
-  tools: PdfToolItem[];
-}
-
-export const pdfCategories: PdfCategoryGroup[] = [
-  {
-    category: 'Compress & Organize',
-    tools: [
-      {
-        href: '/tools/pdf-compressor',
-        label: 'PDF Compressor',
-        subtitle: 'Reduce file size without quality loss',
-        icon: FileDown,
-        gradient: 'from-rose-500 to-red-600',
-        badge: 'Popular',
-      },
-      {
-        href: '/tools/pdf-organizer',
-        label: 'PDF Merge & Split',
-        subtitle: 'Combine or split pages locally',
-        icon: Files,
-        gradient: 'from-blue-500 to-indigo-600',
-      },
-      {
-        href: '/tools/pdf-to-word',
-        label: 'PDF to Word',
-        subtitle: 'Convert to editable Word (.docx)',
-        icon: FileText,
-        gradient: 'from-blue-600 to-indigo-600',
-        badge: 'New',
-      },
-    ],
-  },
-  {
-    category: 'Watermark & Redaction',
-    tools: [
-      {
-        href: '/tools/add-watermark',
-        label: 'Add PDF Watermark',
-        subtitle: 'Stamp text or logo onto PDF',
-        icon: Stamp,
-        gradient: 'from-pink-500 to-rose-600',
-        badge: 'New',
-      },
-      {
-        href: '/tools/remove-watermark',
-        label: 'Remove PDF Watermark',
-        subtitle: 'Clean stamps and watermark layers',
-        icon: Eraser,
-        gradient: 'from-amber-500 to-orange-600',
-      },
-    ],
-  },
-  {
-    category: 'Security & Access',
-    tools: [
-      {
-        href: '/tools/protect-pdf',
-        label: 'Protect PDF',
-        subtitle: 'Add AES-256 password protection',
-        icon: Lock,
-        gradient: 'from-indigo-600 to-purple-600',
-        badge: 'AES-256',
-      },
-      {
-        href: '/tools/unlock-pdf',
-        label: 'Unlock PDF',
-        subtitle: 'Remove password and restrictions',
-        icon: Unlock,
-        gradient: 'from-emerald-500 to-teal-600',
-      },
-    ],
-  },
-];
-
-export const pdfToolsList: PdfToolItem[] = pdfCategories.flatMap((c) => c.tools);
-
-// ── Word Tools ─────────────────────────────────────────────────────────────────
-export const wordCategories: PdfCategoryGroup[] = [
-  {
-    category: 'Word & Document Processing',
-    tools: [
-      {
-        href: '/tools/word-compressor',
-        label: 'Word Compressor',
-        subtitle: 'Shrink DOCX size without losing layout',
-        icon: FileDown,
-        gradient: 'from-blue-500 to-indigo-600',
-        badge: 'Popular',
-      },
-      {
-        href: '/tools/pdf-to-word',
-        label: 'PDF to Word Converter',
-        subtitle: 'Convert PDF to editable .docx document',
-        icon: FileText,
-        gradient: 'from-violet-500 to-purple-600',
-        badge: 'New',
-      },
-      {
-        href: '/tools/img-to-word',
-        label: 'Image to Word Converter',
-        subtitle: 'OCR images to editable Word document',
-        icon: FileText,
-        gradient: 'from-violet-600 to-indigo-600',
-        badge: 'New',
-      },
-    ],
-  },
-];
-
-export const wordToolsList: PdfToolItem[] = wordCategories.flatMap((c) => c.tools);
+import {
+  tools,
+  pdfCategories,
+  pdfToolsList,
+  wordCategories,
+  wordToolsList,
+  type ToolItem as PdfToolItem,
+  type PdfCategoryGroup,
+} from '@/data/tools';
 
 const topLevelNavLinks = [
   { href: '/tools/passport-photo', label: 'Passport Photo Maker', icon: Camera },
@@ -297,11 +184,11 @@ export default function Navbar() {
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                           <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
-                            Client-Side PDF Toolkit
+                            Private PDF Toolkit
                           </span>
                         </div>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300">
-                          6 Precision Tools
+                          {pdfToolsList.length} Precision Tools
                         </span>
                       </div>
 
@@ -317,7 +204,7 @@ export default function Navbar() {
                               <div className="space-y-1">
                                 {group.tools.map((item) => {
                                   const isCurrent = pathname === item.href;
-                                  const Icon = item.icon;
+                                  const Icon = item.navIcon || item.icon;
                                   return (
                                     <Link
                                       key={item.href}
@@ -368,7 +255,7 @@ export default function Navbar() {
                             <div className="space-y-1">
                               {pdfCategories[2].tools.map((item) => {
                                 const isCurrent = pathname === item.href;
-                                const Icon = item.icon;
+                                const Icon = item.navIcon || item.icon;
                                 return (
                                   <Link
                                     key={item.href}
@@ -412,11 +299,11 @@ export default function Navbar() {
                             <div className="flex items-center gap-1.5 mb-1">
                               <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
                               <span className="text-xs font-bold text-zinc-900 dark:text-white">
-                                100% Client-Side Privacy
+                                Privacy-First Architecture
                               </span>
                             </div>
                             <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
-                              Documents process in device RAM — zero bytes leave your computer.
+                              Local tools run in device RAM, server tools delete files immediately.
                             </p>
                           </div>
                         </div>
@@ -426,14 +313,14 @@ export default function Navbar() {
                       <div className="mt-3.5 pt-2.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between px-1 text-[11px] text-zinc-500 dark:text-zinc-400">
                         <span className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                          Zero Cloud Uploads · Instant In-Browser
+                          Private &amp; Secure · Zero Retention
                         </span>
                         <Link
                           href="/#tools"
                           onClick={() => setPdfDropdownOpen(false)}
                           className="font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1"
                         >
-                          View All 10 Tools &rarr;
+                          View All {tools.length} Tools &rarr;
                         </Link>
                       </div>
                     </div>
@@ -487,7 +374,7 @@ export default function Navbar() {
                       <div className="space-y-1">
                         {wordToolsList.map((item) => {
                           const isCurrent = pathname === item.href;
-                          const Icon = item.icon;
+                          const Icon = item.navIcon || item.icon;
                           return (
                             <Link
                               key={item.href}
@@ -544,9 +431,9 @@ export default function Navbar() {
                       <div className="mt-3 pt-2.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400">
                         <span className="flex items-center gap-1.5">
                           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                          100% Client-Side Privacy
+                          Privacy-First Architecture
                         </span>
-                        <span className="font-semibold text-brand-600 dark:text-brand-400">Zero Server Uploads</span>
+                        <span className="font-semibold text-brand-600 dark:text-brand-400">Fast &amp; Secure</span>
                       </div>
                     </div>
                   )}
@@ -648,7 +535,7 @@ export default function Navbar() {
                             <div className="space-y-1">
                               {group.tools.map((item) => {
                                 const isCurrent = pathname === item.href;
-                                const Icon = item.icon;
+                                const Icon = item.navIcon || item.icon;
                                 return (
                                   <Link
                                     key={item.href}
@@ -713,7 +600,7 @@ export default function Navbar() {
                       <div className="space-y-1 py-1">
                         {wordToolsList.map((item) => {
                           const isCurrent = pathname === item.href;
-                          const Icon = item.icon;
+                          const Icon = item.navIcon || item.icon;
                           return (
                             <Link
                               key={item.href}
@@ -779,7 +666,7 @@ export default function Navbar() {
                 Start Compressing Files
               </Link>
               <p className="text-center text-xs text-zinc-400">
-                100% Client-Side • Zero Server Uploads
+                Privacy-First Architecture • Fast &amp; Secure
               </p>
             </div>
           </div>

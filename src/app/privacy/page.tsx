@@ -1,7 +1,23 @@
-'use client';
-
 import React from 'react';
-import { ShieldCheck, Lock, EyeOff, ServerOff, CheckCircle } from 'lucide-react';
+import type { Metadata } from 'next';
+import { ShieldCheck, Lock, EyeOff, ServerOff, CheckCircle, Cpu, Server } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description:
+    'Compixor AI Privacy Policy. Learn how our zero data leak architecture protects your files with in-memory local processing and transparent server tools.',
+  alternates: {
+    canonical: 'https://compixor-ai.cloud/privacy',
+  },
+  openGraph: {
+    title: 'Privacy Policy | Compixor AI',
+    description:
+      'Compixor AI Privacy Policy. Learn how our zero data leak architecture protects your files with in-memory local processing and transparent server tools.',
+    url: 'https://compixor-ai.cloud/privacy',
+    siteName: 'Compixor AI',
+    type: 'website',
+  },
+};
 
 export default function PrivacyPage() {
   return (
@@ -23,26 +39,51 @@ export default function PrivacyPage() {
       <div className="glass-card p-6 sm:p-8 rounded-3xl border-emerald-500/30 mb-12 bg-emerald-500/5">
         <h3 className="text-lg font-bold font-display text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
           <Lock className="w-5 h-5 text-emerald-500" />
-          The CompixorAi Privacy Pledge
+          The Compixor Privacy Architecture
         </h3>
         <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
-          At CompixorAi, we operate under a strict <strong>Privacy-First Architecture</strong>. Most tools (PDFs, Word documents, and QR generation) are processed entirely inside your local browser instance without leaving your device. For AI passport photo background removal, your photo is sent over HTTPS to our own secure server, processed purely in memory, and immediately discarded without storage or logging. You can also select &quot;Process on my device only&quot; for complete in-browser execution.
+          At Compixor, transparency and data minimization are our foundational principles. We operate an architectural split: 9 tools run completely client-side in your browser memory without uploading anything, while 3 tools utilize secure server-assisted processing over encrypted HTTPS where files are deleted immediately after conversion. We do not store your files or log their contents. Standard technical logs (IP address, request status, processing time) are kept.
         </p>
       </div>
 
       <div className="space-y-10 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">
+        <section className="space-y-4">
+          <h2 className="text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
+            <Cpu className="w-5 h-5 text-brand-500" />
+            1. Local vs. Server File Processing Architecture
+          </h2>
+          <div className="space-y-4 text-zinc-600 dark:text-zinc-400 text-sm">
+            <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 space-y-2">
+              <h4 className="font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                Local In-Browser Processing (9 Tools)
+              </h4>
+              <p>
+                <strong>PDF Compressor</strong>, <strong>PDF Merge & Split (PDF Organizer)</strong>, <strong>Add Watermark</strong>, <strong>Remove Watermark</strong>, <strong>Protect PDF</strong>, <strong>Unlock PDF</strong>, <strong>Word Compressor</strong>, <strong>WhatsApp Full DP Maker</strong>, and <strong>Vector QR Code Generator</strong> operate 100% client-side in your device&apos;s browser memory (WebAssembly & HTML5 Canvas). Your files never leave your computer or phone.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 space-y-2">
+              <h4 className="font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                <Server className="w-4 h-4 text-blue-500" />
+                Secure Server Processing (3 Tools)
+              </h4>
+              <p>
+                <strong>Biometric Passport Photo Maker</strong> (for AI background removal, with an on-device Private Mode option available), <strong>Image to Word</strong> (OCR reconstruction), and <strong>PDF to Word</strong> (document conversion) transmit your files over encrypted HTTPS to our secure processing server. Processing is executed in-memory or transient temporary buffers that are deleted from our server immediately upon completion. For Urdu/Arabic text recognition within Image to Word and PDF to Word, image portions may be sent to Google&apos;s Gemini AI service as a third-party processor for transcription. We do not store your files or log their contents. Standard technical logs (IP address, request status, processing time) are kept.
+              </p>
+            </div>
+          </div>
+        </section>
+
         <section className="space-y-3">
           <h2 className="text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
             <ServerOff className="w-5 h-5 text-brand-500" />
-            1. Information We Do Not Store or Share
+            2. Information Storage & Logging
           </h2>
-          <p>
-            We adhere to strict data minimization principles:
-          </p>
           <ul className="list-disc pl-5 space-y-1.5 text-zinc-600 dark:text-zinc-400 text-sm">
-            <li>We do <strong>not</strong> permanently store, catalog, or share any images or documents you process.</li>
+            <li>We do not store your files or log their contents. Standard technical logs (IP address, request status, processing time) are kept.</li>
             <li>We do <strong>not</strong> retain biometric data or facial embeddings from passport photo processing.</li>
-            <li>We do <strong>not</strong> inspect, read, or monetize document contents.</li>
+            <li>We do <strong>not</strong> inspect, monetize, or train models on user document contents.</li>
             <li>We do <strong>not</strong> track or log QR code contents or user credentials.</li>
           </ul>
         </section>
@@ -50,29 +91,29 @@ export default function PrivacyPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
             <EyeOff className="w-5 h-5 text-brand-500" />
-            2. Local Browser Storage & Cookies
+            3. Local Browser Storage & Cookies
           </h2>
           <p>
-            CompixorAi may use lightweight browser <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded font-mono">localStorage</code> solely to remember your UI preferences (such as light vs. dark mode). No tracking cookies, marketing beacons, or third-party behavioral profiling scripts are embedded on this site.
+            Compixor may use lightweight browser <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded font-mono">localStorage</code> solely to remember your UI preferences (such as light vs. dark mode). No tracking cookies, marketing beacons, or third-party behavioral profiling scripts are embedded on this site.
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-brand-500" />
-            3. Alignment with GDPR & CCPA Principles
+            4. Alignment with GDPR & CCPA Principles
           </h2>
           <p>
-            Because we do not store, process, or sell personal data on remote servers, CompixorAi aligns with core international data minimization principles under GDPR and CCPA by design (Privacy by Architecture: zero server transmission, zero cloud storage, and zero vendor profiling).
+            Compixor aligns with core international data minimization principles under GDPR and CCPA by design (Privacy by Architecture: local execution for client tools, immediate ephemeral deletion for server utilities, and zero vendor profiling).
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-xl font-bold font-display text-zinc-900 dark:text-white">
-            4. Changes to This Policy
+            5. Changes to This Policy
           </h2>
           <p>
-            We may update our Privacy Policy periodically to reflect enhancements or new client-side tools. Any updates will be posted directly on this page with an updated revision date.
+            We may update our Privacy Policy periodically to reflect enhancements or new tools. Any updates will be posted directly on this page with an updated revision date.
           </p>
         </section>
       </div>

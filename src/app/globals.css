@@ -564,30 +564,6 @@
     animation: spin-slow 12s linear infinite;
   }
 
-  /* ── Marquee Animations for Testimonials (Hardware-Accelerated 3D) ── */
-  @keyframes marquee-ltr {
-    0%   { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
-  }
-
-  @keyframes marquee-rtl {
-    0%   { transform: translate3d(-50%, 0, 0); }
-    100% { transform: translate3d(0, 0, 0); }
-  }
-
-  .marquee-track {
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    contain: paint;
-  }
-
-  /* Pause on hover */
-  .marquee-track:hover {
-    animation-play-state: paused;
-  }
-
   /* Slide Blur Ambient Orbs */
   .slide-blur-container {
     position: fixed;

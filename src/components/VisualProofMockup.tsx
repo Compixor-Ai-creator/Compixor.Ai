@@ -322,7 +322,7 @@ export function ImgToWordPreviewMockup() {
           {/* Transformation Arrow */}
           <div className="flex flex-col items-center">
             <span className="text-xs font-bold text-violet-600 dark:text-violet-400 bg-violet-500/10 px-2.5 py-0.5 rounded-full mb-1">
-              Tesseract OCR
+              Neural OCR
             </span>
             <div className="flex items-center gap-1 text-zinc-400">
               <span className="h-0.5 w-8 bg-zinc-300 dark:bg-zinc-700" />

@@ -83,7 +83,7 @@ export const AUTHOR_NAME = 'Haroon Ali';
 export const OG_IMAGE_URL = `${BASE_URL}/images/og-banner-v2.png`;
 
 export const homepageSeoData: HomepageSeoData = {
-  title: 'Free Online PDF Tools No Upload - Privacy First | Compixor',
+  title: 'Free Online PDF Tools - Private & Fast | Compixor',
   description:
     'Free online PDF tools no upload needed. Client side PDF, Word, photo, and QR toolkit. 100% private, free, and works in your browser.',
   canonicalUrl: BASE_URL,
@@ -108,11 +108,11 @@ export const homepageSeoData: HomepageSeoData = {
   ],
   h1: 'Free Online PDF Tools — No Upload',
   introParagraph:
-    'Welcome to Compixor AI, your trusted suite of free online pdf tools no upload needed. Designed for professionals, students, lawyers, and creators worldwide, Compixor offers client side pdf tools and privacy first document tools that process files 100% locally in your web browser. Compress PDFs, merge and split pages, convert PDF to Word with OCR, add or remove watermarks, password protect documents, convert biometric passport photos, and generate vector QR codes. Free, no signup, no upload, works in your browser with zero server data storage and zero cloud leakage.',
+    'Welcome to Compixor AI, your trusted suite of free online PDF and media tools. Designed for professionals, students, lawyers, and creators worldwide, Compixor offers privacy-first document tools where 9 tools run 100% locally in your web browser. Compress PDFs, merge and split pages, convert PDF to Word, add or remove watermarks, password protect documents, convert biometric passport photos, and generate vector QR codes. Free, no signup required, with zero permanent file storage and instant processing.',
   faqs: [
     {
-      q: 'How does Compixor AI process files without uploading them?',
-      a: 'Compixor AI uses client-side WebAssembly, HTML5 Canvas, and Web Workers. Computation executes directly inside your browser memory on your own device, so no file is ever uploaded to a remote server.',
+      q: 'How does Compixor AI process files privately?',
+      a: '9 of our tools execute 100% locally inside your browser memory using WebAssembly and HTML5 Canvas with zero uploads. Our 3 server-assisted tools process files securely over HTTPS and delete them immediately after conversion.',
     },
     {
       q: 'Are all Compixor AI tools completely free with no signup?',
@@ -120,7 +120,7 @@ export const homepageSeoData: HomepageSeoData = {
     },
     {
       q: 'Can I safely use Compixor AI for confidential corporate documents?',
-      a: 'Yes. Because all operations execute locally inside your web browser using client-side WebAssembly and JavaScript, your documents are never transmitted across the network or stored on any external server.',
+      a: 'Yes. For our 9 client-side tools, files never leave your browser. For server-assisted tools, files are transmitted over encrypted HTTPS, processed in memory, and deleted immediately without permanent retention.',
     },
     {
       q: 'Does Compixor AI work on mobile devices?',
@@ -1508,7 +1508,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     h1: 'Image to Word Converter Online Free',
     introParagraph:
-      'Compixor\'s free Image to Word Converter transforms JPG, PNG, WEBP, BMP, and GIF images into fully editable Microsoft Word (.docx) documents directly inside your browser. Powered by Tesseract.js WebAssembly OCR — the same engine used by developers worldwide — our image to word converter online free tool recognises printed text, detects headings and lists, and produces clean, structured DOCX files with zero server uploads and zero sign-up. Whether you need to convert a scan, a photo of a contract, or a screenshot to Word, Compixor handles multi-language OCR in English, Arabic, French, German, Spanish, and 6 more scripts — all running privately in your browser tab.',
+      'Compixor\'s free Image to Word Converter transforms JPG, PNG, WEBP, BMP, and GIF images into fully editable Microsoft Word (.docx) documents. Powered by high-accuracy neural OCR, our image to word converter recognises printed text, detects headings and lists, and produces clean, structured DOCX files with zero sign-up. Files are processed securely over HTTPS and deleted immediately after conversion.',
     howToSteps: [
       {
         name: 'Upload Your Image',
@@ -1519,8 +1519,8 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         text: 'Select the language of the text in your image from the language dropdown. Supports English, Arabic, French, German, Spanish, Portuguese, Russian, Chinese, and Japanese.',
       },
       {
-        name: 'Run In-Browser OCR',
-        text: 'Click Convert to Word. Tesseract OCR runs entirely inside your browser using WebAssembly — your images never leave your device.',
+        name: 'Run Neural OCR',
+        text: 'Click Convert to Word. High-accuracy neural OCR processes the image securely and deletes file buffers immediately after conversion.',
       },
       {
         name: 'Download Editable DOCX',
@@ -1529,8 +1529,8 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     faqs: [
       {
-        q: 'How do I convert an image to Word for free without uploading?',
-        a: 'Compixor runs Tesseract OCR inside your browser using WebAssembly. Your image is processed in local browser memory — nothing is ever sent to a server. The converted Word file is generated and downloaded directly on your device.',
+        q: 'How does Compixor handle the privacy of converted images?',
+        a: 'Files are processed securely over encrypted HTTPS and deleted immediately after conversion. We do not store your files or log their contents. For Urdu and Arabic OCR, image portions may be processed by Google Gemini AI.',
       },
       {
         q: 'What image formats can I convert to Word?',
@@ -1551,8 +1551,8 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     features: [
       {
-        title: 'Tesseract.js WebAssembly OCR',
-        description: 'Industry-standard optical character recognition compiled to WebAssembly runs entirely in your browser tab at native speed.',
+        title: 'Universal Neural OCR Engine',
+        description: 'High-accuracy optical character recognition extracts text, headings, and tables with immediate server buffer deletion.',
       },
       {
         title: 'Structured Word Output',
@@ -1572,10 +1572,10 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     operatingSystem: 'Any (Web Browser)',
     featureList: [
       'Convert JPG PNG WEBP BMP TIFF to editable Word DOCX',
-      'Tesseract.js WebAssembly OCR engine',
+      'High-accuracy neural OCR engine',
       'Multi-language OCR: English Arabic French German Spanish Russian Chinese Japanese',
       'Batch convert up to 10 images into one document',
-      'Zero server upload — 100% in-browser processing',
+      'Secure HTTPS processing with immediate file deletion',
       'Heading and list detection for structured output',
       'Free with no signup, no watermarks, no usage limits',
     ],
@@ -1780,14 +1780,13 @@ export function getHomepageSchemas(): Record<string, any>[] {
       url: BASE_URL,
     },
     description:
-      'Free, privacy-first, 100% client-side toolkit with zero file uploads developed by Haroon Ali.',
-    sameAs: ['https://compixor.ai', BASE_URL],
+      'Free, privacy-first document and media toolkit with zero permanent storage developed by Haroon Ali.',
   };
 
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Compixor AI Client-Side Tools',
+    name: 'Compixor AI Tools Suite',
     description: 'Complete collection of free, in-browser privacy-first document and media tools.',
     itemListElement: toolKeys.map((slug, idx) => {
       const tool = seoConfig[slug];
