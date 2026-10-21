@@ -115,8 +115,8 @@ export const PDF_TOOLS: PdfToolConfig[] = [
     href: '/tools/pdf-to-word',
     icon: FileText,
     color: 'from-blue-600 to-indigo-600',
-    tagline: '100% Client-Side Privacy',
-    description: 'Convert PDF documents into editable Word (.docx) files locally in browser RAM with zero server uploads.',
+    tagline: 'Fast & Private Conversion',
+    description: 'Convert PDF documents into editable Word (.docx) files securely over HTTPS with immediate file deletion.',
   },
 ];
 
@@ -130,7 +130,7 @@ interface RelatedPdfToolsProps {
 export default function RelatedPdfTools({
   currentTool,
   title = 'Related PDF Tools',
-  subtitle = 'More client-side document utilities you might need — 100% private, zero uploads.',
+  subtitle = 'More private document utilities you might need — fast, secure, and free.',
   className = '',
 }: RelatedPdfToolsProps) {
   // Filter out the active tool so only other tools are shown

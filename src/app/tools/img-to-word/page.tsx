@@ -294,13 +294,13 @@ export default function ImgToWordPage() {
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto mb-5">
           Convert JPG, PNG, WebP, or scanned photos into fully editable Microsoft Word (.docx)
           documents with Universal AI OCR. Preserves paragraph layout, text formatting, and table
-          grids — zero data leak, zero blurry pixels.
+          grids — secure HTTPS processing, zero blurry pixels.
         </p>
 
         {/* Clean Keyword Badges / Tags */}
         <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto">
           {[
-            { label: 'Zero Data Leak', icon: ShieldCheck, highlight: true },
+            { label: 'Privacy First', icon: ShieldCheck, highlight: true },
             { label: 'Universal AI Engine v10', icon: Sparkles },
             { label: 'Table Grid Reconstruction', icon: CheckCircle2 },
             { label: 'English & Urdu Multilingual', icon: CheckCircle2 },
@@ -389,7 +389,7 @@ export default function ImgToWordPage() {
                         </span>
                         <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-violet-600 dark:text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-md border border-violet-500/20">
                           <ShieldCheck className="w-3 h-3" />
-                          Zero Data Leak
+                          Private &amp; Secure
                         </span>
                       </>
                     )}
@@ -556,7 +556,7 @@ export default function ImgToWordPage() {
                         </h4>
                         <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">
                           <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                          Zero Data Leak
+                          Private &amp; Secure
                         </span>
                       </div>
                       <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 truncate">
@@ -648,18 +648,17 @@ export default function ImgToWordPage() {
 
       {/* ── 3 Feature Highlight Cards (Directly below Workspace, matching PDF Compressor standard) ── */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        {/* Card 1: Tesseract WebAssembly OCR */}
+        {/* Card 1: Universal Neural OCR */}
         <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
           <div>
             <div className="w-12 h-12 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 p-2.5 flex items-center justify-center mb-4 border border-violet-500/20">
               <ScanText className="w-6 h-6" />
             </div>
             <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-1">
-              Tesseract WebAssembly OCR
+              Universal Neural OCR
             </h3>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Client-side neural network OCR engine extracts printed and handwritten typography directly
-              in device RAM with zero external API calls.
+              High-accuracy neural OCR engine extracts printed and handwritten typography securely over encrypted HTTPS, deleting files immediately.
             </p>
           </div>
         </div>
@@ -702,10 +701,10 @@ export default function ImgToWordPage() {
         <div className="max-w-3xl mx-auto space-y-6">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-bold font-display text-zinc-900 dark:text-white">
-              How Image to Word OCR Works in Your Browser
+              How Image to Word OCR Works
             </h2>
             <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
-              Client-side WebAssembly neural text recognition with zero server uploads
+              Universal neural text recognition with secure HTTPS processing and immediate deletion
             </p>
           </div>
 
@@ -727,11 +726,11 @@ export default function ImgToWordPage() {
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                       <span className="font-semibold text-zinc-800 dark:text-zinc-200">
-                        Browser Tab Sandbox
+                        Encrypted HTTPS
                       </span>
                     </div>
                     <span className="text-[11px] text-emerald-600 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded">
-                      0 Bytes Transmitted
+                      Auto-Purged Post Process
                     </span>
                   </div>
                 </div>
@@ -748,9 +747,7 @@ export default function ImgToWordPage() {
                   </h3>
                 </div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
-                  When you drop an image into Compixor, HTML5 Canvas pre-processes contrast, grayscale
-                  thresholds, and dimensions locally inside your browser sandbox — zero data leak,
-                  processed securely in device RAM.
+                  When you upload an image to Compixor, image contrast, grayscale thresholds, and dimensions are processed securely over HTTPS with immediate memory purge after conversion.
                 </p>
               </div>
             </div>
@@ -768,9 +765,8 @@ export default function ImgToWordPage() {
                   </h3>
                 </div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
-                  Tesseract WebAssembly neural models scan pixels for word baselines, character glyphs,
-                  and line breaks. Runs directly on your device CPU/GPU with high accuracy across 10+
-                  languages.
+                  Universal neural OCR models scan pixels for word baselines, character glyphs,
+                  and line breaks with high accuracy across 10+ languages.
                 </p>
               </div>
 
@@ -780,7 +776,7 @@ export default function ImgToWordPage() {
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
                       <Sparkles className="w-4 h-4 text-violet-500" />
-                      Tesseract.js Engine Active
+                      Neural OCR Engine Active
                     </span>
                     <span className="text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full text-[11px]">
                       98.6% Accuracy Score
@@ -794,7 +790,7 @@ export default function ImgToWordPage() {
                       Layout: Multi-Paragraph
                     </span>
                     <span className="bg-zinc-50 dark:bg-zinc-900 px-2 py-1 rounded text-center">
-                      Engine: Client WASM
+                      Engine: Neural OCR
                     </span>
                   </div>
                 </div>

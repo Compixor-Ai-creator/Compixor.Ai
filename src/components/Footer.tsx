@@ -31,7 +31,7 @@ export default function Footer() {
             </Link>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm leading-relaxed">
               Professional-grade document and media tools engineered for privacy and speed.
-              Zero Data Leak. Your files never leave your device. No upload, no signup.
+              Most tools run 100% locally in your browser with zero file uploads.
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -160,10 +160,10 @@ export default function Footer() {
             <div className="glass-card p-4 rounded-2xl space-y-2 border-emerald-500/20 mb-4">
               <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="w-4 h-4" />
-                Zero Data Leak
+                Privacy-First Architecture
               </div>
               <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
-                Zero Data Leak. Your files never leave your device. No upload, no signup.
+                9 tools run 100% locally in your browser. Server tools process files in memory and delete them immediately.
               </p>
             </div>
 

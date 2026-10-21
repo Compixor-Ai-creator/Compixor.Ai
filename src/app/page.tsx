@@ -33,8 +33,8 @@ import { tools } from '@/data/tools';
 const trustSignals = [
   {
     icon: Lock,
-    title: 'Zero Data Leak',
-    description: 'Zero Data Leak. Your files never leave your device. No upload, no signup.',
+    title: 'Privacy-First Architecture',
+    description: '9 tools run 100% locally in your browser. Server tools delete files immediately after processing.',
   },
   {
     icon: Zap,
@@ -44,7 +44,7 @@ const trustSignals = [
   {
     icon: Shield,
     title: 'Privacy By Architecture',
-    description: 'Zero Data Leak on all client utilities with zero tracking or retention.',
+    description: 'Maximum privacy across all utilities with zero tracking or permanent retention.',
   },
   {
     icon: MonitorSmartphone,
@@ -55,16 +55,16 @@ const trustSignals = [
 
 const homeFaqs = [
   {
-    q: 'How does CompixorAi process files without uploading them?',
-    a: 'We leverage modern browser capabilities including HTML5 Canvas, WebAssembly, and local JavaScript workers. Your device performs the computation directly on the raw file buffer.',
+    q: 'How does Compixor process files privately?',
+    a: '9 of our tools run 100% locally in your browser memory using WebAssembly and HTML5 Canvas with zero uploads. Our 3 server-assisted tools process files securely over HTTPS and delete them immediately.',
   },
   {
     q: 'Is there a limit on how many files I can process?',
-    a: 'No! Because all processing happens on your local hardware, there are no artificial hourly limits, paywalls, or queue throttles.',
+    a: 'No! There are no artificial hourly limits, subscriptions, paywalls, or queue throttles on any of our tools.',
   },
   {
     q: 'Can I use this on corporate or sensitive business files?',
-    a: 'Absolutely. Because files never leave your computer or transmit across the network, CompixorAi is compliant with strict enterprise confidentiality guidelines.',
+    a: 'Yes. For our 9 client-side tools, files never leave your device. For server-assisted tools, files are transmitted over secure HTTPS, processed in memory, and deleted immediately without retention.',
   },
   {
     q: 'Are printable passport photos formatted correctly for retail printing?',
@@ -146,7 +146,7 @@ export default function HomePage() {
               <motion.div variants={itemVariants} className="mb-6">
                 <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-brand-500/15 via-purple-500/15 to-rose-500/15 text-brand-700 dark:text-brand-300 border border-brand-500/30 dark:border-brand-400/30 backdrop-blur-md shadow-xs animate-float-subtle">
                   <Sparkles className="w-3.5 h-3.5 text-brand-500 animate-spin-slow" />
-                  All-in-One Client-Side Document &amp; Media Toolkit
+                  All-in-One Private PDF &amp; Image Toolkit
                 </span>
               </motion.div>
 
@@ -157,13 +157,12 @@ export default function HomePage() {
                   Your Files.
                 </span>
                 <br />
-                <span className="text-zinc-900 dark:text-white">Zero Server Uploads.</span>
+                <span className="text-zinc-900 dark:text-white">Privacy First.</span>
               </h1>
 
               {/* Subheadline (Instant paint at opacity 1 — ZERO delay for Google Lighthouse LCP) */}
               <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mb-8 leading-relaxed">
-                High-performance biometric passport photos, document compression, social media DP resizer,
-                and vector QR codes — executed <span className="font-semibold text-brand-600 dark:text-brand-300">100% locally</span> in your browser.
+                Most tools run 100% locally in your browser. Passport Photo AI and Word conversion use secure servers and delete files right after processing.
               </p>
 
               {/* Primary CTA with smooth spring entrance */}
@@ -186,7 +185,7 @@ export default function HomePage() {
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  Zero Data Leaks
+                  9 Tools Run Locally
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
@@ -206,13 +205,13 @@ export default function HomePage() {
                 {/* Floating Top-Left Micro Tag */}
                 <div className="absolute -top-3.5 -left-3.5 z-20 hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold glass-pill text-brand-600 dark:text-brand-300 animate-float-subtle">
                   <Sparkles className="w-3 h-3 text-brand-500" />
-                  <span>100% In-Browser RAM</span>
+                  <span>Private &amp; Fast</span>
                 </div>
 
                 {/* Floating Bottom-Right Micro Tag */}
                 <div className="absolute -bottom-3.5 -right-3.5 z-20 hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold glass-pill text-emerald-600 dark:text-emerald-400">
                   <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                  <span>Zero Data Leak</span>
+                  <span>Privacy First</span>
                 </div>
 
                 {/* The Showcase Glass Card */}
@@ -233,7 +232,7 @@ export default function HomePage() {
                         Core Toolkit
                       </span>
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                        In-Browser
+                        Private Suite
                       </span>
                     </div>
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-500/15 text-brand-600 dark:text-brand-300 border border-brand-500/20">

@@ -184,7 +184,7 @@ export default function Navbar() {
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                           <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
-                            Client-Side PDF Toolkit
+                            Private PDF Toolkit
                           </span>
                         </div>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300">
@@ -299,11 +299,11 @@ export default function Navbar() {
                             <div className="flex items-center gap-1.5 mb-1">
                               <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
                               <span className="text-xs font-bold text-zinc-900 dark:text-white">
-                                100% Client-Side Privacy
+                                Privacy-First Architecture
                               </span>
                             </div>
                             <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
-                              Documents process in device RAM — zero bytes leave your computer.
+                              Local tools run in device RAM, server tools delete files immediately.
                             </p>
                           </div>
                         </div>
@@ -313,7 +313,7 @@ export default function Navbar() {
                       <div className="mt-3.5 pt-2.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between px-1 text-[11px] text-zinc-500 dark:text-zinc-400">
                         <span className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                          Zero Cloud Uploads · Instant In-Browser
+                          Private &amp; Secure · Zero Retention
                         </span>
                         <Link
                           href="/#tools"
@@ -431,9 +431,9 @@ export default function Navbar() {
                       <div className="mt-3 pt-2.5 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400">
                         <span className="flex items-center gap-1.5">
                           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                          100% Client-Side Privacy
+                          Privacy-First Architecture
                         </span>
-                        <span className="font-semibold text-brand-600 dark:text-brand-400">Zero Server Uploads</span>
+                        <span className="font-semibold text-brand-600 dark:text-brand-400">Fast &amp; Secure</span>
                       </div>
                     </div>
                   )}
@@ -666,7 +666,7 @@ export default function Navbar() {
                 Start Compressing Files
               </Link>
               <p className="text-center text-xs text-zinc-400">
-                100% Client-Side • Zero Server Uploads
+                Privacy-First Architecture • Fast &amp; Secure
               </p>
             </div>
           </div>

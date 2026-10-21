@@ -167,7 +167,7 @@ export const ALL_TOOLS: ToolItem[] = [
     icon: FileText,
     color: 'from-blue-600 to-indigo-600',
     tagline: 'Editable .DOCX Output',
-    description: 'Convert PDF files to editable Word documents online with client-side OCR for scanned files and zero uploads.',
+    description: 'Convert PDF files to editable Word documents online with fast OCR and immediate file deletion.',
   },
   {
     id: 'img-to-word',
@@ -177,8 +177,8 @@ export const ALL_TOOLS: ToolItem[] = [
     href: '/tools/img-to-word',
     icon: ScanText,
     color: 'from-violet-600 to-purple-600',
-    tagline: 'Tesseract WebAssembly OCR',
-    description: 'Convert JPG, PNG, WEBP, or scanned images into editable Word documents using Tesseract OCR — zero uploads.',
+    tagline: 'Multi-Language OCR',
+    description: 'Convert JPG, PNG, WEBP, or scanned images into editable Word documents with multi-language OCR and secure HTTPS processing.',
   },
 ];
 

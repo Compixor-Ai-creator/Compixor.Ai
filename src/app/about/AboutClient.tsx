@@ -27,9 +27,9 @@ const values = [
   },
   {
     icon: Lock,
-    title: 'Zero Data Leak',
+    title: 'Privacy-First Architecture',
     description:
-      'Zero Data Leak. Your files never leave your device on local tools. Processing occurs entirely in-memory and is cleared the instant you close the tab.',
+      'Privacy by design. 9 tools run 100% locally in your browser memory, while server tools process requests over encrypted HTTPS and delete files immediately.',
     color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
   },
   {
@@ -42,7 +42,7 @@ const values = [
 ];
 
 const stats = [
-  { label: 'Privacy Standard', value: 'Zero Data Leak' },
+  { label: 'Privacy Standard', value: 'Privacy-First' },
   { label: 'Files Processed Locally', value: '100% Private' },
   { label: 'Average Execution Time', value: '< 1.2s' },
   { label: 'Permanent File Retention', value: '0%' },
@@ -68,7 +68,7 @@ export default function AboutClient() {
         <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300 leading-relaxed">
           We believe professional file transformation shouldn&apos;t require clunky software subscriptions,
           data tracking, or tedious workflows. We bring clinical precision and instantaneous
-          Zero Data Leak computing to everyone.
+          private and instantaneous computing to everyone.
         </p>
       </motion.div>
 

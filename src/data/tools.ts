@@ -98,7 +98,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-blue-600 to-indigo-600',
     color: 'from-blue-600 to-indigo-600',
     badge: 'New',
-    tagline: 'Zero Data Leak · Secure HTTPS Processing',
+    tagline: 'Secure HTTPS · Immediate Deletion',
     stats: 'Editable DOCX',
   },
   {
@@ -218,7 +218,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-violet-600 to-indigo-600',
     color: 'from-violet-600 to-purple-600',
     badge: 'New',
-    tagline: 'Zero Data Leak · Secure HTTPS Processing',
+    tagline: 'Secure HTTPS · Immediate Deletion',
     stats: '10+ Languages · Batch OCR',
   },
   {
@@ -236,7 +236,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-emerald-500 to-teal-500',
     color: 'from-emerald-500 to-teal-500',
     badge: 'Trending',
-    tagline: 'Zero Data Leak · Secure HTTPS Processing',
+    tagline: 'Secure HTTPS · Immediate Deletion',
     stats: 'ICAO & NADRA Compliant',
   },
   {

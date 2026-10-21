@@ -2,16 +2,16 @@ import { FaqItem } from '@/components/JsonLd';
 
 export const homeFaqs: FaqItem[] = [
   {
-    q: 'How does CompixorAi process files without uploading them?',
-    a: 'We leverage modern browser capabilities including HTML5 Canvas, WebAssembly, and local JavaScript workers. Your device performs the computation directly on the raw file buffer.',
+    q: 'How does Compixor process files privately?',
+    a: '9 of our tools process files 100% locally in your browser memory using WebAssembly and HTML5 Canvas with zero uploads. Our 3 server-assisted tools process files securely over HTTPS and delete them immediately after conversion.',
   },
   {
     q: 'Is there a limit on how many files I can process?',
-    a: 'No! Because all processing happens on your local hardware, there are no artificial hourly limits, paywalls, or queue throttles.',
+    a: 'No! There are no artificial hourly limits, paywalls, subscriptions, or queue throttles.',
   },
   {
     q: 'Can I use this on corporate or sensitive business files?',
-    a: 'Absolutely. Because files never leave your computer or transmit across the network, CompixorAi is compliant with strict enterprise confidentiality guidelines.',
+    a: 'Yes. For our 9 client-side tools, files never leave your device. For server-assisted tools, files are transmitted over secure HTTPS, processed in memory, and deleted immediately without permanent retention.',
   },
   {
     q: 'Are printable passport photos formatted correctly for retail printing?',
@@ -117,7 +117,7 @@ export const passportPhotoFaqs: FaqItem[] = [
   },
   {
     q: 'Do I need to pay or create an account to download my passport photo?',
-    a: 'No. Compixor AI is 100% free, runs entirely client-side in your browser, and requires no registration or payment gateways.',
+    a: 'No. Compixor AI is 100% free, includes an on-device Private Mode option, and requires no registration or payment gateways.',
   },
   {
     q: 'How does the biometric alignment guide work?',
@@ -251,8 +251,8 @@ export const pdfToWordFaqs: FaqItem[] = [
     a: 'The OCR engine supports 80+ languages. For Urdu and Arabic (right-to-left scripts), select the appropriate language before converting. Accuracy depends on scan quality — clean, high-resolution scans (200 DPI+) yield the best results.',
   },
   {
-    q: 'Does Compixor upload my PDF to any server?',
-    a: 'Never. All conversion — whether No OCR or OCR mode — happens entirely on your device. No bytes of your document are transmitted to any external server, cloud storage, or third party. Your sensitive documents stay 100% private.',
+    q: 'Does Compixor store my PDF files on any server?',
+    a: 'No. Files are processed over secure encrypted HTTPS and deleted immediately after conversion. We do not store your files or log their contents. For Urdu and Arabic text recognition, image portions may be processed by Google Gemini AI service.',
   },
   {
     q: 'Does the converter preserve tables, borders, and multi-column invoices?',
@@ -260,11 +260,11 @@ export const pdfToWordFaqs: FaqItem[] = [
   },
   {
     q: 'Can I convert my edited Word document back to PDF?',
-    a: 'Yes. Once you finish editing your .docx file in Microsoft Word or Google Docs, you can re-export to PDF or use Compixor\'s PDF tools to compress, watermark, or password-protect your final PDF document with zero data leakage.',
+    a: 'Yes. Once you finish editing your .docx file in Microsoft Word or Google Docs, you can re-export to PDF or use Compixor\'s PDF tools to compress, watermark, or password-protect your final PDF document with maximum privacy and speed.',
   },
   {
     q: 'Are there hidden fees, daily credit limits, or signup requirements?',
-    a: 'Zero. While services like Dpdf or Adobe restrict daily free usage and charge for credit packs, Compixor runs 100% client-side in your browser RAM. There are no credits to buy, no daily quotas, no account registration, and no paywalls.',
+    a: 'Zero. While other services restrict daily free usage and charge for credit packs, Compixor provides free conversions with no accounts, no queues, and no paywalls.',
   },
 ];
 
