@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { seoConfig, ToolSlug, BASE_URL } from '@/lib/seo-config';
 import ToolHowToVictory from '@/components/ToolHowToVictory';
+import ShareToolButton from '@/components/ShareToolButton';
 
 interface ToolSeoSectionProps {
   toolSlug: ToolSlug;
@@ -36,11 +37,14 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
     <section className="mt-16 pt-12 border-t border-zinc-200/80 dark:border-zinc-800/80 max-w-4xl mx-auto px-4 sm:px-6">
       {/* ── 1. Comprehensive Tool Intro & Privacy Differentiation ── */}
       <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm mb-12">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
-            About {tool.name}
-          </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+              About {tool.name}
+            </span>
+          </div>
+          <ShareToolButton toolName={tool.name} toolSlug={toolSlug} />
         </div>
         <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
           {toolSlug === 'passport-photo'

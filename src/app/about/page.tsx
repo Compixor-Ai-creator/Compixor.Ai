@@ -13,7 +13,9 @@ import {
   Sparkles,
   Layers,
   Heart,
+  Mail,
 } from 'lucide-react';
+import { CONTACT_EMAIL } from '@/lib/config';
 
 const values = [
   {
@@ -177,6 +179,29 @@ export default function AboutPage() {
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+
+      {/* Contact Section — Email Only */}
+      <section
+        id="contact"
+        className="scroll-mt-24 mt-20 glass-card p-8 md:p-12 text-center max-w-2xl mx-auto rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80"
+      >
+        <div className="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto mb-4">
+          <Mail className="w-6 h-6" />
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-2">
+          Contact Us
+        </h2>
+        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mb-6 max-w-md mx-auto">
+          Have a question, feedback, or need assistance? Reach out to our team directly via email.
+        </p>
+        <a
+          href={`mailto:${CONTACT_EMAIL}`}
+          className="btn-primary inline-flex items-center gap-2 text-sm sm:text-base px-6 py-3 font-semibold"
+        >
+          <Mail className="w-4 h-4" />
+          <span>Contact Support ({CONTACT_EMAIL})</span>
+        </a>
+      </section>
     </div>
   );
 }
