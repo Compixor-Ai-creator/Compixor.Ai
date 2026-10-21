@@ -1,16 +1,17 @@
 /**
  * pdfToWordEngine.ts
- * 100% Client-Side PDF to Word (.docx) Conversion Engine.
- * Features:
- * - Intelligent X-Coordinate Column & Table Detection
- * - Real Microsoft Word Tables (<w:tbl>) for Tabular/Ledger Reports
- * - Landscape & Portrait Auto-Detection
- * - Heading & Typography Hierarchy Preservation
- * - Fully private in-browser RAM execution
+ * Dedicated Backend API client for PDF to Word (.docx) conversion.
+ * 
+ * 100% Server-Assisted: All PDF rendering, OCR, and DOCX synthesis execute
+ * on the secure Compixor backend API. No local/browser-based fallback.
  */
 
-import { getPdfJs } from '@/utils/pdfLoader';
-import type { Paragraph, Table, TableRow } from 'docx';
+import {
+  API_ENDPOINTS,
+  validateDocxBlob,
+  isDocxContentType,
+  getFriendlyErrorMessage,
+} from '@/lib/api-config';
 
 export interface ConversionProgress {
   percent: number;
@@ -26,691 +27,114 @@ export interface ConversionResult {
   fileName: string;
 }
 
-interface TextItemData {
-  str: string;
-  x: number;
-  y: number;
-  width: number;
-  fontSize: number;
-  hasEol?: boolean;
-}
-
-interface CellToken {
-  text: string;
-  startX: number;
-  endX: number;
-  fontSize: number;
-}
-
-interface ParsedLine {
-  y: number;
-  cells: CellToken[];
-  fullText: string;
-  avgFontSize: number;
-}
-
-/**
- * Checks if a string represents a number, currency, or percentage.
- */
-function isNumericOrCurrency(str: string): boolean {
-  const trimmed = str.trim();
-  if (!trimmed) return false;
-  return /^[+-]?[\$£€¥Rs\.]?\s*[\d,]+(\.\d+)?%?$/.test(trimmed);
-}
-
-/**
- * Converts a PDF ArrayBuffer into an editable Word (.docx) Blob.
- * Automatically identifies tabular regions and converts them into genuine Word Tables.
- */
-export async function convertPdfToDocx(
-  pdfBuffer: ArrayBuffer,
-  originalFileName: string,
-  onProgress?: (p: ConversionProgress) => void
-): Promise<ConversionResult> {
-  onProgress?.({ percent: 8, message: 'Initializing PDF document reader...' });
-
-  const pdfjs = await getPdfJs();
-  const loadingTask = pdfjs.getDocument({ data: new Uint8Array(pdfBuffer.slice(0)) });
-  const pdfDoc = await loadingTask.promise;
-  const pageCount = pdfDoc.numPages;
-
-  onProgress?.({
-    percent: 18,
-    message: `Analyzing document layout (${pageCount} page${pageCount > 1 ? 's' : ''})...`,
-    totalPages: pageCount,
-  });
-
-  // Dynamic import of docx components
-  const {
-    Document,
-    Packer,
-    Paragraph,
-    TextRun,
-    HeadingLevel,
-    PageBreak,
-    Table,
-    TableRow,
-    TableCell,
-    WidthType,
-    BorderStyle,
-    ShadingType,
-    AlignmentType,
-    PageOrientation,
-    ImageRun,
-  } = await import('docx');
-
-  const docChildren: (Paragraph | Table)[] = [];
-  let totalWordCount = 0;
-  let detectedLandscape = false;
-
-  // Check first page orientation
-  if (pageCount > 0) {
-    const firstPage = await pdfDoc.getPage(1);
-    const vp = firstPage.getViewport({ scale: 1 });
-    detectedLandscape = vp.width > vp.height;
-  }
-
-  // Calculate page and content dimensions in DXA (1440 DXA = 1 inch)
-  const pageWidthDxa = detectedLandscape ? 15840 : 12240;
-  // Narrow margins (0.25in = 360 DXA) for landscape to maximize tabular space for 15+ columns
-  const marginDxa = detectedLandscape ? 360 : 720;
-  const contentWidthDxa = pageWidthDxa - marginDxa * 2; // 15120 DXA for landscape
-
-  for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
-    const pageProgress = 20 + Math.round((pageNum / pageCount) * 60);
-    onProgress?.({
-      percent: pageProgress,
-      message: `Reconstructing layout for Page ${pageNum} of ${pageCount}...`,
-      currentPage: pageNum,
-      totalPages: pageCount,
-    });
-
-    const page = await pdfDoc.getPage(pageNum);
-    const textContent = await page.getTextContent();
-    const viewport = page.getViewport({ scale: 1 });
-
-    const rawItems: TextItemData[] = [];
-
-    for (const item of textContent.items) {
-      if ('str' in item && typeof item.str === 'string' && item.str.trim().length > 0) {
-        const transform = item.transform; // [scaleX, skewY, skewX, scaleY, tx, ty]
-        const tx = transform[4];
-        const ty = viewport.height - transform[5]; // Flip Y coordinate so top is 0
-        const fontSize = Math.max(8, Math.round(Math.hypot(transform[0], transform[1])));
-        const rawWidth = typeof item.width === 'number' && item.width > 0
-          ? item.width
-          : item.str.length * fontSize * 0.52;
-
-        rawItems.push({
-          str: item.str,
-          x: tx,
-          y: ty,
-          width: rawWidth,
-          fontSize,
-          hasEol: item.hasEOL,
-        });
-      }
-    }
-
-    if (rawItems.length === 0) {
-      // Scanned page, receipt, certificate, or image-only page:
-      // Render canvas and embed as crisp high-resolution Word image so nothing is lost!
-      let embeddedImage = false;
-      if (typeof document !== 'undefined') {
-        try {
-          const renderScale = 1.6;
-          const renderViewport = page.getViewport({ scale: renderScale });
-          const canvas = document.createElement('canvas');
-          canvas.width = renderViewport.width;
-          canvas.height = renderViewport.height;
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            await page.render({ canvasContext: ctx, viewport: renderViewport }).promise;
-            const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.88));
-            if (blob) {
-              const arrayBuf = await blob.arrayBuffer();
-              const imgBytes = new Uint8Array(arrayBuf);
-              const pageLandscape = viewport.width > viewport.height;
-              const maxDocWidth = pageLandscape ? 700 : 500;
-              const maxDocHeight = pageLandscape ? 480 : 680;
-              const aspect = viewport.width / viewport.height;
-              let imgWidth = maxDocWidth;
-              let imgHeight = maxDocWidth / aspect;
-              if (imgHeight > maxDocHeight) {
-                imgHeight = maxDocHeight;
-                imgWidth = maxDocHeight * aspect;
-              }
-
-              docChildren.push(
-                new Paragraph({
-                  alignment: AlignmentType.CENTER,
-                  children: [
-                    new ImageRun({
-                      data: imgBytes,
-                      transformation: {
-                        width: Math.round(imgWidth),
-                        height: Math.round(imgHeight),
-                      },
-                      type: 'jpg',
-                    }),
-                  ],
-                })
-              );
-              embeddedImage = true;
-            }
-          }
-        } catch (renderErr) {
-          console.warn(`Page ${pageNum} canvas image embed fallback error:`, renderErr);
-        }
-      }
-
-      if (!embeddedImage) {
-        docChildren.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `[Page ${pageNum}: Graphical or scanned content]`,
-                italics: true,
-                color: '888888',
-              }),
-            ],
-          })
-        );
-      }
-    } else {
-      // Sort items top-to-bottom, then left-to-right
-      rawItems.sort((a, b) => {
-        if (Math.abs(a.y - b.y) <= 3) {
-          return a.x - b.x;
-        }
-        return a.y - b.y;
-      });
-
-      // Group items into coherent horizontal lines
-      const lineBuckets: TextItemData[][] = [];
-      let currentBucket: TextItemData[] = [];
-      let currentBucketY = rawItems[0].y;
-
-      for (const it of rawItems) {
-        if (currentBucket.length === 0 || Math.abs(it.y - currentBucketY) <= 3.5) {
-          currentBucket.push(it);
-          currentBucketY = it.y;
-        } else {
-          currentBucket.sort((a, b) => a.x - b.x);
-          lineBuckets.push([...currentBucket]);
-          currentBucket = [it];
-          currentBucketY = it.y;
-        }
-      }
-      if (currentBucket.length > 0) {
-        currentBucket.sort((a, b) => a.x - b.x);
-        lineBuckets.push(currentBucket);
-      }
-
-      // Tokenize each line into column cells based on horizontal gaps
-      const parsedLines: ParsedLine[] = [];
-
-      for (const bucket of lineBuckets) {
-        const cells: CellToken[] = [];
-        let currentCell: CellToken | null = null;
-        let sumFont = 0;
-
-        for (const item of bucket) {
-          sumFont += item.fontSize;
-          const cleanStr = item.str.trim();
-          if (!cleanStr) continue;
-
-          // Gap threshold to distinguish between words in same cell vs separate columns
-          // Accounting tables have narrow column spacing (~5-8pt)
-          const gapThreshold = Math.max(4.5, item.fontSize * 0.45);
-
-          if (!currentCell) {
-            currentCell = {
-              text: cleanStr,
-              startX: item.x,
-              endX: item.x + item.width,
-              fontSize: item.fontSize,
-            };
-          } else if (item.x - currentCell.endX > gapThreshold) {
-            // Significant gap indicates next column!
-            cells.push(currentCell);
-            currentCell = {
-              text: cleanStr,
-              startX: item.x,
-              endX: item.x + item.width,
-              fontSize: item.fontSize,
-            };
-          } else {
-            // Words within same cell
-            currentCell.text += ' ' + cleanStr;
-            currentCell.endX = item.x + item.width;
-          }
-        }
-
-        if (currentCell) {
-          cells.push(currentCell);
-        }
-
-        if (cells.length > 0) {
-          const fullText = cells.map((c) => c.text).join(' ');
-          totalWordCount += fullText.split(/\s+/).length;
-
-          parsedLines.push({
-            y: bucket[0].y,
-            cells,
-            fullText,
-            avgFontSize: sumFont / bucket.length,
-          });
-        }
-      }
-
-      // Group parsed lines into Blocks (Paragraphs vs Table Blocks)
-      // A line is considered tabular if it has >= 3 columns, or 2 wide columns spanning > 45% of page
-      type Block =
-        | { type: 'table'; rows: ParsedLine[] }
-        | { type: 'paragraph'; line: ParsedLine };
-
-      const blocks: Block[] = [];
-      let pendingTableRows: ParsedLine[] = [];
-
-      const flushTable = () => {
-        if (pendingTableRows.length > 0) {
-          if (pendingTableRows.length >= 2 || pendingTableRows[0].cells.length >= 4) {
-            blocks.push({ type: 'table', rows: [...pendingTableRows] });
-          } else {
-            // Single isolated line with few columns -> treat as regular paragraphs
-            for (const r of pendingTableRows) {
-              blocks.push({ type: 'paragraph', line: r });
-            }
-          }
-          pendingTableRows = [];
-        }
-      };
-
-      for (const line of parsedLines) {
-        const isTabular =
-          line.cells.length >= 3 ||
-          (line.cells.length === 2 &&
-            line.cells[1].startX - line.cells[0].startX > viewport.width * 0.35);
-
-        if (isTabular) {
-          pendingTableRows.push(line);
-        } else {
-          flushTable();
-          blocks.push({ type: 'paragraph', line });
-        }
-      }
-      flushTable();
-
-      // Render each block into docx elements
-      for (const block of blocks) {
-        if (block.type === 'paragraph') {
-          const line = block.line;
-          const trimmed = line.fullText.trim();
-          if (!trimmed) continue;
-
-          const isH1 = line.avgFontSize >= 17;
-          const isH2 = line.avgFontSize >= 13 && line.avgFontSize < 17;
-
-          if (isH1) {
-            docChildren.push(
-              new Paragraph({
-                heading: HeadingLevel.HEADING_1,
-                spacing: { before: 240, after: 120 },
-                children: [
-                  new TextRun({
-                    text: trimmed,
-                    bold: true,
-                    size: Math.round(line.avgFontSize * 2),
-                    color: '1E3A8A', // Classic professional dark blue
-                  }),
-                ],
-              })
-            );
-          } else if (isH2) {
-            docChildren.push(
-              new Paragraph({
-                heading: HeadingLevel.HEADING_2,
-                spacing: { before: 180, after: 80 },
-                children: [
-                  new TextRun({
-                    text: trimmed,
-                    bold: true,
-                    size: Math.round(line.avgFontSize * 2),
-                    color: '2563EB',
-                  }),
-                ],
-              })
-            );
-          } else {
-            docChildren.push(
-              new Paragraph({
-                spacing: { after: 100, line: 260 },
-                children: [
-                  new TextRun({
-                    text: trimmed,
-                    size: 22, // 11pt readable font
-                  }),
-                ],
-              })
-            );
-          }
-        } else {
-          // ── Real Word Table Construction ───────────────────────────────────
-          const rows = block.rows;
-
-          // 1. Gather all column start anchors across all rows in table
-          const allStarts: number[] = [];
-          for (const r of rows) {
-            for (const c of r.cells) {
-              allStarts.push(c.startX);
-            }
-          }
-          allStarts.sort((a, b) => a - b);
-
-          // Cluster anchor points within 4.5pt of each other (prevents merging adjacent ledger columns)
-          const colAnchors: number[] = [];
-          for (const s of allStarts) {
-            const found = colAnchors.find((anchor) => Math.abs(anchor - s) <= 4.5);
-            if (found === undefined) {
-              colAnchors.push(s);
-            }
-          }
-          colAnchors.sort((a, b) => a - b);
-
-          const colCount = Math.max(1, colAnchors.length);
-          const isWideTable = colCount >= 8;
-          const isVeryWideTable = colCount >= 12;
-
-          // 2. Compute column widths in DXA
-          const rawColWidths: number[] = [];
-          for (let i = 0; i < colCount; i++) {
-            if (i < colCount - 1) {
-              rawColWidths.push(Math.max(15, colAnchors[i + 1] - colAnchors[i]));
-            } else {
-              rawColWidths.push(35); // Default last column span
-            }
-          }
-
-          const sumRaw = rawColWidths.reduce((acc, w) => acc + w, 0);
-          const minColDxa = isVeryWideTable ? 240 : isWideTable ? 350 : 450;
-          const colWidthsDxa: number[] = rawColWidths.map((w) =>
-            Math.max(minColDxa, Math.round((w / sumRaw) * contentWidthDxa))
-          );
-
-          // Adjust last column to ensure exact sum equals contentWidthDxa
-          const currentSum = colWidthsDxa.reduce((acc, w) => acc + w, 0);
-          colWidthsDxa[colWidthsDxa.length - 1] += contentWidthDxa - currentSum;
-
-          // 3. Build Table Rows & Cells
-          // Clean accounting ledger style: horizontal lines only (NO vertical borders, matching dpdf style)
-          const noBorder = { style: BorderStyle.NONE };
-          const darkLine = { style: BorderStyle.SINGLE, size: 4, color: '111827' };
-          const lightLine = { style: BorderStyle.SINGLE, size: 1, color: 'E5E7EB' };
-
-          const docxRows: TableRow[] = [];
-
-          for (let rIdx = 0; rIdx < rows.length; rIdx++) {
-            const rowData = rows[rIdx];
-            const isHeaderRow =
-              rIdx === 0 ||
-              /sr\.?\s*no|date|sum|type|invoice|salesman|net\s*amt|amount|balance/i.test(
-                rowData.fullText
-              );
-            const isLastRow = rIdx === rows.length - 1;
-
-            // Map this row's cells into column slots
-            const rowCellsText: string[] = new Array(colCount).fill('');
-
-            for (const cellToken of rowData.cells) {
-              // Find closest column anchor
-              let closestCol = 0;
-              let minDiff = Infinity;
-              for (let aIdx = 0; aIdx < colCount; aIdx++) {
-                const diff = Math.abs(colAnchors[aIdx] - cellToken.startX);
-                if (diff < minDiff) {
-                  minDiff = diff;
-                  closestCol = aIdx;
-                }
-              }
-
-              if (rowCellsText[closestCol]) {
-                rowCellsText[closestCol] += ' ' + cellToken.text;
-              } else {
-                rowCellsText[closestCol] = cellToken.text;
-              }
-            }
-
-            // Cell borders: Accounting reports only use clean horizontal lines
-            const cellBorders = isWideTable
-              ? {
-                  top: isHeaderRow ? darkLine : noBorder,
-                  bottom: isHeaderRow ? darkLine : isLastRow ? darkLine : lightLine,
-                  left: noBorder,
-                  right: noBorder,
-                }
-              : {
-                  top: lightLine,
-                  bottom: lightLine,
-                  left: lightLine,
-                  right: lightLine,
-                };
-
-            // Adaptive cell margins & font sizes for multi-column density
-            const cellMargins = isVeryWideTable
-              ? { top: 25, bottom: 25, left: 30, right: 30 }
-              : isWideTable
-              ? { top: 35, bottom: 35, left: 45, right: 45 }
-              : { top: 70, bottom: 70, left: 90, right: 90 };
-
-            const fontSizeHalfPt = isVeryWideTable
-              ? isHeaderRow ? 14 : 13 // 6.5pt - 7pt
-              : isWideTable
-              ? isHeaderRow ? 16 : 15 // 7.5pt - 8pt
-              : isHeaderRow ? 19 : 18; // 9pt - 9.5pt
-
-            const docxCells = rowCellsText.map((cellText, cIdx) => {
-              const trimmed = cellText.trim();
-              const isNumeric = isNumericOrCurrency(trimmed);
-
-              return new TableCell({
-                width: { size: colWidthsDxa[cIdx], type: WidthType.DXA },
-                borders: cellBorders,
-                shading: isHeaderRow && !isWideTable
-                  ? { fill: 'F3F4F6', type: ShadingType.CLEAR }
-                  : undefined,
-                margins: cellMargins,
-                children: [
-                  new Paragraph({
-                    alignment: isNumeric ? AlignmentType.RIGHT : AlignmentType.LEFT,
-                    spacing: { before: 0, after: 0, line: isVeryWideTable ? 190 : 220 },
-                    children: [
-                      new TextRun({
-                        text: trimmed || ' ',
-                        bold: isHeaderRow,
-                        size: fontSizeHalfPt,
-                        color: isHeaderRow ? '111827' : '374151',
-                      }),
-                    ],
-                  }),
-                ],
-              });
-            });
-
-            docxRows.push(
-              new TableRow({
-                tableHeader: isHeaderRow,
-                children: docxCells,
-              })
-            );
-          }
-
-          docChildren.push(
-            new Table({
-              width: { size: contentWidthDxa, type: WidthType.DXA },
-              columnWidths: colWidthsDxa,
-              rows: docxRows,
-            })
-          );
-
-          // Add subtle spacing after table
-          docChildren.push(
-            new Paragraph({
-              spacing: { after: 160 },
-              children: [],
-            })
-          );
-        }
-      }
-    }
-
-    // Page break between pages (except last page)
-    if (pageNum < pageCount) {
-      docChildren.push(
-        new Paragraph({
-          children: [new PageBreak()],
-        })
-      );
-    }
-  }
-
-  onProgress?.({ percent: 88, message: 'Assembling ISO/IEC 29500 Word document (.docx)...' });
-
-  // Create DOCX document with matching orientation and standard margins
-  const doc = new Document({
-    sections: [
-      {
-        properties: {
-          page: {
-            size: {
-              width: pageWidthDxa,
-              height: detectedLandscape ? 12240 : 15840,
-              orientation: detectedLandscape
-                ? PageOrientation.LANDSCAPE
-                : PageOrientation.PORTRAIT,
-            },
-            margin: { top: marginDxa, right: marginDxa, bottom: marginDxa, left: marginDxa },
-          },
-        },
-        children: docChildren,
-      },
-    ],
-  });
-
-  onProgress?.({ percent: 96, message: 'Generating downloadable Word document...' });
-
-  const docxBlob = await Packer.toBlob(doc);
-
-  onProgress?.({ percent: 100, message: 'Conversion completed successfully!' });
-
-  const baseName = originalFileName.replace(/\.pdf$/i, '');
-  const finalFileName = `${baseName}_converted.docx`;
-
-  return {
-    blob: docxBlob,
-    pageCount,
-    totalWords: totalWordCount,
-    fileName: finalFileName,
-  };
-}
-
-/**
- * Samples the first pages of a PDF to decide whether it carries a real text layer.
- * Scanned/image-only PDFs return ~0 characters and must go through server-side OCR.
- */
-export async function inspectPdfText(
-  pdfBuffer: ArrayBuffer,
-  samplePages = 3,
-): Promise<{ pageCount: number; textChars: number }> {
-  const pdfjs = await getPdfJs();
-  const pdfDoc = await pdfjs.getDocument({ data: new Uint8Array(pdfBuffer.slice(0)) }).promise;
-  const pageCount = pdfDoc.numPages;
-  let textChars = 0;
-  const limit = Math.min(pageCount, samplePages);
-  for (let i = 1; i <= limit; i++) {
-    const page = await pdfDoc.getPage(i);
-    const content = await page.getTextContent();
-    textChars += content.items
-      .map((it) => ('str' in it ? it.str : ''))
-      .join('')
-      .replace(/\s/g, '').length;
-    page.cleanup();
-  }
-  await pdfDoc.destroy();
-  return { pageCount, textChars };
-}
-
-/** True when the PDF has no usable text layer (i.e. it is a scan). */
-export async function isScannedPdf(pdfBuffer: ArrayBuffer): Promise<boolean> {
-  const { pageCount, textChars } = await inspectPdfText(pdfBuffer);
-  const sampled = Math.min(pageCount, 3);
-  return textChars < 20 * sampled;
-}
-
-const OCR_API_BASE =
-  process.env.NEXT_PUBLIC_IMG2WORD_API_URL?.replace(/\/$/, '') ?? 'https://api.compixor-ai.cloud';
-const OCR_ENDPOINT = `${OCR_API_BASE}/api/convert-pdf-to-docx`;
-
-/**
- * Server-side OCR for PDFs. The file is uploaded to the Image-to-Word engine,
- * which renders pages and runs Tesseract + Gemini refinement.
- * Wall-clock time varies wildly with page count and queue depth, so the caller
- * gets qualitative stage messages instead of an ETA.
- */
-const OCR_STAGES: { afterSec: number; message: string }[] = [
-  { afterSec: 0, message: 'Uploading your PDF securely...' },
-  { afterSec: 3, message: 'Rendering pages and detecting columns, tables and text blocks...' },
-  { afterSec: 9, message: 'Reading text with OCR and AI cleanup...' },
-  { afterSec: 22, message: 'Rebuilding headings, paragraphs and tables...' },
-  { afterSec: 45, message: 'Packaging your editable Word document...' },
-  { afterSec: 90, message: 'Large document — finishing up, this keeps the layout accurate...' },
+const PDF_CONVERSION_TIMEOUT_MS = 120_000; // 120 seconds
+
+const STAGES: { afterSec: number; percent: number; message: string }[] = [
+  { afterSec: 0, percent: 10, message: 'Uploading your PDF securely over HTTPS...' },
+  { afterSec: 3, percent: 28, message: 'Scanning pages, layout, and table grids...' },
+  { afterSec: 10, percent: 52, message: 'Reading typography with neural OCR & AI...' },
+  { afterSec: 25, percent: 75, message: 'Reconstructing paragraphs, headings, and tables...' },
+  { afterSec: 50, percent: 90, message: 'Packaging editable Word (.docx) document...' },
+  { afterSec: 85, percent: 95, message: 'Finalizing formatting — finishing up...' },
 ];
 
-export async function convertScannedPdfToDocx(
+/**
+ * Converts a PDF file into an editable Word document via the Compixor backend API.
+ */
+export async function convertPdfToDocx(
   file: File,
   onProgress?: (p: ConversionProgress) => void,
 ): Promise<ConversionResult> {
   const t0 = Date.now();
-  let stage = -1;
-  const emitStage = () => {
-    const secs = (Date.now() - t0) / 1000;
-    let next = 0;
-    for (let i = 0; i < OCR_STAGES.length; i++) if (secs >= OCR_STAGES[i].afterSec) next = i;
-    if (next === stage) return;
-    stage = next;
-    onProgress?.({ percent: 12 + stage * 14, message: OCR_STAGES[stage].message });
-  };
-  emitStage();
+  let currentStage = -1;
 
-  const timer = window.setInterval(emitStage, 1000);
+  const emitProgress = () => {
+    const elapsedSec = (Date.now() - t0) / 1000;
+    let nextStage = 0;
+    for (let i = 0; i < STAGES.length; i++) {
+      if (elapsedSec >= STAGES[i].afterSec) nextStage = i;
+    }
+    if (nextStage !== currentStage) {
+      currentStage = nextStage;
+      onProgress?.({
+        percent: STAGES[currentStage].percent,
+        message: STAGES[currentStage].message,
+      });
+    }
+  };
+
+  emitProgress();
+  const timer = typeof window !== 'undefined' ? window.setInterval(emitProgress, 1000) : null;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), PDF_CONVERSION_TIMEOUT_MS);
 
   try {
-    const form = new FormData();
-    form.append('files', file, file.name);
-    form.append('language', 'eng+urd');
+    const formData = new FormData();
+    formData.append('files', file, file.name);
+    formData.append('language', 'eng+urd');
 
-    const res = await fetch(OCR_ENDPOINT, { method: 'POST', body: form });
-    if (!res.ok) {
-      let detail = `Server error ${res.status}`;
-      try {
-        detail = (await res.json())?.detail ?? detail;
-      } catch {
-        detail = res.statusText || detail;
+    let response: Response;
+    try {
+      response = await fetch(API_ENDPOINTS.convertPdfToDocx, {
+        method: 'POST',
+        body: formData,
+        signal: controller.signal,
+      });
+    } catch (networkErr: unknown) {
+      if (controller.signal.aborted) {
+        throw new Error(getFriendlyErrorMessage(504, 'timeout'));
       }
-      throw new Error(detail);
+      throw new Error(getFriendlyErrorMessage(undefined, 'Network error. Please check your internet connection.'));
     }
 
-    const blob = await res.blob();
-    const pageCount = parseInt(res.headers.get('X-Pages-Converted') ?? '1', 10);
-    onProgress?.({ percent: 100, message: 'Word document is ready!' });
+    if (response.status !== 200) {
+      let errorDetail = '';
+      try {
+        const errorJson = await response.json();
+        errorDetail = errorJson?.detail || '';
+      } catch {
+        errorDetail = response.statusText || '';
+      }
+      throw new Error(getFriendlyErrorMessage(response.status, errorDetail));
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (!isDocxContentType(contentType)) {
+      throw new Error('Conversion failed. Server returned an invalid response format.');
+    }
+
+    const blob = await response.blob();
+
+    if (!blob || blob.size === 0) {
+      throw new Error('Conversion failed. Received an empty document from the server.');
+    }
+
+    const isValidZip = await validateDocxBlob(blob);
+    if (!isValidZip) {
+      throw new Error('Conversion failed. The returned document file is corrupted.');
+    }
+
+    const pagesHeader = response.headers.get('X-Pages-Converted') || response.headers.get('X-Page-Count');
+    const pageCount = pagesHeader ? parseInt(pagesHeader, 10) : 1;
+    const baseName = file.name.replace(/\.pdf$/i, '');
+    const fileName = `${baseName}_converted.docx`;
+
+    onProgress?.({ percent: 100, message: 'Word document ready to download!' });
 
     return {
       blob,
-      pageCount,
+      pageCount: isNaN(pageCount) || pageCount < 1 ? 1 : pageCount,
       totalWords: 0,
-      fileName: `${file.name.replace(/\.pdf$/i, '')}_ocr_converted.docx`,
+      fileName,
     };
   } finally {
-    window.clearInterval(timer);
+    clearTimeout(timeoutId);
+    if (timer) clearInterval(timer);
   }
 }
+
+/**
+ * Backward compatibility alias
+ */
+export const convertScannedPdfToDocx = convertPdfToDocx;

@@ -1,20 +1,17 @@
 /**
- * imgToWordEngine.ts  (API-based v2)
- * ─────────────────────────────────────────────────────────────────────────────
- * Replaces the Tesseract.js client-side engine with a call to the
- * Compixor AI PaddleOCR FastAPI backend hosted on Hostinger VPS.
- *
- * ✅ Drop-in compatible — page.tsx imports & function signatures unchanged.
- * ✅ Single image: convertImageToWord()
- * ✅ Batch images: convertImagesToWord()
- * ✅ Progress events: Uploading → Processing → Finalizing → Done
- * ✅ Graceful error messages
- *
- * Environment variable (set in .env.local):
- *   NEXT_PUBLIC_IMG2WORD_API_URL=https://api.compixor-ai.cloud
+ * imgToWordEngine.ts
+ * Dedicated Backend API client for Image to Word (.docx) conversion.
+ * 
+ * 100% Server-Assisted: All OCR and DOCX synthesis execute on the secure
+ * Compixor backend API. No local/browser-based fallback.
  */
 
-// ── Types (same interface as before — page.tsx untouched) ─────────────────────
+import {
+  API_ENDPOINTS,
+  validateDocxBlob,
+  isDocxContentType,
+  getFriendlyErrorMessage,
+} from '@/lib/api-config';
 
 export type OcrLanguage =
   | 'eng'
@@ -38,7 +35,7 @@ export interface OcrProgressEvent {
 
 export interface ImgToWordResult {
   docxBlob: Blob;
-  textContent: string;   // Empty string — server doesn't return preview text
+  textContent: string;
   pageCount: number;
   wordCount: number;
   processingTimeMs: number;
@@ -47,10 +44,8 @@ export interface ImgToWordResult {
 export interface ImgToWordOptions {
   language?: OcrLanguage;
   onProgress?: (evt: OcrProgressEvent) => void;
-  minConfidence?: number; // Unused — server-side threshold applied
+  minConfidence?: number;
 }
-
-// ── Language options map (for UI dropdown — unchanged) ────────────────────────
 
 export const LANGUAGE_OPTIONS: { value: OcrLanguage; label: string }[] = [
   { value: 'eng',     label: 'English (Default)' },
@@ -68,19 +63,8 @@ export const LANGUAGE_OPTIONS: { value: OcrLanguage; label: string }[] = [
   { value: 'jpn',     label: 'Japanese' },
 ];
 
-// ── Internal helpers ──────────────────────────────────────────────────────────
+const IMG_CONVERSION_TIMEOUT_MS = 120_000; // 120 seconds
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_IMG2WORD_API_URL?.replace(/\/$/, '') ??
-  'https://api.compixor-ai.cloud';
-
-const ENDPOINT = `${API_BASE}/api/convert-img-to-docx`;
-
-/**
- * Fires fake progress events so the progress bar stays lively while we wait
- * for the server response (XHR upload + OCR time).
- * Returns a cleanup function to stop the interval.
- */
 function startFakeProgress(
   onProgress: ((e: OcrProgressEvent) => void) | undefined,
   phases: { status: string; from: number; to: number; durationMs: number }[],
@@ -114,26 +98,23 @@ function startFakeProgress(
   return () => { stopped = true; };
 }
 
-/**
- * Core conversion function — uploads files to Hostinger API,
- * receives .docx binary, parses response headers for metadata.
- */
 async function callApi(
   files: File[],
   language: OcrLanguage = 'eng+urd',
   onProgress?: (e: OcrProgressEvent) => void,
 ): Promise<ImgToWordResult> {
   const t0 = performance.now();
-
-  // Phase durations vary by batch size
   const isLarge = files.length > 3 || files.reduce((s, f) => s + f.size, 0) > 5_000_000;
 
   const stopProgress = startFakeProgress(onProgress, [
-    { status: 'AI is working: Uploading image…',             from: 0.00, to: 0.20, durationMs: isLarge ? 2500 : 1200 },
-    { status: 'AI is working: Scanning layout & tables…',     from: 0.20, to: 0.55, durationMs: isLarge ? 8000 : 4000 },
-    { status: 'AI is reading data & multilingual text…',     from: 0.55, to: 0.85, durationMs: isLarge ? 8000 : 4000 },
-    { status: 'Reconstructing editable Word (.docx) document…', from: 0.85, to: 0.98, durationMs: isLarge ? 2000 : 1000 },
+    { status: 'Uploading image securely over HTTPS…',       from: 0.00, to: 0.20, durationMs: isLarge ? 2500 : 1200 },
+    { status: 'Scanning layout, columns, and tables…',      from: 0.20, to: 0.55, durationMs: isLarge ? 8000 : 4000 },
+    { status: 'Recognizing typography with neural OCR…',    from: 0.55, to: 0.85, durationMs: isLarge ? 8000 : 4000 },
+    { status: 'Packaging editable Word (.docx) document…',  from: 0.85, to: 0.98, durationMs: isLarge ? 2000 : 1000 },
   ]);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), IMG_CONVERSION_TIMEOUT_MS);
 
   try {
     const form = new FormData();
@@ -142,56 +123,67 @@ async function callApi(
     }
     form.append('language', language);
 
-    const res = await fetch(ENDPOINT, {
-      method: 'POST',
-      body: form,
-      // No Content-Type header — browser sets it with boundary automatically
-    });
+    let res: Response;
+    try {
+      res = await fetch(API_ENDPOINTS.convertImgToDocx, {
+        method: 'POST',
+        body: form,
+        signal: controller.signal,
+      });
+    } catch (networkErr: unknown) {
+      if (controller.signal.aborted) {
+        throw new Error(getFriendlyErrorMessage(504, 'timeout'));
+      }
+      throw new Error(getFriendlyErrorMessage(undefined, 'Network error. Please check your internet connection.'));
+    }
 
-    if (!res.ok) {
-      let detail = `Server error ${res.status}`;
+    if (res.status !== 200) {
+      let detail = '';
       try {
         const json = await res.json();
-        detail = json?.detail ?? detail;
+        detail = json?.detail || '';
       } catch {
-        // Non-JSON error body — use status text
-        detail = res.statusText || detail;
+        detail = res.statusText || '';
       }
-      throw new Error(detail);
+      throw new Error(getFriendlyErrorMessage(res.status, detail));
+    }
+
+    const contentType = res.headers.get('content-type');
+    if (!isDocxContentType(contentType)) {
+      throw new Error('Conversion failed. Server returned an invalid response format.');
     }
 
     const docxBlob = await res.blob();
+    if (!docxBlob || docxBlob.size === 0) {
+      throw new Error('Conversion failed. Received an empty document from the server.');
+    }
 
-    // Parse metadata from response headers
+    const isValidZip = await validateDocxBlob(docxBlob);
+    if (!isValidZip) {
+      throw new Error('Conversion failed. The returned document file is corrupted.');
+    }
+
     const processingTimeMs =
       parseInt(res.headers.get('X-Processing-Time-Ms') ?? '0', 10) ||
       Math.round(performance.now() - t0);
     const wordCount = parseInt(res.headers.get('X-Word-Count') ?? '0', 10);
     const pageCount = parseInt(res.headers.get('X-Page-Count') ?? `${files.length}`, 10);
 
-    onProgress?.({ status: 'Document ready!', progress: 1 });
+    onProgress?.({ status: 'Word document ready to download!', progress: 1 });
 
     return {
       docxBlob,
-      textContent: '',   // Server doesn't return plain-text preview
-      pageCount,
-      wordCount,
+      textContent: '',
+      pageCount: isNaN(pageCount) || pageCount < 1 ? files.length : pageCount,
+      wordCount: isNaN(wordCount) ? 0 : wordCount,
       processingTimeMs,
     };
   } finally {
+    clearTimeout(timeoutId);
     stopProgress();
   }
 }
 
-// ── Public API (same signatures as Tesseract version) ─────────────────────────
-
-/**
- * Convert a single image to an editable Word document.
- *
- * @param file      The image File object from the browser
- * @param options   { language, onProgress }
- * @returns         ImgToWordResult with docxBlob ready for download
- */
 export async function convertImageToWord(
   file: File,
   options: ImgToWordOptions = {},
@@ -200,14 +192,6 @@ export async function convertImageToWord(
   return callApi([file], language, onProgress);
 }
 
-/**
- * Convert multiple images (batch) into a single Word document,
- * with each image as a separate page.
- *
- * @param files     Array of image File objects
- * @param options   { language, onProgress }
- * @returns         ImgToWordResult with combined docxBlob
- */
 export async function convertImagesToWord(
   files: File[],
   options: ImgToWordOptions = {},

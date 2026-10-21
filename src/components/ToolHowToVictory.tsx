@@ -431,7 +431,7 @@ export default function ToolHowToVictory({ toolSlug }: ToolHowToVictoryProps) {
         <VictoryCard
           badgeText="OCR Transformation Preview"
           badgeColor="from-violet-500/15 to-indigo-500/15 text-violet-700 dark:text-violet-300 border-violet-500/30"
-          engineTitle="Tesseract.js WebAssembly OCR"
+          engineTitle="Universal Neural OCR"
           engineSub="Recognises Text, Headings & Lists · 10+ Languages"
           beforeTitle="Scanned / Photo Image"
           beforeBadge="Unextractable"

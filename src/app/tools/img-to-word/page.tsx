@@ -143,12 +143,12 @@ export default function ImgToWordPage() {
   // ── Conversion (Universal AI Engine v10) ────────────────────────────────────
 
   const handleConvert = useCallback(async () => {
-    if (!file) return;
+    if (!file || isProcessing) return;
     setIsProcessing(true);
     setResult(null);
     setError(null);
     setProgress(0);
-    setProgressLabel('AI is working: Uploading image…');
+    setProgressLabel('Uploading image securely over HTTPS…');
 
     const onProgress = (evt: OcrProgressEvent) => {
       setProgress(Math.round(evt.progress * 100));
@@ -171,13 +171,13 @@ export default function ImgToWordPage() {
       // Manual download only: Do NOT automatically trigger browser download
       toast.success('Word document generated successfully! Click below to download.');
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'OCR conversion failed unexpectedly.';
+      const msg = err instanceof Error ? err.message : 'Conversion failed. Our server is busy or unavailable. Please try again in a moment.';
       setError(msg);
       toast.error(msg);
     } finally {
       setIsProcessing(false);
     }
-  }, [file]);
+  }, [file, isProcessing]);
 
   const handleDownload = useCallback(() => {
     if (!result) return;
@@ -515,7 +515,7 @@ export default function ImgToWordPage() {
               )}
             </AnimatePresence>
 
-            {/* Error Message */}
+            {/* Error Message with Retry */}
             <AnimatePresence>
               {error && (
                 <motion.div
@@ -523,13 +523,23 @@ export default function ImgToWordPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex items-start gap-3 p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-xs sm:text-sm"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-xs sm:text-sm"
                 >
-                  <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-bold">OCR Process Error</p>
-                    <p className="mt-0.5">{error}</p>
+                  <div className="flex items-start gap-2.5">
+                    <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold">Conversion Error</p>
+                      <p className="mt-0.5">{error}</p>
+                    </div>
                   </div>
+                  <button
+                    onClick={handleConvert}
+                    disabled={isProcessing}
+                    className="self-end sm:self-auto inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs transition shadow-sm cursor-pointer disabled:opacity-40 shrink-0"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Retry</span>
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -843,14 +853,8 @@ export default function ImgToWordPage() {
           {/* Under the hood technical overview */}
           <div className="space-y-4 text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed pt-4">
             <p>
-              Most online image OCR tools upload your receipts, contracts, or personal photos to an external
-              server to process them. This poses severe data compliance and confidentiality risks when dealing
-              with corporate records or private identity documents.
-            </p>
-            <p>
-              Compixor operates 100% differently. Using WebAssembly, the complete Tesseract OCR neural engine
-              and Microsoft Word document generator execute locally inside your browser tab. Zero bytes ever
-              leave your device.
+              Compixor processes files over secure encrypted HTTPS on dedicated neural conversion servers.
+              Once converted, the resulting Microsoft Word document is returned directly to your browser, and file buffers are deleted immediately from memory.
             </p>
             <div>
               <p className="font-semibold text-zinc-900 dark:text-white mb-2">
@@ -858,21 +862,20 @@ export default function ImgToWordPage() {
               </p>
               <ol className="list-decimal list-inside space-y-2 text-sm text-zinc-600 dark:text-zinc-300">
                 <li>
-                  <strong className="text-zinc-800 dark:text-zinc-200">Canvas Pre-Processing:</strong> Image
-                  pixels are normalized for optimal binarization, skew correction, and contrast enhancement.
+                  <strong className="text-zinc-800 dark:text-zinc-200">Secure Transmission:</strong> Image
+                  data is transmitted over TLS-encrypted HTTPS directly to our conversion engine.
                 </li>
                 <li>
-                  <strong className="text-zinc-800 dark:text-zinc-200">Neural Glyph Matching:</strong> Tesseract
-                  WebAssembly analyzes line heights, font structures, and language patterns.
+                  <strong className="text-zinc-800 dark:text-zinc-200">Neural Glyph Matching:</strong> Server-side
+                  OCR models analyze line heights, font structures, and language patterns across English, Urdu, and Arabic.
                 </li>
                 <li>
                   <strong className="text-zinc-800 dark:text-zinc-200">Document Structure Assembly:</strong> Word
-                  paragraphs, line breaks, and page boundaries are programmatically assembled using standard OpenXML.
+                  paragraphs, table grids, and page boundaries are compiled into standard OpenXML.
                 </li>
                 <li>
-                  <strong className="text-zinc-800 dark:text-zinc-200">Lossless DOCX Packaging:</strong> The
-                  Word file is zipped and packaged locally into a <code className="text-xs font-mono">.docx</code> file
-                  delivered directly to your browser downloads folder.
+                  <strong className="text-zinc-800 dark:text-zinc-200">Immediate Server Purge:</strong> The
+                  output <code className="text-xs font-mono">.docx</code> file is streamed back to your browser, and all server temp buffers are permanently removed.
                 </li>
               </ol>
             </div>
