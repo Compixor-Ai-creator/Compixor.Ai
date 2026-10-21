@@ -268,7 +268,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/full-dp-maker",
     accentColor: "from-purple-500/20 to-pink-500/20",
     icon: "Maximize2",
-    thumbnail: "/blog/whatsapp-full-dp-thumbnail.jpg",
+    thumbnail: "/blog/whatsapp-full-dp-maker-thumbnail.jpg",
     decisionBox: {
       title: "What Kind of Image Are You Resizing? A Ten-Second Guide",
       items: [
