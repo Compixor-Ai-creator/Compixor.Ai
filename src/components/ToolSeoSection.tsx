@@ -19,6 +19,7 @@ import {
 import { seoConfig, ToolSlug, BASE_URL } from '@/lib/seo-config';
 import ToolHowToVictory from '@/components/ToolHowToVictory';
 import ShareToolButton from '@/components/ShareToolButton';
+import PrivacyBadge from '@/components/PrivacyBadge';
 
 interface ToolSeoSectionProps {
   toolSlug: ToolSlug;
@@ -51,8 +52,11 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
             ? `${tool.h1} — Official Biometric Standards`
             : SERVER_OCR_TOOLS.has(toolSlug || '')
               ? `${tool.h1} — Accurate OCR, Nothing Stored`
-              : `${tool.h1} — Safe, Fast & 100% Client-Side`}
+              : `${tool.h1} — Safe, Fast & Zero Data Leak`}
         </h2>
+        <div className="mb-4">
+          <PrivacyBadge toolSlug={toolSlug} />
+        </div>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
           {tool.introParagraph}
         </p>

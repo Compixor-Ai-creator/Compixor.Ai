@@ -57,7 +57,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-rose-500 to-red-600',
     color: 'from-brand-500 to-indigo-600',
     badge: 'Popular',
-    tagline: '100% Client-Side Privacy',
+    tagline: 'Zero Data Leak · No Uploads',
     stats: 'Avg 75% Reduction',
   },
   {
@@ -77,7 +77,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-blue-500 to-indigo-600',
     color: 'from-cyan-500 to-indigo-600',
     badge: 'Popular',
-    tagline: '100% Client-Side Privacy',
+    tagline: 'Zero Data Leak · No Uploads',
     stats: 'Merge Unlimited · Split in Seconds',
   },
   {
@@ -88,7 +88,7 @@ export const tools: ToolItem[] = [
     href: '/tools/pdf-to-word',
     shortDescription: 'Convert to editable Word (.docx)',
     subtitle: 'Convert to editable Word (.docx)',
-    description: 'Convert PDF files into fully editable Microsoft Word (.docx) documents in browser RAM with zero cloud uploads.',
+    description: 'Convert PDF files into fully editable Microsoft Word (.docx) documents with zero data retention.',
     category: 'PDF',
     pdfSubcategory: 'Compress & Organize',
     wordSubcategory: 'Word & Document Processing',
@@ -98,7 +98,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-blue-600 to-indigo-600',
     color: 'from-blue-600 to-indigo-600',
     badge: 'New',
-    tagline: '100% Client-Side Privacy',
+    tagline: 'Zero Data Leak · Secure HTTPS Processing',
     stats: 'Editable DOCX',
   },
   {
@@ -118,7 +118,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-pink-500 to-rose-600',
     color: 'from-rose-500 to-pink-600',
     badge: 'New',
-    tagline: '100% Client-Side Privacy',
+    tagline: 'Zero Data Leak · No Uploads',
     stats: 'Instant Watermarking',
   },
   {
@@ -138,7 +138,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-amber-500 to-orange-600',
     color: 'from-amber-500 to-rose-600',
     badge: 'Featured',
-    tagline: '100% Client-Side Privacy',
+    tagline: 'Zero Data Leak · No Uploads',
     stats: '100% Removal Detection',
   },
   {
@@ -158,7 +158,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-indigo-600 to-purple-600',
     color: 'from-indigo-500 to-purple-600',
     badge: 'AES-256',
-    tagline: '100% Client-Side Privacy',
+    tagline: 'Zero Data Leak · No Uploads',
     stats: 'AES-256 Encryption',
   },
   {
@@ -178,7 +178,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-emerald-500 to-teal-600',
     color: 'from-purple-500 to-pink-600',
     badge: 'New',
-    tagline: '100% Client-Side Privacy',
+    tagline: 'Zero Data Leak · No Uploads',
     stats: '100% Local Decrypt',
   },
   {
@@ -198,7 +198,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-blue-500 to-indigo-600',
     color: 'from-blue-500 to-cyan-500',
     badge: 'Popular',
-    tagline: '100% Client-Side Privacy',
+    tagline: 'Zero Data Leak · No Uploads',
     stats: 'Preserves Layout',
   },
   {
@@ -218,7 +218,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-violet-600 to-indigo-600',
     color: 'from-violet-600 to-purple-600',
     badge: 'New',
-    tagline: 'AI OCR · Multi-Language',
+    tagline: 'Zero Data Leak · Secure HTTPS Processing',
     stats: '10+ Languages · Batch OCR',
   },
   {
@@ -236,7 +236,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-emerald-500 to-teal-500',
     color: 'from-emerald-500 to-teal-500',
     badge: 'Trending',
-    tagline: 'NADRA, US Visa & Schengen Compliant',
+    tagline: 'Zero Data Leak · Secure HTTPS Processing',
     stats: 'ICAO & NADRA Compliant',
   },
   {
@@ -254,7 +254,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-violet-500 to-purple-600',
     color: 'from-violet-500 to-purple-600',
     badge: 'Featured',
-    tagline: 'Resize & Fit WhatsApp, Instagram & Facebook Profile Pictures',
+    tagline: 'Zero Data Leak · No Uploads',
     stats: '1:1 Square & HD Blur',
   },
   {
@@ -272,7 +272,7 @@ export const tools: ToolItem[] = [
     gradient: 'from-amber-500 to-rose-500',
     color: 'from-amber-500 to-rose-500',
     badge: 'Static & Permanent',
-    tagline: 'Custom Styles, Colors & Instant Export',
+    tagline: 'Zero Data Leak · No Uploads',
     stats: 'SVG & PNG Export',
   },
 ];

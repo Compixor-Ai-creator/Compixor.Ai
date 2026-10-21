@@ -27,9 +27,9 @@ const values = [
   },
   {
     icon: Lock,
-    title: '100% Ephemeral Privacy',
+    title: 'Zero Data Leak',
     description:
-      'Your files never touch our servers. Processing occurs entirely in-memory within your local browser sandbox and is cleared the instant you close the tab.',
+      'Zero Data Leak. Your files never leave your device on local tools. Processing occurs entirely in-memory and is cleared the instant you close the tab.',
     color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
   },
   {
@@ -42,10 +42,10 @@ const values = [
 ];
 
 const stats = [
-  { label: 'Files Processed Locally', value: '100%' },
-  { label: 'Server Uploads', value: '0 bytes' },
+  { label: 'Privacy Standard', value: 'Zero Data Leak' },
+  { label: 'Files Processed Locally', value: '100% Private' },
   { label: 'Average Execution Time', value: '< 1.2s' },
-  { label: 'Server Data Retention', value: '0%' },
+  { label: 'Permanent File Retention', value: '0%' },
 ];
 
 export default function AboutPage() {
@@ -67,8 +67,8 @@ export default function AboutPage() {
         </h1>
         <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300 leading-relaxed">
           We believe professional file transformation shouldn&apos;t require clunky software subscriptions,
-          creepy cloud uploads, or tedious workflows. We bring clinical precision and instantaneous
-          client-side computing to everyone.
+          data tracking, or tedious workflows. We bring clinical precision and instantaneous
+          Zero Data Leak computing to everyone.
         </p>
       </motion.div>
 

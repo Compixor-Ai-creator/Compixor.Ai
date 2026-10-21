@@ -33,8 +33,8 @@ import { tools } from '@/data/tools';
 const trustSignals = [
   {
     icon: Lock,
-    title: '100% Client-Side',
-    description: 'Files are processed inside browser memory — zero bytes uploaded to remote servers.',
+    title: 'Zero Data Leak',
+    description: 'Zero Data Leak. Your files never leave your device. No upload, no signup.',
   },
   {
     icon: Zap,
@@ -43,8 +43,8 @@ const trustSignals = [
   },
   {
     icon: Shield,
-    title: 'Client-Side Privacy',
-    description: 'Zero data harvesting or storage. What happens in your browser stays in your browser.',
+    title: 'Privacy By Architecture',
+    description: 'Zero Data Leak on all client utilities with zero tracking or retention.',
   },
   {
     icon: MonitorSmartphone,
@@ -212,7 +212,7 @@ export default function HomePage() {
                 {/* Floating Bottom-Right Micro Tag */}
                 <div className="absolute -bottom-3.5 -right-3.5 z-20 hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold glass-pill text-emerald-600 dark:text-emerald-400">
                   <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                  <span>Zero Cloud Uploads</span>
+                  <span>Zero Data Leak</span>
                 </div>
 
                 {/* The Showcase Glass Card */}

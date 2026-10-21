@@ -1084,7 +1084,7 @@ export const blogsData: BlogItem[] = [
       },
       {
         title: "Protect PDF",
-        description: "Lock documents with military-grade AES-256 encryption and passwords.",
+        description: "Lock documents with standard AES-256 encryption and passwords.",
         toolPath: "/tools/protect-pdf",
         icon: "Lock"
       }

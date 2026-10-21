@@ -8,11 +8,11 @@ export default function ClientSideTrustSection() {
         <div className="flex-1 space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             <ShieldCheck className="w-3.5 h-3.5" />
-            Zero Cloud Uploads • 100% Private
+            Zero Data Leak • 100% Private
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-bold font-display text-zinc-900 dark:text-white">
-            Why 100% Client-Side Actually Matters
+            Why Zero Data Leak Architecture Actually Matters
           </h2>
 
           <div className="space-y-3 text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
@@ -27,7 +27,7 @@ export default function ClientSideTrustSection() {
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 text-xs sm:text-sm font-medium text-zinc-800 dark:text-zinc-200">
             <li className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-              <span>Zero server uploads — ever</span>
+              <span>Zero Data Leak — your files never leave your device</span>
             </li>
             <li className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />

@@ -66,7 +66,7 @@ export default function ClientSideGuideSection() {
               <FileCheck className="w-5 h-5" />
             </div>
             <h3 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
-              Military-Grade Cryptography &amp; Quality
+              Standard 256-Bit Cryptography &amp; Quality
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               Our tools deliver uncompromising accuracy. PDF files are encrypted using standard 256-bit AES cryptographic algorithms, biometric passport portraits are verified against official government guidelines (35x45mm and 2x2 inch standards at 300 DPI), and vector QR codes are exported as infinite-resolution SVG vectors ready for commercial billboard printing.

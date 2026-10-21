@@ -1576,7 +1576,7 @@ export default function QrGeneratorPage() {
                     type="text"
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
-                    placeholder="Sarah Jenkins"
+                    placeholder="Alex Morgan"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
                   />
                 </div>
@@ -1612,7 +1612,7 @@ export default function QrGeneratorPage() {
                     type="email"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
-                    placeholder="sarah@company.com"
+                    placeholder="alex@company.com"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
                   />
                 </div>
