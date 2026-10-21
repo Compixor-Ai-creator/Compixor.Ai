@@ -5,14 +5,14 @@ import { ShieldCheck, Lock, EyeOff, ServerOff, CheckCircle, Cpu, Server } from '
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description:
-    'Compixor AI Privacy Policy. Learn how our zero data leak architecture protects your files with in-memory local processing and no permanent file retention.',
+    'Compixor AI Privacy Policy. Learn how our zero data leak architecture protects your files with in-memory local processing and transparent server tools.',
   alternates: {
     canonical: 'https://compixor-ai.cloud/privacy',
   },
   openGraph: {
     title: 'Privacy Policy | Compixor AI',
     description:
-      'Compixor AI Privacy Policy. Learn how our zero data leak architecture protects your files with in-memory local processing and no permanent file retention.',
+      'Compixor AI Privacy Policy. Learn how our zero data leak architecture protects your files with in-memory local processing and transparent server tools.',
     url: 'https://compixor-ai.cloud/privacy',
     siteName: 'Compixor AI',
     type: 'website',
@@ -69,7 +69,7 @@ export default function PrivacyPage() {
                 Secure Server Processing (3 Tools)
               </h4>
               <p>
-                <strong>Biometric Passport Photo Maker</strong> (for AI background removal, with an on-device Private Mode option available), <strong>Image to Word</strong> (OCR reconstruction), and <strong>PDF to Word</strong> (document conversion) transmit your files over encrypted HTTPS to our secure processing server. Processing is executed in-memory or transient temporary buffers that are deleted immediately upon completion. We do not store your files or log their contents. Standard technical logs (IP address, request status, processing time) are kept.
+                <strong>Biometric Passport Photo Maker</strong> (for AI background removal, with an on-device Private Mode option available), <strong>Image to Word</strong> (OCR reconstruction), and <strong>PDF to Word</strong> (document conversion) transmit your files over encrypted HTTPS to our secure processing server. Processing is executed in-memory or transient temporary buffers that are deleted from our server immediately upon completion. For Urdu/Arabic text recognition within Image to Word and PDF to Word, image portions may be sent to Google&apos;s Gemini AI service as a third-party processor for transcription. We do not store your files or log their contents. Standard technical logs (IP address, request status, processing time) are kept.
               </p>
             </div>
           </div>
@@ -78,12 +78,12 @@ export default function PrivacyPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
             <ServerOff className="w-5 h-5 text-brand-500" />
-            2. Information We Do Not Store or Share
+            2. Information Storage & Logging
           </h2>
           <ul className="list-disc pl-5 space-y-1.5 text-zinc-600 dark:text-zinc-400 text-sm">
-            <li>We do <strong>not</strong> permanently store, catalog, or share any images or documents you process.</li>
+            <li>We do not store your files or log their contents. Standard technical logs (IP address, request status, processing time) are kept.</li>
             <li>We do <strong>not</strong> retain biometric data or facial embeddings from passport photo processing.</li>
-            <li>We do <strong>not</strong> inspect, read, or monetize document contents.</li>
+            <li>We do <strong>not</strong> inspect, monetize, or train models on user document contents.</li>
             <li>We do <strong>not</strong> track or log QR code contents or user credentials.</li>
           </ul>
         </section>
@@ -104,7 +104,7 @@ export default function PrivacyPage() {
             4. Alignment with GDPR & CCPA Principles
           </h2>
           <p>
-            Because we do not store, catalog, or sell personal data on remote servers, Compixor aligns with core international data minimization principles under GDPR and CCPA by design (Privacy by Architecture: local execution for client tools, immediate ephemeral deletion for server utilities, and zero vendor profiling).
+            Compixor aligns with core international data minimization principles under GDPR and CCPA by design (Privacy by Architecture: local execution for client tools, immediate ephemeral deletion for server utilities, and zero vendor profiling).
           </p>
         </section>
 

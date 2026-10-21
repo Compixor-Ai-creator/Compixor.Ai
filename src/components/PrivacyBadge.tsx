@@ -11,11 +11,17 @@ interface PrivacyBadgeProps {
 
 export default function PrivacyBadge({ toolSlug, className = '' }: PrivacyBadgeProps) {
   const tool = tools.find((t) => t.id === toolSlug || t.href === `/tools/${toolSlug}`);
-  const isServer = tool?.processing === 'server';
+  const slug = tool?.id || toolSlug;
 
-  const message = isServer
-    ? 'Files are processed over secure HTTPS and deleted immediately after processing. Never stored or shared.'
-    : 'Zero Data Leak. Your files never leave your device. No upload, no signup.';
+  let message = 'Zero Data Leak. Your files never leave your device. No upload, no signup.';
+
+  if (slug === 'img-to-word' || slug === 'pdf-to-word') {
+    message =
+      "Files are processed over secure HTTPS and deleted from our server immediately after processing. For Urdu/Arabic text recognition, image portions may be sent to Google's Gemini AI service for transcription.";
+  } else if (slug === 'passport-photo' || tool?.processing === 'server') {
+    message =
+      'Files are processed over secure HTTPS and deleted immediately after processing. Never stored or shared.';
+  }
 
   return (
     <div

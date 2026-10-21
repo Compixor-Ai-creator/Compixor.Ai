@@ -273,6 +273,9 @@ export default function PdfToWordPage() {
                   buttonText="Choose File"
                   maxSizeMB={100}
                 />
+                <p className="text-[11px] text-center text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto mt-3">
+                  Files are processed over secure HTTPS and deleted from our server immediately after processing. For Urdu/Arabic text recognition, image portions may be sent to Google&apos;s Gemini AI service for transcription.
+                </p>
               </motion.div>
             ) : !result ? (
               /* ── Converting State ── */

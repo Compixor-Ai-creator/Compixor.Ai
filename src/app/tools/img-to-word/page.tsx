@@ -343,6 +343,9 @@ export default function ImgToWordPage() {
               <Sparkles className="w-3.5 h-3.5 text-violet-500 shrink-0" />
               <span>Universal AI Engine auto-detects tables, English, Urdu &amp; Arabic text</span>
             </div>
+            <p className="text-[11px] text-center text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto">
+              Files are processed over secure HTTPS and deleted from our server immediately after processing. For Urdu/Arabic text recognition, image portions may be sent to Google&apos;s Gemini AI service for transcription.
+            </p>
           </div>
         )}
 

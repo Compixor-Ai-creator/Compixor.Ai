@@ -79,6 +79,18 @@ ALLOWED_ORIGINS = [
 ]
 OCR_WORKERS = int(os.getenv("OCR_WORKERS", "2"))
 CONVERT_SLOTS = threading.BoundedSemaphore(int(os.getenv("MAX_CONCURRENT", "2")))
+GEMINI_TIMEOUT = int(os.getenv("GEMINI_TIMEOUT", "15"))
+
+# Optional Gemini refinement (used only for Urdu/Arabic or low-confidence crops)
+# Prioritizes fast lite models first; caches 404 model names so invalid IDs never stall requests
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv(
+    "GEMINI_MODEL",
+    "gemini-3.5-flash-lite,gemini-3.5-flash,gemini-3.8-flash",
+)
+GEMINI_MODELS = [m.strip() for m in GEMINI_MODEL.split(",") if m.strip()]
+MAX_AI_CALLS = int(os.getenv("MAX_AI_CALLS", "25"))
+_AI_SEM = threading.BoundedSemaphore(int(os.getenv("GEMINI_CONCURRENCY", "2")))
 
 # Optional debug crop directory: set DEBUG_CROPS_DIR=/tmp/crops to inspect barcodes/noise lines
 DEBUG_CROPS_DIR = os.getenv("DEBUG_CROPS_DIR", "").strip()
@@ -166,6 +178,8 @@ class Block:
 # --------------------------------------------------------------------------- helpers
 _FACE = None
 _FACE_LOCK = threading.Lock()
+_DEAD_MODELS = set()
+_DEAD_MODELS_LOCK = threading.Lock()
 
 
 def save_debug_crop(tag: str, img: np.ndarray, meta: str = "") -> None:
@@ -600,6 +614,63 @@ def mask_colored_annotations(bgr: np.ndarray, sat_thr: int = 120, val_min: int =
     return out
 
 
+def gemini_ocr(img: np.ndarray) -> Optional[str]:
+    if not GEMINI_API_KEY:
+        return None
+    ok, buf = cv2.imencode(".png", img)
+    if not ok:
+        return None
+    prompt = (
+        "Transcribe all text in this image exactly as written. Return only the text, no commentary. "
+        "Keep line breaks. Preserve any fill-in-the-blank underlines as ________. "
+        "Urdu/Arabic must be correct Unicode in natural reading order; English stays English. "
+        "If there is no text or only a barcode/stamp/signature, return an empty string. "
+        "Return plain Unicode text only. Do NOT use LaTeX. Use Unicode math symbols: "
+        "× ÷ ± = ≠ ≤ ≥ √ ½ ⅓ ⅔ ¼ ¾ ⁄ π θ α β ° ² ³ ⁿ and superscript/subscript digits."
+    )
+    payload = {
+        "contents": [{"parts": [
+            {"text": prompt},
+            {"inline_data": {"mime_type": "image/png", "data": base64.b64encode(buf.tobytes()).decode()}},
+        ]}],
+        "generationConfig": {"temperature": 0},
+    }
+    body = json.dumps(payload).encode()
+    with _AI_SEM:
+        for model in GEMINI_MODELS:
+            with _DEAD_MODELS_LOCK:
+                if model in _DEAD_MODELS:
+                    continue
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+            for attempt in range(3):
+                req = urllib.request.Request(
+                    url,
+                    data=body,
+                    headers={"Content-Type": "application/json", "x-goog-api-key": GEMINI_API_KEY},
+                )
+                try:
+                    with urllib.request.urlopen(req, timeout=GEMINI_TIMEOUT) as r:
+                        data = json.load(r)
+                    text = data["candidates"][0]["content"]["parts"][0]["text"]
+                    return latex_to_unicode(re.sub(r"^```[a-z]*\n?|```$", "", text.strip()).strip())
+                except urllib.error.HTTPError as e:
+                    log.warning("Gemini %s HTTP %s (attempt %d)", model, e.code, attempt + 1)
+                    if e.code == 404:
+                        with _DEAD_MODELS_LOCK:
+                            _DEAD_MODELS.add(model)
+                        break
+                    if e.code in (429, 500, 502, 503, 504) and attempt < 2:
+                        time.sleep(1.2 * (attempt + 1))
+                        continue
+                    break  # 400/403 or repeated failure -> try next model
+                except Exception as e:
+                    log.warning("Gemini %s failed: %s (attempt %d)", model, e, attempt + 1)
+                    if attempt < 2:
+                        time.sleep(0.8 * (attempt + 1))
+                        continue
+                    break
+    return None
+
 
 class OCR:
     def __init__(self, lang: str, ai_budget: Optional[int] = None):
@@ -695,6 +766,17 @@ class OCR:
             r2 = self._tess(img, psm, lang=lang2)
             if r2["text"].strip():
                 r = r2
+        if self.urdu and has_ink(img):
+            need = bool(ARABIC_RE.search(r["text"])) or r["conf"] < 65
+            if need:
+                if GEMINI_API_KEY and self._take_ai():
+                    t = gemini_ocr(img)
+                    if t is not None:
+                        r["text"], r["conf"] = t, 95.0
+                    else:
+                        r["ai_failed"] = True
+                else:
+                    r["ai_failed"] = True
         return r
 
 
@@ -876,6 +958,15 @@ def fill_table(tb: TableData, bgr: np.ndarray, ocr: OCR, dpi: float, ocr_bgr: Op
                 cx = (wx0 + wx1) / 2.0 / cw
                 wr = (wx1 - wx0) / float(cw)
                 r = {"text": text, "conf": conf, "h": hmed, "cx": cx, "wr": wr, "ai_failed": False}
+                if ocr.urdu and (bool(ARABIC_RE.search(text)) or conf < 65):
+                    if GEMINI_API_KEY and ocr._take_ai():
+                        gt = gemini_ocr(ocr_crop)
+                        if gt is not None:
+                            r["text"], r["conf"] = gt, 95.0
+                        else:
+                            r["ai_failed"] = True
+                    else:
+                        r["ai_failed"] = True
             else:
                 r = ocr.read(ocr_crop, psm=7 if crop.shape[0] < 45 else 6)
 
@@ -1252,6 +1343,12 @@ def page_paragraphs(masked: np.ndarray, bgr: np.ndarray, ocr: OCR, dpi: float, o
             or looks_like_math_noise(text)
         )
         if need_ai:
+            if GEMINI_API_KEY and ocr._take_ai() and crop.size and has_ink(crop):
+                t = gemini_ocr(ocr_crop)
+                if t is not None:
+                    lines_clean = [ln.strip() for ln in t.splitlines() if ln.strip()]
+                    if lines_clean:
+                        return ("text", _clean_ocr_typos("\n".join(lines_clean)), None)
             if (conf < IMAGE_FALLBACK_CONF or is_garbled_urdu(text, conf) or right_side_lowconf) and crop.size and has_ink(crop):
                 save_debug_crop("para_img_fallback", crop, f"c{int(conf)}_{text[:15]}")
                 return ("image", "", crop.copy())
@@ -1651,7 +1748,8 @@ def health():
         "status": "online",
         "engine": "Image to Word v10.4",
         "tesseract_langs": langs,
-        "third_party_api": False,
+        "gemini_enabled": bool(GEMINI_API_KEY),
+        "gemini_models": GEMINI_MODELS,
         "max_batch_files": MAX_BATCH_FILES,
         "accepts_pdf": True,
         "max_pdf_pages": MAX_PDF_PAGES,
@@ -1698,7 +1796,7 @@ def convert(
 
     ocr_lang = resolve_lang(language or lang)
     # Short PDFs get the full refinement budget (best quality); long ones are throttled
-    # per page so a 30-page scan cannot monopolise the 2-core box.
+    # per page so a 30-page scan cannot monopolise the 2-core box or the Gemini quota.
     ai_budget = PDF_AI_BUDGET if has_pdf and len(images_data) > PDF_FULL_QUALITY_PAGES else None
     if not CONVERT_SLOTS.acquire(timeout=20):
         raise HTTPException(status_code=503, detail="Server is busy, please try again in a minute")
