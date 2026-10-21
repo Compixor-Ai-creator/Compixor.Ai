@@ -14,6 +14,28 @@ export const API_ENDPOINTS = {
 } as const;
 
 /**
+ * Client timeouts per endpoint (longer than server nginx timeouts:
+ * Image to Word 200s vs nginx 180s, PDF to Word 450s vs nginx 420s).
+ */
+export const TIMEOUTS = {
+  imgToDocxMs: 200_000, // 200 seconds
+  pdfToDocxMs: 450_000, // 450 seconds
+} as const;
+
+export const MAX_FILE_SIZE_BYTES = 30 * 1024 * 1024; // 30 MB
+export const MAX_FILE_SIZE_MB = 30;
+export const FILE_TOO_LARGE_MSG = 'The file is too large. Maximum size is 30 MB.';
+
+/**
+ * Validates file size client-side before sending any request to the backend.
+ */
+export function checkFileSize(file: File): void {
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    throw new Error(FILE_TOO_LARGE_MSG);
+  }
+}
+
+/**
  * Validates that a received blob is a valid, non-empty DOCX file.
  * Checks for size > 0 and the ZIP header magic bytes 'PK' (0x50, 0x4B).
  */
@@ -43,7 +65,7 @@ export function isDocxContentType(contentType: string | null): boolean {
  */
 export function getFriendlyErrorMessage(status?: number, detail?: string): string {
   if (status === 413) {
-    return 'The file is too large for server processing. Please try a smaller file.';
+    return FILE_TOO_LARGE_MSG;
   }
   if (status === 429) {
     return 'Too many requests. Please wait a moment before trying again.';

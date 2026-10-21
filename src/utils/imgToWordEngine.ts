@@ -11,6 +11,8 @@ import {
   validateDocxBlob,
   isDocxContentType,
   getFriendlyErrorMessage,
+  TIMEOUTS,
+  checkFileSize,
 } from '@/lib/api-config';
 
 export type OcrLanguage =
@@ -63,8 +65,6 @@ export const LANGUAGE_OPTIONS: { value: OcrLanguage; label: string }[] = [
   { value: 'jpn',     label: 'Japanese' },
 ];
 
-const IMG_CONVERSION_TIMEOUT_MS = 120_000; // 120 seconds
-
 function startFakeProgress(
   onProgress: ((e: OcrProgressEvent) => void) | undefined,
   phases: { status: string; from: number; to: number; durationMs: number }[],
@@ -103,18 +103,24 @@ async function callApi(
   language: OcrLanguage = 'eng+urd',
   onProgress?: (e: OcrProgressEvent) => void,
 ): Promise<ImgToWordResult> {
+  // Pre-flight client-side size check before sending any request
+  for (const file of files) {
+    checkFileSize(file);
+  }
+
   const t0 = performance.now();
   const isLarge = files.length > 3 || files.reduce((s, f) => s + f.size, 0) > 5_000_000;
 
   const stopProgress = startFakeProgress(onProgress, [
-    { status: 'Uploading image securely over HTTPS…',       from: 0.00, to: 0.20, durationMs: isLarge ? 2500 : 1200 },
-    { status: 'Scanning layout, columns, and tables…',      from: 0.20, to: 0.55, durationMs: isLarge ? 8000 : 4000 },
-    { status: 'Recognizing typography with neural OCR…',    from: 0.55, to: 0.85, durationMs: isLarge ? 8000 : 4000 },
-    { status: 'Packaging editable Word (.docx) document…',  from: 0.85, to: 0.98, durationMs: isLarge ? 2000 : 1000 },
+    { status: 'Uploading image securely over HTTPS…',                    from: 0.00, to: 0.15, durationMs: isLarge ? 3000 : 1500 },
+    { status: 'Converting... large or scanned files can take a few minutes.', from: 0.15, to: 0.45, durationMs: isLarge ? 12000 : 5000 },
+    { status: 'Scanning layout, columns, and tables…',                   from: 0.45, to: 0.70, durationMs: isLarge ? 15000 : 6000 },
+    { status: 'Recognizing typography with neural OCR…',                 from: 0.70, to: 0.90, durationMs: isLarge ? 15000 : 6000 },
+    { status: 'Packaging editable Word (.docx) document…',               from: 0.90, to: 0.98, durationMs: isLarge ? 4000 : 2000 },
   ]);
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), IMG_CONVERSION_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.imgToDocxMs);
 
   try {
     const form = new FormData();

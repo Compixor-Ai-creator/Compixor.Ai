@@ -35,6 +35,7 @@ import ToolFeedback from '@/components/ToolFeedback';
 import { incrementFilesDone } from '@/lib/feedbackCounter';
 import { formatFileSize, validatePdfFile, downloadBlob } from '@/utils/fileHelpers';
 import { convertPdfToDocx, ConversionResult } from '@/utils/pdfToWordEngine';
+import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_MB, FILE_TOO_LARGE_MSG } from '@/lib/api-config';
 
 export default function PdfToWordPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -47,7 +48,11 @@ export default function PdfToWordPage() {
   const converterRef = useRef<HTMLDivElement>(null);
 
   const handleFileSelect = useCallback((incomingFile: File) => {
-    const validationError = validatePdfFile(incomingFile, 100);
+    if (incomingFile.size > MAX_FILE_SIZE_BYTES) {
+      toast.error(FILE_TOO_LARGE_MSG);
+      return;
+    }
+    const validationError = validatePdfFile(incomingFile, MAX_FILE_SIZE_MB);
     if (validationError) {
       toast.error(validationError);
       return;
@@ -64,16 +69,18 @@ export default function PdfToWordPage() {
   const handleConvert = useCallback(async () => {
     if (!file || isProcessing) return;
 
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setError(FILE_TOO_LARGE_MSG);
+      toast.error(FILE_TOO_LARGE_MSG);
+      return;
+    }
+
     setIsProcessing(true);
-    setStatusMessage('Uploading your PDF securely over HTTPS...');
+    setStatusMessage('Converting... large or scanned files can take a few minutes.');
     setError(null);
     setResult(null);
 
     try {
-      if (file.size > 25 * 1024 * 1024) {
-        throw new Error('Your PDF is larger than 25 MB. Please reduce file size or split it and try again.');
-      }
-
       const ocrResult = await convertPdfToDocx(file, ({ message }) => {
         setStatusMessage(message);
       });
@@ -265,7 +272,7 @@ export default function PdfToWordPage() {
                   title="Upload your file here"
                   subtitle="Drag and drop a PDF file to convert to editable Word (.docx)."
                   buttonText="Choose File"
-                  maxSizeMB={100}
+                  maxSizeMB={MAX_FILE_SIZE_MB}
                 />
                 <p className="text-[11px] text-center text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto mt-3">
                   Files are processed over secure HTTPS and deleted from our server immediately after processing. For Urdu/Arabic text recognition, image portions may be sent to Google&apos;s Gemini AI service for transcription.
@@ -331,7 +338,7 @@ export default function PdfToWordPage() {
                           </motion.p>
                         </AnimatePresence>
                         <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                          Rebuilding your layout page by page — please keep this tab open.
+                          Converting... large or scanned files can take a few minutes.
                         </p>
                       </div>
                     </div>

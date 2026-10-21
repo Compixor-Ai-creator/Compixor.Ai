@@ -32,6 +32,7 @@ import {
   convertImageToWord,
   OcrProgressEvent,
 } from '@/utils/imgToWordEngine';
+import { MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_MB, FILE_TOO_LARGE_MSG } from '@/lib/api-config';
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -83,8 +84,8 @@ export default function ImgToWordPage() {
       toast.error(`"${newFile.name}" is not a supported image format.`);
       return;
     }
-    if (newFile.size > 25 * 1024 * 1024) {
-      toast.error(`"${newFile.name}" exceeds the 25 MB limit.`);
+    if (newFile.size > MAX_FILE_SIZE_BYTES) {
+      toast.error(FILE_TOO_LARGE_MSG);
       return;
     }
     if (previewUrl) {
@@ -144,11 +145,18 @@ export default function ImgToWordPage() {
 
   const handleConvert = useCallback(async () => {
     if (!file || isProcessing) return;
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setError(FILE_TOO_LARGE_MSG);
+      toast.error(FILE_TOO_LARGE_MSG);
+      return;
+    }
+
     setIsProcessing(true);
     setResult(null);
     setError(null);
     setProgress(0);
-    setProgressLabel('Uploading image securely over HTTPS…');
+    setProgressLabel('Converting... large or scanned files can take a few minutes.');
 
     const onProgress = (evt: OcrProgressEvent) => {
       setProgress(Math.round(evt.progress * 100));
@@ -335,9 +343,9 @@ export default function ImgToWordPage() {
             <FileDropZone
               accept="image/*,.jpg,.jpeg,.png,.webp,.bmp,.gif,.tif,.tiff"
               onFileDrop={handleFileDrop}
-              maxSizeMB={25}
+              maxSizeMB={MAX_FILE_SIZE_MB}
               title="Drop your Image here"
-              subtitle="or click to browse from your device (Single image, max 25MB)"
+              subtitle="or click to browse from your device (Single image, max 30MB)"
             />
             <div className="flex items-center justify-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 pt-1">
               <Sparkles className="w-3.5 h-3.5 text-violet-500 shrink-0" />
@@ -492,7 +500,7 @@ export default function ImgToWordPage() {
                       <span>{progressLabel || 'AI is working: Scanning image layout & table grids...'}</span>
                     </div>
                     <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                      Ephemeral RAM buffer • Auto-purged after conversion
+                      Converting... large or scanned files can take a few minutes.
                     </p>
                   </div>
 

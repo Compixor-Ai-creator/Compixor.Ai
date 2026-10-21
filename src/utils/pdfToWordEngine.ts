@@ -11,6 +11,8 @@ import {
   validateDocxBlob,
   isDocxContentType,
   getFriendlyErrorMessage,
+  TIMEOUTS,
+  checkFileSize,
 } from '@/lib/api-config';
 
 export interface ConversionProgress {
@@ -27,15 +29,15 @@ export interface ConversionResult {
   fileName: string;
 }
 
-const PDF_CONVERSION_TIMEOUT_MS = 120_000; // 120 seconds
-
 const STAGES: { afterSec: number; percent: number; message: string }[] = [
-  { afterSec: 0, percent: 10, message: 'Uploading your PDF securely over HTTPS...' },
-  { afterSec: 3, percent: 28, message: 'Scanning pages, layout, and table grids...' },
-  { afterSec: 10, percent: 52, message: 'Reading typography with neural OCR & AI...' },
-  { afterSec: 25, percent: 75, message: 'Reconstructing paragraphs, headings, and tables...' },
-  { afterSec: 50, percent: 90, message: 'Packaging editable Word (.docx) document...' },
-  { afterSec: 85, percent: 95, message: 'Finalizing formatting — finishing up...' },
+  { afterSec: 0, percent: 8, message: 'Uploading your PDF securely over HTTPS...' },
+  { afterSec: 4, percent: 20, message: 'Converting... large or scanned files can take a few minutes.' },
+  { afterSec: 15, percent: 40, message: 'Scanning pages, layout, and table grids...' },
+  { afterSec: 45, percent: 65, message: 'Reading typography with neural OCR & AI...' },
+  { afterSec: 100, percent: 80, message: 'Reconstructing paragraphs, headings, and tables...' },
+  { afterSec: 180, percent: 90, message: 'Processing complex pages — please keep this tab open...' },
+  { afterSec: 300, percent: 95, message: 'Packaging editable Word (.docx) document...' },
+  { afterSec: 380, percent: 98, message: 'Finalizing formatting — almost ready...' },
 ];
 
 /**
@@ -45,6 +47,9 @@ export async function convertPdfToDocx(
   file: File,
   onProgress?: (p: ConversionProgress) => void,
 ): Promise<ConversionResult> {
+  // Pre-flight client-side size check before sending any request
+  checkFileSize(file);
+
   const t0 = Date.now();
   let currentStage = -1;
 
@@ -67,7 +72,7 @@ export async function convertPdfToDocx(
   const timer = typeof window !== 'undefined' ? window.setInterval(emitProgress, 1000) : null;
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), PDF_CONVERSION_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.pdfToDocxMs);
 
   try {
     const formData = new FormData();
