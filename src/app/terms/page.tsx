@@ -1,7 +1,23 @@
-'use client';
-
 import React from 'react';
-import { FileText, CheckCircle, AlertCircle, ShieldAlert } from 'lucide-react';
+import type { Metadata } from 'next';
+import { FileText } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+  description:
+    'Compixor AI Terms of Service. Review the terms, conditions, and acceptable use policies for our free document and media conversion tools.',
+  alternates: {
+    canonical: 'https://compixor-ai.cloud/terms',
+  },
+  openGraph: {
+    title: 'Terms of Service | Compixor AI',
+    description:
+      'Compixor AI Terms of Service. Review the terms, conditions, and acceptable use policies for our free document and media conversion tools.',
+    url: 'https://compixor-ai.cloud/terms',
+    siteName: 'Compixor AI',
+    type: 'website',
+  },
+};
 
 export default function TermsPage() {
   return (

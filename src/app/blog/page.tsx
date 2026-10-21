@@ -5,7 +5,7 @@ import { ChevronRight, Sparkles } from 'lucide-react';
 import BlogSection from '@/components/BlogSection';
 
 export const metadata: Metadata = {
-  title: 'Client-Side Guides & Tutorials | Compixor AI',
+  title: 'Client-Side Guides & Tutorials',
   description:
     'Comprehensive step-by-step guides on PDF compression, password protection, passport photo sizing, WhatsApp DP formatting, and QR code generation.',
   alternates: {

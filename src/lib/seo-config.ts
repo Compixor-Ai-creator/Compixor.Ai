@@ -1781,7 +1781,6 @@ export function getHomepageSchemas(): Record<string, any>[] {
     },
     description:
       'Free, privacy-first, 100% client-side toolkit with zero file uploads developed by Haroon Ali.',
-    sameAs: ['https://compixor.ai', BASE_URL],
   };
 
   const itemListSchema = {

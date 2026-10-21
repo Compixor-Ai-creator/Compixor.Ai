@@ -1,7 +1,23 @@
-'use client';
-
 import React from 'react';
+import type { Metadata } from 'next';
 import { ShieldCheck, Lock, EyeOff, ServerOff, CheckCircle } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description:
+    'Compixor AI Privacy Policy. Learn how our zero data leak architecture protects your files with in-memory local processing and no permanent file retention.',
+  alternates: {
+    canonical: 'https://compixor-ai.cloud/privacy',
+  },
+  openGraph: {
+    title: 'Privacy Policy | Compixor AI',
+    description:
+      'Compixor AI Privacy Policy. Learn how our zero data leak architecture protects your files with in-memory local processing and no permanent file retention.',
+    url: 'https://compixor-ai.cloud/privacy',
+    siteName: 'Compixor AI',
+    type: 'website',
+  },
+};
 
 export default function PrivacyPage() {
   return (
