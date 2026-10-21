@@ -41,12 +41,52 @@ const STAGES: { afterSec: number; percent: number; message: string }[] = [
 ];
 
 /**
+ * Lightweight page count inspector using PDF header/cross-reference markers.
+ */
+export async function inspectPdfText(
+  pdfBuffer: ArrayBuffer,
+  _samplePages = 3
+): Promise<{ pageCount: number; textChars: number }> {
+  try {
+    const bytes = new Uint8Array(pdfBuffer);
+    const raw = new TextDecoder('latin1').decode(bytes);
+    const matches = raw.match(/\/Type\s*\/Page\b/g);
+    const pageCount = matches && matches.length > 0 ? matches.length : 1;
+    return { pageCount, textChars: 0 };
+  } catch {
+    return { pageCount: 1, textChars: 0 };
+  }
+}
+
+/**
+ * Returns true so that all PDFs are processed by the backend engine.
+ */
+export async function isScannedPdf(_pdfBuffer: ArrayBuffer): Promise<boolean> {
+  return true;
+}
+
+/**
  * Converts a PDF file into an editable Word document via the Compixor backend API.
  */
 export async function convertPdfToDocx(
-  file: File,
-  onProgress?: (p: ConversionProgress) => void,
+  fileOrBuffer: File | ArrayBuffer,
+  originalFileNameOrProgress?: string | ((p: ConversionProgress) => void),
+  maybeProgress?: (p: ConversionProgress) => void,
 ): Promise<ConversionResult> {
+  let file: File;
+  let onProgress: ((p: ConversionProgress) => void) | undefined;
+
+  if (fileOrBuffer instanceof File) {
+    file = fileOrBuffer;
+    onProgress = typeof originalFileNameOrProgress === 'function' ? originalFileNameOrProgress : maybeProgress;
+  } else {
+    const fileName = typeof originalFileNameOrProgress === 'string' ? originalFileNameOrProgress : 'document.pdf';
+    file = new File([fileOrBuffer], fileName.endsWith('.pdf') ? fileName : `${fileName}.pdf`, {
+      type: 'application/pdf',
+    });
+    onProgress = maybeProgress;
+  }
+
   // Pre-flight client-side size check before sending any request
   checkFileSize(file);
 
@@ -75,17 +115,29 @@ export async function convertPdfToDocx(
   const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.pdfToDocxMs);
 
   try {
-    const formData = new FormData();
-    formData.append('files', file, file.name);
-    formData.append('language', 'eng+urd');
+    const buildFormData = () => {
+      const formData = new FormData();
+      formData.append('files', file, file.name);
+      formData.append('language', 'eng');
+      return formData;
+    };
 
     let response: Response;
     try {
       response = await fetch(API_ENDPOINTS.convertPdfToDocx, {
         method: 'POST',
-        body: formData,
+        body: buildFormData(),
         signal: controller.signal,
       });
+
+      // If server is on a backend version without dedicated /convert-pdf-to-docx, fall back to /convert-img-to-docx
+      if (response.status === 404) {
+        response = await fetch(API_ENDPOINTS.convertImgToDocx, {
+          method: 'POST',
+          body: buildFormData(),
+          signal: controller.signal,
+        });
+      }
     } catch (networkErr: unknown) {
       if (controller.signal.aborted) {
         throw new Error(getFriendlyErrorMessage(504, 'timeout'));
@@ -97,7 +149,7 @@ export async function convertPdfToDocx(
       let errorDetail = '';
       try {
         const errorJson = await response.json();
-        errorDetail = errorJson?.detail || '';
+        errorDetail = errorJson?.detail || errorJson?.error || '';
       } catch {
         errorDetail = response.statusText || '';
       }

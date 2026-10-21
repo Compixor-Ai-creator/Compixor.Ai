@@ -50,11 +50,11 @@ export interface ImgToWordOptions {
 }
 
 export const LANGUAGE_OPTIONS: { value: OcrLanguage; label: string }[] = [
-  { value: 'eng',     label: 'English (Default)' },
-  { value: 'eng+urd', label: 'English + Urdu (Bilingual)' },
-  { value: 'urd',     label: 'Urdu (اردو)' },
-  { value: 'eng+ara', label: 'English + Arabic (Bilingual)' },
-  { value: 'ara',     label: 'Arabic (العربية)' },
+  { value: 'eng',     label: 'English (Fast & Accurate)' },
+  { value: 'eng+urd', label: 'English + Urdu (Mixed)' },
+  { value: 'urd',     label: 'Urdu Only' },
+  { value: 'eng+ara', label: 'English + Arabic' },
+  { value: 'ara',     label: 'Arabic Only' },
   { value: 'fra',     label: 'French' },
   { value: 'deu',     label: 'German' },
   { value: 'spa',     label: 'Spanish' },
@@ -100,13 +100,19 @@ function startFakeProgress(
 
 async function callApi(
   files: File[],
-  language: OcrLanguage = 'eng+urd',
-  onProgress?: (e: OcrProgressEvent) => void,
+  options: ImgToWordOptions = {},
 ): Promise<ImgToWordResult> {
+  if (!files || files.length === 0) {
+    throw new Error('Please select at least one image file to convert.');
+  }
+
   // Pre-flight client-side size check before sending any request
   for (const file of files) {
     checkFileSize(file);
   }
+
+  const language: OcrLanguage = options.language ?? 'eng';
+  const onProgress = options.onProgress;
 
   const t0 = performance.now();
   const isLarge = files.length > 3 || files.reduce((s, f) => s + f.size, 0) > 5_000_000;
@@ -147,7 +153,7 @@ async function callApi(
       let detail = '';
       try {
         const json = await res.json();
-        detail = json?.detail || '';
+        detail = json?.detail || json?.error || '';
       } catch {
         detail = res.statusText || '';
       }
@@ -194,15 +200,12 @@ export async function convertImageToWord(
   file: File,
   options: ImgToWordOptions = {},
 ): Promise<ImgToWordResult> {
-  const { language = 'eng+urd', onProgress } = options;
-  return callApi([file], language, onProgress);
+  return callApi([file], options);
 }
 
 export async function convertImagesToWord(
   files: File[],
   options: ImgToWordOptions = {},
 ): Promise<ImgToWordResult> {
-  const { language = 'eng', onProgress } = options;
-  if (!files.length) throw new Error('No files provided.');
-  return callApi(files, language, onProgress);
+  return callApi(files, options);
 }
