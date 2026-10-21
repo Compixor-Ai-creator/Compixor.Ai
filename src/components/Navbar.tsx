@@ -26,128 +26,15 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/SocialIcons';
-
-export interface PdfToolItem {
-  href: string;
-  label: string;
-  subtitle: string;
-  icon: React.ComponentType<{ className?: string }>;
-  gradient: string;
-  badge?: string;
-}
-
-export interface PdfCategoryGroup {
-  category: string;
-  tools: PdfToolItem[];
-}
-
-export const pdfCategories: PdfCategoryGroup[] = [
-  {
-    category: 'Compress & Organize',
-    tools: [
-      {
-        href: '/tools/pdf-compressor',
-        label: 'PDF Compressor',
-        subtitle: 'Reduce file size without quality loss',
-        icon: FileDown,
-        gradient: 'from-rose-500 to-red-600',
-        badge: 'Popular',
-      },
-      {
-        href: '/tools/pdf-organizer',
-        label: 'PDF Merge & Split',
-        subtitle: 'Combine or split pages locally',
-        icon: Files,
-        gradient: 'from-blue-500 to-indigo-600',
-      },
-      {
-        href: '/tools/pdf-to-word',
-        label: 'PDF to Word',
-        subtitle: 'Convert to editable Word (.docx)',
-        icon: FileText,
-        gradient: 'from-blue-600 to-indigo-600',
-        badge: 'New',
-      },
-    ],
-  },
-  {
-    category: 'Watermark & Redaction',
-    tools: [
-      {
-        href: '/tools/add-watermark',
-        label: 'Add PDF Watermark',
-        subtitle: 'Stamp text or logo onto PDF',
-        icon: Stamp,
-        gradient: 'from-pink-500 to-rose-600',
-        badge: 'New',
-      },
-      {
-        href: '/tools/remove-watermark',
-        label: 'Remove PDF Watermark',
-        subtitle: 'Clean stamps and watermark layers',
-        icon: Eraser,
-        gradient: 'from-amber-500 to-orange-600',
-      },
-    ],
-  },
-  {
-    category: 'Security & Access',
-    tools: [
-      {
-        href: '/tools/protect-pdf',
-        label: 'Protect PDF',
-        subtitle: 'Add AES-256 password protection',
-        icon: Lock,
-        gradient: 'from-indigo-600 to-purple-600',
-        badge: 'AES-256',
-      },
-      {
-        href: '/tools/unlock-pdf',
-        label: 'Unlock PDF',
-        subtitle: 'Remove password and restrictions',
-        icon: Unlock,
-        gradient: 'from-emerald-500 to-teal-600',
-      },
-    ],
-  },
-];
-
-export const pdfToolsList: PdfToolItem[] = pdfCategories.flatMap((c) => c.tools);
-
-// ── Word Tools ─────────────────────────────────────────────────────────────────
-export const wordCategories: PdfCategoryGroup[] = [
-  {
-    category: 'Word & Document Processing',
-    tools: [
-      {
-        href: '/tools/word-compressor',
-        label: 'Word Compressor',
-        subtitle: 'Shrink DOCX size without losing layout',
-        icon: FileDown,
-        gradient: 'from-blue-500 to-indigo-600',
-        badge: 'Popular',
-      },
-      {
-        href: '/tools/pdf-to-word',
-        label: 'PDF to Word Converter',
-        subtitle: 'Convert PDF to editable .docx document',
-        icon: FileText,
-        gradient: 'from-violet-500 to-purple-600',
-        badge: 'New',
-      },
-      {
-        href: '/tools/img-to-word',
-        label: 'Image to Word Converter',
-        subtitle: 'OCR images to editable Word document',
-        icon: FileText,
-        gradient: 'from-violet-600 to-indigo-600',
-        badge: 'New',
-      },
-    ],
-  },
-];
-
-export const wordToolsList: PdfToolItem[] = wordCategories.flatMap((c) => c.tools);
+import {
+  tools,
+  pdfCategories,
+  pdfToolsList,
+  wordCategories,
+  wordToolsList,
+  type ToolItem as PdfToolItem,
+  type PdfCategoryGroup,
+} from '@/data/tools';
 
 const topLevelNavLinks = [
   { href: '/tools/passport-photo', label: 'Passport Photo Maker', icon: Camera },
@@ -301,7 +188,7 @@ export default function Navbar() {
                           </span>
                         </div>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300">
-                          6 Precision Tools
+                          {pdfToolsList.length} Precision Tools
                         </span>
                       </div>
 
@@ -317,7 +204,7 @@ export default function Navbar() {
                               <div className="space-y-1">
                                 {group.tools.map((item) => {
                                   const isCurrent = pathname === item.href;
-                                  const Icon = item.icon;
+                                  const Icon = item.navIcon || item.icon;
                                   return (
                                     <Link
                                       key={item.href}
@@ -368,7 +255,7 @@ export default function Navbar() {
                             <div className="space-y-1">
                               {pdfCategories[2].tools.map((item) => {
                                 const isCurrent = pathname === item.href;
-                                const Icon = item.icon;
+                                const Icon = item.navIcon || item.icon;
                                 return (
                                   <Link
                                     key={item.href}
@@ -433,7 +320,7 @@ export default function Navbar() {
                           onClick={() => setPdfDropdownOpen(false)}
                           className="font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1"
                         >
-                          View All 10 Tools &rarr;
+                          View All {tools.length} Tools &rarr;
                         </Link>
                       </div>
                     </div>
@@ -487,7 +374,7 @@ export default function Navbar() {
                       <div className="space-y-1">
                         {wordToolsList.map((item) => {
                           const isCurrent = pathname === item.href;
-                          const Icon = item.icon;
+                          const Icon = item.navIcon || item.icon;
                           return (
                             <Link
                               key={item.href}
@@ -648,7 +535,7 @@ export default function Navbar() {
                             <div className="space-y-1">
                               {group.tools.map((item) => {
                                 const isCurrent = pathname === item.href;
-                                const Icon = item.icon;
+                                const Icon = item.navIcon || item.icon;
                                 return (
                                   <Link
                                     key={item.href}
@@ -713,7 +600,7 @@ export default function Navbar() {
                       <div className="space-y-1 py-1">
                         {wordToolsList.map((item) => {
                           const isCurrent = pathname === item.href;
-                          const Icon = item.icon;
+                          const Icon = item.navIcon || item.icon;
                           return (
                             <Link
                               key={item.href}

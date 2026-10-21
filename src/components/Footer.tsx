@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Sparkles, ShieldCheck, Heart, ArrowUpRight, MessageSquarePlus } from 'lucide-react';
-import { seoConfig, ToolSlug } from '@/lib/seo-config';
+import { tools } from '@/data/tools';
 
 export default function Footer() {
   return (
@@ -37,13 +37,12 @@ export default function Footer() {
               Tools Suite
             </p>
             <ul className="space-y-2.5">
-              {(Object.keys(seoConfig) as ToolSlug[]).map((slug) => {
-                const tool = seoConfig[slug];
+              {tools.map((tool) => {
                 const Icon = tool.icon;
                 return (
-                  <li key={slug}>
+                  <li key={tool.href}>
                     <Link
-                      href={`/tools/${slug}`}
+                      href={tool.href}
                       className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors flex items-center gap-2 group"
                     >
                       <Icon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-brand-500 transition-colors shrink-0" aria-hidden="true" />
