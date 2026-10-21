@@ -494,7 +494,7 @@ export const blogsData: BlogItem[] = [
       },
       {
         title: "Protect PDF",
-        description: "Lock confidential PDF files, business proposals, and contracts with robust client-side AES-256 encryption.",
+        description: "Lock confidential PDF files, business proposals, and contracts with AES-256 encryption.",
         toolPath: "/tools/protect-pdf",
         icon: "Lock"
       }
@@ -876,7 +876,7 @@ export const blogsData: BlogItem[] = [
       items: [
         {
           boldText: "Set a password so unauthorized people cannot open the file",
-          descText: "Set an Open Password using client-side AES-256 bit encryption via Protect PDF.",
+          descText: "Set an Open Password using AES-256 encryption via Protect PDF.",
           toolName: "Protect PDF",
           toolPath: "/tools/protect-pdf"
         },
@@ -1084,7 +1084,7 @@ export const blogsData: BlogItem[] = [
       },
       {
         title: "Protect PDF",
-        description: "Lock documents with standard AES-256 encryption and passwords.",
+        description: "Lock documents with AES-256 encryption and passwords.",
         toolPath: "/tools/protect-pdf",
         icon: "Lock"
       }

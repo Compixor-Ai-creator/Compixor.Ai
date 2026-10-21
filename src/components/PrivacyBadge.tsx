@@ -14,7 +14,7 @@ export default function PrivacyBadge({ toolSlug, className = '' }: PrivacyBadgeP
   const isServer = tool?.processing === 'server';
 
   const message = isServer
-    ? 'Zero Data Leak. Files are processed over secure HTTPS and deleted immediately after processing.'
+    ? 'Files are processed over secure HTTPS and deleted immediately after processing. Never stored or shared.'
     : 'Zero Data Leak. Your files never leave your device. No upload, no signup.';
 
   return (

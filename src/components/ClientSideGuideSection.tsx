@@ -69,7 +69,7 @@ export default function ClientSideGuideSection() {
               Standard 256-Bit Cryptography &amp; Quality
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Our tools deliver uncompromising accuracy. PDF files are encrypted using standard 256-bit AES cryptographic algorithms, biometric passport portraits are verified against official government guidelines (35x45mm and 2x2 inch standards at 300 DPI), and vector QR codes are exported as infinite-resolution SVG vectors ready for commercial billboard printing.
+              Our tools deliver uncompromising accuracy. PDF files are encrypted using AES-256 encryption, biometric passport portraits are verified against official government guidelines (35x45mm and 2x2 inch standards at 300 DPI), and vector QR codes are exported as infinite-resolution SVG vectors ready for commercial billboard printing.
             </p>
           </div>
         </div>
