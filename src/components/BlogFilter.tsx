@@ -47,9 +47,9 @@ export default function BlogFilter() {
             <span>📚 Client-Side Knowledge Base</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
             Step-by-Step Guides &amp; Privacy Tutorials
-          </h2>
+          </h1>
 
           <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
             Learn how to convert, compress, protect, and optimize documents and media with maximum

@@ -489,9 +489,10 @@ export default function BlogPostPage({ params }: PageProps) {
                         <Image
                           src="/blog/pdf-compression-benchmark.png"
                           alt="PDF Compression Efficiency Benchmark: Text, Color Scan, B&W Scan, CAD Drawing"
-                          fill
+                          width={1200}
+                          height={675}
                           sizes="(max-width: 768px) 100vw, 768px"
-                          className="object-cover"
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
@@ -510,9 +511,10 @@ export default function BlogPostPage({ params }: PageProps) {
                         <Image
                           src="/blog/mrc-layer-segmentation.png"
                           alt="Mixed Raster Content (MRC) 3-Layer Decomposition Architecture"
-                          fill
+                          width={1200}
+                          height={675}
                           sizes="(max-width: 768px) 100vw, 768px"
-                          className="object-cover"
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
@@ -531,9 +533,10 @@ export default function BlogPostPage({ params }: PageProps) {
                         <Image
                           src="/blog/pdf-watermark-architecture.png"
                           alt="PDF Watermark Architecture Comparison: Text Watermark vs Image Watermark (ISO 32000 Standard)"
-                          fill
+                          width={1200}
+                          height={675}
                           sizes="(max-width: 768px) 100vw, 768px"
-                          className="object-contain sm:object-cover"
+                          className="w-full h-full object-contain sm:object-cover"
                         />
                       </div>
                       <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
@@ -552,9 +555,10 @@ export default function BlogPostPage({ params }: PageProps) {
                         <Image
                           src="/blog/pdf-security-workflow.jpg"
                           alt="PDF Security Architecture Visualized: Encrypt, Watermark, and Flatten (ISO 32000 Standard)"
-                          fill
+                          width={1200}
+                          height={675}
                           sizes="(max-width: 768px) 100vw, 768px"
-                          className="object-contain sm:object-cover"
+                          className="w-full h-full object-contain sm:object-cover"
                         />
                       </div>
                       <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
@@ -573,10 +577,11 @@ export default function BlogPostPage({ params }: PageProps) {
                         <Image
                           src="/blog/whatsapp-full-dp-banner.jpg"
                           alt="WhatsApp DP Comparison: Annoying Crop Window vs Uncropped Full DP with Ambient Frosted Blur"
-                          fill
+                          width={1200}
+                          height={675}
                           priority
                           sizes="(max-width: 768px) 100vw, 768px"
-                          className="object-cover"
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
@@ -595,9 +600,10 @@ export default function BlogPostPage({ params }: PageProps) {
                         <Image
                           src="/blog/aspect-ratio-comparison.jpg"
                           alt="Aspect Ratio Comparison: 9:16 Portrait Forced Square Crop vs 1:1 Expanded Canvas with Circular Safe Zone"
-                          fill
+                          width={1200}
+                          height={675}
                           sizes="(max-width: 768px) 100vw, 768px"
-                          className="object-cover"
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="flex items-center justify-between pt-3 px-2 text-xs text-zinc-400">
@@ -648,9 +654,10 @@ export default function BlogPostPage({ params }: PageProps) {
                             <Image
                               src={img.src}
                               alt={img.alt}
-                              fill
+                              width={140}
+                              height={140}
                               sizes="(max-width: 640px) 32vw, 140px"
-                              className="object-contain"
+                              className="w-full h-full object-contain"
                             />
                           </div>
                           <figcaption className="pt-2 text-[10px] sm:text-[11px] leading-snug text-zinc-600 dark:text-zinc-400 text-center font-medium">
