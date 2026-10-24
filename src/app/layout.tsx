@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import type { Metadata, Viewport } from 'next';
 import { Inter, Outfit } from 'next/font/google';
 import dynamic from 'next/dynamic';
@@ -125,6 +126,26 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Google tag (gtag.js) - Google Analytics */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-LKL3K1VKW6"
+        />
+        <Script
+          id="google-analytics-gtag"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-LKL3K1VKW6', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
+
         {/* Anti-FOUC Theme Initializer Script: runs synchronously before body render */}
         <script
           dangerouslySetInnerHTML={{
