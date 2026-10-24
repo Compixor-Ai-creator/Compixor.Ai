@@ -1,4 +1,4 @@
-﻿export interface BlogItem {
+export interface BlogItem {
   id: string;
   slug: string;
   title: string;
@@ -787,6 +787,7 @@ export const blogsData: BlogItem[] = [
   {
     id: "pdf-merge-split",
     slug: "how-to-merge-and-split-pdf-files-online",
+    thumbnail: "/blog/merge-and-split-pdf-hero.jpg",
     title: "How to Combine and Split PDF Pages Online for Free (Zero Uploads)",
     category: "PDF Tools",
     readTime: "6 min read",
@@ -873,6 +874,39 @@ export const blogsData: BlogItem[] = [
           ]
         },
         {
+          heading: "Page Range Syntax Cheat Sheet: Quick Syntax Guide for Fast Extraction",
+          body: "When extracting pages from massive legal records, books, or billing histories, manual clicking can be tedious. Compixor supports industry-standard shorthand range syntax in the extraction input box:",
+          table: {
+            headers: ["Range Syntax", "Target Pages Extracted", "Real-World Workflow Example"],
+            rows: [
+              ["1-5", "Pages 1 through 5 inclusively", "Extracting executive summaries, title sheets, and abstracts from lengthy dossiers."],
+              ["3, 8, 14", "Isolated distinct individual pages", "Pulling specific signed agreement pages or audit certificates from thick contracts."],
+              ["12-End", "From page 12 through the final document page", "Removing cover letters or boilerplate introductions from manuals and whitepapers."],
+              ["Odd Pages (1, 3, 5...)", "All odd numbered sheets in stream", "Splitting manual double-sided scans before interleaving duplex sheets."],
+              ["Even Pages (2, 4, 6...)", "All even numbered sheets in stream", "Handling reverse-side automatic document feeder scanner batches."]
+            ]
+          },
+          tableNote: "Compixor supports both interactive visual point-and-click page toggling and standard hyphenated range expressions."
+        },
+        {
+          heading: "The AcroForm Collision Trap: Merging Fillable PDF Forms Without Corrupting Data",
+          body: "A frequent and devastating failure mode when merging PDFs occurs with interactive fillable forms (AcroForms). When documents such as IRS W-9s, job application templates, or standardized corporate purchase orders are merged using basic tools, duplicate internal field identifiers (e.g., 'Company_Name' or 'Total_Price') collide. This causes form fields across different pages to mirror each other or erase user inputs entirely upon viewing:",
+          list: [
+            "AcroForm Namespace Clashes: Identical field dictionary keys across combined files bind together in the PDF catalog, corrupting independent records.",
+            "Client-Side Form Flattening: Compixor rasterizes or flattens interactive widget annotations into permanent static vector elements prior to merging, freezing filled values irrevocably in place.",
+            "Preserving Digital Signature Validity: Understand that merging inherently recalculates byte offsets, which invalidates cryptographic PKI signatures. Always flatten or apply organizational counter-signatures after assembling complete multi-part packages."
+          ]
+        },
+        {
+          heading: "Handling Scanned Documents, Mixed Orientations & Blank ADF Pages",
+          body: "Scanned paperwork presents distinct organizational headaches compared to digitally generated PDFs. High-speed automatic document feeder (ADF) scanners routinely introduce misaligned sheets, mixed page aspect ratios, and useless blank separator pages:",
+          list: [
+            "Individual 90-Degree Page Rotation: Easily rotate sideways landscape balance sheets embedded within portrait-oriented operational manuals without altering the remaining pages.",
+            "Instant Blank Page Pruning: Effortlessly locate and delete blank reverse pages generated during duplex scanner runs using the interactive preview grid.",
+            "Mixed Canvas Dimensions: Maintain unique page dimensions (such as US Letter, Legal, and A4) within the same merged document without forced scaling or margin distortion."
+          ]
+        },
+        {
           heading: "Security & Confidentiality: Why Browser-Local Processing Is Critical",
           body: "Traditional online PDF services require you to transmit sensitive documents—such as tax returns, bank statements, proprietary code snippets, and NDA-bound business proposals—over public networks to their backend processing clusters. Even when platforms claim to delete files after 60 minutes, your raw data remains vulnerable to server breaches, logging pipelines, and third-party cloud storage exploits during that window. Compixor processes your data entirely within your browser's private V8 JavaScript / WebAssembly runtime. No network request ever transmits your file bytes, making it 100% compliant with strict enterprise data protection mandates including HIPAA, GDPR, and SOC2 confidentiality policies."
         }
@@ -894,6 +928,18 @@ export const blogsData: BlogItem[] = [
         {
           question: "Can I merge password-protected PDFs?",
           answer: "If a PDF has an Open Password (user password required to view), you must first decrypt it using our Unlock PDF tool before merging. If it only has an Owner/Permissions password, modern browser engines can merge the pages directly."
+        },
+        {
+          question: "How do I combine fillable PDF forms without scrambling or overwriting input fields?",
+          answer: "When multiple forms share identical internal field names (such as 'First_Name' or 'Total_Due'), standard combiners link those fields together, causing them to mirror or overwrite each other. Compixor resolves this by flattening active form widgets into permanent static vector elements before merging, guaranteeing each page retains its unique filled values without data corruption."
+        },
+        {
+          question: "What happens to bookmarks, outlines, and tables of contents when merging PDFs?",
+          answer: "Standard cloud combiners often strip or corrupt the document outline hierarchy. Compixor's client-side parser reconstructs root catalog pointers, preserving original bookmark trees and maintaining chapter navigation across Adobe Acrobat, Chrome PDF Viewer, and mobile readers."
+        },
+        {
+          question: "How can I remove blank separator pages accidentally generated by office scanners?",
+          answer: "Office scanners equipped with automatic document feeders (ADF) frequently inject blank back-sheets during duplex scanning. In Compixor's visual grid, simply review the generated page thumbnails and click the trash icon on any empty or accidental page to remove it before merging or exporting."
         },
         {
           question: "Will merging or splitting PDFs cause text or image quality loss?",

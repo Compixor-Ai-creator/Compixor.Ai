@@ -113,6 +113,22 @@ export default function ArticleHeroBanner({
     );
   }
 
+  if (id === 'pdf-merge-split' || id === 'how-to-merge-and-split-pdf-files-online') {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
+        <Image
+          src="/blog/merge-and-split-pdf-hero.jpg"
+          alt={title}
+          width={1200}
+          height={675}
+          priority
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
   if (id === 'how-to-create-custom-qr-code-with-logo' || id === 'qr-generator') {
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
