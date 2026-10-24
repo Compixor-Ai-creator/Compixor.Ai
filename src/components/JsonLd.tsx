@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 export interface SoftwareAppSchemaProps {
   name: string;
@@ -171,9 +171,23 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     name: 'Compixor AI',
     url: 'https://compixor-ai.cloud',
-    logo: 'https://compixor-ai.cloud/icon.png',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://compixor-ai.cloud/icon.png',
+      width: 512,
+      height: 512,
+    },
     description:
       'Compixor AI provides 100% private, client-side web utilities for documents and media with zero cloud uploads.',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: 'support@compixor-ai.cloud',
+      availableLanguage: ['English'],
+    },
+    sameAs: [
+      'https://compixor-ai.cloud',
+    ],
   };
 
   return (

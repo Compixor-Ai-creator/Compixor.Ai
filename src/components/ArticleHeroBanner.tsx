@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -39,10 +39,11 @@ export default function ArticleHeroBanner({
         <Image
           src="/blog/passport-photo-maker-thumbnail.jpg"
           alt="Passport size photo maker online free: instant biometric transformation and 300 DPI sheet"
-          fill
+          width={1200}
+          height={675}
           priority
           sizes="(max-width: 1200px) 100vw, 1200px"
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
       </div>
     );
@@ -54,10 +55,11 @@ export default function ArticleHeroBanner({
         <Image
           src="/blog/password-protect-pdf-hero.jpg"
           alt={title}
-          fill
+          width={1200}
+          height={675}
           priority
           sizes="(max-width: 1200px) 100vw, 1200px"
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
       </div>
     );
@@ -69,10 +71,11 @@ export default function ArticleHeroBanner({
         <Image
           src="/blog/pdf-compressor-hero.png"
           alt={title}
-          fill
+          width={1200}
+          height={675}
           priority
           sizes="(max-width: 1200px) 100vw, 1200px"
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
       </div>
     );
@@ -84,10 +87,11 @@ export default function ArticleHeroBanner({
         <Image
           src="/blog/pdf-watermark-hero.jpg"
           alt={title}
-          fill
+          width={1200}
+          height={675}
           priority
           sizes="(max-width: 1200px) 100vw, 1200px"
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
       </div>
     );
@@ -99,10 +103,11 @@ export default function ArticleHeroBanner({
         <Image
           src="/blog/whatsapp-full-dp-maker-thumbnail.jpg"
           alt={title}
-          fill
+          width={1200}
+          height={675}
           priority
           sizes="(max-width: 1200px) 100vw, 1200px"
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
       </div>
     );
@@ -114,10 +119,11 @@ export default function ArticleHeroBanner({
         <Image
           src="/blog/custom-qr-code-with-logo-thumbnail.jpg"
           alt={title}
-          fill
+          width={1200}
+          height={675}
           priority
           sizes="(max-width: 1200px) 100vw, 1200px"
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
       </div>
     );

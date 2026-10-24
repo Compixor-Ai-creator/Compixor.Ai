@@ -2,7 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, Sparkles } from 'lucide-react';
-import BlogSection from '@/components/BlogSection';
+import BlogFilter from '@/components/BlogFilter';
 
 export const metadata: Metadata = {
   title: 'Client-Side Guides & Tutorials',
@@ -46,7 +46,7 @@ export default function BlogIndexPage() {
         </nav>
       </div>
 
-      <BlogSection />
+      <BlogFilter />
     </div>
   );
 }
