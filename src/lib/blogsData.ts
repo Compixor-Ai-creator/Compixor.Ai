@@ -910,42 +910,7 @@ export const blogsData: BlogItem[] = [
       ]
     }
   },
-  {
-    id: "pdf-merge-split",
-    slug: "how-to-merge-and-split-pdf-files-online",
-    title: "How to Combine and Split PDF Pages Online for Free",
-    category: "PDF Tools",
-    readTime: "3 min read",
-    targetKeyword: "merge and split pdf files online",
-    metaTitle: "How to Merge & Split PDF Files Online (Free & Private)",
-    metaDescription: "Combine multiple documents into one or extract specific pages from large PDFs with instant browser processing.",
-    excerpt: "Reorganize fragmented documents. Merge multiple PDFs in custom order or extract page ranges with zero data leaks.",
-    toolPath: "/tools/pdf-merge-split",
-    accentColor: "from-blue-500/20 to-cyan-500/20",
-    icon: "Layers",
-    content: {
-      intro: "Managing fragmented documents like monthly invoices, scanned book chapters, or multi-part contracts is frustrating. Desktop PDF editors charge expensive subscriptions just to organize pages. Compixor's Smart PDF Merge & Split lets you combine multiple files or isolate exact page ranges directly in your browser.",
-      sections: [
-        {
-          heading: "Two Powerful Modes in One Tool",
-          body: "Handle your document organization tasks effortlessly:",
-          list: [
-            "Merge PDFs: Combine separate resumes, portfolios, cover letters, and reports into a single unified file in any sequence.",
-            "Split & Extract: Extract specific pages (e.g., pages 1-3 and 8) from huge PDFs or delete blank sheets cleanly."
-          ]
-        }
-      ],
-      steps: [
-        { stepNumber: 1, title: "Upload Documents", description: "Upload one or multiple PDF files into the visual page organizer." },
-        { stepNumber: 2, title: "Arrange or Select Pages", description: "Drag and drop thumbnails to reorder pages, or enter custom split ranges." },
-        { stepNumber: 3, title: "Export Organized PDF", description: "Click Merge or Split to generate and download your clean document." }
-      ],
-      faqs: [
-        { question: "Can I merge pages from different documents together?", answer: "Yes, you can drag individual pages across different uploaded PDFs to build a custom sequence." },
-        { question: "Are my uploaded contracts uploaded to a server?", answer: "No. The document reassembly algorithm runs 100% inside your web browser." }
-      ]
-    }
-  },
+
   {
     id: "pdf-to-word",
     slug: "convert-pdf-to-editable-word-online",
@@ -1067,43 +1032,7 @@ export const blogsData: BlogItem[] = [
       ]
     }
   },
-  {
-    id: "pdf-to-word",
-    slug: "convert-pdf-to-editable-word-online",
-    title: "Convert PDF to Editable Word Online Free",
-    category: "Conversion",
-    readTime: "4 min read",
-    targetKeyword: "convert pdf to editable word online",
-    metaTitle: "Convert PDF to Editable Word Online Free – Keep Formatting",
-    metaDescription: "Convert read-only PDF files into fully editable Microsoft Word (DOCX) documents online. Preserves tables and layouts.",
-    excerpt: "Transform static PDF forms and contracts into editable DOCX files while retaining structural tables and typography.",
-    toolPath: "/tools/pdf-to-word",
-    accentColor: "from-indigo-500/20 to-blue-500/20",
-    icon: "FileText",
-    content: {
-      intro: "PDFs are great for viewing, but making changes to text, revising contractual clauses, or updating numbers is nearly impossible. Manually copying text into Microsoft Word ruins formatting and turns tables into broken paragraphs. Compixor's PDF to Word converter reconstructs your document into native editable OpenXML DOCX format.",
-      sections: [
-        {
-          heading: "Why Native Word Reconstruction Matters",
-          body: "Inferior converters dump text into isolated, floating text boxes that shift and overlap when edited. Compixor preserves natural flow:",
-          list: [
-            "Continuous Paragraphs: Text reflows naturally when you edit or insert lines.",
-            "Table Geometry Retention: Keeps rows, columns, and borders intact as editable Word tables.",
-            "Typographic Hierarchy: Preserves heading weights, font styles, and list bulleting."
-          ]
-        }
-      ],
-      steps: [
-        { stepNumber: 1, title: "Upload PDF", description: "Drop your PDF document into the converter box." },
-        { stepNumber: 2, title: "Convert Locally", description: "The parser translates PDF vectors and text streams into Word OpenXML syntax." },
-        { stepNumber: 3, title: "Download DOCX", description: "Open your new file in Microsoft Word, Google Docs, or LibreOffice to edit freely." }
-      ],
-      faqs: [
-        { question: "What if my PDF is a scanned image of text?", answer: "For scanned documents and photos, use our Image to Word (OCR) tool which includes character recognition." },
-        { question: "Is there a page count limit?", answer: "No. You can convert documents without paywalls or file counter restrictions." }
-      ]
-    }
-  },
+
   {
     id: "protect-pdf",
     slug: "password-protect-pdf-files-online",
@@ -1357,42 +1286,7 @@ export const blogsData: BlogItem[] = [
       ]
     }
   },
-  {
-    id: "unlock-pdf",
-    slug: "how-to-remove-password-from-pdf",
-    title: "How to Unlock and Remove Password from PDF Files",
-    category: "Privacy & Security",
-    readTime: "3 min read",
-    targetKeyword: "remove password from pdf online free",
-    metaTitle: "How to Unlock and Remove Password from PDF Files Online",
-    metaDescription: "Instantly remove known passwords and editing restrictions from PDF files securely in your browser.",
-    excerpt: "Permanently decrypt authorized PDF files to eliminate repetitive password prompts and remove printing limits.",
-    toolPath: "/tools/unlock-pdf",
-    accentColor: "from-emerald-500/20 to-green-500/20",
-    icon: "Unlock",
-    content: {
-      intro: "Typing passwords every single time you view a monthly utility bill, bank statement, or salary slip is repetitive and wastes time. Some authorized PDFs also block you from printing or highlighting text. Compixor's Unlock PDF tool permanently strips passwords and editing locks from files you have legitimate access to.",
-      sections: [
-        {
-          heading: "User Passwords vs. Permission Restrictions",
-          body: "PDF security is divided into two distinct restriction types:",
-          list: [
-            "Open Passwords: Blocks users from opening and viewing the file without the key.",
-            "Permission / Owner Locks: Restricts printing, selecting text, or extracting pages from an opened file."
-          ]
-        }
-      ],
-      steps: [
-        { stepNumber: 1, title: "Upload Locked File", description: "Drop your password-protected PDF into the Unlock tool." },
-        { stepNumber: 2, title: "Provide Password Once", description: "Type the known password to authenticate cryptographic decryption." },
-        { stepNumber: 3, title: "Save Unlocked PDF", description: "Download the decrypted file. It will now open freely on any device without passwords." }
-      ],
-      faqs: [
-        { question: "Can this tool bypass an unknown password?", answer: "No. Strong AES encryption cannot be cracked without the valid password. You must know the password to authorize permanent removal." },
-        { question: "Does unlocking harm the document formatting?", answer: "No. Only the security dictionary in the PDF header is removed; all document text and layout remain identical." }
-      ]
-    }
-  },
+
   {
     id: "add-pdf-watermark",
     slug: "how-to-add-watermark-to-pdf",
@@ -1650,43 +1544,7 @@ export const blogsData: BlogItem[] = [
       ]
     }
   },
-  {
-    id: "remove-pdf-watermark",
-    slug: "remove-watermark-from-pdf-cleanly",
-    title: "How to Remove Watermarks and Stamps from PDF Online",
-    category: "PDF Tools",
-    readTime: "4 min read",
-    targetKeyword: "remove watermark from pdf online",
-    metaTitle: "How to Remove Watermark and Stamps from PDF Online Free",
-    metaDescription: "Erase unwanted background watermarks, trial stamps, and logos from PDF pages cleanly with zero data leaks.",
-    excerpt: "Clean obtrusive draft stamps and trial graphics from PDF pages without destroying underlying body text.",
-    toolPath: "/tools/remove-pdf-watermark",
-    accentColor: "from-amber-500/20 to-orange-500/20",
-    icon: "Eraser",
-    content: {
-      intro: "Obsolete 'DRAFT' stamps, expired evaluation marks, or intrusive software trial banners make documents look unprofessional. Manually attempting to redact these markings often destroys the underlying paragraphs. Compixor's Remove Watermark tool intelligently purges background graphics while leaving the text intact.",
-      sections: [
-        {
-          heading: "How Layer Separation Cleans Documents",
-          body: "PDF files store visual assets across independent layers:",
-          list: [
-            "Artifact Identification: The tool scans repetitive vector and image layers across pages.",
-            "Selective Erasing: It strips the watermark layer without touching the main body text stream.",
-            "Clean Rendering: Exports a polished document with clean white backgrounds."
-          ]
-        }
-      ],
-      steps: [
-        { stepNumber: 1, title: "Select Watermarked PDF", description: "Upload your document into the Remove Watermark tool." },
-        { stepNumber: 2, title: "Target the Watermark", description: "Highlight or click the repetitive stamp or background layer to delete." },
-        { stepNumber: 3, title: "Export Clean Document", description: "Download your refreshed PDF with clear backgrounds and intact typography." }
-      ],
-      faqs: [
-        { question: "Will this erase words behind the watermark?", answer: "No. If the watermark resides on a separate background layer, the text in front of it remains unaffected." },
-        { question: "Are my documents saved on any server?", answer: "No. All cleaning occurs locally in browser memory, ensuring 100% confidentiality." }
-      ]
-    }
-  },
+
   {
     id: "word-compressor",
     slug: "how-to-compress-word-docx-files",
@@ -1783,43 +1641,7 @@ export const blogsData: BlogItem[] = [
       ]
     }
   },
-  {
-    id: "word-compressor",
-    slug: "how-to-compress-word-docx-files",
-    title: "How to Compress Word (DOCX) Documents Online Free",
-    category: "Conversion",
-    readTime: "3 min read",
-    targetKeyword: "compress word docx online free",
-    metaTitle: "How to Compress Word (DOCX) Documents Online Free",
-    metaDescription: "Reduce large Microsoft Word (.docx) file sizes without destroying image quality or text layouts.",
-    excerpt: "Shrink heavy DOCX documents by optimizing embedded high-res images for instant email sharing.",
-    toolPath: "/tools/word-compressor",
-    accentColor: "from-blue-600/20 to-indigo-600/20",
-    icon: "FileDown",
-    content: {
-      intro: "Adding screenshots, high-resolution product photos, and diagrams to Microsoft Word files makes them balloon past 50MB. Bloated DOCX documents cause Word to freeze, fail email attachment limits, and frustrate clients. Compixor's Smart Word Compressor optimizes internal media streams to dramatically cut file sizes without breaking layout alignment.",
-      sections: [
-        {
-          heading: "Why Microsoft Word Files Get So Heavy",
-          body: "A `.docx` file is an archive packaging XML text alongside raw media folders:",
-          list: [
-            "Raw Smartphone Images: Pasted photos frequently retain 12MP to 48MP raw resolutions.",
-            "Uncompressed PNG Illustrations: Unoptimized transparent graphics take up massive space.",
-            "Inefficient Native Compression: Word's built-in image compression often fails to compress all embedded streams."
-          ]
-        }
-      ],
-      steps: [
-        { stepNumber: 1, title: "Upload DOCX Document", description: "Drop your heavy Word file into the Smart Word Compressor." },
-        { stepNumber: 2, title: "Smart Media Optimization", description: "The tool downsamples internal image streams while preserving typography, tables, and XML tags." },
-        { stepNumber: 3, title: "Download Lightweight File", description: "Save your optimized document, now light enough to send via email instantly." }
-      ],
-      faqs: [
-        { question: "Will compressing DOCX break my fonts or margins?", answer: "No. The compressor only targets image assets inside the media folder; XML text formatting remains identical." },
-        { question: "Is the exported file compatible with Google Docs?", answer: "Yes, it conforms strictly to standard Office OpenXML specifications." }
-      ]
-    }
-  },
+
   {
     id: "img-to-word",
     slug: "extract-text-from-image-to-word",
@@ -1927,52 +1749,7 @@ export const blogsData: BlogItem[] = [
       ]
     }
   },
-  {
-    id: "image-to-word",
-    slug: "extract-text-from-image-to-word",
-    title: "How to Extract Editable Text from Scans & Screenshots (OCR)",
-    category: "Conversion",
-    readTime: "4 min read",
-    targetKeyword: "free image to word ocr converter online",
-    metaTitle: "How to Convert Image to Editable Word (DOCX) Online Free",
-    metaDescription: "Turn scanned pages, receipts, and screenshots into editable Word documents with browser-based OCR.",
-    excerpt: "Extract non-selectable text from images, receipts, and screenshots into editable Word documents with high-accuracy neural OCR.",
-    toolPath: "/tools/image-to-word",
-    accentColor: "from-teal-500/20 to-emerald-500/20",
-    icon: "ScanText",
-    content: {
-      intro: "Taking photos of printed book pages, invoices, paper contracts, or screenshots leaves you with non-selectable text. Manually retyping data character by character takes hours and introduces costly typos. Compixor's Image to Word Converter uses high-accuracy Optical Character Recognition (OCR) to convert pixels into fully editable Microsoft Word (.docx) files.",
-      sections: [
-        {
-          heading: "How Neural OCR Works",
-          body: "OCR algorithms analyze letter boundaries, line spacing, and shapes to build structured text:",
-          list: [
-            "Heading & Paragraph Detection: Distinguishes titles and bullet points from regular body text.",
-            "Table Reconstruction: Maps detected horizontal and vertical grid lines into native editable Word tables.",
-            "Secure Transmission: Processes data over encrypted HTTPS and deletes file buffers immediately after conversion."
-          ]
-        },
-        {
-          heading: "Tips for Near-100% OCR Accuracy",
-          body: "To get perfect results on your first attempt, follow these quick rules:",
-          list: [
-            "Use High-Contrast Images: Black text against clean white backgrounds delivers the highest recognition score.",
-            "Avoid Angles & Curvature: Keep camera lenses perpendicular to paper pages without curved page distortion.",
-            "Ensure Even Illumination: Prevent harsh shadows or camera flash glare from obscuring words."
-          ]
-        }
-      ],
-      steps: [
-        { stepNumber: 1, title: "Upload Image", description: "Drop your JPG, PNG, or WEBP image or screenshot into the tool." },
-        { stepNumber: 2, title: "Run Neural OCR", description: "Click Convert to let the neural OCR engine parse text and tables." },
-        { stepNumber: 3, title: "Download DOCX File", description: "Open the generated Word document to edit, format, and search the text." }
-      ],
-      faqs: [
-        { question: "Can I convert smartphone photos of receipts?", answer: "Yes. As long as the receipt text is in focus and legible, the engine will extract line items and numbers." },
-        { question: "Will my confidential documents be kept private?", answer: "Yes. Files are processed securely over encrypted HTTPS and deleted from our servers immediately after processing." }
-      ]
-    }
-  }
+
 ];
 
 export function getBlogBySlug(slug: string): BlogItem | undefined {
