@@ -28,6 +28,7 @@ import WhyTrustCompixor from '@/components/WhyTrustCompixor';
 import WhatUsersSay from '@/components/WhatUsersSay';
 import HeroCTA from '@/components/HeroCTA';
 import ClientSideGuideSection from '@/components/ClientSideGuideSection';
+import { ContainerTextFlip } from '@/components/ui/container-text-flip';
 import { tools } from '@/data/tools';
 
 const trustSignals = [
@@ -151,13 +152,21 @@ export default function HomePage() {
               </motion.div>
 
               {/* Headline (Instant paint at opacity 1 — NO element render delay for LCP) */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-display leading-[1.04] tracking-tight mb-6">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-display leading-[1.12] tracking-tight mb-6">
                 <span className="text-zinc-900 dark:text-white">Transform{' '}</span>
                 <span className="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent">
                   Your Files.
                 </span>
                 <br />
-                <span className="text-zinc-900 dark:text-white">Privacy First.</span>
+                <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 align-baseline">
+                  <span className="text-zinc-900 dark:text-white">Privacy</span>
+                  <ContainerTextFlip
+                    words={['First.', 'Guaranteed.', '100% Local.', 'Protected.']}
+                    interval={2800}
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black font-display text-brand-600 dark:text-brand-400 align-baseline px-4 py-1 rounded-2xl border border-brand-500/25 bg-brand-500/10 dark:bg-brand-500/15 shadow-sm shadow-brand-500/10"
+                    textClassName="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent"
+                  />
+                </span>
               </h1>
 
               {/* Subheadline (Instant paint at opacity 1 — ZERO delay for Google Lighthouse LCP) */}

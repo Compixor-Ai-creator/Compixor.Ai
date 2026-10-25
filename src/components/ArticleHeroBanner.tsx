@@ -25,6 +25,7 @@ interface ArticleHeroBannerProps {
   title: string;
   category: string;
   accentColor: string;
+  thumbnail?: string;
 }
 
 export default function ArticleHeroBanner({
@@ -32,7 +33,39 @@ export default function ArticleHeroBanner({
   title,
   category,
   accentColor,
+  thumbnail,
 }: ArticleHeroBannerProps) {
+  if (thumbnail) {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
+        <Image
+          src={thumbnail}
+          alt={title}
+          width={1200}
+          height={675}
+          priority
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  if (id === 'pdf-to-word' || id === 'convert-pdf-to-editable-word-online') {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
+        <Image
+          src="/blog/pdf-to-word-thumbnail.png"
+          alt={title}
+          width={1200}
+          height={675}
+          priority
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
   if (id === 'passport-size-photo-maker-online-free' || id === 'passport-photo-maker') {
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">

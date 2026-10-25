@@ -970,6 +970,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/pdf-to-word",
     accentColor: "from-indigo-500/20 to-blue-500/20",
     icon: "FileText",
+    thumbnail: "/blog/pdf-to-word-thumbnail.png",
     decisionBox: {
       title: "PDF to Word: Fast Workflow Navigator",
       items: [

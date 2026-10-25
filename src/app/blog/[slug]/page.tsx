@@ -409,6 +409,7 @@ export default function BlogPostPage({ params }: PageProps) {
             title={blog.title}
             category={blog.category}
             accentColor={blog.accentColor}
+            thumbnail={blog.thumbnail}
           />
         </header>
 
