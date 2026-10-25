@@ -15,8 +15,8 @@ import {
 export default function Footer() {
   const shareUrls = getShareUrls(SITE_URL, SITE_SHARE_TEXT);
   return (
-    <footer className="relative mt-24 border-t border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-surface-900/40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="relative mt-24 border-t border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-surface-900/40 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
           {/* Brand */}
           <div className="md:col-span-2 space-y-4">
@@ -237,6 +237,16 @@ export default function Footer() {
             Updated October 2026 · Zero Server Storage Policy
           </p>
         </div>
+      </div>
+
+      {/* Giant Architectural Studio Watermark Typography (DevStudio Style) */}
+      <div
+        aria-hidden="true"
+        className="relative w-full overflow-hidden select-none pointer-events-none border-t border-zinc-200/50 dark:border-zinc-800/50 pt-4 sm:pt-6 pb-2 sm:pb-4"
+      >
+        <p className="text-center font-black font-display text-[14vw] leading-none tracking-tighter text-zinc-900/[0.07] dark:text-white/[0.05] uppercase whitespace-nowrap">
+          COMPIXOR AI
+        </p>
       </div>
     </footer>
   );
