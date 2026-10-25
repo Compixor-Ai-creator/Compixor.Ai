@@ -66,6 +66,22 @@ export default function ArticleHeroBanner({
       </div>
     );
   }
+
+  if (id === 'unlock-pdf' || id === 'how-to-remove-password-from-pdf') {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
+        <Image
+          src="/blog/remove-password-from-pdf-thumbnail.jpg"
+          alt={title}
+          width={1200}
+          height={675}
+          priority
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
   if (id === 'passport-size-photo-maker-online-free' || id === 'passport-photo-maker') {
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">

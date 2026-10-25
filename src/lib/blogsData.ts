@@ -1240,6 +1240,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/unlock-pdf",
     accentColor: "from-emerald-500/20 to-teal-500/20",
     icon: "Unlock",
+    thumbnail: "/blog/remove-password-from-pdf-thumbnail.jpg",
     decisionBox: {
       title: "PDF Password Removal: 10-Second Decision Guide",
       items: [

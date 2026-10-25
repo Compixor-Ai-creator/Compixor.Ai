@@ -158,12 +158,13 @@ export default function HomePage() {
                   Your Files.
                 </span>
                 <br />
-                <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 align-baseline">
+                <span className="inline-flex flex-wrap items-baseline gap-x-3 gap-y-1">
                   <span className="text-zinc-900 dark:text-white">Privacy</span>
                   <ContainerTextFlip
-                    words={['First.', 'Guaranteed.', '100% Local.', 'Protected.']}
-                    interval={2800}
-                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black font-display text-brand-600 dark:text-brand-400 align-baseline px-4 py-1 rounded-2xl border border-brand-500/25 bg-brand-500/10 dark:bg-brand-500/15 shadow-sm shadow-brand-500/10"
+                    words={['First.', 'Guaranteed.', 'Protected.']}
+                    interval={3000}
+                    animationDuration={650}
+                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-display px-3 sm:px-4 py-0.5 rounded-2xl border border-brand-500/25 bg-gradient-to-r from-brand-500/10 via-purple-500/10 to-rose-500/10 dark:from-brand-500/15 dark:via-purple-500/15 dark:to-rose-500/15 shadow-sm shadow-brand-500/10"
                     textClassName="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent"
                   />
                 </span>
