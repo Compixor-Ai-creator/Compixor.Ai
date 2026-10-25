@@ -394,7 +394,7 @@ export default function BlogPostPage({ params }: PageProps) {
           </div>
 
           {/* Main H1 Title */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-zinc-900 dark:text-white leading-[1.12] tracking-tight mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-zinc-900 dark:text-white leading-[1.18] tracking-tight mb-6">
             {blog.title}
           </h1>
 
@@ -463,7 +463,7 @@ export default function BlogPostPage({ params }: PageProps) {
             {/* Structured Sections */}
             {blog.content.sections.map((section, idx) => (
               <section key={idx} id={`section-${idx}`} className="my-10 scroll-mt-24">
-                <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white tracking-tight mb-4 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-3">
+                <h2 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 dark:text-white tracking-tight mb-4 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-3">
                   {section.heading}
                 </h2>
 
@@ -845,7 +845,7 @@ export default function BlogPostPage({ params }: PageProps) {
                   <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
                     Quick Walkthrough
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white tracking-tight mt-1">
+                  <h2 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 dark:text-white tracking-tight mt-1">
                     How to Use in 3 Simple Steps
                   </h2>
                 </div>
@@ -880,7 +880,7 @@ export default function BlogPostPage({ params }: PageProps) {
                   <ShieldCheck className="w-3.5 h-3.5" />
                   100% In-Browser Privacy
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-3">
+                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 dark:text-white mb-3">
                   Experience {blog.title}
                 </h3>
                 <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">

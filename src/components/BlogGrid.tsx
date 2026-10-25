@@ -89,7 +89,7 @@ export default function BlogGrid({ blogs }: BlogGridProps) {
               )}
 
               {/* H3 Title */}
-              <h3 className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white mb-2.5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug">
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-zinc-900 dark:text-white mb-2.5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug">
                 <Link href={`/blog/${blog.slug}`}>{blog.title}</Link>
               </h3>
 

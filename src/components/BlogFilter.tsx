@@ -47,7 +47,7 @@ export default function BlogFilter() {
             <span>📚 Client-Side Knowledge Base</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-zinc-900 dark:text-white mb-4 tracking-tight">
             Step-by-Step Guides &amp; Privacy Tutorials
           </h1>
 

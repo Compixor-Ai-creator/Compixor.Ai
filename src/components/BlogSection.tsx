@@ -82,7 +82,7 @@ export default function BlogSection() {
             <span>📚 Client-Side Knowledge Base</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-zinc-900 dark:text-white mb-4 tracking-tight">
             Step-by-Step Guides &amp; Privacy Tutorials
           </h2>
 
@@ -178,7 +178,7 @@ export default function BlogSection() {
                       )}
 
                       {/* H3 Title */}
-                      <h3 className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white mb-2.5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug">
+                      <h3 className="text-lg sm:text-xl font-serif font-bold text-zinc-900 dark:text-white mb-2.5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug">
                         <Link href={`/blog/${blog.slug}`}>
                           {blog.title}
                         </Link>
