@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://compixor-ai.cloud/images/og-banner.png',
+        url: 'https://compixor-ai.cloud/images/og-banner-v2.png',
         width: 1200,
         height: 630,
         alt: 'Compixor AI Terms of Service',
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Terms of Service — Free Client-Side Utilities | Compixor AI',
     description:
       'Read Compixor AI terms of service. Learn about permitted use, zero-upload architecture, and full copyright ownership of your processed documents and assets.',
-    images: ['https://compixor-ai.cloud/images/og-banner.png'],
+    images: ['https://compixor-ai.cloud/images/og-banner-v2.png'],
   },
 };
 

@@ -182,10 +182,10 @@ export default function BlogPostPage({ params }: PageProps) {
     datePublished: blog.datePublished || '2026-10-18T00:00:00.000Z',
     dateModified: blog.dateModified || '2026-10-18T00:00:00.000Z',
     author: {
-      '@type': 'Organization',
-      name: 'Compixor AI Team',
+      '@type': 'Person',
+      name: 'Haroon Ali',
       url: 'https://compixor-ai.cloud/about',
-      jobTitle: 'AI Imaging & Document Compliance Team',
+      jobTitle: 'Founder & Lead Developer',
     },
     publisher: {
       '@type': 'Organization',
@@ -376,7 +376,12 @@ export default function BlogPostPage({ params }: PageProps) {
             </span>
             <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/80">
               <Calendar className="w-3.5 h-3.5" />
-              February 2026
+              {blog.datePublished
+                ? new Date(blog.datePublished).toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric',
+                  })
+                : 'October 2026'}
             </span>
             <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/80">
               <Clock className="w-3.5 h-3.5" />

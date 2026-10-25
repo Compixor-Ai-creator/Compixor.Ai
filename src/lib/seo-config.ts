@@ -1668,9 +1668,10 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
       url: BASE_URL,
     },
     publisher: {
-      '@type': 'Person',
-      name: AUTHOR_NAME,
+      '@type': 'Organization',
+      name: 'Compixor AI',
       url: BASE_URL,
+      logo: `${BASE_URL}/icon.png`,
     },
   };
 

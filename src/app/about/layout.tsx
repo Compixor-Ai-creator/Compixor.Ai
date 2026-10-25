@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { OrganizationJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
+import { BreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
   title: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://compixor-ai.cloud/images/og-banner.png',
+        url: 'https://compixor-ai.cloud/images/og-banner-v2.png',
         width: 1200,
         height: 630,
         alt: 'About Compixor AI',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     title: 'About Compixor AI — Private Client-Side Media & Document Toolkit',
     description:
       'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
-    images: ['https://compixor-ai.cloud/images/og-banner.png'],
+    images: ['https://compixor-ai.cloud/images/og-banner-v2.png'],
   },
 };
 
@@ -41,7 +41,6 @@ export default function AboutLayout({
 }) {
   return (
     <>
-      <OrganizationJsonLd />
       <BreadcrumbJsonLd
         items={[
           { name: 'Home', url: 'https://compixor-ai.cloud/' },

@@ -5,79 +5,7 @@ import PassportPhotoClient from './passport-photo-client';
 import { standardPresets } from './presets';
 import ToolSeoSection from '@/components/ToolSeoSection';
 
-const TITLE = 'Free Passport Size Photo Maker – NADRA 35x45mm';
-const DESCRIPTION =
-  'Free passport size photo maker online. AI removes the background, fits Pakistan NADRA 35x45 mm and 8 more countries, plus a print-ready A4 sheet.';
-const CANONICAL_URL = 'https://compixor-ai.cloud/tools/passport-photo';
-const OG_IMAGE = 'https://compixor-ai.cloud/images/og-banner.png';
-
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  alternates: {
-    canonical: CANONICAL_URL,
-  },
-  openGraph: {
-    title: TITLE,
-    description: DESCRIPTION,
-    type: 'website',
-    url: CANONICAL_URL,
-    images: [
-      {
-        url: OG_IMAGE,
-        width: 1200,
-        height: 630,
-        alt: 'Free Passport Size Photo Maker Online - Compixor AI',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: TITLE,
-    description: DESCRIPTION,
-    images: [OG_IMAGE],
-  },
-};
-
-const jsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'WebApplication',
-    name: 'Compixor AI Passport Photo Maker',
-    applicationCategory: 'MultimediaApplication',
-    operatingSystem: 'Any',
-    url: CANONICAL_URL,
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-    },
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: 'https://compixor-ai.cloud',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Tools',
-        item: 'https://compixor-ai.cloud/#tools',
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: 'Passport Photo Maker',
-        item: CANONICAL_URL,
-      },
-    ],
-  },
-];
+// Metadata and schemas handled authoritatively in layout.tsx via seoConfig
 
 export default function PassportPhotoPage() {
   const pakistanPreset = standardPresets.find((p) => p.id === 'pakistan-passport') || standardPresets[0];
@@ -85,13 +13,7 @@ export default function PassportPhotoPage() {
 
   return (
     <>
-      {jsonLd.map((schema, index) => (
-        <script
-          key={index}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
-      ))}
+{/* Schemas injected cleanly in layout.tsx */}
 
       {/* Interactive Passport Studio Editor */}
       <PassportPhotoClient />

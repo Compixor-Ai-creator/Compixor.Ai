@@ -3,6 +3,10 @@ import type { Metadata } from 'next';
 import ErrorStage from '@/components/ErrorStage';
 
 export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
   title: '404 - Page Not Found | COMPIXOR.AI',
   description: 'The requested page could not be found. Your local files and memory remain safe.',
   openGraph: {

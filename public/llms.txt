@@ -1,23 +1,24 @@
 # Compixor AI
 
-> Free, 100% client-side document and media processing toolkit with zero server uploads.
+> Free, 100% private document and media processing toolkit with zero permanent storage.
 
 ## Project Details
 - **Website**: https://compixor-ai.cloud/
 - **Founder & Lead Developer**: Haroon Ali
 - **Author**: Haroon Ali
-- **Architecture**: 100% Client-Side Processing (WebAssembly, HTML5 Canvas, Web Workers)
-- **Privacy Model**: All files and computations execute locally within the user's browser memory. Zero files are uploaded or stored on any remote servers.
+- **Architecture**: Privacy-First Hybrid (9 Client-Side WebAssembly / HTML5 Canvas tools + 3 Secure In-Memory HTTPS tools with zero retention)
+- **Privacy Model**: All files and computations for client-side utilities execute locally within the user's browser memory. Server-assisted conversion and background removal run securely in-memory over HTTPS and delete file buffers immediately upon completion. Zero files are stored permanently on any remote servers.
 
-## Tools Suite
-- **PDF Compressor**: In-browser vector stream optimization, custom size reduction to 100KB, 200KB, 500KB, 1MB. (https://compixor-ai.cloud/tools/pdf-compressor)
-- **PDF Merge & Split**: Visual drag-and-drop page organizer, combine multiple PDFs or split page ranges. (https://compixor-ai.cloud/tools/pdf-organizer)
-- **Add Watermark**: Stamp custom vector text or transparent logo images onto PDF documents with opacity and rotation control. (https://compixor-ai.cloud/tools/add-watermark)
-- **Remove Watermark**: Dual-engine digital stream filtering and interactive visual bounding box stamp eraser. (https://compixor-ai.cloud/tools/remove-watermark)
-- **Protect PDF**: Client-side AES-256 password encryption and granular editing/printing restriction controls. (https://compixor-ai.cloud/tools/protect-pdf)
-- **Unlock PDF**: In-browser decryption to remove passwords and permission restrictions from owned PDFs. (https://compixor-ai.cloud/tools/unlock-pdf)
-- **Word Compressor**: Re-compresses embedded images in .docx archives while keeping XML layouts and tables intact. (https://compixor-ai.cloud/tools/word-compressor)
-- **Passport Photo Maker**: AI-driven portrait background matting, biometric dimension presets (NADRA 35x45mm, US Visa 2x2"), 300 DPI 4x6 printable sheets. (https://compixor-ai.cloud/tools/passport-photo)
+## Tools Suite (12 Tools)
+- **PDF Compressor**: In-browser vector stream optimization, custom size reduction to 100KB, 200KB, 500KB, 1MB with native text preservation. (https://compixor-ai.cloud/tools/pdf-compressor)
+- **PDF Merge & Split**: Visual drag-and-drop page organizer, combine multiple PDFs or split custom page ranges with zero watermark. (https://compixor-ai.cloud/tools/pdf-organizer)
+- **Add Watermark**: Stamp custom vector text or transparent logo images onto PDF documents with opacity, rotation, and page range controls. (https://compixor-ai.cloud/tools/add-watermark)
+- **Remove Watermark**: Dual-engine digital stream filtering and interactive visual bounding box stamp eraser for clean PDF output. (https://compixor-ai.cloud/tools/remove-watermark)
+- **Protect PDF**: Client-side AES-256 password encryption and granular restriction controls for printing, editing, and copying. (https://compixor-ai.cloud/tools/protect-pdf)
+- **Unlock PDF**: In-browser decryption to remove passwords and permission restrictions from owned PDFs with zero uploads. (https://compixor-ai.cloud/tools/unlock-pdf)
+- **Word Compressor**: Re-compresses embedded images in .docx archives while keeping XML layouts, tables, and styles intact. (https://compixor-ai.cloud/tools/word-compressor)
+- **Passport Photo Maker**: AI-driven portrait background removal, official biometric dimension presets (Pakistan NADRA 35x45mm, US Visa 2x2", UK/Schengen), and 300 DPI printable sheets on A4, A5 (6 photos), and A6 (2 photos). (https://compixor-ai.cloud/tools/passport-photo)
 - **Full DP Maker**: 1:1 square canvas creator for WhatsApp and Instagram with HD blurred backgrounds and zero forced cropping. (https://compixor-ai.cloud/tools/full-dp-maker)
-- **QR Code Generator**: Permanent static QR code maker for URLs, WiFi, and WhatsApp with vector SVG and 4K PNG exports. (https://compixor-ai.cloud/tools/qr-generator)
-- **PDF to Word Converter**: Dual-engine client-side converter with No-OCR mode for digital PDFs and in-browser OCR for scanned files. (https://compixor-ai.cloud/tools/pdf-to-word)
+- **QR Code Generator**: Permanent static QR code maker for URLs, WiFi credentials, WhatsApp links, and vCards with vector SVG and 4K PNG exports. (https://compixor-ai.cloud/tools/qr-generator)
+- **PDF to Word Converter**: High-fidelity conversion from digital or scanned PDFs to editable Microsoft Word (.docx) documents with OCR for English, Urdu, and Arabic. Zero file storage. (https://compixor-ai.cloud/tools/pdf-to-word)
+- **Image to Word Converter**: Convert JPG, PNG, WEBP, or scanned image files into fully editable Word (.docx) documents using neural OCR across 10+ languages with immediate buffer deletion. (https://compixor-ai.cloud/tools/img-to-word)

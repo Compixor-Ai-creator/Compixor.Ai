@@ -202,6 +202,87 @@ const nextConfig = {
         destination: '/tools/img-to-word',
         permanent: true,
       },
+      // Tools root and alias shortcuts to prevent 404s
+      {
+        source: '/tools',
+        destination: '/#tools',
+        permanent: true,
+      },
+      {
+        source: '/tools/qr',
+        destination: '/tools/qr-generator',
+        permanent: true,
+      },
+      {
+        source: '/tools/full-dp',
+        destination: '/tools/full-dp-maker',
+        permanent: true,
+      },
+      {
+        source: '/tools/pdf-to-docx',
+        destination: '/tools/pdf-to-word',
+        permanent: true,
+      },
+      {
+        source: '/tools/img-to-docx',
+        destination: '/tools/img-to-word',
+        permanent: true,
+      },
+      {
+        source: '/tools/word',
+        destination: '/tools/word-compressor',
+        permanent: true,
+      },
+      {
+        source: '/word-compressor',
+        destination: '/tools/word-compressor',
+        permanent: true,
+      },
+      {
+        source: '/passport-photo',
+        destination: '/tools/passport-photo',
+        permanent: true,
+      },
+      {
+        source: '/qr-generator',
+        destination: '/tools/qr-generator',
+        permanent: true,
+      },
+      {
+        source: '/full-dp-maker',
+        destination: '/tools/full-dp-maker',
+        permanent: true,
+      },
+      {
+        source: '/protect-pdf',
+        destination: '/tools/protect-pdf',
+        permanent: true,
+      },
+      {
+        source: '/unlock-pdf',
+        destination: '/tools/unlock-pdf',
+        permanent: true,
+      },
+      {
+        source: '/add-watermark',
+        destination: '/tools/add-watermark',
+        permanent: true,
+      },
+      {
+        source: '/remove-watermark',
+        destination: '/tools/remove-watermark',
+        permanent: true,
+      },
+      {
+        source: '/pdf-to-word',
+        destination: '/tools/pdf-to-word',
+        permanent: true,
+      },
+      {
+        source: '/img-to-word',
+        destination: '/tools/img-to-word',
+        permanent: true,
+      },
     ];
   },
 

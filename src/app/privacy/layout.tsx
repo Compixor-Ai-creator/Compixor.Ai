@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://compixor-ai.cloud/images/og-banner.png',
+        url: 'https://compixor-ai.cloud/images/og-banner-v2.png',
         width: 1200,
         height: 630,
         alt: 'Compixor AI Privacy Policy',
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Privacy Policy — Client-Side Local Processing Architecture | Compixor AI',
     description:
       'Read Compixor AI privacy policy. Discover our zero-server architecture: files are processed entirely in your browser with zero uploads and zero data retention.',
-    images: ['https://compixor-ai.cloud/images/og-banner.png'],
+    images: ['https://compixor-ai.cloud/images/og-banner-v2.png'],
   },
 };
 
