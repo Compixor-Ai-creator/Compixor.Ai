@@ -858,46 +858,56 @@ export default function BlogPostPage({ params }: PageProps) {
                   </div>
                 )}
 
-                {/* Table Explanatory Note with External Citations */}
+                {/* Table Explanatory Note */}
                 {section.tableNote && (
-                  <div className="mt-3 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 dark:text-amber-200 text-xs leading-relaxed not-prose">
-                    <p className="font-semibold mb-1 flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
-                      <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                      Official Consular Verification &amp; Standards
-                    </p>
-                    <p className="m-0 text-zinc-700 dark:text-zinc-300">
-                      Specifications can change periodically. Always verify your portrait against the latest consular directives at official government portals:{' '}
-                      <a
-                        href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline font-bold text-amber-800 dark:text-amber-300 hover:text-brand-600 dark:hover:text-brand-400 inline-flex items-center gap-0.5"
-                      >
-                        US State Dept Photos
-                        <ExternalLink className="w-3 h-3 inline" />
-                      </a>
-                      {', '}
-                      <a
-                        href="https://www.gov.uk/photos-for-passports"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline font-bold text-amber-800 dark:text-amber-300 hover:text-brand-600 dark:hover:text-brand-400 inline-flex items-center gap-0.5"
-                      >
-                        UK HMPO Rules
-                        <ExternalLink className="w-3 h-3 inline" />
-                      </a>
-                      {', and '}
-                      <a
-                        href="https://id.nadra.gov.pk/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline font-bold text-amber-800 dark:text-amber-300 hover:text-brand-600 dark:hover:text-brand-400 inline-flex items-center gap-0.5"
-                      >
-                        Pakistan NADRA Pak-ID
-                        <ExternalLink className="w-3 h-3 inline" />
-                      </a>
-                      .
-                    </p>
+                  <div className="mt-3 p-3.5 rounded-xl bg-zinc-100/80 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 text-xs leading-relaxed not-prose">
+                    {blog.slug === 'passport-size-photo-maker-online-free' ? (
+                      <div className="text-amber-900 dark:text-amber-200">
+                        <p className="font-semibold mb-1 flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
+                          <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                          Official Consular Verification &amp; Standards
+                        </p>
+                        <p className="m-0 text-zinc-700 dark:text-zinc-300">
+                          {section.tableNote}{' '}
+                          Specifications can change periodically. Always verify your portrait against the latest consular directives at official government portals:{' '}
+                          <a
+                            href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline font-bold text-amber-800 dark:text-amber-300 hover:text-brand-600 dark:hover:text-brand-400 inline-flex items-center gap-0.5"
+                          >
+                            US State Dept Photos
+                            <ExternalLink className="w-3 h-3 inline" />
+                          </a>
+                          {', '}
+                          <a
+                            href="https://www.gov.uk/photos-for-passports"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline font-bold text-amber-800 dark:text-amber-300 hover:text-brand-600 dark:hover:text-brand-400 inline-flex items-center gap-0.5"
+                          >
+                            UK HMPO Rules
+                            <ExternalLink className="w-3 h-3 inline" />
+                          </a>
+                          {', and '}
+                          <a
+                            href="https://id.nadra.gov.pk/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline font-bold text-amber-800 dark:text-amber-300 hover:text-brand-600 dark:hover:text-brand-400 inline-flex items-center gap-0.5"
+                          >
+                            Pakistan NADRA Pak-ID
+                            <ExternalLink className="w-3 h-3 inline" />
+                          </a>
+                          .
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="m-0 text-zinc-600 dark:text-zinc-400 flex items-start gap-2">
+                        <span className="font-bold text-zinc-800 dark:text-zinc-200 shrink-0">Note:</span>
+                        <span>{section.tableNote}</span>
+                      </p>
+                    )}
                   </div>
                 )}
 
@@ -1034,12 +1044,25 @@ export default function BlogPostPage({ params }: PageProps) {
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
-                  <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    ICAO 9303 Compliant
-                  </span>
-                  <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                    300 DPI Verified
-                  </span>
+                  {blog.slug === 'passport-size-photo-maker-online-free' ? (
+                    <>
+                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        ICAO 9303 Compliant
+                      </span>
+                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                        300 DPI Verified
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        Zero Server Uploads
+                      </span>
+                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                        100% Free &amp; Unlimited
+                      </span>
+                    </>
+                  )}
                   <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
                     100% In-Browser Privacy
                   </span>
@@ -1048,7 +1071,9 @@ export default function BlogPostPage({ params }: PageProps) {
 
               <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-zinc-600 dark:text-zinc-400">
                 <p className="m-0">
-                  Standards strictly mapped against ISO/IEC 19794-5 &amp; ICAO Doc 9303 consular biometric criteria.
+                  {blog.slug === 'passport-size-photo-maker-online-free'
+                    ? 'Standards strictly mapped against ISO/IEC 19794-5 & ICAO Doc 9303 consular biometric criteria.'
+                    : 'Engineered for privacy and performance. All file buffers are processed in client-side RAM and never stored.'}
                 </p>
                 <div className="flex items-center gap-3 shrink-0">
                   <span className="font-semibold text-zinc-800 dark:text-zinc-200">Share this guide:</span>
