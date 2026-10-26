@@ -101,6 +101,7 @@ MIN_SHORT_LINE_CHARS = int(os.getenv("MIN_SHORT_LINE_CHARS", "16"))
 IMAGE_FALLBACK_CONF = float(os.getenv("IMAGE_FALLBACK_CONF", "48.0"))
 
 URDU_FONT = os.getenv("URDU_FONT", "Jameel Noori Nastaleeq")
+ILLEGAL_XML_CHARS_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 ARABIC_RE = re.compile(r"[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]")
 ARABIC_LETTER_RE = re.compile(r"[\u0621-\u064A\u0671-\u06D3\u06D5-\u06FF]")
 LIST_START_RE = re.compile(
@@ -616,6 +617,10 @@ def normalize_math_text(text: str) -> str:
     # Square root symbols
     t = re.sub(r"\b([sS]qrt|SQRT)\s*\(", "√(", t)
     t = re.sub(r"\b([sS]qrt|SQRT)\s*([0-9a-zA-Z])", r"√\2", t)
+    t = re.sub(r"\\/([0-9a-zA-Z(])", r"√\1", t)
+    t = re.sub(r"(?<=[=+\-×÷\s])V(?=[0-9(])", "√", t)
+    # Degrees: 30^o, 45^0 -> 30°, 45°
+    t = re.sub(r"(?<=\d)\s*\^[oO0]\b", "°", t)
     # Nice common fractions
     t = re.sub(r"\b1/2\b", "½", t)
     t = re.sub(r"\b1/4\b", "¼", t)
@@ -1026,7 +1031,7 @@ def fill_table(tb: TableData, bgr: np.ndarray, ocr: OCR, dpi: float, ocr_bgr: Op
 
             alnum = len(re.findall(r"\w", r["text"]))
             # Only convert to image if crop is genuinely a photo/face/barcode, NEVER for textual or math content
-            if is_photo(crop) and alnum < 2 and ink_ratio(crop) > 0.04 and crop.shape[0] > 35:
+            if is_photo(crop) and alnum < 2 and ink_ratio(crop) > 0.04 and crop.shape[0] > 35 and not re.search(r"[0-9+\-×÷±=()\[\]/^√≤≥≠]", r["text"]):
                 save_debug_crop("cell_img_fallback", crop, f"conf_{int(r['conf'])}")
                 cell.img = crop.copy()
                 return
@@ -1145,14 +1150,14 @@ def find_pictures(masked_gray: np.ndarray, bgr: np.ndarray) -> List[Tuple[int, i
         add_box((max(0, x - p), max(0, y - p), min(W, x + w + p), min(H, y + h + p)))
 
     # 3. Smart College / School Crests & Logos in top header area (exam paper headers)
-    top_h = int(H * 0.30)
+    top_h = int(H * 0.35)
     _, bw = cv2.threshold(norm[:top_h, :], 190, 255, cv2.THRESH_BINARY_INV)
     logo_blob = cv2.morphologyEx(bw, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
     l_cnts, _ = cv2.findContours(logo_blob, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     min_logo_dim = max(35, int(W * 0.03))
     for c in l_cnts:
         x, y, w, h = cv2.boundingRect(c)
-        if not (min_logo_dim <= w <= int(W * 0.38) and min_logo_dim <= h <= int(H * 0.24)):
+        if not (min_logo_dim <= w <= int(W * 0.42) and min_logo_dim <= h <= int(H * 0.28)):
             continue
         aspect = w / float(h)
         # Accepts circular seals, shield crests, and horizontal institution emblem banners
@@ -1166,6 +1171,19 @@ def find_pictures(masked_gray: np.ndarray, bgr: np.ndarray) -> List[Tuple[int, i
             hull_area = cv2.contourArea(hull)
             solidity = float(area / hull_area) if hull_area > 0 else 0.0
             if solidity >= 0.15 or ink_density >= 0.18:
+                crop_gray = masked_gray[y:y + h, x:x + w]
+                thick_ink = cv2.morphologyEx(crop_bw, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
+                thick_ratio = float((thick_ink > 0).sum()) / max(1, float((crop_bw > 0).sum()))
+                gray_std = float(crop_gray.std())
+                is_graphic_logo = (thick_ratio >= 0.14 or gray_std >= 32 or (solidity >= 0.35 and 0.55 <= aspect <= 1.8))
+                if not is_graphic_logo:
+                    try:
+                        sample_txt = pytesseract.image_to_string(crop_gray, config="--psm 6 -l eng").strip()
+                        clean_words = [w for w in sample_txt.split() if len(w) >= 3 and w.isalpha()]
+                        if len(clean_words) >= 3 and thick_ratio < 0.10:
+                            continue  # Pure text heading, keep for editable text OCR
+                    except Exception:
+                        pass
                 p = 4
                 add_box((max(0, x - p), max(0, y - p), min(W, x + w + p), min(H, y + h + p)))
 
@@ -1404,7 +1422,7 @@ def page_paragraphs(masked: np.ndarray, bgr: np.ndarray, ocr: OCR, dpi: float, o
             if ocr.urdu and (is_garbled_urdu(text, conf) or right_side_lowconf) and crop.size and has_ink(crop) and not re.search(r"[0-9+\-×÷±=()\[\]/^√≤≥≠]", text):
                 save_debug_crop("para_img_fallback", crop, f"c{int(conf)}_{text[:15]}")
                 return ("image", "", crop.copy())
-        elif conf < 25 and crop.size and is_photo(crop):
+        elif conf < 25 and crop.size and is_photo(crop) and not re.search(r"[A-Za-z0-9+\-×÷±=()\[\]/^√≤≥≠]", text):
             save_debug_crop("para_lowconf_img", crop, f"c{int(conf)}")
             return ("image", "", crop.copy())
         return ("text", normalize_math_text(_clean_ocr_typos(text)), None)
@@ -1502,7 +1520,8 @@ def write_par(par, text: str, pt: float, bold: bool, rtl: bool, align: str) -> N
         par.alignment = WD_ALIGN_PARAGRAPH.CENTER
     elif align == "right" and not rtl:
         par.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    run = par.add_run(text)
+    clean_text = ILLEGAL_XML_CHARS_RE.sub("", text)
+    run = par.add_run(clean_text)
     run.font.size = Pt(pt)
     if bold:
         run.bold = True

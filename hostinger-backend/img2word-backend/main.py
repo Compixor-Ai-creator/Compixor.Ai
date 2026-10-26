@@ -53,6 +53,36 @@ OCR_EXECUTOR = ThreadPoolExecutor(max_workers=2)
 ILLEGAL_XML_CHARS_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 RTL_CHARS_RE = re.compile(r"[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]")
 
+_SUP = {"0": "\u2070", "1": "\u00B9", "2": "\u00B2", "3": "\u00B3", "4": "\u2074", "5": "\u2075", "6": "\u2076", "7": "\u2077", "8": "\u2078", "9": "\u2079",
+        "+": "\u207A", "-": "\u207B", "=": "\u207C", "(": "\u207D", ")": "\u207E", "n": "\u207F", "i": "\u2071"}
+_SUB = {"0": "\u2080", "1": "\u2081", "2": "\u2082", "3": "\u2083", "4": "\u2084", "5": "\u2085", "6": "\u2086", "7": "\u2087", "8": "\u2088", "9": "\u2089",
+        "+": "\u208A", "-": "\u208B", "=": "\u208C", "(": "\u208D", ")": "\u208E",
+        "a": "\u2090", "e": "\u2091", "o": "\u2092", "x": "\u2093", "i": "\u1D62", "j": "\u2C7C", "n": "\u2099", "m": "\u2098"}
+
+
+def normalize_math_text(text: str) -> str:
+    """Transforms ASCII/OCR math representations into clean, readable Unicode math symbols."""
+    if not text:
+        return ""
+    t = text
+    t = re.sub(r"\^([0-9n+\-])", lambda m: _SUP.get(m.group(1), m.group(1)), t)
+    t = re.sub(r"\^\{([0-9n+\-]+)\}", lambda m: "".join(_SUP.get(c, c) for c in m.group(1)), t)
+    t = re.sub(r"(?<=[A-Za-z0-9\)])_([0-9a-z])", lambda m: _SUB.get(m.group(1), m.group(1)), t)
+    t = re.sub(r"_\{([0-9a-z]+)\}", lambda m: "".join(_SUB.get(c, c) for c in m.group(1)), t)
+    t = re.sub(r"\+\-|\+/-\b", "\u00B1", t)
+    t = re.sub(r"(?<=\d)\s*[xX*]\s*(?=\d)", " \u00D7 ", t)
+    t = re.sub(r"\s*<=\s*", " \u2264 ", t)
+    t = re.sub(r"\s*>=\s*", " \u2265 ", t)
+    t = re.sub(r"\s*!=\s*", " \u2260 ", t)
+    t = re.sub(r"\b([sS]qrt|SQRT)\s*\(", "\u221A(", t)
+    t = re.sub(r"\b([sS]qrt|SQRT)\s*([0-9a-zA-Z])", r"\u221A\2", t)
+    t = re.sub(r"\b1/2\b", "\u00BD", t)
+    t = re.sub(r"\b1/4\b", "\u00BC", t)
+    t = re.sub(r"\b3/4\b", "\u00BE", t)
+    t = re.sub(r"\b1/3\b", "\u2153", t)
+    t = re.sub(r"\b2/3\b", "\u2154", t)
+    return t
+
 app = FastAPI(
     title="Compixor AI - Unified Image & PDF to Word Engine",
     version=ENGINE_VERSION,
@@ -155,7 +185,8 @@ def extract_ocr_blocks_from_image(img_bytes: bytes, language: str = "eng") -> Tu
     for i in range(n_items):
         raw_word = sanitize_xml_text(data["text"][i])
         conf = int(float(data["conf"][i])) if str(data["conf"][i]).lstrip("-").isdigit() else -1
-        if not raw_word or conf < 25:
+        is_math = bool(re.search(r"[0-9+\-×÷±=()\[\]/^√≤≥≠]", raw_word))
+        if not raw_word or (conf < 25 and not is_math):
             continue
         key = (data["block_num"][i], data["par_num"][i], data["line_num"][i])
         if key not in lines_map:
@@ -175,13 +206,13 @@ def extract_ocr_blocks_from_image(img_bytes: bytes, language: str = "eng") -> Tu
 
         if last_block_par is not None and (b_num, p_num) != last_block_par:
             if current_para_Bank:
-                blocks.append(OcrBlock(text=" ".join(current_para_Bank)))
+                blocks.append(OcrBlock(text=normalize_math_text(" ".join(current_para_Bank))))
                 current_para_Bank = []
         current_para_Bank.append(line_text)
         last_block_par = (b_num, p_num)
 
     if current_para_Bank:
-        blocks.append(OcrBlock(text=" ".join(current_para_Bank)))
+        blocks.append(OcrBlock(text=normalize_math_text(" ".join(current_para_Bank))))
 
     return blocks, word_count
 
