@@ -16,7 +16,7 @@ export default function Footer() {
   const shareUrls = getShareUrls(SITE_URL, SITE_SHARE_TEXT);
 
   return (
-    <footer className="relative mt-24 border-t border-black/[0.06] dark:border-white/[0.06] bg-zinc-50/50 dark:bg-surface-900/40 overflow-hidden pb-20 sm:pb-24">
+    <footer className="relative mt-24 border-t border-black/[0.06] dark:border-white/[0.06] bg-zinc-50/50 dark:bg-surface-900/40">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
           {/* Brand */}
@@ -240,21 +240,30 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Giant Architectural Studio Watermark Typography (DevStudio SaaS Style) */}
-      <div
-        aria-hidden="true"
-        className="relative z-0 w-full overflow-hidden select-none pointer-events-none pt-12 pb-4 text-center"
-      >
-        <p
-          className="inline-block font-sans font-black uppercase whitespace-nowrap bg-[linear-gradient(to_bottom,rgba(0,0,0,0.10)_0%,rgba(0,0,0,0.0)_90%)] dark:bg-[linear-gradient(to_bottom,rgba(255,255,255,0.10)_0%,rgba(255,255,255,0.0)_90%)] bg-clip-text text-transparent opacity-80 sm:opacity-100 transition-opacity"
-          style={{
-            fontSize: 'clamp(2.75rem, 11.4vw, 13.5rem)',
-            lineHeight: 0.8,
-            letterSpacing: '-0.04em',
-          }}
-        >
-          COMPIXOR AI
-        </p>
+      {/* Architectural SVG Watermark (Scales to container width, zero clipping) */}
+      <div className="footer-watermark" aria-hidden="true">
+        <svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="wmFade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="currentColor" stopOpacity="0.12" />
+              <stop offset="85%" stopColor="currentColor" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <text
+            x="500"
+            y="125"
+            textAnchor="middle"
+            fontFamily="Inter, system-ui, sans-serif"
+            fontWeight="900"
+            fontSize="150"
+            letterSpacing="-6"
+            textLength={960}
+            lengthAdjust="spacingAndGlyphs"
+            fill="url(#wmFade)"
+          >
+            COMPIXOR AI
+          </text>
+        </svg>
       </div>
     </footer>
   );
