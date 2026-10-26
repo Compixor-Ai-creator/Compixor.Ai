@@ -900,10 +900,8 @@
 /* Footer Architectural Watermark SVG (DevStudio Style) */
 .footer-watermark {
   width: 100%;
-  max-width: 1200px;          /* same container width as the footer content */
   margin: 0 auto;
-  padding: 2rem 1.5rem 5rem;  /* extra bottom space so the fixed Feedback button never covers it */
-  color: #000;                /* gradient uses currentColor */
+  color: #000;
   background: transparent;
   pointer-events: none;
   user-select: none;
@@ -911,7 +909,7 @@
 }
 .footer-watermark svg { display: block; width: 100%; height: auto; }
 .footer-watermark .stop-bottom {
-  stop-opacity: 0.10;
+  stop-opacity: 0.07;
 }
 [data-theme="dark"] .footer-watermark,
 .dark .footer-watermark {
@@ -919,5 +917,5 @@
 }
 [data-theme="dark"] .footer-watermark .stop-bottom,
 .dark .footer-watermark .stop-bottom {
-  stop-opacity: 0.12;
+  stop-opacity: 0.09;
 }

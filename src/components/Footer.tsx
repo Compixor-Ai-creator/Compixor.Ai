@@ -237,32 +237,30 @@ export default function Footer() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Architectural SVG Watermark (Scales to container width, zero clipping) */}
-      <div className="footer-watermark" aria-hidden="true">
-        <svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="wmFade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
-              <stop offset="100%" stopColor="currentColor" stopOpacity="0.10" className="stop-bottom" />
-            </linearGradient>
-          </defs>
-          <text
-            x="500"
-            y="125"
-            textAnchor="middle"
-            fontFamily="Inter, system-ui, sans-serif"
-            fontWeight="800"
-            fontSize="150"
-            letterSpacing="-4"
-            textLength={960}
-            lengthAdjust="spacingAndGlyphs"
-            fill="url(#wmFade)"
-          >
-            COMPIXOR AI
-          </text>
-        </svg>
+        {/* Architectural SVG Watermark (Perfect center, exactly aligned to footer grid container) */}
+        <div className="footer-watermark pt-12 pb-20 pointer-events-none select-none overflow-visible" aria-hidden="true">
+          <svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet" className="block w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="wmFade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+                <stop offset="100%" stopColor="currentColor" stopOpacity="0.07" className="stop-bottom" />
+              </linearGradient>
+            </defs>
+            <text
+              x="500"
+              y="125"
+              textAnchor="middle"
+              fontFamily="Inter, system-ui, sans-serif"
+              fontWeight="800"
+              fontSize="150"
+              letterSpacing="-4"
+              textLength={960}
+              lengthAdjust="spacingAndGlyphs"
+              fill="url(#wmFade)"
+            >COMPIXOR AI</text>
+          </svg>
+        </div>
       </div>
     </footer>
   );
