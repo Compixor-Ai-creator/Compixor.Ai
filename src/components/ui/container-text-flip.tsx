@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useId } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@/utils/cn";
 
@@ -9,7 +9,7 @@ export interface ContainerTextFlipProps {
   words?: string[];
   /** Time in milliseconds between word transitions */
   interval?: number;
-  /** Additional CSS classes to apply to the container */
+  /** Additional CSS classes to apply to the container/pill */
   className?: string;
   /** Additional CSS classes to apply to the text */
   textClassName?: string;
@@ -18,43 +18,45 @@ export interface ContainerTextFlipProps {
 }
 
 export function ContainerTextFlip({
-  words = ["better", "modern", "beautiful", "awesome"],
+  words = ["First.", "Guaranteed.", "Protected."],
   interval = 3000,
   className,
   textClassName,
-  animationDuration = 700,
+  animationDuration = 300,
 }: ContainerTextFlipProps) {
+  const id = useId();
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [textMinWidth, setTextMinWidth] = useState<number | undefined>(undefined);
-  const hiddenWordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [measuredWidth, setMeasuredWidth] = useState<number | undefined>(undefined);
+  const currentTextRef = useRef<HTMLSpanElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
-  const wordsKey = useMemo(() => words.join("\0"), [words]);
+  const currentWord = words[currentWordIndex] || "";
 
-  // Find the word with maximum characters as an instant CSS fallback before layout measurement
-  const longestWord = useMemo(() => {
-    return words.reduce((acc, word) => (word.length > acc.length ? word : acc), words[0] || "");
-  }, [words]);
-
-  // Measure all words accurately with the exact font and text styling
+  // Measure the current word's width dynamically
   useEffect(() => {
-    const measureLongestWord = () => {
-      const widths = hiddenWordRefs.current.map((el) => el?.getBoundingClientRect().width || 0);
-      const maxWidth = Math.max(...widths, 0);
-      if (maxWidth > 0) {
-        setTextMinWidth(Math.ceil(maxWidth));
+    const updateWidth = () => {
+      if (currentTextRef.current) {
+        // Measured element width + padding calculation (0.6em total horizontal padding = 0.3em * 2)
+        const rect = currentTextRef.current.getBoundingClientRect();
+        if (rect.width > 0) {
+          // getComputedStyle to read exact em-to-px horizontal padding if set, or calculate based on font-size
+          const fontSize = parseFloat(window.getComputedStyle(currentTextRef.current).fontSize) || 16;
+          const horizontalPadding = fontSize * 0.6; // 0.3em left + 0.3em right
+          setMeasuredWidth(Math.ceil(rect.width + horizontalPadding));
+        }
       }
     };
 
-    measureLongestWord();
+    updateWidth();
 
+    // Re-check after web fonts are fully loaded
     if (typeof document !== "undefined" && "fonts" in document) {
-      document.fonts.ready.then(measureLongestWord);
+      document.fonts.ready.then(updateWidth);
     }
 
-    window.addEventListener("resize", measureLongestWord);
-    return () => window.removeEventListener("resize", measureLongestWord);
-  }, [wordsKey, textClassName]);
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, [currentWord, textClassName]);
 
   // Word cycling interval (3000ms by default, cleaned up on unmount)
   useEffect(() => {
@@ -65,99 +67,57 @@ export function ContainerTextFlip({
     }, interval);
 
     return () => clearInterval(intervalId);
-  }, [words.length, wordsKey, interval]);
-
-  const hasCustomBg = className && (className.includes("bg-") || className.includes("[background:"));
-  const defaultBg = hasCustomBg
-    ? ""
-    : "[background:linear-gradient(to_bottom,#f3f4f6,#e5e7eb)] shadow-[inset_0_-1px_#d1d5db,inset_0_0_0_1px_#d1d5db,_0_4px_8px_#d1d5db] dark:[background:linear-gradient(to_bottom,#374151,#1f2937)] dark:shadow-[inset_0_-1px_#10171e,inset_0_0_0_1px_hsla(205,89%,46%,.24),_0_4px_8px_#00000052]";
-
-  const currentWord = words[currentWordIndex] || "";
+  }, [words.length, interval]);
 
   return (
-    <span
+    <motion.span
       className={cn(
-        "relative inline-flex items-center justify-center rounded-xl px-3 py-0.5 text-center align-baseline whitespace-nowrap overflow-hidden max-w-full",
-        defaultBg,
-        className,
+        "relative inline-flex items-center justify-center border border-violet-500/25 bg-gradient-to-r from-violet-500/[0.08] to-pink-500/[0.08] dark:from-violet-500/[0.12] dark:to-pink-500/[0.12] rounded-[0.3em] overflow-hidden align-baseline text-center",
+        className
       )}
+      style={{
+        padding: "0.04em 0.3em",
+        verticalAlign: "baseline",
+      }}
+      animate={{
+        width: measuredWidth ? `${measuredWidth}px` : "auto",
+      }}
+      transition={{
+        duration: shouldReduceMotion ? 0 : 0.35,
+        ease: "easeOut",
+      }}
     >
-      {/* Hidden measuring spans to calculate the exact width of the widest word */}
+      {/* Off-screen measurement span for current word */}
       <span
+        ref={currentTextRef}
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 top-0 select-none opacity-0 whitespace-nowrap"
+        className={cn(
+          "pointer-events-none absolute left-0 top-0 select-none opacity-0 whitespace-nowrap",
+          textClassName
+        )}
         style={{ visibility: "hidden" }}
       >
-        {words.map((word, index) => (
-          <span
-            key={index}
-            ref={(el) => {
-              hiddenWordRefs.current[index] = el;
-            }}
-            className={cn("inline-block whitespace-nowrap", textClassName)}
-          >
-            {word}
-          </span>
-        ))}
+        {currentWord}
       </span>
 
-      {/* Sized text slot preventing container width jumps */}
-      <span
-        className="inline-flex items-center justify-center text-center whitespace-nowrap"
-        style={{
-          minWidth: textMinWidth ? `${textMinWidth}px` : `${longestWord.length}ch`,
-        }}
-      >
+      {/* Animated word transition */}
+      <span className="inline-flex items-center justify-center text-center w-full whitespace-nowrap">
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
-            key={currentWord}
-            initial={
-              shouldReduceMotion
-                ? { opacity: 0 }
-                : { opacity: 0, y: 10, filter: "blur(10px)" }
-            }
-            animate={
-              shouldReduceMotion
-                ? { opacity: 1 }
-                : { opacity: 1, y: 0, filter: "blur(0px)" }
-            }
-            exit={
-              shouldReduceMotion
-                ? { opacity: 0 }
-                : { opacity: 0, y: -10, filter: "blur(10px)" }
-            }
+            key={`${currentWord}-${id}`}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
+            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
             transition={{
-              duration: shouldReduceMotion ? 0.15 : 0.45,
-              ease: [0.22, 1, 0.36, 1],
+              duration: shouldReduceMotion ? 0 : 0.3,
+              ease: "easeOut",
             }}
-            className={cn("inline-flex items-center justify-center whitespace-nowrap text-center w-full", textClassName)}
+            className={cn("inline-block whitespace-nowrap text-center", textClassName)}
           >
-            {currentWord.split("").map((letter, index) => (
-              <motion.span
-                key={`${currentWord}-${index}`}
-                initial={
-                  shouldReduceMotion
-                    ? { opacity: 1 }
-                    : { opacity: 0, y: 6 }
-                }
-                animate={
-                  shouldReduceMotion
-                    ? { opacity: 1 }
-                    : { opacity: 1, y: 0 }
-                }
-                transition={{
-                  delay: shouldReduceMotion ? 0 : index * 0.02,
-                  duration: shouldReduceMotion ? 0 : 0.35,
-                  ease: "easeOut",
-                }}
-                className="inline-block"
-              >
-                {letter === " " ? "\u00A0" : letter}
-              </motion.span>
-            ))}
+            {currentWord}
           </motion.span>
         </AnimatePresence>
       </span>
-    </span>
+    </motion.span>
   );
 }

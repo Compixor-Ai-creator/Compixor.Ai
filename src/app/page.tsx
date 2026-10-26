@@ -152,21 +152,29 @@ export default function HomePage() {
               </motion.div>
 
               {/* Headline (Instant paint at opacity 1 — NO element render delay for LCP) */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-display leading-[1.12] tracking-tight mb-6">
-                <span className="text-zinc-900 dark:text-white">Transform{' '}</span>
-                <span className="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent">
-                  Your Files.
+              <h1
+                className="font-black font-display mb-6 tracking-tight"
+                style={{
+                  fontSize: 'clamp(2rem, 5.2vw, 4.25rem)',
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                <span className="block whitespace-nowrap">
+                  <span className="text-zinc-900 dark:text-white">Transform{' '}</span>
+                  <span className="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent">
+                    Your Files.
+                  </span>
                 </span>
-                <br />
-                <span className="inline-flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="text-zinc-900 dark:text-white">Privacy</span>
-                  <ContainerTextFlip
-                    words={['First.', 'Guaranteed.', 'Protected.']}
-                    interval={3000}
-                    animationDuration={650}
-                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black font-display px-3 sm:px-4 py-0.5 rounded-2xl border border-brand-500/25 bg-gradient-to-r from-brand-500/10 via-purple-500/10 to-rose-500/10 dark:from-brand-500/15 dark:via-purple-500/15 dark:to-rose-500/15 shadow-sm shadow-brand-500/10"
-                    textClassName="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent"
-                  />
+                <span className="block max-w-full">
+                  <span className="inline-flex flex-wrap items-baseline gap-x-[0.25em] gap-y-1 sm:whitespace-nowrap">
+                    <span className="text-zinc-900 dark:text-white">Privacy</span>
+                    <ContainerTextFlip
+                      words={['First.', 'Guaranteed.', 'Protected.']}
+                      interval={3000}
+                      textClassName="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent font-black font-display"
+                    />
+                  </span>
                 </span>
               </h1>
 
