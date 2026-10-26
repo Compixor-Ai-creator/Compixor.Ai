@@ -919,3 +919,87 @@
 .dark .footer-watermark .stop-bottom {
   stop-opacity: 0.09;
 }
+
+
+/* Glowing Brand Social Buttons (Footer) */
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #52525b;
+  position: relative;
+  outline: none;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+[data-theme="dark"] .social-btn,
+.dark .social-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #a1a1aa;
+}
+
+.social-btn-x {
+  --glow: #111111;
+}
+
+[data-theme="dark"] .social-btn-x,
+.dark .social-btn-x {
+  --glow: #ffffff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .social-btn:hover {
+    color: var(--glow);
+    background: color-mix(in srgb, var(--glow) 12%, transparent);
+    border-color: color-mix(in srgb, var(--glow) 45%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--glow) 30%, transparent),
+                0 0 18px color-mix(in srgb, var(--glow) 45%, transparent),
+                0 6px 20px color-mix(in srgb, var(--glow) 25%, transparent);
+    transform: translateY(-3px);
+  }
+  .social-btn:hover svg {
+    filter: drop-shadow(0 0 6px var(--glow));
+  }
+}
+
+.social-btn:focus-visible {
+  color: var(--glow);
+  background: color-mix(in srgb, var(--glow) 12%, transparent);
+  border-color: color-mix(in srgb, var(--glow) 45%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--glow) 30%, transparent),
+              0 0 18px color-mix(in srgb, var(--glow) 45%, transparent),
+              0 6px 20px color-mix(in srgb, var(--glow) 25%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--glow) 50%, transparent);
+  outline-offset: 2px;
+  transform: translateY(-3px);
+}
+.social-btn:focus-visible svg {
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+
+.social-btn:active {
+  transform: translateY(-1px) scale(0.97);
+  color: var(--glow);
+  background: color-mix(in srgb, var(--glow) 15%, transparent);
+  border-color: color-mix(in srgb, var(--glow) 50%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--glow) 35%, transparent),
+              0 0 14px color-mix(in srgb, var(--glow) 40%, transparent);
+}
+.social-btn:active svg {
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .social-btn:hover,
+  .social-btn:focus-visible,
+  .social-btn:active {
+    transform: none !important;
+  }
+}

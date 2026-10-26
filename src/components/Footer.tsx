@@ -10,6 +10,7 @@ import {
   TwitterXIcon,
   WhatsAppIcon,
   FacebookIcon,
+  GitHubIcon,
 } from '@/components/SocialIcons';
 
 export default function Footer() {
@@ -180,42 +181,45 @@ export default function Footer() {
             {/* Share Compixor */}
             <div className="space-y-2 mb-4">
               <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Share Compixor</p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 overflow-visible">
                 <a
                   href={shareUrls.linkedIn}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Share Compixor AI on LinkedIn"
-                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[#0A66C2] hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                  aria-label="Share on LinkedIn"
+                  className="social-btn"
+                  style={{ '--glow': '#0A66C2' } as React.CSSProperties}
                 >
-                  <LinkedInIcon className="w-4 h-4" />
+                  <LinkedInIcon className="w-[18px] h-[18px]" />
                 </a>
                 <a
                   href={shareUrls.x}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Share Compixor AI on X"
-                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                  aria-label="Share on X"
+                  className="social-btn social-btn-x"
                 >
-                  <TwitterXIcon className="w-4 h-4" />
+                  <TwitterXIcon className="w-[18px] h-[18px]" />
                 </a>
                 <a
                   href={shareUrls.whatsApp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Share Compixor AI on WhatsApp"
-                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[#25D366] hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                  aria-label="Share on WhatsApp"
+                  className="social-btn"
+                  style={{ '--glow': '#25D366' } as React.CSSProperties}
                 >
-                  <WhatsAppIcon className="w-4 h-4" />
+                  <WhatsAppIcon className="w-[18px] h-[18px]" />
                 </a>
                 <a
                   href={shareUrls.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Share Compixor AI on Facebook"
-                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[#1877F2] hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                  aria-label="Share on Facebook"
+                  className="social-btn"
+                  style={{ '--glow': '#1877F2' } as React.CSSProperties}
                 >
-                  <FacebookIcon className="w-4 h-4" />
+                  <FacebookIcon className="w-[18px] h-[18px]" />
                 </a>
               </div>
             </div>
@@ -223,15 +227,16 @@ export default function Footer() {
             {/* Official Open Source Link */}
             <div className="space-y-2">
               <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Open Source</p>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 overflow-visible">
                 <a
                   href="https://github.com/Compixor-Ai-creator"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Compixor AI on GitHub"
-                  className="w-8 h-8 rounded-lg bg-zinc-200/70 dark:bg-zinc-800/70 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-brand-500 dark:hover:text-brand-400 transition-colors"
+                  aria-label="View source on GitHub"
+                  className="social-btn"
+                  style={{ '--glow': '#8b5cf6' } as React.CSSProperties}
                 >
-                  <span className="text-xs font-bold">GH</span>
+                  <GitHubIcon className="w-[18px] h-[18px]" />
                 </a>
               </div>
             </div>
