@@ -14,9 +14,10 @@ import {
 
 export default function Footer() {
   const shareUrls = getShareUrls(SITE_URL, SITE_SHARE_TEXT);
+
   return (
-    <footer className="relative mt-24 border-t border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-surface-900/40 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+    <footer className="relative mt-24 border-t border-black/[0.06] dark:border-white/[0.06] bg-zinc-50/50 dark:bg-surface-900/40 overflow-hidden pb-20 sm:pb-24">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
           {/* Brand */}
           <div className="md:col-span-2 space-y-4">
@@ -44,14 +45,14 @@ export default function Footer() {
             <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
               Tools Suite
             </p>
-            <ul className="space-y-2.5">
+            <ul className="space-y-3">
               {tools.map((tool) => {
                 const Icon = tool.icon;
                 return (
                   <li key={tool.href}>
                     <Link
                       href={tool.href}
-                      className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors flex items-center gap-2 group"
+                      className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors flex items-center gap-2 group"
                     >
                       <Icon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-brand-500 transition-colors shrink-0" aria-hidden="true" />
                       <span>{tool.name}</span>
@@ -67,11 +68,11 @@ export default function Footer() {
             <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
               Company
             </p>
-            <ul className="space-y-2.5">
+            <ul className="space-y-3">
               <li>
                 <Link
                   href="/about"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
                   About Us
                 </Link>
@@ -79,7 +80,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/blog"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
                   Blogs &amp; Guides
                 </Link>
@@ -87,7 +88,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/privacy"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
                   Privacy Policy
                 </Link>
@@ -95,7 +96,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/terms"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
                   Terms of Service
                 </Link>
@@ -103,7 +104,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about#contact"
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
                   Contact Us
                 </Link>
@@ -111,7 +112,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
                   {CONTACT_EMAIL}
                 </a>
@@ -144,7 +145,7 @@ export default function Footer() {
                       );
                     }
                   }}
-                  className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
                 >
                   Give Feedback
                 </a>
@@ -229,7 +230,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar with Physical/Digital Address */}
-        <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div className="mt-14 pt-8 border-t border-black/[0.06] dark:border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
             © 2026 Compixor AI. Architecture by <span className="font-semibold text-zinc-700 dark:text-zinc-300">Haroon Ali</span>. Compixor AI Digital Studio • Global Cloud Services.
           </p>
@@ -239,12 +240,19 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Giant Architectural Studio Watermark Typography (DevStudio Style) */}
+      {/* Giant Architectural Studio Watermark Typography (DevStudio SaaS Style) */}
       <div
         aria-hidden="true"
-        className="relative w-full overflow-hidden select-none pointer-events-none border-t border-zinc-200/50 dark:border-zinc-800/50 pt-4 sm:pt-6 pb-2 sm:pb-4"
+        className="relative z-0 w-full overflow-hidden select-none pointer-events-none pt-12 pb-4 text-center"
       >
-        <p className="text-center font-black font-display text-[14vw] leading-none tracking-tighter text-zinc-900/[0.07] dark:text-white/[0.05] uppercase whitespace-nowrap">
+        <p
+          className="inline-block font-sans font-black uppercase whitespace-nowrap bg-[linear-gradient(to_bottom,rgba(0,0,0,0.10)_0%,rgba(0,0,0,0.0)_90%)] dark:bg-[linear-gradient(to_bottom,rgba(255,255,255,0.10)_0%,rgba(255,255,255,0.0)_90%)] bg-clip-text text-transparent opacity-80 sm:opacity-100 transition-opacity"
+          style={{
+            fontSize: 'clamp(2.75rem, 11.4vw, 13.5rem)',
+            lineHeight: 0.8,
+            letterSpacing: '-0.04em',
+          }}
+        >
           COMPIXOR AI
         </p>
       </div>
