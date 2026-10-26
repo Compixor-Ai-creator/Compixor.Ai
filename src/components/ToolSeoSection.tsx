@@ -15,6 +15,7 @@ import {
   Sliders,
   Cpu,
   Download,
+  BookOpen,
 } from 'lucide-react';
 import { seoConfig, ToolSlug, BASE_URL } from '@/lib/seo-config';
 import ToolHowToVictory from '@/components/ToolHowToVictory';
@@ -27,6 +28,53 @@ interface ToolSeoSectionProps {
 
 /** Tools whose work is done by our OCR server, so "zero uploads" copy must not be used. */
 const SERVER_OCR_TOOLS = new Set<string>(['pdf-to-word', 'img-to-word']);
+
+const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
+  'qr-generator': {
+    title: 'How to Create a Custom QR Code with Logo (Free, No Signup)',
+    href: '/blog/how-to-create-custom-qr-code-with-logo',
+  },
+  'pdf-organizer': {
+    title: 'How to Merge & Split PDF Files Online (Free, Fast & 100% Private)',
+    href: '/blog/how-to-merge-and-split-pdf-files-online',
+  },
+  'pdf-compressor': {
+    title: 'How to Compress PDF Without Losing Quality (Free, In-Browser)',
+    href: '/blog/how-to-compress-pdf-without-losing-quality',
+  },
+  'full-dp-maker': {
+    title: 'How to Set Full Picture on WhatsApp DP Without Cropping (Free)',
+    href: '/blog/how-to-set-full-dp-whatsapp-without-cropping',
+  },
+  'passport-photo': {
+    title: 'Free Passport Size Photo Maker Online: Print-Ready in 60 Seconds',
+    href: '/blog/passport-size-photo-maker-online-free',
+  },
+  'protect-pdf': {
+    title: 'How to Password Protect PDF Files Online (AES-256 Encryption)',
+    href: '/blog/password-protect-pdf-files-online',
+  },
+  'unlock-pdf': {
+    title: 'How to Unlock Password Protected PDF Files Online Free',
+    href: '/blog/unlock-password-protected-pdf-online',
+  },
+  'add-watermark': {
+    title: 'How to Add Watermark to PDF Documents Online Free',
+    href: '/blog/how-to-add-watermark-to-pdf',
+  },
+  'remove-watermark': {
+    title: 'How to Remove Watermark from PDF Online Free',
+    href: '/blog/how-to-remove-watermark-from-pdf',
+  },
+  'word-compressor': {
+    title: 'How to Compress Word Documents Online Free Without Losing Quality',
+    href: '/blog/how-to-compress-word-documents',
+  },
+  'pdf-to-word': {
+    title: 'Convert PDF to Editable Word Online Free (Preserve Formatting & Tables)',
+    href: '/blog/convert-pdf-to-editable-word-online',
+  },
+};
 
 export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
   const tool = seoConfig[toolSlug];
@@ -84,6 +132,32 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
             {toolSlug === 'passport-photo' ? '300 DPI Studio Quality' : SERVER_OCR_TOOLS.has(toolSlug || '') ? 'Converted In Memory, Then Dropped' : 'Runs in Browser Memory'}
           </span>
         </div>
+
+        {/* Link back to in-depth Blog Guide */}
+        {TOOL_GUIDE_MAP[toolSlug] && (
+          <div className="mt-6 pt-5 border-t border-zinc-100 dark:border-zinc-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-brand-500/5 dark:bg-brand-500/10 border border-brand-500/20">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+                  Detailed Step-by-Step Tutorial
+                </p>
+                <p className="text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                  {TOOL_GUIDE_MAP[toolSlug].title}
+                </p>
+              </div>
+            </div>
+            <Link
+              href={TOOL_GUIDE_MAP[toolSlug].href}
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 hover:underline shrink-0"
+            >
+              <span>Read the full guide</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* ── 2. Step-by-Step "How to Use" Guide ── */}

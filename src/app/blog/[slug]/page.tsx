@@ -258,43 +258,112 @@ export default function BlogPostPage({ params }: PageProps) {
         }
       : null;
 
-  const webAppSchema =
-    blog.slug === 'passport-size-photo-maker-online-free'
-      ? {
-          '@context': 'https://schema.org',
-          '@type': 'WebApplication',
-          name: 'Compixor AI Passport Photo Maker',
-          url: 'https://compixor-ai.cloud/tools/passport-photo',
-          applicationCategory: 'MultimediaApplication',
-          operatingSystem: 'Web',
-          offers: {
-            '@type': 'Offer',
-            price: '0',
-            priceCurrency: 'USD',
-          },
-        }
-      : blog.slug === 'how-to-create-custom-qr-code-with-logo'
-      ? {
-          '@context': 'https://schema.org',
-          '@type': 'WebApplication',
-          name: 'Compixor AI Custom QR Code Generator with Logo',
-          url: 'https://compixor-ai.cloud/tools/qr-generator',
-          applicationCategory: 'UtilitiesApplication',
-          operatingSystem: 'All (Web Browser)',
-          offers: {
-            '@type': 'Offer',
-            price: '0',
-            priceCurrency: 'USD',
-          },
-          featureList: [
-            'Create custom QR codes with central logo and brand colors',
-            'Permanent static QR codes with zero expiration date',
-            'Reed-Solomon Level H (30%) Error Correction',
-            'Scalable vector SVG and high-resolution PNG export',
-            '100% in-browser client-side privacy with zero uploads',
-          ],
-        }
-      : null;
+  const webAppSchema = (() => {
+    if (blog.slug === 'passport-size-photo-maker-online-free') {
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: 'Compixor AI Passport Photo Maker',
+        url: 'https://compixor-ai.cloud/tools/passport-photo',
+        applicationCategory: 'MultimediaApplication',
+        operatingSystem: 'All (Web Browser)',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        browserRequirements: 'Requires JavaScript. Requires HTML5.',
+        featureList: [
+          'Biometric passport and visa photo maker',
+          '300 DPI high-resolution export',
+          'Automatic AI background removal',
+          '100% in-browser client-side privacy',
+        ],
+      };
+    }
+    if (blog.slug === 'how-to-create-custom-qr-code-with-logo') {
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: 'Compixor AI Custom QR Code Generator with Logo',
+        url: 'https://compixor-ai.cloud/tools/qr-generator',
+        applicationCategory: 'UtilitiesApplication',
+        operatingSystem: 'All (Web Browser)',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        browserRequirements: 'Requires JavaScript. Requires HTML5.',
+        featureList: [
+          'Create custom QR codes with central logo and brand colors',
+          'Permanent static QR codes with zero expiration date',
+          'Reed-Solomon Level H (30%) Error Correction',
+          'Scalable vector SVG and high-resolution PNG export',
+          '100% in-browser client-side privacy with zero uploads',
+        ],
+      };
+    }
+    if (blog.slug === 'how-to-merge-and-split-pdf-files-online') {
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: 'Compixor AI PDF Organizer: Merge & Split Pages',
+        url: 'https://compixor-ai.cloud/tools/pdf-organizer',
+        applicationCategory: 'UtilitiesApplication',
+        operatingSystem: 'All (Web Browser)',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        browserRequirements: 'Requires JavaScript. Requires HTML5.',
+        featureList: [
+          'Merge multiple PDF files in custom visual sequence',
+          'Split PDFs and extract specific page ranges (e.g. 1-3, 5, 8-10)',
+          'Drag-and-drop thumbnail reordering and 90-degree page rotation',
+          '100% in-browser client-side RAM processing via pdf-lib',
+          'Zero file uploads, no watermarks, and no sign-up required',
+        ],
+      };
+    }
+    if (blog.slug === 'how-to-compress-pdf-without-losing-quality') {
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: 'Compixor AI PDF Compressor Online',
+        url: 'https://compixor-ai.cloud/tools/pdf-compressor',
+        applicationCategory: 'UtilitiesApplication',
+        operatingSystem: 'All (Web Browser)',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        browserRequirements: 'Requires JavaScript. Requires HTML5.',
+        featureList: [
+          'Compress PDF documents without losing visual quality',
+          'Intelligent HTML5 canvas image downsampling and pako stream deflation',
+          '100% in-browser client-side RAM processing',
+          'Zero file uploads, no watermarks, and no queue limits',
+        ],
+      };
+    }
+    if (blog.slug === 'how-to-set-full-dp-whatsapp-without-cropping') {
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: 'Compixor AI WhatsApp Full DP Maker',
+        url: 'https://compixor-ai.cloud/tools/full-dp-maker',
+        applicationCategory: 'MultimediaApplication',
+        operatingSystem: 'All (Web Browser)',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        browserRequirements: 'Requires JavaScript. Requires HTML5.',
+        featureList: [
+          'Fit rectangular portraits and landscapes to 1:1 square canvas',
+          'Frosted ambient blur, solid color, and gradient padding',
+          'Circular safe-zone preview for WhatsApp avatars',
+          '100% in-browser client-side canvas processing with zero uploads',
+        ],
+      };
+    }
+    if (blog.toolPath) {
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: `Compixor AI ${blog.title}`,
+        url: `https://compixor-ai.cloud${blog.toolPath}`,
+        applicationCategory: 'UtilitiesApplication',
+        operatingSystem: 'All (Web Browser)',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      };
+    }
+    return null;
+  })();
 
   return (
     <div className="relative pt-24 pb-20 overflow-x-clip">
@@ -417,18 +486,30 @@ export default function BlogPostPage({ params }: PageProps) {
         <div className="flex flex-col xl:flex-row xl:gap-12 justify-center items-start mt-8">
           {/* Left: Article Content Column */}
           <main className="w-full max-w-3xl min-w-0 prose dark:prose-invert">
-            {/* Quick Decision Box (dpdf 10-second decision style) */}
-            <div id="decision-box">
-              <DecisionCalloutBox
-                title={blog.decisionBox?.title}
-                items={blog.decisionBox?.items}
-                defaultToolName={blog.title}
-                defaultToolPath={blog.toolPath}
-              />
+            {/* Intro Callout */}
+            <div className="glass-card p-6 sm:p-7 rounded-2xl border-l-4 border-l-brand-500 border-zinc-200/80 dark:border-zinc-800/80 my-6 bg-zinc-50/70 dark:bg-zinc-900/60 not-prose">
+              <p className="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium m-0">
+                {blog.content.intro}
+              </p>
             </div>
 
-            {/* Quick Launch Direct Card */}
-            <div className="glass-card p-4 sm:p-5 rounded-2xl border border-brand-500/20 bg-brand-500/5 dark:bg-brand-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 not-prose my-6 shadow-sm">
+            {/* Direct Answer / Key Takeaways Snippet Box */}
+            {blog.keyTakeaways && (
+              <div className="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-emerald-500 border-zinc-200/80 dark:border-zinc-800/80 my-6 bg-emerald-500/5 dark:bg-emerald-500/10 not-prose shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    Direct Answer / Key Takeaways
+                  </span>
+                </div>
+                <p className="text-sm sm:text-base text-zinc-800 dark:text-zinc-200 leading-relaxed font-medium m-0">
+                  {blog.keyTakeaways}
+                </p>
+              </div>
+            )}
+
+            {/* Prominent Call-To-Action Card (Step 1) */}
+            <div className="glass-card p-4 sm:p-5 rounded-2xl border border-brand-500/30 bg-gradient-to-r from-brand-500/10 via-purple-500/5 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-4 not-prose my-6 shadow-sm">
               <div className="flex items-center gap-3.5">
                 <div
                   className={`w-12 h-12 rounded-xl bg-gradient-to-br ${blog.accentColor} flex items-center justify-center text-zinc-900 dark:text-white shrink-0 border border-zinc-200/70 dark:border-zinc-700/70 shadow-sm`}
@@ -436,11 +517,11 @@ export default function BlogPostPage({ params }: PageProps) {
                   <IconComponent className="w-6 h-6 text-brand-600 dark:text-brand-400" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
-                    Client-Side Utility
+                  <p className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5" /> 100% In-Browser • Zero File Uploads
                   </p>
-                  <p className="text-sm font-bold text-zinc-900 dark:text-white">
-                    Execute this tool right now in your browser
+                  <p className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white m-0">
+                    Try the Free {blog.decisionBox?.items?.[0]?.toolName || blog.title}
                   </p>
                 </div>
               </div>
@@ -449,16 +530,19 @@ export default function BlogPostPage({ params }: PageProps) {
                 href={blog.toolPath}
                 className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md"
               >
-                <span>Launch Tool Now</span>
-                <ExternalLink className="w-4 h-4" />
+                <span>Launch Free Tool</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
-            {/* Intro Callout */}
-            <div className="glass-card p-6 sm:p-7 rounded-2xl border-l-4 border-l-brand-500 border-zinc-200/80 dark:border-zinc-800/80 my-8 bg-zinc-50/70 dark:bg-zinc-900/60 not-prose">
-              <p className="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium m-0">
-                {blog.content.intro}
-              </p>
+            {/* Quick Decision Box (dpdf 10-second decision style) */}
+            <div id="decision-box">
+              <DecisionCalloutBox
+                title={blog.decisionBox?.title}
+                items={blog.decisionBox?.items}
+                defaultToolName={blog.title}
+                defaultToolPath={blog.toolPath}
+              />
             </div>
 
             {/* Structured Sections */}
@@ -912,6 +996,25 @@ export default function BlogPostPage({ params }: PageProps) {
                 <BlogFaqAccordion faqs={blog.content.faqs} />
               </section>
             )}
+
+            {/* ============ TRY THE FREE TOOL NEAR END (Step 1) ============ */}
+            <div className="my-8 p-5 sm:p-6 rounded-2xl bg-brand-500/5 dark:bg-brand-500/10 border border-brand-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 not-prose shadow-sm">
+              <div>
+                <p className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white m-0">
+                  Ready to test it yourself?
+                </p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 mb-0">
+                  Process your files locally in your browser with zero limits, zero watermarks, and complete privacy.
+                </p>
+              </div>
+              <Link
+                href={blog.toolPath}
+                className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md"
+              >
+                <span>Try the free {blog.decisionBox?.items?.[0]?.toolName || 'tool'}</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
 
             {/* ============ EDITORIAL REVIEW & AUTHOR CREDENTIALS BOX (E-E-A-T) ============ */}
             <div className="my-10 glass-card p-6 sm:p-7 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-900/60 not-prose">
