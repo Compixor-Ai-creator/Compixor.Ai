@@ -72,12 +72,14 @@ export function ContainerTextFlip({
   return (
     <motion.span
       className={cn(
-        "relative inline-flex items-center justify-center border border-violet-500/25 bg-gradient-to-r from-violet-500/[0.08] to-pink-500/[0.08] dark:from-violet-500/[0.12] dark:to-pink-500/[0.12] rounded-[0.3em] overflow-hidden align-baseline text-center",
+        "relative inline-flex items-center justify-center border border-white/60 dark:border-white/20 bg-white/45 dark:bg-white/[0.08] shadow-[0_8px_32px_rgba(124,58,237,0.12)] rounded-[0.3em] overflow-hidden align-baseline text-center",
         className
       )}
       style={{
         padding: "0.04em 0.3em",
         verticalAlign: "baseline",
+        WebkitBackdropFilter: "blur(14px) saturate(160%)",
+        backdropFilter: "blur(14px) saturate(160%)",
       }}
       animate={{
         width: measuredWidth ? `${measuredWidth}px` : "auto",

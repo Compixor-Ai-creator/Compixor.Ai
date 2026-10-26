@@ -94,7 +94,27 @@ export default function HomePage() {
     <div className="relative overflow-x-clip">
       <FaqJsonLd faqs={homeFaqs} />
       {/* ============ HERO SECTION ============ */}
-      <section className="relative">
+      <section className="relative isolate">
+        {/* Visible Purple & Pink Blurred Blobs Behind Hero Content */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -z-10 w-[420px] h-[420px] rounded-full blur-[80px] opacity-55"
+          style={{
+            top: '-80px',
+            left: '-80px',
+            backgroundColor: '#8b5cf6',
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -z-10 w-[420px] h-[420px] rounded-full blur-[80px] opacity-55"
+          style={{
+            top: '120px',
+            right: '10%',
+            backgroundColor: '#ec4899',
+          }}
+        />
+
         {/* ============ LUXURY ARCHITECTURAL ATMOSPHERE ============ */}
         <div
           aria-hidden="true"
@@ -145,7 +165,13 @@ export default function HomePage() {
             >
               {/* Badge */}
               <motion.div variants={itemVariants} className="mb-6">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-brand-500/15 via-purple-500/15 to-rose-500/15 text-brand-700 dark:text-brand-300 border border-brand-500/30 dark:border-brand-400/30 backdrop-blur-md shadow-xs animate-float-subtle">
+                <span
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-white/45 dark:bg-white/[0.08] text-brand-700 dark:text-brand-300 border border-white/60 dark:border-white/20 shadow-[0_8px_32px_rgba(124,58,237,0.12)] animate-float-subtle"
+                  style={{
+                    WebkitBackdropFilter: 'blur(14px) saturate(160%)',
+                    backdropFilter: 'blur(14px) saturate(160%)',
+                  }}
+                >
                   <Sparkles className="w-3.5 h-3.5 text-brand-500 animate-spin-slow" />
                   All-in-One Private PDF &amp; Image Toolkit
                 </span>
