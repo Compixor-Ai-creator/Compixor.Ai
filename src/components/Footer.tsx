@@ -38,6 +38,15 @@ export default function Footer() {
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               All Systems Operational
             </div>
+            {/* Copyright & Architecture Note */}
+            <div className="pt-2 space-y-1">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                © 2026 Compixor AI. Architecture by <span className="font-semibold text-zinc-700 dark:text-zinc-300">Haroon Ali</span>. Compixor AI Digital Studio • Global Cloud Services.
+              </p>
+              <p className="text-xs text-zinc-400 dark:text-zinc-500">
+                Updated October 2026 · Zero Server Storage Policy
+              </p>
+            </div>
           </div>
 
           {/* Tools */}
@@ -228,16 +237,6 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
-        {/* Bottom bar with Physical/Digital Address */}
-        <div className="mt-14 pt-8 border-t border-black/[0.06] dark:border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            © 2026 Compixor AI. Architecture by <span className="font-semibold text-zinc-700 dark:text-zinc-300">Haroon Ali</span>. Compixor AI Digital Studio • Global Cloud Services.
-          </p>
-          <p className="text-xs text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 shrink-0">
-            Updated October 2026 · Zero Server Storage Policy
-          </p>
-        </div>
       </div>
 
       {/* Architectural SVG Watermark (Scales to container width, zero clipping) */}
@@ -245,8 +244,8 @@ export default function Footer() {
         <svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="wmFade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="currentColor" stopOpacity="0.12" />
-              <stop offset="85%" stopColor="currentColor" stopOpacity="0" />
+              <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+              <stop offset="100%" stopColor="currentColor" stopOpacity="0.10" className="stop-bottom" />
             </linearGradient>
           </defs>
           <text
@@ -254,9 +253,9 @@ export default function Footer() {
             y="125"
             textAnchor="middle"
             fontFamily="Inter, system-ui, sans-serif"
-            fontWeight="900"
+            fontWeight="800"
             fontSize="150"
-            letterSpacing="-6"
+            letterSpacing="-4"
             textLength={960}
             lengthAdjust="spacingAndGlyphs"
             fill="url(#wmFade)"

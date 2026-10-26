@@ -904,9 +904,20 @@
   margin: 0 auto;
   padding: 2rem 1.5rem 5rem;  /* extra bottom space so the fixed Feedback button never covers it */
   color: #000;                /* gradient uses currentColor */
+  background: transparent;
   pointer-events: none;
   user-select: none;
   overflow: visible;
 }
 .footer-watermark svg { display: block; width: 100%; height: auto; }
-[data-theme="dark"] .footer-watermark, .dark .footer-watermark { color: #fff; }
+.footer-watermark .stop-bottom {
+  stop-opacity: 0.10;
+}
+[data-theme="dark"] .footer-watermark,
+.dark .footer-watermark {
+  color: #fff;
+}
+[data-theme="dark"] .footer-watermark .stop-bottom,
+.dark .footer-watermark .stop-bottom {
+  stop-opacity: 0.12;
+}
