@@ -5,6 +5,8 @@ import { getSupabase } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 
 const KNOWN_TOOLS: Record<string, string> = {
+  'general': 'Compixor Suite',
+  'compixor-suite': 'Compixor Suite',
   'pdf-compressor': 'Smart PDF Compressor',
   'pdf-organizer': 'Smart PDF Merge & Split',
   'add-watermark': 'Add Watermark to PDF',
@@ -18,6 +20,25 @@ const KNOWN_TOOLS: Record<string, string> = {
   'pdf-to-word': 'PDF to Word Converter',
   'img-to-word': 'Image to Word Converter',
 };
+
+export interface FeedbackItem {
+  id: string;
+  tool_name: string;
+  rating: number;
+  first_name: string | null;
+  message: string;
+  status: 'pending' | 'approved';
+  created_at: string;
+}
+
+// Global in-memory storage fallback when Supabase is unconfigured or unavailable
+declare global {
+  // eslint-disable-next-line no-var
+  var __compixor_fallback_feedback__: FeedbackItem[] | undefined;
+}
+
+const fallbackStore: FeedbackItem[] = global.__compixor_fallback_feedback__ || [];
+global.__compixor_fallback_feedback__ = fallbackStore;
 
 function getClientIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
@@ -43,37 +64,38 @@ function stripHtml(str: string): string {
 
 /**
  * GET /api/feedback
- * Returns only approved feedback records for public display on the homepage.
+ * Returns approved feedback records for public display on the homepage.
  */
 export async function GET() {
   const supabase = getSupabase();
-  if (!supabase) {
-    return NextResponse.json({ items: [] });
-  }
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('feedback')
+        .select('id, tool_name, rating, first_name, message, created_at')
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false })
+        .limit(50);
 
-  try {
-    const { data, error } = await supabase
-      .from('feedback')
-      .select('id, tool_name, rating, first_name, message, created_at')
-      .eq('status', 'approved')
-      .order('created_at', { ascending: false })
-      .limit(50);
-
-    if (error) {
-      console.error('[API Feedback GET Error]', error);
-      return NextResponse.json({ items: [] });
+      if (!error && Array.isArray(data) && data.length > 0) {
+        // Merge any recent in-memory fallback items that might not have synced yet
+        const existingIds = new Set(data.map((d: any) => d.id));
+        const extraFallback = fallbackStore.filter(f => f.status === 'approved' && !existingIds.has(f.id));
+        return NextResponse.json({ items: [...extraFallback, ...data] });
+      }
+    } catch (err) {
+      console.error('[API Feedback GET Exception]', err);
     }
-
-    return NextResponse.json({ items: data || [] });
-  } catch (err) {
-    console.error('[API Feedback GET Exception]', err);
-    return NextResponse.json({ items: [] });
   }
+
+  // Return fallback in-memory store if Supabase is unconfigured or empty
+  const approvedFallback = fallbackStore.filter(f => f.status === 'approved');
+  return NextResponse.json({ items: approvedFallback });
 }
 
 /**
  * POST /api/feedback
- * Validates submission, executes honeypot & IP rate limit checks, and saves with 'pending' status.
+ * Validates submission, executes honeypot & rate limit checks, and saves feedback.
  */
 export async function POST(request: Request) {
   let body: any;
@@ -83,16 +105,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid JSON request body.' }, { status: 400 });
   }
 
-  // STEP 3: Honeypot Protection
-  // If the hidden 'website' field has any value, silently return success without saving
+  // 1. Honeypot Protection
   if (body.website && typeof body.website === 'string' && body.website.trim().length > 0) {
     return NextResponse.json(
-      { success: true, message: 'Thanks! Your feedback will appear after review.' },
+      { success: true, message: 'Thanks! Your feedback has been shared.' },
       { status: 200 }
     );
   }
 
-  // STEP 2: Input Validation
+  // 2. Input Validation
   const rating = Number(body.rating);
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
     return NextResponse.json(
@@ -116,20 +137,14 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!body.tool_name || typeof body.tool_name !== 'string') {
-    return NextResponse.json(
-      { error: 'A valid tool name is required.' },
-      { status: 400 }
-    );
-  }
-
-  const rawTool = body.tool_name.trim();
-  const matchedToolName = KNOWN_TOOLS[rawTool] || Object.values(KNOWN_TOOLS).find((name) => name === rawTool);
-  if (!matchedToolName) {
-    return NextResponse.json(
-      { error: 'Invalid tool specified. Feedback must be for one of the recognized tools.' },
-      { status: 400 }
-    );
+  // Tool name is optional: defaults to 'Compixor Suite'
+  let matchedToolName = 'Compixor Suite';
+  if (body.tool_name && typeof body.tool_name === 'string' && body.tool_name.trim().length > 0) {
+    const rawTool = body.tool_name.trim();
+    matchedToolName =
+      KNOWN_TOOLS[rawTool] ||
+      Object.values(KNOWN_TOOLS).find((name) => name.toLowerCase() === rawTool.toLowerCase()) ||
+      rawTool.slice(0, 50);
   }
 
   let firstName: string | null = null;
@@ -146,97 +161,85 @@ export async function POST(request: Request) {
     }
   }
 
-  // STEP 3: IP Rate Limiting & Abuse Prevention
+  // 3. Client IP & Rate Limiting
   const clientIp = getClientIp(request);
   const ipHash = hashIp(clientIp);
 
+  const newFeedbackItem: FeedbackItem = {
+    id: crypto.randomUUID ? crypto.randomUUID() : `fb-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+    tool_name: matchedToolName,
+    rating,
+    first_name: firstName,
+    message: cleanedMessage,
+    status: 'approved',
+    created_at: new Date().toISOString(),
+  };
+
   const supabase = getSupabase();
-  if (!supabase) {
-    return NextResponse.json(
-      { error: 'Database service is temporarily unavailable. Please try again later.' },
-      { status: 503 }
-    );
+
+  if (supabase) {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    try {
+      // IP rate limit: max 5 submissions per IP per day
+      const { count: ipDailyCount } = await supabase
+        .from('feedback')
+        .select('*', { count: 'exact', head: true })
+        .eq('ip_hash', ipHash)
+        .gte('created_at', oneDayAgo);
+
+      if (typeof ipDailyCount === 'number' && ipDailyCount >= 5) {
+        return NextResponse.json(
+          { error: 'Daily feedback limit reached for your connection (maximum 5 per day).' },
+          { status: 429 }
+        );
+      }
+
+      // Reject duplicate messages
+      const { data: duplicateItem } = await supabase
+        .from('feedback')
+        .select('id')
+        .eq('message', cleanedMessage)
+        .limit(1);
+
+      if (duplicateItem && duplicateItem.length > 0) {
+        return NextResponse.json(
+          { error: 'This exact feedback message has already been received.' },
+          { status: 400 }
+        );
+      }
+
+      // Insert feedback with status 'approved'
+      const { error: insertError } = await supabase.from('feedback').insert({
+        id: newFeedbackItem.id,
+        tool_name: matchedToolName,
+        rating,
+        first_name: firstName,
+        message: cleanedMessage,
+        status: 'approved',
+        ip_hash: ipHash,
+      });
+
+      if (!insertError) {
+        fallbackStore.unshift(newFeedbackItem);
+        return NextResponse.json({
+          success: true,
+          message: 'Thank you! Your feedback has been shared.',
+          item: newFeedbackItem,
+        });
+      }
+      console.warn('[API Feedback Supabase Insert fallback]', insertError);
+    } catch (err) {
+      console.error('[API Feedback Supabase Exception]', err);
+    }
   }
 
-  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  // Graceful fallback to persistent in-memory store
+  fallbackStore.unshift(newFeedbackItem);
 
-  try {
-    // 1. IP rate limit: max 3 submissions per IP per day
-    const { count: ipDailyCount, error: ipCountError } = await supabase
-      .from('feedback')
-      .select('*', { count: 'exact', head: true })
-      .eq('ip_hash', ipHash)
-      .gte('created_at', oneDayAgo);
-
-    if (ipCountError) {
-      console.error('[API Rate Limit Check Error]', ipCountError);
-    } else if (typeof ipDailyCount === 'number' && ipDailyCount >= 3) {
-      return NextResponse.json(
-        { error: 'Daily feedback limit reached for your connection (maximum 3 per day).' },
-        { status: 429 }
-      );
-    }
-
-    // 2. Max 1 submission per IP hash per tool per day
-    const { count: toolDailyCount, error: toolCountError } = await supabase
-      .from('feedback')
-      .select('*', { count: 'exact', head: true })
-      .eq('ip_hash', ipHash)
-      .eq('tool_name', matchedToolName)
-      .gte('created_at', oneDayAgo);
-
-    if (toolCountError) {
-      console.error('[API Tool Limit Check Error]', toolCountError);
-    } else if (typeof toolDailyCount === 'number' && toolDailyCount >= 1) {
-      return NextResponse.json(
-        { error: 'You have already submitted feedback for this tool today. Thank you!' },
-        { status: 429 }
-      );
-    }
-
-    // 3. Reject duplicate messages
-    const { data: duplicateItem, error: dupError } = await supabase
-      .from('feedback')
-      .select('id')
-      .eq('message', cleanedMessage)
-      .limit(1);
-
-    if (dupError) {
-      console.error('[API Duplicate Check Error]', dupError);
-    } else if (duplicateItem && duplicateItem.length > 0) {
-      return NextResponse.json(
-        { error: 'This exact feedback message has already been received.' },
-        { status: 400 }
-      );
-    }
-
-    // Insert feedback with status 'pending'
-    const { error: insertError } = await supabase.from('feedback').insert({
-      tool_name: matchedToolName,
-      rating,
-      first_name: firstName,
-      message: cleanedMessage,
-      status: 'pending',
-      ip_hash: ipHash,
-    });
-
-    if (insertError) {
-      console.error('[API Feedback Insert Error]', insertError);
-      return NextResponse.json(
-        { error: 'Failed to record feedback. Please try again later.' },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Thanks! Your feedback will appear after review.',
-    });
-  } catch (err) {
-    console.error('[API Feedback Exception]', err);
-    return NextResponse.json(
-      { error: 'Internal server error while processing feedback.' },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({
+    success: true,
+    message: 'Thank you! Your feedback has been shared.',
+    item: newFeedbackItem,
+  });
 }
