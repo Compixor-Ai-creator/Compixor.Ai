@@ -242,10 +242,15 @@ def is_barcode_or_stamp_garbage(text: str, conf: float) -> bool:
     """
     Detects barcode / stamp OCR hallucinations such as 'دعہد[ء۱ہ٠٭ ءہ ٠ ۷' (under Student ID)
     even when they are 15-30 characters long.
+    Strictly exempts math expressions, questions, formulas, and numbers from being dropped or converted to image.
     """
     s = (text or "").strip()
     if not s:
         return True
+    # Exempt lines with math operators, numbers, or question markers from being dropped/flagged
+    if re.search(r"[0-9+\-×÷±=()\[\]/^√≤≥≠<>°%&πθα-ωA-Za-z_]", s):
+        if not bool(ARABIC_RE.search(s)):
+            return False
     if conf < MIN_SHORT_LINE_CONF and len(s) < MIN_SHORT_LINE_CHARS:
         return True
     has_arab = bool(ARABIC_RE.search(s))
@@ -583,6 +588,41 @@ def latex_to_unicode(text: str) -> str:
     t = t.replace("\\", "")
     t = t.replace("{", "").replace("}", "")
     return re.sub(r"[ \t]{2,}", " ", t).strip()
+
+
+def normalize_math_text(text: str) -> str:
+    """
+    Transforms ASCII/OCR math representations into clean, readable Unicode math symbols.
+    Never outputs image crops for math expressions.
+    """
+    if not text:
+        return ""
+    # First convert any LaTeX syntax to Unicode
+    t = latex_to_unicode(text)
+    # Common superscripts: x^2 -> x², x^3 -> x³, 10^-5 -> 10⁻⁵
+    t = re.sub(r"\^([0-9n+\-])", lambda m: _SUP.get(m.group(1), m.group(1)), t)
+    t = re.sub(r"\^\{([0-9n+\-]+)\}", lambda m: _to_script(m.group(1), _SUP, "^"), t)
+    # Common subscripts: x_1 -> x₁, a_n -> aₙ
+    t = re.sub(r"(?<=[A-Za-z0-9\)])_([0-9a-z])", lambda m: _SUB.get(m.group(1), m.group(1)), t)
+    t = re.sub(r"_\{([0-9a-z]+)\}", lambda m: _to_script(m.group(1), _SUB, "_"), t)
+    # Plus-minus
+    t = re.sub(r"\+\-|\+/-\b", "±", t)
+    # Multiplication sign between digits
+    t = re.sub(r"(?<=\d)\s*[xX*]\s*(?=\d)", " × ", t)
+    # Inequality signs
+    t = re.sub(r"\s*<=\s*", " ≤ ", t)
+    t = re.sub(r"\s*>=\s*", " ≥ ", t)
+    t = re.sub(r"\s*!=\s*", " ≠ ", t)
+    # Square root symbols
+    t = re.sub(r"\b([sS]qrt|SQRT)\s*\(", "√(", t)
+    t = re.sub(r"\b([sS]qrt|SQRT)\s*([0-9a-zA-Z])", r"√\2", t)
+    # Nice common fractions
+    t = re.sub(r"\b1/2\b", "½", t)
+    t = re.sub(r"\b1/4\b", "¼", t)
+    t = re.sub(r"\b3/4\b", "¾", t)
+    t = re.sub(r"\b1/3\b", "⅓", t)
+    t = re.sub(r"\b2/3\b", "⅔", t)
+    return t
 
 
 def mask_colored_annotations(bgr: np.ndarray, sat_thr: int = 120, val_min: int = 100) -> np.ndarray:
@@ -985,14 +1025,12 @@ def fill_table(tb: TableData, bgr: np.ndarray, ocr: OCR, dpi: float, ocr_bgr: Op
             r["text"] = _clean_ocr_typos("\n".join(cell_lines).strip())
 
             alnum = len(re.findall(r"\w", r["text"]))
-            if (
-                (r["conf"] < 30 and alnum < 4 and ink_ratio(crop) > 0.02 and crop.shape[0] > 24)
-                or (r.get("ai_failed") and (r["conf"] < IMAGE_FALLBACK_CONF or is_garbled_urdu(r["text"], r["conf"])) and ink_ratio(crop) > 0.015)
-            ):
+            # Only convert to image if crop is genuinely a photo/face/barcode, NEVER for textual or math content
+            if is_photo(crop) and alnum < 2 and ink_ratio(crop) > 0.04 and crop.shape[0] > 35:
                 save_debug_crop("cell_img_fallback", crop, f"conf_{int(r['conf'])}")
                 cell.img = crop.copy()
                 return
-            cell.text = r["text"].strip()
+            cell.text = normalize_math_text(r["text"].strip())
             if r["h"] > 0:
                 cell.pt = float(min(14.0, max(7.5, round(r["h"] * 72.0 / dpi * 2) / 2)))
             if is_rtl(cell.text):
@@ -1106,23 +1144,32 @@ def find_pictures(masked_gray: np.ndarray, bgr: np.ndarray) -> List[Tuple[int, i
         p = 4
         add_box((max(0, x - p), max(0, y - p), min(W, x + w + p), min(H, y + h + p)))
 
-    # 3. High-contrast B&W Crests / Logos / QR codes in top header area
-    top_h = int(H * 0.26)
+    # 3. Smart College / School Crests & Logos in top header area (exam paper headers)
+    top_h = int(H * 0.30)
     _, bw = cv2.threshold(norm[:top_h, :], 190, 255, cv2.THRESH_BINARY_INV)
     logo_blob = cv2.morphologyEx(bw, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
     l_cnts, _ = cv2.findContours(logo_blob, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    min_logo_dim = max(35, int(W * 0.03))
     for c in l_cnts:
         x, y, w, h = cv2.boundingRect(c)
-        if not (min_side <= w <= W * 0.22 and min_side <= h <= H * 0.18):
+        if not (min_logo_dim <= w <= int(W * 0.38) and min_logo_dim <= h <= int(H * 0.24)):
             continue
-        if not (0.68 <= w / float(h) <= 1.45):
+        aspect = w / float(h)
+        # Accepts circular seals, shield crests, and horizontal institution emblem banners
+        if not (0.45 <= aspect <= 2.80):
             continue
-        ink_density = float((bw[y:y + h, x:x + w] > 0).mean())
-        if 0.18 <= ink_density <= 0.78:
-            p = 4
-            add_box((max(0, x - p), max(0, y - p), min(W, x + w + p), min(H, y + h + p)))
+        crop_bw = bw[y:y + h, x:x + w]
+        ink_density = float((crop_bw > 0).mean())
+        if 0.10 <= ink_density <= 0.85:
+            area = cv2.contourArea(c)
+            hull = cv2.convexHull(c)
+            hull_area = cv2.contourArea(hull)
+            solidity = float(area / hull_area) if hull_area > 0 else 0.0
+            if solidity >= 0.15 or ink_density >= 0.18:
+                p = 4
+                add_box((max(0, x - p), max(0, y - p), min(W, x + w + p), min(H, y + h + p)))
 
-    # 4. Dark ink blobs without text-line banding (signatures / portraits missed by mid-tones)
+    # 4. Signatures / Rubber Stamps (strictly exempting any math diagrams or question text)
     _, dark = cv2.threshold(norm, 120, 255, cv2.THRESH_BINARY_INV)
     dblob = cv2.morphologyEx(dark, cv2.MORPH_CLOSE, np.ones((15, 15), np.uint8))
     d_cnts, _ = cv2.findContours(dblob, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -1136,10 +1183,18 @@ def find_pictures(masked_gray: np.ndarray, bgr: np.ndarray) -> List[Tuple[int, i
         ink = float((sub_dark > 0).mean())
         if not (0.05 <= ink <= 0.55):
             continue
-        if float((sub_dark.sum(axis=1) == 0).mean()) > 0.20:
+        if float((sub_dark.sum(axis=1) == 0).mean()) > 0.15:
             continue
         if float(masked_gray[y:y + h, x:x + w].std()) < 45:
             continue
+        # Verify region does not contain readable math questions, equations or numbers
+        crop_gray = masked_gray[y:y + h, x:x + w]
+        try:
+            sample_txt = pytesseract.image_to_string(crop_gray, config="--psm 6 -l eng")
+            if len(re.findall(r"[A-Za-z0-9+\-×÷±=()\[\]/^√≤≥≠]", sample_txt)) >= 3:
+                continue  # Contains textual questions or math symbols -> keep as editable text
+        except Exception:
+            pass
         p = 4
         add_box((max(0, x - p), max(0, y - p), min(W, x + w + p), min(H, y + h + p)))
 
@@ -1265,9 +1320,7 @@ def page_paragraphs(masked: np.ndarray, bgr: np.ndarray, ocr: OCR, dpi: float, o
                 continue
 
             if is_barcode_or_stamp_garbage(raw_ltxt, raw_lconf):
-                rescue = len(ARABIC_LETTER_RE.findall(raw_ltxt)) >= 4 or raw_lconf < 30
-                if not rescue and lcrop.size:
-                    rescue = is_photo(lcrop)
+                rescue = is_photo(lcrop) if lcrop.size else False
                 if rescue and lcrop.size and has_ink(lcrop):
                     line_items.append([lx0, ly0, lx1, ly1, "", 0.0, float(ly1 - ly0), True])
                 else:
@@ -1280,9 +1333,7 @@ def page_paragraphs(masked: np.ndarray, bgr: np.ndarray, ocr: OCR, dpi: float, o
                     continue
                 if is_barcode_or_stamp_garbage(stxt, sconf):
                     scrop = bgr[max(0, sy0 - 3):min(H, sy1 + 3), max(0, sx0 - 3):min(W, sx1 + 3)]
-                    rescue = len(ARABIC_LETTER_RE.findall(stxt)) >= 4 or sconf < 30
-                    if not rescue and scrop.size:
-                        rescue = is_photo(scrop)
+                    rescue = is_photo(scrop) if scrop.size else False
                     if rescue and scrop.size and has_ink(scrop):
                         line_items.append([sx0, sy0, sx1, sy1, "", 0.0, shmed, True])
                     continue
@@ -1328,7 +1379,7 @@ def page_paragraphs(masked: np.ndarray, bgr: np.ndarray, ocr: OCR, dpi: float, o
         p = 6
         crop = bgr[max(0, y0 - p):min(H, y1 + p), max(0, x0 - p):min(W, x1 + p)]  # ORIGINAL (embedded / fallback)
         ocr_crop = (ocr_bgr if ocr_bgr is not None else bgr)[max(0, y0 - p):min(H, y1 + p), max(0, x0 - p):min(W, x1 + p)]
-        if force_img:
+        if force_img and crop.size and is_photo(crop):
             return ("image", "", crop.copy())
         lang2 = ocr._retess_lang(text)
         if lang2 and lang2 != ocr.lang and crop.size:
@@ -1348,14 +1399,15 @@ def page_paragraphs(masked: np.ndarray, bgr: np.ndarray, ocr: OCR, dpi: float, o
                 if t is not None:
                     lines_clean = [ln.strip() for ln in t.splitlines() if ln.strip()]
                     if lines_clean:
-                        return ("text", _clean_ocr_typos("\n".join(lines_clean)), None)
-            if (conf < IMAGE_FALLBACK_CONF or is_garbled_urdu(text, conf) or right_side_lowconf) and crop.size and has_ink(crop):
+                        return ("text", normalize_math_text(_clean_ocr_typos("\n".join(lines_clean))), None)
+            # Only genuine unreadable Nastaleeq when ocr.urdu is active may fall back to image; never math or english
+            if ocr.urdu and (is_garbled_urdu(text, conf) or right_side_lowconf) and crop.size and has_ink(crop) and not re.search(r"[0-9+\-×÷±=()\[\]/^√≤≥≠]", text):
                 save_debug_crop("para_img_fallback", crop, f"c{int(conf)}_{text[:15]}")
                 return ("image", "", crop.copy())
-        elif conf < 38 and crop.size and ink_ratio(crop) > 0.02:
+        elif conf < 25 and crop.size and is_photo(crop):
             save_debug_crop("para_lowconf_img", crop, f"c{int(conf)}")
             return ("image", "", crop.copy())
-        return ("text", text, None)
+        return ("text", normalize_math_text(_clean_ocr_typos(text)), None)
 
     with ThreadPoolExecutor(max_workers=OCR_WORKERS) as ex:
         results = list(ex.map(refine, raw))
