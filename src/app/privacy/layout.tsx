@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Client-Side Local Processing Architecture | Compixor AI',
+  title: 'Privacy Policy',
   description:
     'Read Compixor AI privacy policy. Discover our zero-server architecture: files are processed entirely in your browser with zero uploads and zero data retention.',
   alternates: {

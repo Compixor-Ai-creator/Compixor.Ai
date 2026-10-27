@@ -56,7 +56,7 @@ const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
   },
   'unlock-pdf': {
     title: 'How to Unlock Password Protected PDF Files Online Free',
-    href: '/blog/unlock-password-protected-pdf-online',
+    href: '/blog/how-to-remove-password-from-pdf',
   },
   'add-watermark': {
     title: 'How to Add Watermark to PDF Documents Online Free',
@@ -64,11 +64,11 @@ const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
   },
   'remove-watermark': {
     title: 'How to Remove Watermark from PDF Online Free',
-    href: '/blog/how-to-remove-watermark-from-pdf',
+    href: '/blog/remove-watermark-from-pdf-cleanly',
   },
   'word-compressor': {
     title: 'How to Compress Word Documents Online Free Without Losing Quality',
-    href: '/blog/how-to-compress-word-documents',
+    href: '/blog/how-to-compress-word-docx-files',
   },
   'pdf-to-word': {
     title: 'Convert PDF to Editable Word Online Free (Preserve Formatting & Tables)',

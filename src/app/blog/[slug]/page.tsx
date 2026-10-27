@@ -61,6 +61,9 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   ScanText,
 };
 
+// Unknown blog slugs return immediate HTTP 404
+export const dynamicParams = false;
+
 // Statically pre-render all 12 blog posts for instant TTFB & SEO
 export async function generateStaticParams() {
   return getAllBlogSlugs().map((slug) => ({
@@ -73,8 +76,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const blog = getBlogBySlug(params.slug);
   if (!blog) {
     return {
-      title: 'Article Not Found | Compixor AI',
-      description: 'The requested guide could not be found.',
+      title: 'Page Not Found | Compixor AI',
+      robots: { index: false, follow: false },
     };
   }
 
@@ -714,6 +717,8 @@ export default function BlogPostPage({ params }: PageProps) {
                           alt="A5 passport photo sheet with 6 Pakistan NADRA 35x45mm photos, corner cut marks, and 300 DPI layout"
                           width={1000}
                           height={700}
+                          sizes="(max-width: 768px) 100vw, 768px"
+                          loading="lazy"
                           className="w-full h-auto rounded-xl object-contain shadow-md"
                         />
                       </div>

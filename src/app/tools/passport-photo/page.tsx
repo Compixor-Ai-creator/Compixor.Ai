@@ -115,43 +115,153 @@ export default function PassportPhotoPage() {
           </div>
         </div>
 
-        {/* C5: Passport photo sizes for other countries */}
+        {/* C5: Official Passport Photo Size by Country & Requirements Matrix */}
         <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm space-y-5">
-          <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
-            Passport photo sizes for other countries
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-            Official millimeter and pixel specifications for international passport and visa applications.
-          </p>
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              Biometric Dimension Guide
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+              Passport Photo Size by Country (Requirements Matrix)
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              Official physical millimeter dimensions, inch equivalents, 300/600 DPI digital pixel counts, approved backgrounds, and biometric head positioning rules for all 9 built-in country presets.
+            </p>
+          </div>
 
           <div className="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800">
-            <table className="w-full text-left text-xs sm:text-sm">
+            <table className="w-full text-left text-xs sm:text-sm min-w-[720px]">
               <thead className="bg-zinc-50 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 font-semibold">
                 <tr>
-                  <th className="py-3 px-4">Country</th>
-                  <th className="py-3 px-4">Document</th>
-                  <th className="py-3 px-4">Size (mm)</th>
-                  <th className="py-3 px-4">Size (px @ 300 DPI)</th>
+                  <th className="py-3.5 px-4">Country &amp; Flag</th>
+                  <th className="py-3.5 px-4">Document Type</th>
+                  <th className="py-3.5 px-4">Physical Size (mm &amp; in)</th>
+                  <th className="py-3.5 px-4">Digital Pixels (300 / 600 DPI)</th>
+                  <th className="py-3.5 px-4">Background</th>
+                  <th className="py-3.5 px-4">Biometric Head Rule</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
-                {otherCountryPresets.map((preset) => (
-                  <tr key={preset.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition">
-                    <td className="py-3 px-4 font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
-                      <span>{preset.flag}</span>
-                      <span>{preset.country}</span>
-                    </td>
-                    <td className="py-3 px-4">{preset.name}</td>
-                    <td className="py-3 px-4 font-mono font-bold text-brand-600 dark:text-brand-400">
-                      {preset.widthMm} × {preset.heightMm} mm
-                    </td>
-                    <td className="py-3 px-4 font-mono text-zinc-500 dark:text-zinc-400">
-                      {preset.widthPx} × {preset.heightPx} px
-                    </td>
-                  </tr>
-                ))}
+                {standardPresets.map((preset) => {
+                  const widthInches = (preset.widthMm / 25.4).toFixed(2);
+                  const heightInches = (preset.heightMm / 25.4).toFixed(2);
+                  const px600W = preset.widthPx * 2;
+                  const px600H = preset.heightPx * 2;
+                  const bgLabel = preset.id === 'philippines-passport' 
+                    ? 'Royal Blue' 
+                    : preset.id === 'pakistan-passport' 
+                    ? 'White / Light Blue' 
+                    : preset.allowedBgColors.includes('#f1f5f9') 
+                    ? 'White / Light Grey' 
+                    : 'Solid White';
+
+                  return (
+                    <tr key={preset.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition">
+                      <td className="py-3.5 px-4 font-semibold text-zinc-900 dark:text-white">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{preset.flag}</span>
+                          <span>{preset.country}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 font-medium">{preset.name}</td>
+                      <td className="py-3.5 px-4 font-mono font-bold text-brand-600 dark:text-brand-400 whitespace-nowrap">
+                        {preset.widthMm} × {preset.heightMm} mm
+                        <span className="block text-[11px] font-normal text-zinc-500 dark:text-zinc-400">
+                          {widthInches}&quot; × {heightInches}&quot;
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-xs whitespace-nowrap">
+                        <span className="font-semibold text-zinc-900 dark:text-zinc-200">{preset.widthPx} × {preset.heightPx}</span> (300 DPI)
+                        <span className="block text-[11px] text-zinc-500 dark:text-zinc-400">{px600W} × {px600H} (600 DPI)</span>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="inline-block px-2 py-0.5 rounded-full text-[11px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-zinc-700/60 whitespace-nowrap">
+                          {bgLabel}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-xs text-zinc-600 dark:text-zinc-400">
+                        {preset.biometricSpec.specSummary}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* C5.5: Official Biometric Do's and Don'ts */}
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm space-y-6">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+              Official Passport Photo Do&apos;s and Don&apos;ts
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              Follow these international ICAO 9303 standards to guarantee your photo passes embassy and digital portal automated biometric checks.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* DO's */}
+            <div className="p-5 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-500/30 space-y-3.5">
+              <h3 className="font-bold text-sm sm:text-base text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+                <Check className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                What You Must Do (Do&apos;s)
+              </h3>
+              <ul className="space-y-2.5 text-xs sm:text-sm text-emerald-900/90 dark:text-emerald-200/90">
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold shrink-0 mt-0.5">✓</span>
+                  <span><strong>Neutral Facial Expression:</strong> Keep both eyes open, mouth closed, and look directly at camera lens without tilting.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold shrink-0 mt-0.5">✓</span>
+                  <span><strong>Balanced Ambient Lighting:</strong> Ensure even light across both cheeks without harsh shadows on face or background.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold shrink-0 mt-0.5">✓</span>
+                  <span><strong>High-Contrast Plain Clothing:</strong> Wear dark or colored shirts that stand out against the white or blue background.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold shrink-0 mt-0.5">✓</span>
+                  <span><strong>Visible Facial Outlines:</strong> Keep hair tucked behind ears so both cheeks, jawline, and forehead remain visible.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold shrink-0 mt-0.5">✓</span>
+                  <span><strong>100% Print Scaling:</strong> Always select &quot;Actual size&quot; or &quot;100% scale&quot; when printing sheets to preserve millimeter accuracy.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* DON'Ts */}
+            <div className="p-5 rounded-2xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-500/30 space-y-3.5">
+              <h3 className="font-bold text-sm sm:text-base text-rose-800 dark:text-rose-300 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0" />
+                What to Avoid (Don&apos;ts)
+              </h3>
+              <ul className="space-y-2.5 text-xs sm:text-sm text-rose-900/90 dark:text-rose-200/90">
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold shrink-0 mt-0.5">✗</span>
+                  <span><strong>No Smiling or Frowning:</strong> Never show teeth, squint, or raise eyebrows; facial recognition algorithms require neutral muscles.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold shrink-0 mt-0.5">✗</span>
+                  <span><strong>No Eyeglasses with Reflections:</strong> Avoid flash reflections, dark tinted lenses, or heavy frames that obscure the eyes.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold shrink-0 mt-0.5">✗</span>
+                  <span><strong>No Camouflage or Uniforms:</strong> Do not wear official military or law enforcement attire, or pure white tops that blend into the wall.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold shrink-0 mt-0.5">✗</span>
+                  <span><strong>No Retouching or Filters:</strong> Embassies reject photos modified with skin smoothing, face-slimming, or social media filters.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold shrink-0 mt-0.5">✗</span>
+                  <span><strong>No &quot;Fit to Page&quot; Printing:</strong> Avoid printer software scaling down your sheet, as this distorts the legal 35×45 or 51×51 mm dimensions.</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 

@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   },
   title: {
     default: homepageSeoData.title,
-    template: '%s | Compixor AI — Private PDF & Image Tools',
+    template: '%s | Compixor AI',
   },
   description: homepageSeoData.description,
   keywords: homepageSeoData.keywords,

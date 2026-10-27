@@ -176,11 +176,14 @@ export default function Navbar() {
                   />
                 </button>
 
-                {/* Dropdown Floating Menu */}
-                {pdfDropdownOpen && (
-                  <div
-                    className="absolute left-0 mt-2.5 w-[560px] rounded-[20px] p-4 sm:p-5 z-50 dropdown-glass animate-in fade-in slide-in-from-top-2 duration-200"
-                  >
+                {/* Dropdown Floating Menu (Always rendered in SSR DOM for search spiders) */}
+                <div
+                  className={`absolute left-0 mt-2.5 w-[560px] rounded-[20px] p-4 sm:p-5 z-50 dropdown-glass transition-all duration-200 ${
+                    pdfDropdownOpen
+                      ? 'opacity-100 visible translate-y-0 pointer-events-auto'
+                      : 'opacity-0 invisible -translate-y-2 pointer-events-none'
+                  }`}
+                >
                       {/* Top Header Tag */}
                       <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-white/60 dark:border-white/10">
                         <div className="flex items-center gap-2">
@@ -326,7 +329,6 @@ export default function Navbar() {
                         </Link>
                       </div>
                     </div>
-                  )}
               </div>
 
               {/* Word Tools Unified Dropdown */}
@@ -356,10 +358,14 @@ export default function Navbar() {
                   />
                 </button>
 
-                {wordDropdownOpen && (
-                  <div
-                    className="absolute left-0 mt-2.5 w-[380px] rounded-[20px] p-4 sm:p-5 z-50 dropdown-glass animate-in fade-in slide-in-from-top-2 duration-200"
-                  >
+                {/* Word Dropdown (Always rendered in SSR DOM for search spiders) */}
+                <div
+                  className={`absolute left-0 mt-2.5 w-[380px] rounded-[20px] p-4 sm:p-5 z-50 dropdown-glass transition-all duration-200 ${
+                    wordDropdownOpen
+                      ? 'opacity-100 visible translate-y-0 pointer-events-auto'
+                      : 'opacity-0 invisible -translate-y-2 pointer-events-none'
+                  }`}
+                >
                       {/* Top Header Tag */}
                       <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/60 dark:border-white/10">
                         <div className="flex items-center gap-2">
@@ -438,7 +444,6 @@ export default function Navbar() {
                         <span className="font-semibold text-brand-600 dark:text-brand-400">Fast &amp; Secure</span>
                       </div>
                     </div>
-                  )}
               </div>
 
               {/* Remaining Top-Level Nav Links */}

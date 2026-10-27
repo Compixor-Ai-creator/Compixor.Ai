@@ -185,15 +185,16 @@ export default function HomePage() {
                   letterSpacing: '-0.02em',
                 }}
               >
-                <span className="block whitespace-nowrap">
+                <span className="sr-only">Free Private PDF, Word & Photo Tools That Run in Your Browser</span>
+                <span aria-hidden="true" className="block whitespace-nowrap">
                   <span className="text-zinc-900 dark:text-white">Transform{' '}</span>
                   <span className="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent">
                     Your Files.
                   </span>
                 </span>
-                <span className="block max-w-full">
+                <span aria-hidden="true" className="block max-w-full">
                   <span className="inline-flex flex-wrap items-baseline gap-x-[0.25em] gap-y-1 sm:whitespace-nowrap">
-                    <span className="text-zinc-900 dark:text-white">Privacy</span>
+                    <span className="text-zinc-900 dark:text-white">Privacy </span>
                     <ContainerTextFlip
                       words={['First.', 'Guaranteed.', 'Protected.']}
                       interval={3000}

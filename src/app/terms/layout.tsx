@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — Free Client-Side Utilities | Compixor AI',
+  title: 'Terms of Service',
   description:
     'Read Compixor AI terms of service. Learn about permitted use, zero-upload architecture, and full copyright ownership of your processed documents and assets.',
   alternates: {

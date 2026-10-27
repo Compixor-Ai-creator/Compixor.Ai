@@ -969,9 +969,9 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'passport-photo',
     name: 'Passport Photo Maker',
     icon: IdCard,
-    title: 'Passport Size Photo Maker Online Free - 300 DPI | Compixor',
+    title: 'Passport Size Photo Maker Online Free | Compixor',
     description:
-      'Free passport size photo maker online. Create compliant 35x45 mm, NADRA CNIC & 2x2 inch photos. Print on A4, A5 & A6 sheets at 300 DPI with crop marks.',
+      'Free passport size photo maker online. Create compliant 35x45 mm, NADRA CNIC and 2x2 inch photos. Print on A4, A5 and A6 sheets at 300 DPI with crop marks.',
     canonicalUrl: `${BASE_URL}/tools/passport-photo`,
     primaryKeyword: 'passport size photo maker online free',
     searchIntent:

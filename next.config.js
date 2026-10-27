@@ -62,6 +62,22 @@ const nextConfig = {
 
   async redirects() {
     return [
+      // 301 Permanent Blog Slugs Redirects (Screaming Frog crawl fix)
+      {
+        source: '/blog/how-to-compress-word-documents',
+        destination: '/blog/how-to-compress-word-docx-files',
+        permanent: true,
+      },
+      {
+        source: '/blog/how-to-remove-watermark-from-pdf',
+        destination: '/blog/remove-watermark-from-pdf-cleanly',
+        permanent: true,
+      },
+      {
+        source: '/blog/unlock-password-protected-pdf-online',
+        destination: '/blog/how-to-remove-password-from-pdf',
+        permanent: true,
+      },
       // 301 Permanent Domain Redirects: old Vercel domain -> new official domain
       {
         source: '/:path*',
