@@ -50,36 +50,13 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* PDF Tools Category Hub */}
+          {/* Tools */}
           <div>
             <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
-              PDF Document Tools
+              Tools Suite
             </p>
             <ul className="space-y-3">
-              {tools.filter(t => t.href.includes('pdf') || t.href.includes('watermark')).map((tool) => {
-                const Icon = tool.navIcon || tool.icon;
-                return (
-                  <li key={tool.href}>
-                    <Link
-                      href={tool.href}
-                      className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors flex items-center gap-2 group"
-                    >
-                      <Icon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-brand-500 transition-colors shrink-0" aria-hidden="true" />
-                      <span>{tool.name}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          {/* Word, Photo & QR Tools Category Hub */}
-          <div>
-            <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
-              Word, Photo &amp; QR
-            </p>
-            <ul className="space-y-3">
-              {tools.filter(t => !t.href.includes('pdf') && !t.href.includes('watermark')).map((tool) => {
+              {tools.map((tool) => {
                 const Icon = tool.navIcon || tool.icon;
                 return (
                   <li key={tool.href}>
