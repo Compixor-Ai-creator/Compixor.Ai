@@ -176,8 +176,14 @@ export default function HomePage() {
                 </span>
               </motion.div>
 
-              {/* Headline (Instant paint at opacity 1 — NO element render delay for LCP) */}
-              <h1
+              {/* Single Clean Sentence H1 for Crawlers & Accessibility */}
+              <h1 className="sr-only">
+                Free Private PDF, Word &amp; Photo Tools That Run in Your Browser
+              </h1>
+
+              {/* Visual Display Heading (Preserves Exact Styling & Animation) */}
+              <div
+                aria-hidden="true"
                 className="font-black font-display mb-6 tracking-tight"
                 style={{
                   fontSize: 'clamp(2rem, 5.2vw, 4.25rem)',
@@ -185,9 +191,8 @@ export default function HomePage() {
                   letterSpacing: '-0.02em',
                 }}
               >
-                <span className="sr-only">Free Private PDF, Word & Photo Tools That Run in Your Browser</span>
-                <span aria-hidden="true" className="block whitespace-nowrap">
-                  <span className="text-zinc-900 dark:text-white">Transform{' '}</span>
+                <span className="block whitespace-nowrap">
+                  <span className="text-zinc-900 dark:text-white">Transform </span>
                   <span className="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent">
                     Your Files.
                   </span>
@@ -202,7 +207,7 @@ export default function HomePage() {
                     />
                   </span>
                 </span>
-              </h1>
+              </div>
 
               {/* Subheadline (Instant paint at opacity 1 — ZERO delay for Google Lighthouse LCP) */}
               <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mb-8 leading-relaxed">

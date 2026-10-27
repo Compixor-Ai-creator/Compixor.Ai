@@ -165,7 +165,7 @@ export default function BlogSection() {
                             src={blog.thumbnail}
                             alt={blog.title}
                             fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            sizes="(max-width: 768px) 100vw, 400px"
                             className="object-cover"
                           />
                         </div>

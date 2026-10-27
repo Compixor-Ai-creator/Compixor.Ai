@@ -44,7 +44,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -60,7 +60,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -76,7 +76,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -91,7 +91,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -107,7 +107,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -123,7 +123,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -139,7 +139,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -155,7 +155,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -171,7 +171,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -187,7 +187,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1200px) 100vw, 1200px"
+          sizes="(max-width: 1024px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>

@@ -76,7 +76,7 @@ export default function BlogGrid({ blogs }: BlogGridProps) {
                     alt={blog.title}
                     width={800}
                     height={450}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, 400px"
                     className="w-full h-full object-cover"
                   />
                 </div>

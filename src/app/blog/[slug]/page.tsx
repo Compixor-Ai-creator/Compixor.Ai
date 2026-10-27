@@ -584,7 +584,7 @@ export default function BlogPostPage({ params }: PageProps) {
                           alt="PDF Compression Efficiency Benchmark: Text, Color Scan, B&W Scan, CAD Drawing"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 768px) 100vw, 768px"
+                          sizes="(max-width: 1024px) 100vw, 800px"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -606,7 +606,7 @@ export default function BlogPostPage({ params }: PageProps) {
                           alt="Mixed Raster Content (MRC) 3-Layer Decomposition Architecture"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 768px) 100vw, 768px"
+                          sizes="(max-width: 1024px) 100vw, 800px"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -628,7 +628,7 @@ export default function BlogPostPage({ params }: PageProps) {
                           alt="PDF Watermark Architecture Comparison: Text Watermark vs Image Watermark (ISO 32000 Standard)"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 768px) 100vw, 768px"
+                          sizes="(max-width: 1024px) 100vw, 800px"
                           className="w-full h-full object-contain sm:object-cover"
                         />
                       </div>
@@ -650,7 +650,7 @@ export default function BlogPostPage({ params }: PageProps) {
                           alt="PDF Security Architecture Visualized: Encrypt, Watermark, and Flatten (ISO 32000 Standard)"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 768px) 100vw, 768px"
+                          sizes="(max-width: 1024px) 100vw, 800px"
                           className="w-full h-full object-contain sm:object-cover"
                         />
                       </div>
@@ -673,7 +673,7 @@ export default function BlogPostPage({ params }: PageProps) {
                           width={1200}
                           height={675}
                           priority
-                          sizes="(max-width: 768px) 100vw, 768px"
+                          sizes="(max-width: 1024px) 100vw, 800px"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -695,7 +695,7 @@ export default function BlogPostPage({ params }: PageProps) {
                           alt="Aspect Ratio Comparison: 9:16 Portrait Forced Square Crop vs 1:1 Expanded Canvas with Circular Safe Zone"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 768px) 100vw, 768px"
+                          sizes="(max-width: 1024px) 100vw, 800px"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -717,7 +717,7 @@ export default function BlogPostPage({ params }: PageProps) {
                           alt="A5 passport photo sheet with 6 Pakistan NADRA 35x45mm photos, corner cut marks, and 300 DPI layout"
                           width={1000}
                           height={700}
-                          sizes="(max-width: 768px) 100vw, 768px"
+                          sizes="(max-width: 1024px) 100vw, 800px"
                           loading="lazy"
                           className="w-full h-auto rounded-xl object-contain shadow-md"
                         />
@@ -1172,7 +1172,7 @@ export default function BlogPostPage({ params }: PageProps) {
                             alt={rel.title}
                             width={640}
                             height={360}
-                            sizes="(max-width: 768px) 100vw, 33vw"
+                            sizes="(max-width: 768px) 100vw, 400px"
                             className="w-full h-full object-cover"
                           />
                         </div>

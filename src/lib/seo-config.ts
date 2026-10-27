@@ -1462,7 +1462,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'img-to-word',
     name: 'Image to Word Converter',
     icon: ScanText,
-    title: 'Image to Word Converter Online Free — JPG PNG to DOCX | Compixor',
+    title: 'Image to Word Converter Online Free | Compixor',
     description:
       'Convert JPG, PNG, or WEBP images to editable Word .docx files free online. In-browser Tesseract OCR, zero upload, 10+ languages. Instant download, no signup.',
     canonicalUrl: `${BASE_URL}/tools/img-to-word`,
