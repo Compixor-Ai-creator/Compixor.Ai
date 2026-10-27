@@ -39,6 +39,13 @@ import RelatedToolsGrid from '@/components/RelatedToolsGrid';
 import PasswordComparisonVisual from '@/components/PasswordComparisonVisual';
 import DocumentLayersVisual from '@/components/DocumentLayersVisual';
 import PassportBeforeAfter from '@/components/PassportBeforeAfter';
+import {
+  LinkedInIcon,
+  TwitterXIcon,
+  WhatsAppIcon,
+  FacebookIcon,
+} from '@/components/SocialIcons';
+import { getShareUrls } from '@/lib/config';
 
 interface PageProps {
   params: {
@@ -151,6 +158,7 @@ export default function BlogPostPage({ params }: PageProps) {
   const IconComponent = iconMap[blog.icon] || FileText;
   const relatedArticles = getRelatedBlogs(blog.slug, 3);
   const canonicalUrl = blog.canonicalUrl || `https://compixor-ai.cloud/blog/${blog.slug}`;
+  const shareUrls = getShareUrls(canonicalUrl, blog.title);
 
   const hasInContentFaqs = blog.content.sections.some((s) => s.heading === 'Frequently Asked Questions');
   const hasInContentSteps = blog.content.sections.some((s) => s.orderedList && s.orderedList.length > 0);
@@ -1035,8 +1043,14 @@ export default function BlogPostPage({ params }: PageProps) {
             <div className="my-10 glass-card p-6 sm:p-7 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-900/60 not-prose">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200/70 dark:border-zinc-800/70">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-600 to-indigo-600 text-white font-black flex items-center justify-center text-base shadow-md">
-                    CA
+                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 shadow-md flex items-center justify-center">
+                    <Image
+                      src="/images/compixor-badge.png"
+                      alt="Compixor AI Team"
+                      width={48}
+                      height={48}
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                   <div>
                     <p className="font-bold text-sm text-zinc-900 dark:text-white m-0">
@@ -1080,34 +1094,46 @@ export default function BlogPostPage({ params }: PageProps) {
                     ? 'Standards strictly mapped against ISO/IEC 19794-5 & ICAO Doc 9303 consular biometric criteria.'
                     : 'Engineered for privacy and performance. All file buffers are processed in client-side RAM and never stored.'}
                 </p>
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="font-semibold text-zinc-800 dark:text-zinc-200">Share this guide:</span>
+                <div className="flex items-center gap-2.5 shrink-0 overflow-visible">
+                  <span className="font-semibold text-zinc-800 dark:text-zinc-200 text-xs sm:text-sm mr-1">Share this guide:</span>
                   <a
-                    href={`https://x.com/intent/tweet?url=${encodeURIComponent(canonicalUrl)}&text=${encodeURIComponent(blog.title)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Share on X (Twitter)"
-                    className="w-7 h-7 rounded-lg bg-zinc-200/80 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-brand-500 dark:hover:text-brand-400 transition-colors font-bold text-xs"
-                  >
-                    𝕏
-                  </a>
-                  <a
-                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${blog.title} - ${canonicalUrl}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Share on WhatsApp"
-                    className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center hover:bg-emerald-500/30 transition-colors font-bold text-xs"
-                  >
-                    WA
-                  </a>
-                  <a
-                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`}
+                    href={shareUrls.linkedIn}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Share on LinkedIn"
-                    className="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-500/30 transition-colors font-bold text-xs"
+                    className="social-btn"
+                    style={{ '--glow': '#0A66C2' } as React.CSSProperties}
                   >
-                    in
+                    <LinkedInIcon className="w-[18px] h-[18px]" />
+                  </a>
+                  <a
+                    href={shareUrls.x}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Share on X"
+                    className="social-btn social-btn-x"
+                  >
+                    <TwitterXIcon className="w-[18px] h-[18px]" />
+                  </a>
+                  <a
+                    href={shareUrls.whatsApp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Share on WhatsApp"
+                    className="social-btn"
+                    style={{ '--glow': '#25D366' } as React.CSSProperties}
+                  >
+                    <WhatsAppIcon className="w-[18px] h-[18px]" />
+                  </a>
+                  <a
+                    href={shareUrls.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Share on Facebook"
+                    className="social-btn"
+                    style={{ '--glow': '#1877F2' } as React.CSSProperties}
+                  >
+                    <FacebookIcon className="w-[18px] h-[18px]" />
                   </a>
                 </div>
               </div>

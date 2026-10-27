@@ -110,42 +110,45 @@ export default function ShareToolButton({
             Share {toolName}
           </p>
 
-          <div className="grid grid-cols-4 gap-1.5 mb-2.5">
+          <div className="grid grid-cols-4 gap-1.5 mb-2.5 overflow-visible">
             <a
               href={shareUrls.linkedIn}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Share ${toolName} on LinkedIn`}
-              className="w-full h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[#0A66C2] hover:bg-brand-500/10 transition-colors"
+              className="social-btn !w-full !h-9"
+              style={{ '--glow': '#0A66C2' } as React.CSSProperties}
             >
-              <LinkedInIcon className="w-4 h-4" />
+              <LinkedInIcon className="w-[18px] h-[18px]" />
             </a>
             <a
               href={shareUrls.x}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Share ${toolName} on X`}
-              className="w-full h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-brand-500/10 transition-colors"
+              className="social-btn social-btn-x !w-full !h-9"
             >
-              <TwitterXIcon className="w-4 h-4" />
+              <TwitterXIcon className="w-[18px] h-[18px]" />
             </a>
             <a
               href={shareUrls.whatsApp}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Share ${toolName} on WhatsApp`}
-              className="w-full h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[#25D366] hover:bg-brand-500/10 transition-colors"
+              className="social-btn !w-full !h-9"
+              style={{ '--glow': '#25D366' } as React.CSSProperties}
             >
-              <WhatsAppIcon className="w-4 h-4" />
+              <WhatsAppIcon className="w-[18px] h-[18px]" />
             </a>
             <a
               href={shareUrls.facebook}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Share ${toolName} on Facebook`}
-              className="w-full h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[#1877F2] hover:bg-brand-500/10 transition-colors"
+              className="social-btn !w-full !h-9"
+              style={{ '--glow': '#1877F2' } as React.CSSProperties}
             >
-              <FacebookIcon className="w-4 h-4" />
+              <FacebookIcon className="w-[18px] h-[18px]" />
             </a>
           </div>
 
