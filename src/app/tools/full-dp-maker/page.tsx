@@ -45,6 +45,7 @@ import RelatedTools from '@/components/RelatedTools';
 import ClientSideTrustSection from '@/components/ClientSideTrustSection';
 import { DpMakerPreviewMockup } from '@/components/VisualProofMockup';
 import { WhatsAppIcon, InstagramIcon, FacebookIcon, TelegramIcon, TwitterXIcon, LinkedInIcon, YouTubeIcon } from '@/components/SocialIcons';
+import FullDpIcon from '@/components/FullDpIcon';
 
 type FillMode = 'blur' | 'color' | 'gradient' | 'mirror' | 'resize' | 'crop';
 type ImageFormat = 'image/jpeg' | 'image/png' | 'image/webp';
@@ -721,7 +722,7 @@ export default function FullDpMakerPage() {
         </div>
 
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/25 mb-4 animate-float-subtle shadow-xs">
-          <Sparkles className="w-3.5 h-3.5 text-brand-500 animate-spin-slow" />
+          <FullDpIcon variant="compact" size={16} className="w-4 h-4 text-brand-500 shrink-0" aria-hidden="true" />
           No Crop Profile Picture Maker
         </div>
 

@@ -107,7 +107,7 @@ export const blogsData: BlogItem[] = [
         title: "WhatsApp Full DP Maker",
         description: "Resize vertical smartphone portraits into uncropped 1:1 square profile avatars with ambient blur borders.",
         toolPath: "/tools/full-dp-maker",
-        icon: "Maximize2"
+        icon: "FullDp"
       },
       {
         title: "PDF Compressor",
@@ -308,7 +308,7 @@ export const blogsData: BlogItem[] = [
         title: "WhatsApp Full DP Maker",
         description: "Convert rectangular photos to 1:1 square avatars with frosted blur borders in browser RAM.",
         toolPath: "/tools/full-dp-maker",
-        icon: "Maximize2"
+        icon: "FullDp"
       },
       {
         title: "Passport Photo Maker",
@@ -515,7 +515,7 @@ export const blogsData: BlogItem[] = [
         title: "WhatsApp Full DP Maker",
         description: "Resize and fit full-size profile pictures for WhatsApp & Instagram without awkward cropping.",
         toolPath: "/tools/full-dp-maker",
-        icon: "Crop"
+        icon: "FullDp"
       },
       {
         title: "Protect PDF",

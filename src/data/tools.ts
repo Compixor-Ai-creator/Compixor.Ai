@@ -1,4 +1,8 @@
-import type { ComponentType } from 'react';
+import React, { type ComponentType } from 'react';
+import FullDpIcon from '@/components/FullDpIcon';
+
+const FullDpFullIcon = (props: any) => React.createElement(FullDpIcon, { variant: 'full', ...props });
+const FullDpCompactIcon = (props: any) => React.createElement(FullDpIcon, { variant: 'compact', ...props });
 import {
   FileArchive,
   Combine,
@@ -9,7 +13,6 @@ import {
   Unlock,
   ScanText,
   IdCard,
-  Crop,
   QrCode,
   FileDown,
   Files,
@@ -250,7 +253,8 @@ export const tools: ToolItem[] = [
     description: 'Resize & fit WhatsApp, Instagram & Facebook profile pictures without cropping (Blur background / 1:1 square canvas).',
     category: 'Media',
     processing: 'local',
-    icon: Crop,
+    icon: FullDpFullIcon,
+    navIcon: FullDpCompactIcon,
     gradient: 'from-violet-500 to-purple-600',
     color: 'from-violet-500 to-purple-600',
     badge: 'Featured',

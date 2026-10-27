@@ -25,7 +25,9 @@ import {
   ArrowRight,
   BookOpen,
 } from 'lucide-react';
-import { WhatsAppIcon } from '@/components/SocialIcons';
+import FullDpIcon from '@/components/FullDpIcon';
+
+const FullDpNavIcon = (props: any) => <FullDpIcon variant="compact" {...props} />;
 import {
   tools,
   pdfCategories,
@@ -38,7 +40,7 @@ import {
 
 const topLevelNavLinks = [
   { href: '/tools/passport-photo', label: 'Passport Photo Maker', icon: Camera },
-  { href: '/tools/full-dp-maker', label: 'Full DP Maker', icon: WhatsAppIcon },
+  { href: '/tools/full-dp-maker', label: 'Full DP Maker', icon: FullDpNavIcon },
   { href: '/tools/qr-generator', label: 'QR Generator', icon: QrCode },
   { href: '/blog', label: 'Blogs & Guides', icon: BookOpen },
   { href: '/about', label: 'About', icon: Info },

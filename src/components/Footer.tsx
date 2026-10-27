@@ -57,7 +57,7 @@ export default function Footer() {
             </p>
             <ul className="space-y-3">
               {tools.map((tool) => {
-                const Icon = tool.icon;
+                const Icon = tool.navIcon || tool.icon;
                 return (
                   <li key={tool.href}>
                     <Link

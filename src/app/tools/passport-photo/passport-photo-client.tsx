@@ -319,7 +319,7 @@ export default function PassportPhotoPage() {
     setPreviewTab('background');
     if (cachedCutoutCanvasRef.current || imageSrc) {
       setTimeout(() => {
-        autoAlignBiometric('preset-change');
+        autoAlignBiometric('preset-change', activeRequestIdRef.current);
       }, 50);
     }
   };
@@ -425,7 +425,22 @@ export default function PassportPhotoPage() {
   const [forceOnDevice, setForceOnDevice] = useState(false);
   const currentPhotoHashRef = useRef<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const activeRequestIdRef = useRef<number>(0);
+  const activeObjectUrlRef = useRef<string | null>(null);
+  const lastProcessedKeyRef = useRef<string | null>(null);
   const [faceDetected, setFaceDetected] = useState<boolean | null>(null);
+
+  // Component unmount cleanup
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+      if (activeObjectUrlRef.current) {
+        try {
+          URL.revokeObjectURL(activeObjectUrlRef.current);
+        } catch (_) {}
+      }
+    };
+  }, []);
 
   // UX and Mobile Adjust Mode state
   const [isAdjustMode, setIsAdjustMode] = useState(false);
@@ -452,6 +467,27 @@ export default function PassportPhotoPage() {
     lastAlignCause: 'none' as string,
     zoomDisplay: '100% (1.00x)' as string,
   });
+
+  // Atomic state reset helper (never shows toast automatically)
+  const clearTransformState = useCallback(() => {
+    setZoom(1);
+    setBaselineZoom(1);
+    setRotation(0);
+    setPanX(0);
+    setPanY(0);
+    setFlipH(false);
+    setIsAdjustMode(false);
+    setIsTooCloseWarning(false);
+    setBrightness(100);
+    setContrast(100);
+    setSaturation(100);
+    setEnableBgRemoval(true);
+    setBgFeather(1.2);
+    setBgChoke(0.6);
+    setEnableDecontamination(false);
+    setMattingProgress(null);
+    setPreviewTab('background');
+  }, []);
 
 
   // Sync debug mode and step=download query param on load
@@ -564,7 +600,10 @@ export default function PassportPhotoPage() {
 
 
     // STEP 2: Draw the subject (cutout or raw photo) with transforms
-    const subjectSource = enableBgRemoval ? cachedCutoutCanvasRef.current : imageElementRef.current;
+    // Fall back to raw image so preview canvas is NEVER left blank while background removal processes
+    const subjectSource = enableBgRemoval
+      ? (cachedCutoutCanvasRef.current || imageElementRef.current)
+      : imageElementRef.current;
     if (subjectSource) {
       const srcW = 'naturalWidth' in subjectSource ? (subjectSource as HTMLImageElement).naturalWidth : (subjectSource as HTMLCanvasElement).width;
       const srcH = 'naturalHeight' in subjectSource ? (subjectSource as HTMLImageElement).naturalHeight : (subjectSource as HTMLCanvasElement).height;
@@ -613,11 +652,18 @@ export default function PassportPhotoPage() {
   ]);
 
   // Face detection helper & Biometric Auto-Aligner (ICAO 9303 70-80% head height alignment)
-  const detectFaceBounds = async (canvas: HTMLCanvasElement): Promise<{ x: number; y: number; width: number; height: number } | null> => {
+  // Supports both HTMLCanvasElement (cutout) and HTMLImageElement (raw photo)
+  const detectFaceBounds = async (
+    source: HTMLCanvasElement | HTMLImageElement
+  ): Promise<{ x: number; y: number; width: number; height: number } | null> => {
+    const srcW = 'naturalWidth' in source ? (source.naturalWidth || source.width) : source.width;
+    const srcH = 'naturalHeight' in source ? (source.naturalHeight || source.height) : source.height;
+    if (srcW <= 0 || srcH <= 0) return null;
+
     if (typeof window !== 'undefined' && 'FaceDetector' in window) {
       try {
         const detector = new (window as any).FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
-        const faces = await detector.detect(canvas);
+        const faces = await detector.detect(source);
         if (faces && faces.length > 0) {
           const b = faces[0].boundingBox;
           return { x: b.x, y: b.y, width: b.width, height: b.height };
@@ -626,16 +672,39 @@ export default function PassportPhotoPage() {
       } catch (_) {}
     }
 
-    const w = canvas.width;
-    const h = canvas.height;
+    let scanCanvas: HTMLCanvasElement;
+    let w = srcW;
+    let h = srcH;
+
+    if ('getContext' in source) {
+      scanCanvas = source as HTMLCanvasElement;
+    } else {
+      scanCanvas = document.createElement('canvas');
+      const maxDim = 800;
+      if (w > maxDim || h > maxDim) {
+        const ratio = Math.min(maxDim / w, maxDim / h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      scanCanvas.width = w;
+      scanCanvas.height = h;
+      const ctx = scanCanvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return null;
+      ctx.drawImage(source, 0, 0, w, h);
+    }
+
     try {
-      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      const ctx = scanCanvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) return null;
       const data = ctx.getImageData(0, 0, w, h).data;
       let minY = h, maxY = 0, minX = w, maxX = 0;
+      let nonTransparentCount = 0;
+      const totalPixels = Math.floor(h / 4) * Math.floor(w / 4);
+
       for (let y = 0; y < h; y += 4) {
         for (let x = 0; x < w; x += 4) {
           if (data[(y * w + x) * 4 + 3] > 60) {
+            nonTransparentCount++;
             if (y < minY) minY = y;
             if (y > maxY) maxY = y;
             if (x < minX) minX = x;
@@ -644,14 +713,23 @@ export default function PassportPhotoPage() {
         }
       }
 
-      if (minY >= maxY || minX >= maxX) return null;
+      // If nearly all pixels are non-transparent (raw photo before background cutout),
+      // provide standard portrait head framing
+      if (nonTransparentCount > totalPixels * 0.85 || minY >= maxY || minX >= maxX) {
+        const scaleX = srcW / w;
+        const scaleY = srcH / h;
+        return {
+          x: Math.round(w * 0.25 * scaleX),
+          y: Math.round(h * 0.08 * scaleY),
+          width: Math.round(w * 0.50 * scaleX),
+          height: Math.round(h * 0.45 * scaleY),
+        };
+      }
 
       const subH = maxY - minY;
       const subW = maxX - minX;
 
       // RULE F: Full-body photo check:
-      // If subH > subW * 1.6 or subH > h * 0.72 (full body in frame), face is NOT clearly isolated.
-      // Do NOT crop onto torso/dress.
       if (subH > subW * 1.6 || (subH > h * 0.72 && subW < w * 0.55)) {
         return null;
       }
@@ -667,23 +745,37 @@ export default function PassportPhotoPage() {
         }
       }
 
-      if (topPixels > 50) {
-        return {
-          x: minX,
-          y: minY,
-          width: subW,
-          height: subH * 0.45,
-        };
-      }
+      const scaleX = srcW / w;
+      const scaleY = srcH / h;
+      return {
+        x: Math.round((minX + subW * 0.15) * scaleX),
+        y: Math.round(minY * scaleY),
+        width: Math.round((subW * 0.7) * scaleX),
+        height: Math.round((subH * 0.45) * scaleY),
+      };
     } catch (_) {}
     return null;
   };
 
-  const autoAlignBiometric = useCallback(async (cause: 'cutout-ready' | 'preset-change' | 'button' = 'button') => {
-    const canvas = cachedCutoutCanvasRef.current;
-    if (!canvas) return;
+  const autoAlignBiometric = useCallback(async (
+    cause: 'cutout-ready' | 'preset-change' | 'button' | 'new-photo' | 'reset-button' = 'button',
+    targetRequestId?: number
+  ) => {
+    if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) {
+      return;
+    }
 
-    const face = await detectFaceBounds(canvas);
+    const source = cachedCutoutCanvasRef.current || imageElementRef.current;
+    if (!source) return;
+
+    const face = await detectFaceBounds(source);
+    if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) {
+      return;
+    }
+
+    const srcW = 'naturalWidth' in source ? (source.naturalWidth || source.width) : source.width;
+    const srcH = 'naturalHeight' in source ? (source.naturalHeight || source.height) : source.height;
+
     if (!face) {
       setFaceDetected(false);
       setDebugStats((prev) => ({
@@ -698,15 +790,15 @@ export default function PassportPhotoPage() {
 
     setFaceDetected(true);
     const targetHeadH = activePreset.heightPx * (activePreset.biometricSpec.headHeightPercent / 100);
-    const faceHInPreset = face.height * (activePreset.heightPx / canvas.height);
+    const faceHInPreset = face.height * (activePreset.heightPx / srcH);
     let targetZoom = Math.max(0.6, Math.min(2.5, targetHeadH / Math.max(40, faceHInPreset)));
 
     // Biometric margins check: crown, chin, and ears margin >= 2% (0.02)
     // If crown or chin or ears clip the canvas at targetZoom, cap the zoom to fit the head
-    const crownMargin = face.y / canvas.height;
-    const chinMargin = (canvas.height - (face.y + face.height)) / canvas.height;
-    const leftEarMargin = face.x / canvas.width;
-    const rightEarMargin = (canvas.width - (face.x + face.width)) / canvas.width;
+    const crownMargin = face.y / srcH;
+    const chinMargin = (srcH - (face.y + face.height)) / srcH;
+    const leftEarMargin = face.x / srcW;
+    const rightEarMargin = (srcW - (face.x + face.width)) / srcW;
 
     let tooClose = false;
     if (crownMargin < 0.02 || chinMargin < 0.02 || leftEarMargin < 0.02 || rightEarMargin < 0.02) {
@@ -726,10 +818,10 @@ export default function PassportPhotoPage() {
     setBaselineZoom(calculatedZoom);
     setZoom(calculatedZoom);
 
-    const faceCenterX = (face.x + face.width / 2) / canvas.width;
+    const faceCenterX = (face.x + face.width / 2) / srcW;
     setPanX(-Math.round((faceCenterX - 0.5) * previewDimensions.width));
 
-    const crownY = face.y / canvas.height;
+    const crownY = face.y / srcH;
     const targetCrown = (activePreset.biometricSpec.topMarginPercent ?? 10) / 100;
     setPanY(-Math.round((crownY - targetCrown) * previewDimensions.height));
 
@@ -739,12 +831,19 @@ export default function PassportPhotoPage() {
       zoomDisplay: `100% (${calculatedZoom.toFixed(2)}x)`,
     }));
 
-    toast.success('Photo fitted automatically. Tap Adjust to fine-tune.');
+    if (cause === 'new-photo') {
+      toast.success('Photo fitted automatically. Tap Adjust to fine-tune.');
+    } else if (cause === 'button') {
+      toast.success('Biometric auto-alignment applied.');
+    }
   }, [activePreset, previewDimensions]);
 
   // STEP 1 — Background Removal & Subject Separation ON FULL ORIGINAL PHOTO
   // Runs ONCE per unique photo hash (never on color or transform changes)
-  const processSubjectCutout = useCallback(async (forceRetry: boolean = false) => {
+  const processSubjectCutout = useCallback(async (forceRetry: boolean = false, targetRequestId?: number) => {
+    const currentRequestId = targetRequestId ?? activeRequestIdRef.current;
+    if (currentRequestId !== activeRequestIdRef.current) return;
+
     const img = imageElementRef.current;
     if (!img || !img.complete || img.naturalWidth === 0) return;
 
@@ -769,11 +868,13 @@ export default function PassportPhotoPage() {
 
     // 2. If Background Removal is DISABLED: Cache source photo directly
     if (!enableBgRemoval) {
+      if (currentRequestId !== activeRequestIdRef.current) return;
       rawCutoutCanvasRef.current = sourceCanvas;
       cachedCutoutCanvasRef.current = sourceCanvas;
       setSegmentationStatus(null);
       setMattingProgress(null);
-      setProcessingStep(null);
+      setProcessingStep('done');
+      setIsSegmenting(false);
       setMattingState('idle');
       compositeFinalCanvas();
       return;
@@ -792,6 +893,7 @@ export default function PassportPhotoPage() {
 
     // Check SHA-256 in-memory cache
     if (!forceRetry && cutoutCache.has(photoHash)) {
+      if (currentRequestId !== activeRequestIdRef.current) return;
       console.log('[passport] cache hit');
       const cachedRaw = cutoutCache.get(photoHash)!;
       rawCutoutCanvasRef.current = cachedRaw;
@@ -804,8 +906,12 @@ export default function PassportPhotoPage() {
         originalBgColor: originalBg,
       });
 
+      if (currentRequestId !== activeRequestIdRef.current) return;
       cachedCutoutCanvasRef.current = refinedCanvas;
       setSegmentationStatus('Cutout retrieved from cache');
+      setIsSegmenting(false);
+      setMattingProgress(null);
+      setProcessingStep('done');
       setDebugStats((prev) => ({
         ...prev,
         cacheHits: prev.cacheHits + 1,
@@ -841,6 +947,7 @@ export default function PassportPhotoPage() {
         signal: abortController.signal,
         forceOnDevice,
         onUploadProgress: (pct) => {
+          if (currentRequestId !== activeRequestIdRef.current) return;
           setUploadPercent(pct);
           if (pct >= 99) {
             setMattingState('processing');
@@ -848,12 +955,16 @@ export default function PassportPhotoPage() {
           }
         },
         onStatusChange: (statusText) => {
+          if (currentRequestId !== activeRequestIdRef.current) return;
           setSegmentationStatus(statusText);
         },
         onFallback: () => {
+          if (currentRequestId !== activeRequestIdRef.current) return;
           toast.info('Using on-device mode (Compixor IS-Net)...');
         },
       });
+
+      if (currentRequestId !== activeRequestIdRef.current) return;
 
       const durationMs = Math.round(performance.now() - startTime);
 
@@ -865,18 +976,23 @@ export default function PassportPhotoPage() {
 
       const cutoutImg = new Image();
       const blobUrl = URL.createObjectURL(result.blob);
-      await new Promise<void>((resolve, reject) => {
-        cutoutImg.onload = () => resolve();
-        cutoutImg.onerror = reject;
-        cutoutImg.src = blobUrl;
-      });
+      try {
+        await new Promise<void>((resolve, reject) => {
+          cutoutImg.onload = () => resolve();
+          cutoutImg.onerror = reject;
+          cutoutImg.src = blobUrl;
+        });
+      } finally {
+        URL.revokeObjectURL(blobUrl);
+      }
+
+      if (currentRequestId !== activeRequestIdRef.current) return;
 
       const rawCutoutCanvas = document.createElement('canvas');
       rawCutoutCanvas.width = procW;
       rawCutoutCanvas.height = procH;
       const rcCtx = rawCutoutCanvas.getContext('2d', { willReadFrequently: true });
       rcCtx?.drawImage(cutoutImg, 0, 0, procW, procH);
-      URL.revokeObjectURL(blobUrl);
 
       // Save into cache keyed by SHA-256
       cutoutCache.set(photoHash, rawCutoutCanvas);
@@ -894,6 +1010,8 @@ export default function PassportPhotoPage() {
         originalBgColor: originalBg,
       });
 
+      if (currentRequestId !== activeRequestIdRef.current) return;
+
       cachedCutoutCanvasRef.current = refinedCanvas;
       setSegmentationStatus('Biometric Cutout Ready');
 
@@ -907,15 +1025,9 @@ export default function PassportPhotoPage() {
         cachedHash: photoHash.slice(0, 8),
       }));
 
-      // Check face detection & auto-align on first run
-      if (!hasAutoAlignedRef.current) {
-        hasAutoAlignedRef.current = true;
-        setTimeout(() => {
-          autoAlignBiometric('cutout-ready');
-        }, 50);
-      }
+      // NOTE: Auto-framing already ran on raw image on load! Do not jump/overwrite user adjustments.
     } catch (err: any) {
-      if (err?.name === 'AbortError') return;
+      if (currentRequestId !== activeRequestIdRef.current || err?.name === 'AbortError') return;
       console.error('[PassportStudio] Matting error:', err);
       setMattingState('error');
       setLastApiError(err?.message || 'Background removal failed');
@@ -925,10 +1037,12 @@ export default function PassportPhotoPage() {
       setSegmentationStatus('Cutout fallback active');
       toast.error(err?.message || 'Processing failed. You can retry or switch to on-device mode.');
     } finally {
-      setIsSegmenting(false);
-      setMattingProgress(null);
-      setProcessingStep('done');
-      compositeFinalCanvas();
+      if (currentRequestId === activeRequestIdRef.current) {
+        setIsSegmenting(false);
+        setMattingProgress(null);
+        setProcessingStep('done');
+        compositeFinalCanvas();
+      }
     }
   }, [
     enableBgRemoval,
@@ -937,7 +1051,6 @@ export default function PassportPhotoPage() {
     bgChoke,
     enableDecontamination,
     compositeFinalCanvas,
-    autoAlignBiometric,
   ]);
 
   // Instant re-refining when edge sliders (feather / choke / decontamination) are tweaked
@@ -963,10 +1076,12 @@ export default function PassportPhotoPage() {
 
   // Re-run Step 1 ONLY when raw image or background removal toggle changes (NEVER on transform sliders)
   useEffect(() => {
-    if (imageElementRef.current && imageElementRef.current.complete) {
-      processSubjectCutout();
+    const key = `${imageSrc}_${enableBgRemoval}_${forceOnDevice}`;
+    if (imageElementRef.current && imageElementRef.current.complete && lastProcessedKeyRef.current !== key) {
+      lastProcessedKeyRef.current = key;
+      processSubjectCutout(false, activeRequestIdRef.current);
     }
-  }, [imageSrc, enableBgRemoval, forceOnDevice]);
+  }, [imageSrc, enableBgRemoval, forceOnDevice, processSubjectCutout]);
 
   // Render Printable Tiled Sheet Canvas
   const renderPrintSheetCanvas = useCallback(() => {
@@ -1114,11 +1229,29 @@ export default function PassportPhotoPage() {
 
   // Handle image drop with 15 MB / 100 MP limit and 2400px working copy generator
   const handleFileDrop = useCallback(async (file: File) => {
+    // 1. Versioning: abort previous and increment activeRequestId
+    abortControllerRef.current?.abort();
+    const requestId = ++activeRequestIdRef.current;
+
+    // 2. Atomic state reset for new photo (NO toast here!)
+    cachedCutoutCanvasRef.current = null;
+    rawCutoutCanvasRef.current = null;
+    currentPhotoHashRef.current = null;
+    lastProcessedKeyRef.current = null;
+    hasAutoAlignedRef.current = false;
+    clearTransformState();
+    setIsSegmenting(true);
+    setMattingState('uploading');
+    setUploadPercent(0);
+    setSegmentationStatus('Loading portrait...');
+    setLastApiError(null);
     setUploadErrorMessage(null);
 
-    // 1. File size check: up to 15 MB
+    // 3. File size check: up to 15 MB
     const maxBytes = PASSPORT_UPLOAD_CONFIG.MAX_FILE_BYTES;
     if (file.size > maxBytes) {
+      if (requestId !== activeRequestIdRef.current) return;
+      setIsSegmenting(false);
       const mbSize = (file.size / (1024 * 1024)).toFixed(1);
       const msg = `This file is ${mbSize} MB. The maximum is 15 MB. Please use a smaller photo.`;
       setUploadErrorMessage(msg);
@@ -1127,7 +1260,7 @@ export default function PassportPhotoPage() {
       return;
     }
 
-    // 2. Format check
+    // 4. Format check
     const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     const isHeic =
       file.name.toLowerCase().endsWith('.heic') ||
@@ -1142,11 +1275,15 @@ export default function PassportPhotoPage() {
         const dynamicImport = new Function('specifier', 'return import(specifier)');
         const heicModule = await dynamicImport('heic2any');
         const heic2any = heicModule.default || heicModule;
+        if (requestId !== activeRequestIdRef.current) return;
         toast.info('Converting iPhone HEIC photo...');
         const convertedBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.95 });
+        if (requestId !== activeRequestIdRef.current) return;
         const finalBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
         file = new File([finalBlob], file.name.replace(/\.heic$/i, '.jpg'), { type: 'image/jpeg' });
       } catch {
+        if (requestId !== activeRequestIdRef.current) return;
+        setIsSegmenting(false);
         const msg = 'HEIC photos are not supported yet. On iPhone choose Most Compatible, or export as JPG.';
         setUploadErrorMessage(msg);
         toast.error(msg);
@@ -1154,6 +1291,8 @@ export default function PassportPhotoPage() {
         return;
       }
     } else if (!validTypes.includes(file.type) && !file.type.startsWith('image/')) {
+      if (requestId !== activeRequestIdRef.current) return;
+      setIsSegmenting(false);
       const msg = 'Please upload a JPG, PNG or WebP photo.';
       setUploadErrorMessage(msg);
       toast.error(msg);
@@ -1161,12 +1300,14 @@ export default function PassportPhotoPage() {
       return;
     }
 
-    // 3. Pre-decode header dimension check (reject if > 100 MP)
+    // 5. Pre-decode header dimension check (reject if > 100 MP)
     try {
       const headerInfo = await parseImageHeaderDimensions(file);
+      if (requestId !== activeRequestIdRef.current) return;
       if (headerInfo) {
         const mp = (headerInfo.width * headerInfo.height) / 1_000_000;
         if (mp > PASSPORT_UPLOAD_CONFIG.MAX_MEGAPIXELS) {
+          setIsSegmenting(false);
           const msg = `This photo is ${headerInfo.width} x ${headerInfo.height} px (${Math.round(mp)} MP). The maximum is 100 MP.`;
           setUploadErrorMessage(msg);
           toast.error(msg);
@@ -1176,28 +1317,28 @@ export default function PassportPhotoPage() {
       }
     } catch (_) {}
 
-    // 4. Create working copy (longest side <= 2400px)
+    // 6. Create working copy (longest side <= 2400px)
     try {
       const working = await createPassportWorkingCopy(file);
+      if (requestId !== activeRequestIdRef.current) return;
+
       const img = new Image();
-      img.onload = () => {
+      img.onload = async () => {
+        if (requestId !== activeRequestIdRef.current) return;
         imageElementRef.current = img;
         setImageSrc(working.dataUrl);
-        setZoom(1);
-        setBaselineZoom(1);
-        setRotation(0);
-        setPanX(0);
-        setPanY(0);
-        setFlipH(false);
-        setBrightness(100);
-        setContrast(100);
-        setSaturation(100);
-        hasAutoAlignedRef.current = false;
         setCurrentStep('edit');
         setUploadErrorMessage(null);
         toast.success('Photo loaded! Align your portrait with the biometric guide.');
+
+        // Immediately auto-frame on raw photo so canvas has correct positioning before matting finishes
+        await autoAlignBiometric('new-photo', requestId);
+        if (requestId !== activeRequestIdRef.current) return;
+        compositeFinalCanvas();
       };
       img.onerror = () => {
+        if (requestId !== activeRequestIdRef.current) return;
+        setIsSegmenting(false);
         const msg = 'Your photo could not be read. Please try saving it again as a standard JPG or PNG.';
         setUploadErrorMessage(msg);
         toast.error(msg);
@@ -1205,13 +1346,15 @@ export default function PassportPhotoPage() {
       };
       img.src = working.dataUrl;
     } catch (err) {
+      if (requestId !== activeRequestIdRef.current) return;
+      setIsSegmenting(false);
       console.error('Working copy error:', err);
       const msg = 'Your photo could not be read. Please try saving it again as a standard JPG or PNG.';
       setUploadErrorMessage(msg);
       toast.error(msg);
       setResetSignal((s) => s + 1);
     }
-  }, []);
+  }, [clearTransformState, autoAlignBiometric, compositeFinalCanvas]);
 
   // Pan interactions (Desktop & Adjust mode)
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -1283,43 +1426,29 @@ export default function PassportPhotoPage() {
     pinchStartDistRef.current = null;
   };
 
-  // Reset transforms
-  const resetTransform = () => {
-    setZoom(1);
-    setBaselineZoom(1);
-    setRotation(0);
-    setPanX(0);
-    setPanY(0);
-    setFlipH(false);
-    setIsAdjustMode(false);
-    setIsTooCloseWarning(false);
-    setBrightness(100);
-    setContrast(100);
-    setSaturation(100);
-    setEnableBgRemoval(true);
-    setBgFeather(1.2);
-    setBgChoke(0.6);
-    setEnableDecontamination(false);
-    setMattingProgress(null);
-    setPreviewTab('background');
-    toast.info('Studio settings reset to default.');
-  };
+  // Deterministic user-initiated Reset
+  const handleReset = useCallback(async () => {
+    clearTransformState();
+    await autoAlignBiometric('reset-button', activeRequestIdRef.current);
+    toast.info('Scale settings reset to default.');
+  }, [clearTransformState, autoAlignBiometric]);
 
   // Reset whole project and start new
-  const handleMakeNewImage = () => {
+  const handleMakeNewImage = useCallback(() => {
+    abortControllerRef.current?.abort();
+    activeRequestIdRef.current += 1;
     setImageSrc(null);
     imageElementRef.current = null;
     rawCutoutCanvasRef.current = null;
     cachedCutoutCanvasRef.current = null;
     currentPhotoHashRef.current = null;
+    lastProcessedKeyRef.current = null;
     hasAutoAlignedRef.current = false;
     setFaceDetected(null);
+    setIsSegmenting(false);
     setMattingProgress(null);
-    setEnableDecontamination(false);
-    setIsAdjustMode(false);
-    setIsTooCloseWarning(false);
     setUploadErrorMessage(null);
-    resetTransform();
+    clearTransformState();
     setCurrentStep('edit');
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -1329,7 +1458,7 @@ export default function PassportPhotoPage() {
         window.history.pushState({}, '', newUrl);
       }
     }
-  };
+  }, [clearTransformState]);
 
   // Binary search compression helper to strictly meet target file size limits
   const compressCanvasToLimit = async (canvas: HTMLCanvasElement, maxBytes: number): Promise<Blob> => {
@@ -1781,8 +1910,9 @@ export default function PassportPhotoPage() {
                   </h3>
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={resetTransform}
-                      className="text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 font-semibold transition cursor-pointer"
+                      onClick={handleReset}
+                      disabled={isSegmenting}
+                      className="text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 font-semibold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Reset
                     </button>
@@ -1797,6 +1927,7 @@ export default function PassportPhotoPage() {
                 </div>
 
                 {/* Quick Transform & Adjust Position Toolbar */}
+                <fieldset disabled={isSegmenting} className={`space-y-6 border-0 p-0 m-0 min-w-0 transition-opacity ${isSegmenting ? 'opacity-60 pointer-events-none select-none' : ''}`}>
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={() => setIsAdjustMode(!isAdjustMode)}
@@ -2229,9 +2360,10 @@ export default function PassportPhotoPage() {
                     </div>
                   )}
                 </div>
-              </div>
-            )}
-          </motion.div>
+              </fieldset>
+            </div>
+          )}
+        </motion.div>
 
           {/* Right Side: Studio Preview & Biometric Overlay (5 cols) */}
           <motion.div
@@ -2532,13 +2664,14 @@ export default function PassportPhotoPage() {
               {/* Proceed to Download Preview Action */}
               {imageSrc ? (
                 <button
+                  disabled={isSegmenting}
                   onClick={() => {
                     setCurrentStep('preview');
                     if (typeof window !== 'undefined') {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                   }}
-                  className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-sm font-semibold shadow-glow cursor-pointer"
+                  className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-sm font-semibold shadow-glow cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FileDown className="w-4 h-4" />
                   Proceed to Download Preview & Sheets →

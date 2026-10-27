@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import type React from 'react';
 import type { LucideIcon } from 'lucide-react';
+import FullDpIcon from '@/components/FullDpIcon';
 import {
   FileText,
   FileArchive,
@@ -10,7 +12,6 @@ import {
   Lock,
   LockOpen,
   IdCard,
-  Crop,
   ScanText,
 } from 'lucide-react';
 
@@ -46,7 +47,7 @@ export interface FeatureItem {
 export interface ToolSeoData {
   slug: ToolSlug;
   name: string;
-  icon: LucideIcon;
+  icon: LucideIcon | React.ComponentType<{ className?: string; variant?: 'full' | 'compact' }>;
   title: string; // Max 60 chars, primary keyword near start
   description: string; // Exactly 150-160 chars
   canonicalUrl: string;
@@ -1118,7 +1119,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
   'full-dp-maker': {
     slug: 'full-dp-maker',
     name: 'Full DP Maker',
-    icon: Crop,
+    icon: FullDpIcon,
     title: 'WhatsApp DP Without Crop - Full Size Photo | Compixor',
     description:
       'WhatsApp DP without crop maker online. Post full size profile pictures for Instagram & WhatsApp with stylish blur backgrounds. Free, works in your browser.',

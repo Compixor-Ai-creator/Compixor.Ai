@@ -1,6 +1,9 @@
 'use client';
 
 import React from 'react';
+import FullDpIcon from '@/components/FullDpIcon';
+
+const FullDpRelatedIcon = (props: any) => <FullDpIcon variant="full" {...props} />;
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -9,7 +12,6 @@ import {
   Combine,
   IdCard,
   QrCode,
-  Crop,
   Stamp,
   Eraser,
   ArrowRight,
@@ -120,7 +122,7 @@ export const ALL_TOOLS: ToolItem[] = [
     badge: 'Featured',
     stat: 'Blur & Square Canvas',
     href: '/tools/full-dp-maker',
-    icon: Crop,
+    icon: FullDpRelatedIcon,
     color: 'from-violet-500 to-purple-600',
     tagline: 'For WhatsApp & Instagram',
     description: 'Resize profile pictures without cropping. Perfect square fit with aesthetic background blur.',

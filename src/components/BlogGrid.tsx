@@ -1,4 +1,5 @@
 import React from 'react';
+import FullDpIcon from '@/components/FullDpIcon';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -33,6 +34,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Eraser,
   FileDown,
   ScanText,
+  FullDp: (props: any) => <FullDpIcon variant="full" {...props} />,
+  Crop: (props: any) => <FullDpIcon variant="full" {...props} />,
 };
 
 interface BlogGridProps {

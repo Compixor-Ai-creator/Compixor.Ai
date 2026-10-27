@@ -19,7 +19,6 @@ import {
   Stamp,
   Eraser,
   IdCard,
-  Crop,
   ScanText,
 } from 'lucide-react';
 import { FaqJsonLd } from '@/components/JsonLd';
@@ -287,7 +286,7 @@ export default function HomePage() {
                   {/* Scrollable list with no-scrollbar for ultra-clean look */}
                   <div className="space-y-1.5 max-h-[460px] overflow-y-auto pr-1 overscroll-contain no-scrollbar">
                     {tools.map((feat) => {
-                      const Icon = feat.icon;
+                      const Icon = feat.navIcon || feat.icon;
                       return (
                         <Link
                           key={feat.href}

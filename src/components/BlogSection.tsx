@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import FullDpIcon from '@/components/FullDpIcon';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,6 +39,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Eraser,
   FileDown,
   ScanText,
+  FullDp: (props: any) => <FullDpIcon variant="full" {...props} />,
+  Crop: (props: any) => <FullDpIcon variant="full" {...props} />,
 };
 
 const categories = [

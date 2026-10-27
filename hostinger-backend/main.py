@@ -83,10 +83,10 @@ GEMINI_TIMEOUT = int(os.getenv("GEMINI_TIMEOUT", "15"))
 
 # Optional Gemini refinement (used only for Urdu/Arabic or low-confidence crops)
 # Prioritizes fast lite models first; caches 404 model names so invalid IDs never stall requests
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "") or os.getenv("VISION_API_KEY", "")
 GEMINI_MODEL = os.getenv(
     "GEMINI_MODEL",
-    "gemini-3.5-flash-lite,gemini-3.5-flash,gemini-3.8-flash",
+    "gemini-2.0-flash,gemini-1.5-flash,gemini-2.0-flash-lite",
 )
 GEMINI_MODELS = [m.strip() for m in GEMINI_MODEL.split(",") if m.strip()]
 MAX_AI_CALLS = int(os.getenv("MAX_AI_CALLS", "25"))
@@ -1150,40 +1150,42 @@ def find_pictures(masked_gray: np.ndarray, bgr: np.ndarray) -> List[Tuple[int, i
         add_box((max(0, x - p), max(0, y - p), min(W, x + w + p), min(H, y + h + p)))
 
     # 3. Smart College / School Crests & Logos in top header area (exam paper headers)
-    top_h = int(H * 0.35)
+    top_h = int(H * 0.16)
     _, bw = cv2.threshold(norm[:top_h, :], 190, 255, cv2.THRESH_BINARY_INV)
-    logo_blob = cv2.morphologyEx(bw, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
+    logo_blob = cv2.morphologyEx(bw, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
     l_cnts, _ = cv2.findContours(logo_blob, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    min_logo_dim = max(35, int(W * 0.03))
+    min_logo_dim = max(40, int(W * 0.04))
     for c in l_cnts:
         x, y, w, h = cv2.boundingRect(c)
-        if not (min_logo_dim <= w <= int(W * 0.42) and min_logo_dim <= h <= int(H * 0.28)):
+        if not (min_logo_dim <= w <= int(W * 0.35) and min_logo_dim <= h <= int(H * 0.15)):
             continue
         aspect = w / float(h)
-        # Accepts circular seals, shield crests, and horizontal institution emblem banners
-        if not (0.45 <= aspect <= 2.80):
+        # Accepts circular seals, shield crests, and compact institution emblems
+        if not (0.50 <= aspect <= 2.20):
             continue
         crop_bw = bw[y:y + h, x:x + w]
         ink_density = float((crop_bw > 0).mean())
-        if 0.10 <= ink_density <= 0.85:
+        if 0.12 <= ink_density <= 0.85:
             area = cv2.contourArea(c)
             hull = cv2.convexHull(c)
             hull_area = cv2.contourArea(hull)
             solidity = float(area / hull_area) if hull_area > 0 else 0.0
-            if solidity >= 0.15 or ink_density >= 0.18:
-                crop_gray = masked_gray[y:y + h, x:x + w]
-                thick_ink = cv2.morphologyEx(crop_bw, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
-                thick_ratio = float((thick_ink > 0).sum()) / max(1, float((crop_bw > 0).sum()))
-                gray_std = float(crop_gray.std())
-                is_graphic_logo = (thick_ratio >= 0.14 or gray_std >= 32 or (solidity >= 0.35 and 0.55 <= aspect <= 1.8))
-                if not is_graphic_logo:
-                    try:
-                        sample_txt = pytesseract.image_to_string(crop_gray, config="--psm 6 -l eng").strip()
-                        clean_words = [w for w in sample_txt.split() if len(w) >= 3 and w.isalpha()]
-                        if len(clean_words) >= 3 and thick_ratio < 0.10:
-                            continue  # Pure text heading, keep for editable text OCR
-                    except Exception:
-                        pass
+            crop_gray = masked_gray[y:y + h, x:x + w]
+            thick_ink = cv2.morphologyEx(crop_bw, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
+            thick_ratio = float((thick_ink > 0).sum()) / max(1, float((crop_bw > 0).sum()))
+
+            # Must have distinct graphic properties (solid stroke mass or high solidity icon)
+            is_graphic_logo = (thick_ratio >= 0.22 or (solidity >= 0.45 and 0.65 <= aspect <= 1.5 and ink_density >= 0.20))
+            if is_graphic_logo:
+                # Disqualify if it contains readable text, numbers, or math formulas
+                try:
+                    sample_txt = pytesseract.image_to_string(crop_gray, config="--psm 6 -l eng").strip()
+                    has_math_or_numbers = bool(re.search(r"[0-9+\-×÷±=()\[\]/^√≤≥≠]", sample_txt))
+                    clean_words = [w for w in sample_txt.split() if len(w) >= 2]
+                    if has_math_or_numbers or len(clean_words) >= 2:
+                        continue  # Keep as editable text/math
+                except Exception:
+                    pass
                 p = 4
                 add_box((max(0, x - p), max(0, y - p), min(W, x + w + p), min(H, y + h + p)))
 

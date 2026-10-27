@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import FullDpIcon from '@/components/FullDpIcon';
 import Link from 'next/link';
 import {
   Lock,
@@ -30,6 +31,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Stamp,
   Eraser,
   ScanText,
+  FullDp: (props: any) => <FullDpIcon variant="full" {...props} />,
+  Crop: (props: any) => <FullDpIcon variant="full" {...props} />,
 };
 
 export interface RelatedToolItem {
