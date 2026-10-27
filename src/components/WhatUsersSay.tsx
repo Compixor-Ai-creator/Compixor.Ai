@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Star, MessageSquareHeart, X, Send, Loader2, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import CompixorModal from '@/components/CompixorModal';
 import { toast } from 'sonner';
 
 interface ApprovedFeedback {
@@ -115,59 +116,7 @@ export default function WhatUsersSay() {
     };
   }, []);
 
-  // Body scroll lock
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isModalOpen]);
-
-  // Focus trapping and Esc key listener
-  useEffect(() => {
-    if (!isModalOpen) return;
-
-    // Focus close button on open
-    const timer = setTimeout(() => {
-      closeButtonRef.current?.focus();
-    }, 50);
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsModalOpen(false);
-        triggerRef.current?.focus();
-        return;
-      }
-
-      if (e.key === 'Tab' && modalRef.current) {
-        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusable.length === 0) return;
-
-        const firstElement = focusable[0];
-        const lastElement = focusable[focusable.length - 1];
-
-        if (e.shiftKey && document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement.focus();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement.focus();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isModalOpen]);
+  // Modal scroll lock and keyboard trapping managed by CompixorModal
 
   const handleOpenModal = (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) triggerRef.current = e.currentTarget;
@@ -394,32 +343,14 @@ export default function WhatUsersSay() {
       )}
 
       {/* ============ ACCESSIBLE FEEDBACK MODAL ============ */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="feedback-dialog-title"
-          >
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={handleCloseModal}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-            />
-
-            {/* Modal Dialog Card */}
-            <motion.div
-              ref={modalRef}
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="relative w-full max-w-lg bg-white dark:bg-surface-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl overflow-hidden z-10 max-h-[92vh] flex flex-col"
-            >
+      <CompixorModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        titleId="feedback-dialog-title"
+        triggerRef={triggerRef}
+        initialFocusRef={closeButtonRef}
+        maxWidthClassName="max-w-lg"
+      >
               {/* Header */}
               <div className="px-6 py-5 border-b border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -615,10 +546,7 @@ export default function WhatUsersSay() {
                   </button>
                 </div>
               </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      </CompixorModal>
     </>
   );
 }

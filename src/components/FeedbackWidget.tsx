@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import CompixorModal from '@/components/CompixorModal';
 import {
   MessageSquarePlus,
   X,
@@ -85,6 +86,7 @@ export default function FeedbackWidget() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const triggerButtonRef = React.useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -105,28 +107,7 @@ export default function FeedbackWidget() {
     return () => window.removeEventListener('compixor:open-feedback', handleOpen);
   }, []);
 
-  // Handle Escape key to close modal
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        setIsOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+  // Escape key and scroll lock handled by CompixorModal
 
   const activeCategoryConfig = CATEGORIES.find((c) => c.id === category) || CATEGORIES[0];
 
@@ -258,6 +239,7 @@ export default function FeedbackWidget() {
       {/* Discreet Floating Trigger Button */}
       <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 print:hidden">
         <button
+          ref={triggerButtonRef}
           type="button"
           onClick={() => {
             setIsOpen(true);
@@ -281,31 +263,13 @@ export default function FeedbackWidget() {
       </div>
 
       {/* Interactive Modal / Bottom Sheet */}
-      <AnimatePresence>
-        {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 print:hidden">
-            {/* Backdrop Blur */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={handleClose}
-              className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm"
-              aria-hidden="true"
-            />
-
-            {/* Modal Dialog Card */}
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="feedback-dialog-title"
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.95 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="relative w-full sm:max-w-lg bg-white dark:bg-surface-900 border border-zinc-200/80 dark:border-zinc-800 rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden z-10 max-h-[92vh] flex flex-col"
-            >
+      <CompixorModal
+        isOpen={isOpen}
+        onClose={handleClose}
+        titleId="feedback-dialog-title"
+        triggerRef={triggerButtonRef}
+        maxWidthClassName="max-w-lg"
+      >
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-surface-950/40">
                 <div className="flex items-center gap-2.5">
@@ -622,10 +586,7 @@ export default function FeedbackWidget() {
                   </motion.div>
                 )}
               </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      </CompixorModal>
     </>
   );
 }

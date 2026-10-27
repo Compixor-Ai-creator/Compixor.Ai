@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Star, Send, CheckCircle2, MessageSquareHeart, X } from 'lucide-react';
 import { toast } from 'sonner';
+import CompixorModal from '@/components/CompixorModal';
 import {
   shouldShowFeedbackPrompt,
   dismissFeedbackPrompt,
@@ -59,17 +60,7 @@ export default function ToolFeedback({ toolName }: ToolFeedbackProps) {
     };
   }, []);
 
-  // Lock body scroll when modal is active
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isModalOpen]);
+  // Scroll lock handled by CompixorModal
 
   const handleMaybeLater = useCallback(() => {
     dismissFeedbackPrompt();
@@ -77,16 +68,7 @@ export default function ToolFeedback({ toolName }: ToolFeedbackProps) {
     setIsModalOpen(false);
   }, []);
 
-  // Handle Escape key to close modal
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isModalOpen) {
-        handleMaybeLater();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isModalOpen, handleMaybeLater]);
+  // Escape key handled by CompixorModal
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -360,23 +342,16 @@ export default function ToolFeedback({ toolName }: ToolFeedbackProps) {
       )}
 
       {/* 2. POPUP MODAL DIALOG (pops up automatically upon reaching the download threshold) */}
-      {isModalOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="feedback-dialog-title"
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm print:hidden animate-in fade-in duration-200"
-        >
-          <div className="relative w-full max-w-xl overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
-            {/* Subtle glow orb */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -top-12 -right-12 w-48 h-48 rounded-full bg-brand-500/15 blur-3xl"
-            />
-            {renderFormContent(true)}
-          </div>
+      <CompixorModal
+        isOpen={isModalOpen}
+        onClose={handleMaybeLater}
+        titleId="feedback-dialog-title"
+        maxWidthClassName="max-w-xl"
+      >
+        <div className="p-6 sm:p-8">
+          {renderFormContent(true)}
         </div>
-      )}
+      </CompixorModal>
     </>
   );
 }

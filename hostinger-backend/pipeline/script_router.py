@@ -277,10 +277,9 @@ class VisionLLMTranscriber:
     )
 
     CANDIDATE_MODELS = [
-        "gemini-3.8-flash",
-        "gemini-flash-latest",
-        "gemini-2.5-flash-lite",
+        "gemini-2.0-flash",
         "gemini-1.5-flash",
+        "gemini-2.0-flash-lite",
     ]
 
     def __init__(
@@ -290,7 +289,7 @@ class VisionLLMTranscriber:
         timeout_sec: float = 15.0,
     ):
         self.api_key = self.resolve_api_key(api_key)
-        self.model_name = model_name or "gemini-3.8-flash"
+        self.model_name = model_name or "gemini-2.0-flash"
         self.timeout_sec = timeout_sec
         self._model = None
 
