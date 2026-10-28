@@ -319,7 +319,7 @@ export default function PassportPhotoPage() {
     setPreviewTab('background');
     if (cachedCutoutCanvasRef.current || imageSrc) {
       setTimeout(() => {
-        autoAlignBiometric('preset-change', activeRequestIdRef.current);
+        autoFitBiometric('preset-change', activeRequestIdRef.current);
       }, 50);
     }
   };
@@ -625,14 +625,15 @@ export default function PassportPhotoPage() {
         ctx.translate(width / 2 + scaledPanX, height / 2 + scaledPanY);
         ctx.rotate((rotation * Math.PI) / 180);
         if (flipH) {
-          ctx.scale(-zoom, zoom);
-        } else {
-          ctx.scale(zoom, zoom);
+          ctx.scale(-1, 1);
         }
 
-        const fitScale = Math.max(width / srcW, height / srcH);
-        const drawW = srcW * fitScale;
-        const drawH = srcH * fitScale;
+        // `zoom` is the relative user scale applied to the cover-fit baseline.
+        // Apply it here exactly once; applying it both to the context and draw
+        // dimensions was the previous compound over-zoom regression.
+        const drawScale = zoom * Math.max(width / srcW, height / srcH);
+        const drawW = srcW * drawScale;
+        const drawH = srcH * drawScale;
         ctx.drawImage(subjectSource, -drawW / 2, -drawH / 2, drawW, drawH);
         ctx.restore();
       }
@@ -719,17 +720,10 @@ export default function PassportPhotoPage() {
         }
       }
 
-      // If nearly all pixels are non-transparent (raw photo before background cutout),
-      // provide standard portrait head framing
+      // An opaque source has no reliable subject bounds. Never invent a face box;
+      // the old synthetic box caused false alignment and severe over-zooming.
       if (nonTransparentCount > totalPixels * 0.85 || minY >= maxY || minX >= maxX) {
-        const scaleX = srcW / w;
-        const scaleY = srcH / h;
-        return {
-          x: Math.round(w * 0.25 * scaleX),
-          y: Math.round(h * 0.08 * scaleY),
-          width: Math.round(w * 0.50 * scaleX),
-          height: Math.round(h * 0.45 * scaleY),
-        };
+        return null;
       }
 
       const subH = maxY - minY;
@@ -763,85 +757,60 @@ export default function PassportPhotoPage() {
     return null;
   };
 
-  const autoAlignBiometric = useCallback(async (
+  const autoFitBiometric = useCallback(async (
     cause: 'cutout-ready' | 'preset-change' | 'button' | 'new-photo' | 'reset-button' = 'button',
     targetRequestId?: number
   ) => {
-    if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) {
-      return;
-    }
+    if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) return;
 
     const source = cachedCutoutCanvasRef.current || imageElementRef.current;
     if (!source) return;
-
     const face = await detectFaceBounds(source);
-    if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) {
-      return;
-    }
+    if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) return;
 
     const srcW = 'naturalWidth' in source ? (source.naturalWidth || source.width) : source.width;
     const srcH = 'naturalHeight' in source ? (source.naturalHeight || source.height) : source.height;
-
-    if (!face) {
+    if (!face || srcW <= 0 || srcH <= 0) {
       setFaceDetected(false);
-      setDebugStats((prev) => ({
-        ...prev,
-        lastAlignCause: cause,
-      }));
-      if (cause === 'button') {
-        toast.warning('Face not detected - drag/zoom the photo so your face is inside the guide');
-      }
+      setMeasuredBiometrics({ headPercent: null, crownPercent: null, eyePercent: null, chinPercent: null });
+      setDebugStats((prev) => ({ ...prev, lastAlignCause: cause }));
+      if (cause === 'button') toast.warning('Face not detected - drag/zoom the photo so your face is inside the guide');
       return;
     }
 
     setFaceDetected(true);
-    const targetHeadH = activePreset.heightPx * (activePreset.biometricSpec.headHeightPercent / 100);
-    const faceHInPreset = face.height * (activePreset.heightPx / srcH);
-    let targetZoom = Math.max(0.6, Math.min(2.5, targetHeadH / Math.max(40, faceHInPreset)));
-
-    // Biometric margins check: crown, chin, and ears margin >= 2% (0.02)
-    // If crown or chin or ears clip the canvas at targetZoom, cap the zoom to fit the head
-    const crownMargin = face.y / srcH;
-    const chinMargin = (srcH - (face.y + face.height)) / srcH;
-    const leftEarMargin = face.x / srcW;
-    const rightEarMargin = (srcW - (face.x + face.width)) / srcW;
-
-    let tooClose = false;
-    if (crownMargin < 0.02 || chinMargin < 0.02 || leftEarMargin < 0.02 || rightEarMargin < 0.02) {
-      // Prioritize showing full head inside frame over enforcing oversized targetHeadH
-      const maxFitZoom = Math.min(
-        (activePreset.heightPx * 0.94) / Math.max(40, faceHInPreset),
-        targetZoom
-      );
-      if (maxFitZoom < targetZoom) {
-        targetZoom = Math.max(0.6, maxFitZoom);
-        tooClose = true;
-      }
-    }
+    // FaceDetector returns the facial oval. Expand it to a crown-to-chin estimate
+    // before fitting; the preset percentage is defined for the full head.
+    const crownY = Math.max(0, face.y - face.height * 0.35);
+    const chinY = Math.min(srcH, face.y + face.height * 1.05);
+    const headHeight = Math.max(1, chinY - crownY);
+    const eyeY = face.y + face.height * 0.48;
+    const fitScale = Math.max(activePreset.widthPx / srcW, activePreset.heightPx / srcH);
+    const targetHeadPx = activePreset.heightPx * activePreset.biometricSpec.headHeightPercent / 100;
+    const baseHeadPx = headHeight * fitScale;
+    const requestedZoom = targetHeadPx / Math.max(1, baseHeadPx);
+    const containZoom = activePreset.heightPx * 0.96 / Math.max(1, baseHeadPx);
+    const calculatedZoom = Math.round(Math.max(0.4, Math.min(2.5, requestedZoom, containZoom)) * 100) / 100;
+    const tooClose = calculatedZoom + 0.01 < requestedZoom;
     setIsTooCloseWarning(tooClose);
-
-    const calculatedZoom = Math.round(targetZoom * 100) / 100;
     setBaselineZoom(calculatedZoom);
     setZoom(calculatedZoom);
 
-    const faceCenterX = (face.x + face.width / 2) / srcW;
-    setPanX(-Math.round((faceCenterX - 0.5) * previewDimensions.width));
+    const faceCenterX = face.x + face.width / 2;
+    setPanX(-Math.round((faceCenterX / srcW - 0.5) * previewDimensions.width));
+    const targetCrownPx = activePreset.heightPx * activePreset.biometricSpec.topMarginPercent / 100;
+    const sourceCrownPx = crownY * fitScale;
+    setPanY(Math.round((targetCrownPx - sourceCrownPx * calculatedZoom) / (activePreset.heightPx / previewDimensions.height)));
 
-    const crownY = face.y / srcH;
-    const targetCrown = (activePreset.biometricSpec.topMarginPercent ?? 10) / 100;
-    setPanY(-Math.round((crownY - targetCrown) * previewDimensions.height));
+    const headPercent = Math.round((headHeight * fitScale * calculatedZoom / activePreset.heightPx) * 1000) / 10;
+    const crownPercent = Math.round((targetCrownPx / activePreset.heightPx) * 1000) / 10;
+    const eyePercent = Math.round(((targetCrownPx + (eyeY - crownY) * fitScale * calculatedZoom) / activePreset.heightPx) * 1000) / 10;
+    const chinPercent = Math.round(((targetCrownPx + headHeight * fitScale * calculatedZoom) / activePreset.heightPx) * 1000) / 10;
+    setMeasuredBiometrics({ headPercent, crownPercent, eyePercent, chinPercent });
+    setDebugStats((prev) => ({ ...prev, lastAlignCause: cause, zoomDisplay: `100% (${calculatedZoom.toFixed(2)}x)` }));
 
-    setDebugStats((prev) => ({
-      ...prev,
-      lastAlignCause: cause,
-      zoomDisplay: `100% (${calculatedZoom.toFixed(2)}x)`,
-    }));
-
-    if (cause === 'new-photo') {
-      toast.success('Photo fitted automatically. Tap Adjust to fine-tune.');
-    } else if (cause === 'button') {
-      toast.success('Biometric auto-alignment applied.');
-    }
+    if (cause === 'new-photo') toast.success('Photo fitted automatically. Tap Adjust to fine-tune.');
+    else if (cause === 'button') toast.success('Biometric auto-alignment applied.');
   }, [activePreset, previewDimensions]);
 
   // STEP 1 — Background Removal & Subject Separation ON FULL ORIGINAL PHOTO
@@ -882,6 +851,7 @@ export default function PassportPhotoPage() {
       setProcessingStep('done');
       setIsSegmenting(false);
       setMattingState('idle');
+      await autoFitBiometric('cutout-ready', currentRequestId);
       compositeFinalCanvas();
       return;
     }
@@ -1031,7 +1001,8 @@ export default function PassportPhotoPage() {
         cachedHash: photoHash.slice(0, 8),
       }));
 
-      // NOTE: Auto-framing already ran on raw image on load! Do not jump/overwrite user adjustments.
+      // Refit against the final cutout so the alpha bounds use the same biometric baseline.
+      await autoFitBiometric('cutout-ready', currentRequestId);
     } catch (err: any) {
       if (currentRequestId !== activeRequestIdRef.current || err?.name === 'AbortError') return;
       console.error('[PassportStudio] Matting error:', err);
@@ -1056,6 +1027,7 @@ export default function PassportPhotoPage() {
     bgFeather,
     bgChoke,
     enableDecontamination,
+    autoFitBiometric,
     compositeFinalCanvas,
   ]);
 
@@ -1338,7 +1310,7 @@ export default function PassportPhotoPage() {
         toast.success('Photo loaded! Align your portrait with the biometric guide.');
 
         // Immediately auto-frame on raw photo so canvas has correct positioning before matting finishes
-        await autoAlignBiometric('new-photo', requestId);
+        await autoFitBiometric('new-photo', requestId);
         if (requestId !== activeRequestIdRef.current) return;
         compositeFinalCanvas();
       };
@@ -1360,7 +1332,7 @@ export default function PassportPhotoPage() {
       toast.error(msg);
       setResetSignal((s) => s + 1);
     }
-  }, [clearTransformState, autoAlignBiometric, compositeFinalCanvas]);
+  }, [clearTransformState, autoFitBiometric, compositeFinalCanvas]);
 
   // Pan interactions (Desktop & Adjust mode)
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -1435,9 +1407,9 @@ export default function PassportPhotoPage() {
   // Deterministic user-initiated Reset
   const handleReset = useCallback(async () => {
     clearTransformState();
-    await autoAlignBiometric('reset-button', activeRequestIdRef.current);
+    await autoFitBiometric('reset-button', activeRequestIdRef.current);
     toast.info('Scale settings reset to default.');
-  }, [clearTransformState, autoAlignBiometric]);
+  }, [clearTransformState, autoFitBiometric]);
 
   // Reset whole project and start new
   const handleMakeNewImage = useCallback(() => {
