@@ -19,6 +19,21 @@ export const metadata: Metadata = {
     url: 'https://compixor-ai.cloud/blog',
     siteName: 'Compixor AI',
     type: 'website',
+    images: [
+      {
+        url: 'https://compixor-ai.cloud/brand/logo-512.png',
+        width: 512,
+        height: 512,
+        alt: 'Compixor AI Guides & Tutorials',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Client-Side Guides & Tutorials | Compixor AI',
+    description:
+      'Learn how to convert, compress, protect, and optimize files locally in your browser with zero server uploads.',
+    images: ['https://compixor-ai.cloud/brand/logo-512.png'],
   },
 };
 

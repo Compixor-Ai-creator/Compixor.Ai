@@ -7,6 +7,27 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://compixor-ai.cloud/contact',
   },
+  openGraph: {
+    title: 'Contact Us - Support & Inquiries | Compixor',
+    description: 'Contact Compixor AI support for tool assistance, feature requests, or technical inquiries.',
+    url: 'https://compixor-ai.cloud/contact',
+    siteName: 'Compixor AI',
+    type: 'website',
+    images: [
+      {
+        url: 'https://compixor-ai.cloud/brand/logo-512.png',
+        width: 512,
+        height: 512,
+        alt: 'Compixor AI Contact & Support',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Contact Us - Support & Inquiries | Compixor',
+    description: 'Contact Compixor AI support for tool assistance, feature requests, or technical inquiries.',
+    images: ['https://compixor-ai.cloud/brand/logo-512.png'],
+  },
 };
 
 const contactSchema = {
