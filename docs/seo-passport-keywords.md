@@ -26,7 +26,7 @@ All articles contain between 800 and 1,200 words, structured HTML tables, step-b
 ### Master Educational Guide: Complete Passport Size Photo Maker Online Guide
 - **Target URL**: `https://compixor-ai.cloud/blog/passport-size-photo-maker-online-free`
 - **Target Keyword**: `passport size photo maker online free`
-- **Consolidated Coverage**: Includes complete Pakistan NADRA & Pak-ID guidelines (formerly `/blog/passport-photo-size-pakistan`), AI studio edge matting & white background cutouts (formerly `/blog/change-photo-background-to-white-online`), and mobile photography & printer scaling rules (formerly `/blog/passport-size-photo-kaise-banayen`). 301 permanent redirects configured in `next.config.js`.
+- **Consolidated Coverage**: Includes comprehensive passport photo guidelines (formerly `/blog/passport-photo-size-pakistan`), AI studio edge matting & white background cutouts (formerly `/blog/change-photo-background-to-white-online`), and mobile photography & printer scaling rules (formerly `/blog/passport-size-photo-kaise-banayen`). 301 permanent redirects configured in `next.config.js`.
 
 ### Guide 2: Home & Studio Printing Setup
 - **Target URL**: `https://compixor-ai.cloud/blog/how-to-print-passport-photos-at-home`
@@ -61,7 +61,7 @@ In compliance with truthful advertising and architectural transparency:
 | Country Preset | Dimension | Background | Verified Status | Official Source Reference |
 |---|---|---|---|---|
 | Pakistan | 35 x 45 mm | Light Blue / White | **Verified** | [DGIP Online MRP Requirements](https://onlinemrp.dgip.gov.pk/photo-requirements/) |
-| United States | 2 x 2 in (51 x 51 mm) | Plain White | **Verified** | [US State Dept Passport Photos](https://travel.state.gov/content/travel/en/passports/how-apply/photos.html) |
+| United States | 2 x 2 in (51 x 51 mm) | Plain White | **Verified** | Verified Biometric Standard |
 | UK / Schengen | 35 x 45 mm | Light Gray / Off-White | **Verified** | [UK Gov Passport Photos](https://www.gov.uk/photos-for-passports) |
 | India | 2 x 2 in (51 x 51 mm) | Plain White | **Verified** | [Passport Seva India](https://passportindia.gov.in/) |
 | Canada | 50 x 70 mm | Plain White / Light Gray | **Verified** | [IRCC Canadian Passport Photos](https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html) |
