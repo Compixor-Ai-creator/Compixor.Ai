@@ -1823,7 +1823,39 @@ export function getBlogsByCategory(category: string): BlogItem[] {
   return blogsData.filter((b) => b.category === category);
 }
 
+const CUSTOM_RELATED_POOLS: Record<string, string[]> = {
+  'how-to-merge-and-split-pdf-files-online': [
+    'how-to-compress-pdf-without-losing-quality',
+    'password-protect-pdf-files-online',
+    'how-to-remove-password-from-pdf',
+  ],
+  'how-to-compress-pdf-without-losing-quality': [
+    'how-to-merge-and-split-pdf-files-online',
+    'password-protect-pdf-files-online',
+    'how-to-remove-password-from-pdf',
+  ],
+  'how-to-add-watermark-to-pdf': [
+    'remove-watermark-from-pdf-cleanly',
+    'password-protect-pdf-files-online',
+    'how-to-compress-pdf-without-losing-quality',
+  ],
+  'remove-watermark-from-pdf-cleanly': [
+    'how-to-add-watermark-to-pdf',
+    'how-to-remove-password-from-pdf',
+    'password-protect-pdf-files-online',
+  ],
+};
+
 export function getRelatedBlogs(currentSlug: string, limit = 3): BlogItem[] {
+  if (CUSTOM_RELATED_POOLS[currentSlug]) {
+    const customList = CUSTOM_RELATED_POOLS[currentSlug]
+      .map((slug) => getBlogBySlug(slug))
+      .filter((b): b is BlogItem => Boolean(b));
+    if (customList.length > 0) {
+      return customList.slice(0, limit);
+    }
+  }
+
   const current = getBlogBySlug(currentSlug);
   if (!current) return blogsData.slice(0, limit);
   const sameCategory = blogsData.filter(

@@ -114,7 +114,7 @@ export default function ShareToolButton({
             <a
               href={shareUrls.linkedIn}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               aria-label={`Share ${toolName} on LinkedIn`}
               className="social-btn !w-full !h-9"
               style={{ '--glow': '#0A66C2' } as React.CSSProperties}
@@ -124,7 +124,7 @@ export default function ShareToolButton({
             <a
               href={shareUrls.x}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               aria-label={`Share ${toolName} on X`}
               className="social-btn social-btn-x !w-full !h-9"
             >
@@ -133,7 +133,7 @@ export default function ShareToolButton({
             <a
               href={shareUrls.whatsApp}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               aria-label={`Share ${toolName} on WhatsApp`}
               className="social-btn !w-full !h-9"
               style={{ '--glow': '#25D366' } as React.CSSProperties}
@@ -143,7 +143,7 @@ export default function ShareToolButton({
             <a
               href={shareUrls.facebook}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               aria-label={`Share ${toolName} on Facebook`}
               className="social-btn !w-full !h-9"
               style={{ '--glow': '#1877F2' } as React.CSSProperties}

@@ -1131,7 +1131,7 @@ export default function BlogPostPage({ params }: PageProps) {
                   <a
                     href={shareUrls.linkedIn}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer nofollow"
                     aria-label="Share on LinkedIn"
                     className="social-btn"
                     style={{ '--glow': '#0A66C2' } as React.CSSProperties}
@@ -1141,7 +1141,7 @@ export default function BlogPostPage({ params }: PageProps) {
                   <a
                     href={shareUrls.x}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer nofollow"
                     aria-label="Share on X"
                     className="social-btn social-btn-x"
                   >
@@ -1150,7 +1150,7 @@ export default function BlogPostPage({ params }: PageProps) {
                   <a
                     href={shareUrls.whatsApp}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer nofollow"
                     aria-label="Share on WhatsApp"
                     className="social-btn"
                     style={{ '--glow': '#25D366' } as React.CSSProperties}
@@ -1160,7 +1160,7 @@ export default function BlogPostPage({ params }: PageProps) {
                   <a
                     href={shareUrls.facebook}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer nofollow"
                     aria-label="Share on Facebook"
                     className="social-btn"
                     style={{ '--glow': '#1877F2' } as React.CSSProperties}

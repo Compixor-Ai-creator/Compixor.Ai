@@ -31,47 +31,47 @@ const SERVER_OCR_TOOLS = new Set<string>(['pdf-to-word', 'img-to-word']);
 
 const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
   'qr-generator': {
-    title: 'How to Create a Custom QR Code with Logo (Free, No Signup)',
+    title: 'How to Make a Custom QR Code with a Logo',
     href: '/blog/how-to-create-custom-qr-code-with-logo',
   },
   'pdf-organizer': {
-    title: 'How to Merge & Split PDF Files Online (Free, Fast & 100% Private)',
+    title: 'How to Merge and Split PDFs Online (No Upload)',
     href: '/blog/how-to-merge-and-split-pdf-files-online',
   },
   'pdf-compressor': {
-    title: 'How to Compress PDF Without Losing Quality (Free, In-Browser)',
+    title: 'How to Compress a PDF Without Losing Quality',
     href: '/blog/how-to-compress-pdf-without-losing-quality',
   },
   'full-dp-maker': {
-    title: 'How to Set Full Picture on WhatsApp DP Without Cropping (Free)',
+    title: 'How to Set a Full WhatsApp DP Without Cropping',
     href: '/blog/how-to-set-full-dp-whatsapp-without-cropping',
   },
   'passport-photo': {
-    title: 'Free Passport Size Photo Maker Online: Print-Ready in 60 Seconds',
+    title: 'Passport Photo Size Guide: 300 DPI by Country',
     href: '/blog/passport-size-photo-maker-online-free',
   },
   'protect-pdf': {
-    title: 'How to Password Protect PDF Files Online (AES-256 Encryption)',
+    title: 'How to Password Protect a PDF with AES-256',
     href: '/blog/password-protect-pdf-files-online',
   },
   'unlock-pdf': {
-    title: 'How to Unlock Password Protected PDF Files Online Free',
+    title: 'How to Remove a Password from a PDF (Free)',
     href: '/blog/how-to-remove-password-from-pdf',
   },
   'add-watermark': {
-    title: 'How to Add Watermark to PDF Documents Online Free',
+    title: 'How to Add a Watermark to a PDF (Step-by-Step)',
     href: '/blog/how-to-add-watermark-to-pdf',
   },
   'remove-watermark': {
-    title: 'How to Remove Watermark from PDF Online Free',
+    title: 'How to Remove a PDF Watermark Cleanly',
     href: '/blog/remove-watermark-from-pdf-cleanly',
   },
   'word-compressor': {
-    title: 'How to Compress Word Documents Online Free Without Losing Quality',
+    title: 'How to Compress a Word File Without Quality Loss',
     href: '/blog/how-to-compress-word-docx-files',
   },
   'pdf-to-word': {
-    title: 'Convert PDF to Editable Word Online Free (Preserve Formatting & Tables)',
+    title: 'Convert PDF to Editable Word Without Layout Loss',
     href: '/blog/convert-pdf-to-editable-word-online',
   },
   'img-to-word': {
@@ -157,8 +157,8 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
               href={TOOL_GUIDE_MAP[toolSlug].href}
               className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 hover:underline shrink-0"
             >
-              <span>Read the full guide</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>{TOOL_GUIDE_MAP[toolSlug].title}</span>
+              <ArrowRight className="w-4 h-4 shrink-0" />
             </Link>
           </div>
         )}
