@@ -142,7 +142,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
-                  Detailed Step-by-Step Tutorial
+                  Related Guide: Step-by-Step Tutorial
                 </p>
                 <p className="text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
                   {TOOL_GUIDE_MAP[toolSlug].title}

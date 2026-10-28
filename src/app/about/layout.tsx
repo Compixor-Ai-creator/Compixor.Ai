@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'About Us',
+  title: 'About Us - Private In-Browser PDF & Photo Tools',
   description:
     'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
   alternates: {

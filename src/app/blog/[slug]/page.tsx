@@ -53,6 +53,34 @@ interface PageProps {
   };
 }
 
+
+const DIRECT_RELATED_GUIDES: Record<string, { title: string; href: string }> = {
+  'password-protect-pdf-files-online': {
+    title: 'How to Remove a Password from a PDF (Free)',
+    href: '/blog/how-to-remove-password-from-pdf',
+  },
+  'how-to-remove-password-from-pdf': {
+    title: 'How to Password Protect a PDF with AES-256',
+    href: '/blog/password-protect-pdf-files-online',
+  },
+  'how-to-add-watermark-to-pdf': {
+    title: 'How to Remove a PDF Watermark Cleanly',
+    href: '/blog/remove-watermark-from-pdf-cleanly',
+  },
+  'remove-watermark-from-pdf-cleanly': {
+    title: 'How to Add a Watermark to a PDF (Step-by-Step)',
+    href: '/blog/how-to-add-watermark-to-pdf',
+  },
+  'convert-pdf-to-editable-word-online': {
+    title: 'How to Extract Text from an Image into Word',
+    href: '/blog/extract-text-from-image-to-word',
+  },
+  'extract-text-from-image-to-word': {
+    title: 'Convert PDF to Editable Word Without Layout Loss',
+    href: '/blog/convert-pdf-to-editable-word-online',
+  },
+};
+
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Camera,
   Maximize2,
@@ -92,9 +120,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonicalUrl = blog.canonicalUrl || `https://compixor-ai.cloud/blog/${blog.slug}`;
 
   return {
-    title: {
-      absolute: blog.metaTitle,
-    },
+    title: blog.metaTitle,
     description: blog.metaDescription,
     keywords: [
       blog.targetKeyword,
@@ -117,7 +143,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     },
     openGraph: {
-      title: blog.metaTitle,
+      title: `${blog.metaTitle} | Compixor`,
       description: blog.metaDescription,
       url: canonicalUrl,
       siteName: 'Compixor AI',
@@ -138,7 +164,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: 'summary_large_image',
-      title: blog.metaTitle,
+      title: `${blog.metaTitle} | Compixor`,
       description: blog.metaDescription,
       images: [
         blog.thumbnail
@@ -542,7 +568,7 @@ export default function BlogPostPage({ params }: PageProps) {
                 href={blog.toolPath}
                 className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md"
               >
-                <span>Launch Free Tool</span>
+                <span>Launch {blog.targetKeyword}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -979,6 +1005,29 @@ export default function BlogPostPage({ params }: PageProps) {
                   ))}
                 </div>
               </section>
+            )}
+
+
+            {/* Direct Cross-Link to Paired Guide */}
+            {DIRECT_RELATED_GUIDES[blog.slug] && (
+              <div className="my-8 p-5 rounded-2xl bg-zinc-50/90 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-zinc-700/80 flex items-center justify-between gap-4 not-prose shadow-sm">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 m-0">
+                      Related Companion Guide
+                    </p>
+                    <Link
+                      href={DIRECT_RELATED_GUIDES[blog.slug].href}
+                      className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                    >
+                      {DIRECT_RELATED_GUIDES[blog.slug].title} &rarr;
+                    </Link>
+                  </div>
+                </div>
+              </div>
             )}
 
             {/* ============ IN-ARTICLE MID CTA BANNER ============ */}

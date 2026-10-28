@@ -135,7 +135,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'pdf-compressor',
     name: 'PDF Compressor',
     icon: FileArchive,
-    title: 'Compress PDF Online Free - Reduce File Size | Compixor',
+    title: 'Compress PDF Online Free - Reduce File Size',
     description:
       'Compress PDF online free without uploading files. Reduce PDF size to 100kb, 200kb, or 1mb with no quality loss. Fast, private, works in your browser today.',
     canonicalUrl: `${BASE_URL}/tools/pdf-compressor`,
@@ -261,7 +261,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'pdf-organizer',
     name: 'PDF Merge & Split',
     icon: Combine,
-    title: 'Merge PDF Online Free - Combine & Split Pages | Compixor',
+    title: 'Merge PDF Online Free - Combine & Split Pages',
     description:
       'Merge PDF online free without upload. Combine PDF files into one, split pages, or extract sheets with no watermark. Free, no signup, works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/pdf-organizer`,
@@ -379,7 +379,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'add-watermark',
     name: 'Add PDF Watermark',
     icon: Stamp,
-    title: 'Add Watermark to PDF Online Free - Text & Logo | Compixor',
+    title: 'Add Watermark to PDF Online Free - Text & Logo',
     description:
       'Add watermark to PDF online free without upload. Stamp custom text or transparent logo images with full privacy. Free, no signup, works in your browser now.',
     canonicalUrl: `${BASE_URL}/tools/add-watermark`,
@@ -501,7 +501,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'remove-watermark',
     name: 'Remove PDF Watermark',
     icon: Eraser,
-    title: 'Remove Watermark from PDF Free - Erase Stamps | Compixor',
+    title: 'Remove Watermark from PDF Free - Erase Stamps',
     description:
       'Remove watermark from PDF free without upload or Adobe Acrobat. Erase stamps, logos, and text overlays in seconds. Free, no signup, works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/remove-watermark`,
@@ -623,7 +623,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'protect-pdf',
     name: 'Protect PDF',
     icon: Lock,
-    title: 'Password Protect PDF Online Free - AES-256 | Compixor',
+    title: 'Password Protect PDF Online Free - AES-256',
     description:
       'Password protect PDF online free with strong AES-256 encryption. Lock PDF files, restrict editing and printing safely. Free, no signup, no upload required.',
     canonicalUrl: `${BASE_URL}/tools/protect-pdf`,
@@ -737,7 +737,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'unlock-pdf',
     name: 'Unlock PDF',
     icon: LockOpen,
-    title: 'Unlock PDF Online Free - Remove Password | Compixor',
+    title: 'Unlock PDF Online Free - Remove Password',
     description:
       'Unlock PDF online free without uploading files. Remove PDF password security and printing restrictions instantly. 100% private, works in your browser today.',
     canonicalUrl: `${BASE_URL}/tools/unlock-pdf`,
@@ -851,7 +851,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'word-compressor',
     name: 'Word Compressor',
     icon: FileArchive,
-    title: 'Compress Word Document Online Free - Reduce DOCX | Compixor',
+    title: 'Compress Word Document Online Free (DOCX)',
     description:
       'Compress Word document online free without losing quality. Reduce DOCX file size with embedded images for email attachments. Free, no upload, works in browser.',
     canonicalUrl: `${BASE_URL}/tools/word-compressor`,
@@ -969,7 +969,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'passport-photo',
     name: 'Passport Photo Maker',
     icon: IdCard,
-    title: 'Passport Size Photo Maker Online Free | Compixor',
+    title: 'Passport Size Photo Maker Online Free',
     description:
       'Free passport size photo maker online. Create compliant 35x45 mm, NADRA CNIC and 2x2 inch photos. Print on A4, A5 and A6 sheets at 300 DPI with crop marks.',
     canonicalUrl: `${BASE_URL}/tools/passport-photo`,
@@ -1120,7 +1120,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'full-dp-maker',
     name: 'Full DP Maker',
     icon: FullDpIcon,
-    title: 'WhatsApp DP Without Crop - Full Size Photo | Compixor',
+    title: 'WhatsApp DP Without Crop - Full Size Photo',
     description:
       'WhatsApp DP without crop maker online. Post full size profile pictures for Instagram & WhatsApp with stylish blur backgrounds. Free, works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/full-dp-maker`,
@@ -1234,7 +1234,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'qr-generator',
     name: 'QR Code Generator',
     icon: QrCode,
-    title: 'QR Code Generator Free No Signup - SVG & Logo | Compixor',
+    title: 'QR Code Generator Free No Signup - SVG & Logo',
     description:
       'QR code generator free no signup required. Create custom color QR codes with logos for URLs, WiFi, and WhatsApp links in SVG or PNG. Works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/qr-generator`,
@@ -1348,7 +1348,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'pdf-to-word',
     name: 'PDF to Word Converter',
     icon: FileText,
-    title: 'Convert PDF to Word Online Free - Editable DOCX | Compixor',
+    title: 'Convert PDF to Word Online Free - Editable DOCX',
     description:
       'Convert PDF to Word online free with no signup. Turn digital or scanned PDFs into editable DOCX with OCR for English, Urdu and Arabic. Nothing is stored.',
     canonicalUrl: `${BASE_URL}/tools/pdf-to-word`,
@@ -1462,7 +1462,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'img-to-word',
     name: 'Image to Word Converter',
     icon: ScanText,
-    title: 'Image to Word Converter Online Free | Compixor',
+    title: 'Image to Word Converter Online Free',
     description:
       'Convert JPG, PNG, or WEBP images to editable Word .docx files free online. In-browser Tesseract OCR, zero upload, 10+ languages. Instant download, no signup.',
     canonicalUrl: `${BASE_URL}/tools/img-to-word`,
@@ -1593,9 +1593,7 @@ export function getToolMetadata(slug: ToolSlug): Metadata {
   }
 
   return {
-    title: {
-      absolute: tool.title,
-    },
+    title: tool.title,
     description: tool.description,
     keywords: tool.keywords,
     alternates: {
@@ -1613,7 +1611,7 @@ export function getToolMetadata(slug: ToolSlug): Metadata {
       },
     },
     openGraph: {
-      title: tool.title,
+      title: `${tool.title} | Compixor`,
       description: tool.description,
       url: tool.canonicalUrl,
       type: 'website',

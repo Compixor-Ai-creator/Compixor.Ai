@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   },
   title: {
     default: homepageSeoData.title,
-    template: '%s | Compixor AI',
+    template: '%s | Compixor',
   },
   description: homepageSeoData.description,
   keywords: homepageSeoData.keywords,
