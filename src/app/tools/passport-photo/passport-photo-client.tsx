@@ -429,6 +429,12 @@ export default function PassportPhotoPage() {
   const activeObjectUrlRef = useRef<string | null>(null);
   const lastProcessedKeyRef = useRef<string | null>(null);
   const [faceDetected, setFaceDetected] = useState<boolean | null>(null);
+  const [measuredBiometrics, setMeasuredBiometrics] = useState<{
+    headPercent: number | null;
+    crownPercent: number | null;
+    eyePercent: number | null;
+    chinPercent: number | null;
+  }>({ headPercent: null, crownPercent: null, eyePercent: null, chinPercent: null });
 
   // Component unmount cleanup
   useEffect(() => {
@@ -2610,13 +2616,13 @@ export default function PassportPhotoPage() {
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className={`w-3.5 h-3.5 ${isTooCloseWarning ? 'text-amber-500' : 'text-emerald-500'}`} />
                     <span className="text-zinc-700 dark:text-zinc-300">
-                      Head size: {isTooCloseWarning ? 'Close to edge (fits fully)' : 'Standard size OK'}
+                      Head size: {measuredBiometrics.headPercent === null ? 'Not measured' : `${measuredBiometrics.headPercent}% of photo height${isTooCloseWarning ? ' (limited to fit)' : ''}`}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                     <span className="text-zinc-700 dark:text-zinc-300">
-                      Eye line: Aligned at ~{activePreset.biometricSpec.eyeLinePercent}% height
+                      Eye line: {measuredBiometrics.eyePercent === null ? 'Not measured' : `Measured at ~${measuredBiometrics.eyePercent}% height`}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
