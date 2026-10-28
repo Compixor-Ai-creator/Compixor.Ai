@@ -21,7 +21,6 @@ export interface Preset {
   defaultBgColor: string;
   allowedBgColors: string[];
   verified: boolean;
-  officialUrl?: string;
   description: string;
   flag: string;
   biometricSpec: BiometricSpec;
@@ -40,7 +39,6 @@ export const standardPresets: Preset[] = [
     defaultBgColor: '#e0f2fe',
     allowedBgColors: ['#ffffff', '#f8fafc', '#e0f2fe', '#438edb'],
     verified: true,
-    officialUrl: 'https://onlinemrp.dgip.gov.pk/photo-requirements/',
     description: '35 x 45 mm (NADRA / Passports light blue or white background)',
     flag: '🇵🇰',
     biometricSpec: {
@@ -66,7 +64,6 @@ export const standardPresets: Preset[] = [
     defaultBgColor: '#ffffff',
     allowedBgColors: ['#ffffff', '#f8fafc'],
     verified: true,
-    officialUrl: 'https://travel.state.gov/content/travel/en/passports/how-apply/photos.html',
     description: '2 x 2 inches (51 x 51 mm) at 300 DPI, solid white background',
     flag: '🇺🇸',
     biometricSpec: {
@@ -92,7 +89,6 @@ export const standardPresets: Preset[] = [
     defaultBgColor: '#ffffff',
     allowedBgColors: ['#ffffff', '#f8fafc', '#f1f5f9'],
     verified: true,
-    officialUrl: 'https://www.gov.uk/photos-for-passports',
     description: '35 x 45 mm standard ICAO 9303 format (Light gray or white)',
     flag: '🇪🇺',
     biometricSpec: {
@@ -118,7 +114,6 @@ export const standardPresets: Preset[] = [
     defaultBgColor: '#ffffff',
     allowedBgColors: ['#ffffff', '#f8fafc'],
     verified: true,
-    officialUrl: 'https://passportindia.gov.in/',
     description: '2 x 2 inches (51 x 51 mm) pure white background',
     flag: '🇮🇳',
     biometricSpec: {
@@ -144,7 +139,6 @@ export const standardPresets: Preset[] = [
     defaultBgColor: '#ffffff',
     allowedBgColors: ['#ffffff', '#f8fafc', '#f1f5f9'],
     verified: true,
-    officialUrl: 'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html',
     description: '50 x 70 mm (2 x 2.75 inches) white or light gray background',
     flag: '🇨🇦',
     biometricSpec: {
@@ -170,7 +164,6 @@ export const standardPresets: Preset[] = [
     defaultBgColor: '#1d4ed8',
     allowedBgColors: ['#1d4ed8', '#438edb', '#ffffff'],
     verified: true,
-    officialUrl: 'https://dfa-oca.ph/passport/passport-requirements/',
     description: '35 x 45 mm (Royal blue background standard)',
     flag: '🇵🇭',
     biometricSpec: {
@@ -196,7 +189,6 @@ export const standardPresets: Preset[] = [
     defaultBgColor: '#ffffff',
     allowedBgColors: ['#ffffff', '#e0f2fe', '#438edb'],
     verified: true,
-    officialUrl: 'https://www.fmprc.gov.cn/',
     description: '33 x 48 mm biometric specification (White or Blue)',
     flag: '🇨🇳',
     biometricSpec: {
@@ -222,7 +214,6 @@ export const standardPresets: Preset[] = [
     defaultBgColor: '#ffffff',
     allowedBgColors: ['#ffffff', '#f1f5f9'],
     verified: true,
-    officialUrl: 'https://www.passports.gov.au/getting-passport-how-it-works/photo-requirements',
     description: '35 x 45 mm (Australian Passport Office light gray/white standard)',
     flag: '🇦🇺',
     biometricSpec: {
@@ -248,7 +239,6 @@ export const standardPresets: Preset[] = [
     defaultBgColor: '#ffffff',
     allowedBgColors: ['#ffffff', '#f8fafc'],
     verified: true,
-    officialUrl: 'https://gdrfad.gov.ae/',
     description: '40 x 60 mm (White background GDRFA format)',
     flag: '🇦🇪',
     biometricSpec: {

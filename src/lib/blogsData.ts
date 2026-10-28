@@ -75,8 +75,8 @@ export const blogsData: BlogItem[] = [
       title: "What Kind of Passport or ID Photo Do You Need? (10-Second Guide)",
       items: [
         {
-          boldText: "Pakistan Passport, NADRA CNIC & Pak-ID",
-          descText: "Select Pakistan 35 × 45 mm (413 × 531 px @ 300 DPI) with light blue (#e0f2fe) or white background and under 50 KB Pak-ID export.",
+          boldText: "Pakistan Passport & NADRA CNIC",
+          descText: "Select Pakistan 35 × 45 mm (413 × 531 px @ 300 DPI) with light blue (#e0f2fe) or white background and under 50 KB file export.",
           toolName: "Passport Photo Maker",
           toolPath: "/tools/passport-photo"
         },
@@ -144,7 +144,7 @@ export const blogsData: BlogItem[] = [
             "Choose Your Country & Document Preset: Select your destination from our verified presets, including Pakistan Passport / NADRA (35 × 45 mm), India Passport / OCI (51 × 51 mm / 2 × 2 inches), US Visa, UK / Schengen, Canada, or Australia.",
             "Select Your Required Background Colour: Pick official plain white, off-white, light blue, sky blue, or royal blue depending on your issuing authority's specific consular rules.",
             "Align Facial Proportions with Biometric Overlay Guides: Turn on the biometric overlay tool to ensure your chin rests along the chin guide and the crown of your head fits within the required percentage boundary (such as 70% to 80% for Pakistan and India). Adjust zoom and rotation as needed.",
-            "Download Your Photo or Print Sheet: Export a high-resolution individual JPEG for digital government portals (including under 50 KB for Pak-ID) or select a tiled print sheet (A4, A5 with 6 photos, or A6 with 2 photos) with calibrated cut marks and 300 DPI metadata ready for home printing."
+            "Download Your Photo or Print Sheet: Export a high-resolution individual JPEG for digital government portals (including under 50 KB for online portals) or select a tiled print sheet (A4, A5 with 6 photos, or A6 with 2 photos) with calibrated cut marks and 300 DPI metadata ready for home printing."
           ]
         },
         {
@@ -175,8 +175,7 @@ export const blogsData: BlogItem[] = [
               ["Australia Passport", "35 × 45 mm", "413 × 531 px", "Plain White or Light Gray", "32–36 mm (71–80%)"],
               ["UAE & Gulf Visa", "40 × 60 mm", "472 × 708 px", "Plain White", "30–38 mm (60–70%)"]
             ]
-          },
-          tableNote: "Official Verification & Pak-ID Online Rules: For Pakistan Machine Readable Passports (MRP) and physical NADRA centers, light blue (#e0f2fe) is the standard studio color. For online renewals through the Pak-ID mobile app or website, pure white is recommended with a file size under 50 KB in JPEG format. Specifications can change periodically. Always verify your portrait against the latest consular directives at the official portals: US State Department Travel (https://travel.state.gov/content/travel/en/passports/how-apply/photos.html), UK HM Passport Office (https://www.gov.uk/photos-for-passports), and Pakistan NADRA Pak-ID (https://id.nadra.gov.pk/)."
+          }
         },
         {
           heading: "Print Passport Photos on an A4 Sheet",
@@ -230,8 +229,8 @@ export const blogsData: BlogItem[] = [
           answer: "Yes, 100% free with no credit card, no subscription, and no hidden payment screens. You can generate unlimited individual biometric photos and print sheets without cost."
         },
         {
-          question: "What is the exact NADRA passport photo size and Pak-ID file limit?",
-          answer: "The official Pakistan passport and NADRA photo size is 35 mm wide by 45 mm high (exactly 413 x 531 pixels at 300 DPI), with head height between 32 mm and 36 mm (70–80%). For online Pak-ID renewals, upload a JPEG file under 50 KB."
+          question: "What is the exact NADRA passport photo size and online file limit?",
+          answer: "The official Pakistan passport and NADRA photo size is 35 mm wide by 45 mm high (exactly 413 x 531 pixels at 300 DPI), with head height between 32 mm and 36 mm (70–80%). For online renewals, upload a JPEG file under 50 KB."
         },
         {
           question: "Can I make an Indian passport size photo online free?",
