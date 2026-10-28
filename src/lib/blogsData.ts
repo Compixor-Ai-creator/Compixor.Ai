@@ -1519,6 +1519,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/remove-watermark",
     toolName: "Free Watermark Remover",
     ctaLabel: "Launch Free Watermark Remover",
+    thumbnail: "/blog/remove-watermark-from-pdf-thumbnail.webp",
     accentColor: "from-amber-500/20 to-orange-500/20",
     icon: "Eraser",
     decisionBox: {

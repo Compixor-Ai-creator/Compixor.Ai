@@ -146,6 +146,22 @@ export default function ArticleHeroBanner({
     );
   }
 
+  if (id === 'remove-pdf-watermark' || id === 'remove-watermark-from-pdf-cleanly') {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
+        <Image
+          src="/blog/remove-watermark-from-pdf-thumbnail.webp"
+          alt={title}
+          width={1200}
+          height={675}
+          priority
+          sizes="(max-width: 768px) 100vw, 800px"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
   if (id === 'full-dp-maker') {
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
