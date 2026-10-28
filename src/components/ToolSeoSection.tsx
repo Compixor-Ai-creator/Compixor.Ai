@@ -43,7 +43,7 @@ const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
     href: '/blog/how-to-compress-pdf-without-losing-quality',
   },
   'full-dp-maker': {
-    title: 'How to Set a Full WhatsApp DP Without Cropping',
+    title: 'Full DP Without Cropping for All Social Media',
     href: '/blog/how-to-set-full-dp-whatsapp-without-cropping',
   },
   'passport-photo': {

@@ -357,7 +357,7 @@ export default function BlogPostPage({ params }: PageProps) {
       return {
         '@context': 'https://schema.org',
         '@type': 'WebApplication',
-        name: 'Compixor AI WhatsApp Full DP Maker',
+        name: 'Compixor AI Full DP Maker for All Social Media',
         url: 'https://compixor-ai.cloud/tools/full-dp-maker',
         applicationCategory: 'MultimediaApplication',
         operatingSystem: 'All (Web Browser)',
@@ -366,7 +366,7 @@ export default function BlogPostPage({ params }: PageProps) {
         featureList: [
           'Fit rectangular portraits and landscapes to 1:1 square canvas',
           'Frosted ambient blur, solid color, and gradient padding',
-          'Circular safe-zone preview for WhatsApp avatars',
+          'Circular safe-zone preview for WhatsApp, Instagram, Facebook & X avatars',
           '100% in-browser client-side canvas processing with zero uploads',
         ],
       };
