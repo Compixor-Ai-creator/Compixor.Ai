@@ -40,7 +40,7 @@ const playfair = Playfair_Display({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#ffffff',
+  themeColor: '#28195e',
   width: 'device-width',
   initialScale: 1,
 };
@@ -89,17 +89,15 @@ export const metadata: Metadata = {
     description: homepageSeoData.description,
     images: [OG_IMAGE_URL],
   },
+manifest: '/manifest.json',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
-      { url: '/icon-48x48.png', sizes: '48x48', type: 'image/png' },
-      { url: '/icon-96x96.png', sizes: '96x96', type: 'image/png' },
-      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icon.png', sizes: '512x512', type: 'image/png' },
+      { url: '/icon-48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/icon-96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
-    shortcut: '/favicon.ico',
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
@@ -164,17 +162,7 @@ export default function RootLayout({
             `,
           }}
         />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=4" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=4" />
-        <link rel="shortcut icon" href="/favicon.ico?v=4" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4" />
-        {/* Mobile & PWA Meta Tags */}
-        <meta name="theme-color" content="#ffffff" />
-        <meta name="apple-mobile-web-app-title" content="Compixor AI" />
-        <meta name="application-name" content="Compixor AI" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        
         {/* AI & GEO Discovery */}
         <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt" />
         {/* JSON-LD Structured Data: WebSite, Organization & ItemList */}

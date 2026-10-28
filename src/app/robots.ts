@@ -6,7 +6,14 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: [
+          '/',
+          '/favicon.ico',
+          '/brand/',
+          '/og/',
+          '/_next/image',
+          '/_next/static',
+        ],
         disallow: ['/admin', '/admin/'],
       },
       {
@@ -26,7 +33,14 @@ export default function robots(): MetadataRoute.Robots {
           'cohere-ai',
           'CCBot',
         ],
-        allow: '/',
+        allow: [
+          '/',
+          '/favicon.ico',
+          '/brand/',
+          '/og/',
+          '/_next/image',
+          '/_next/static',
+        ],
         disallow: ['/admin', '/admin/'],
       },
     ],
