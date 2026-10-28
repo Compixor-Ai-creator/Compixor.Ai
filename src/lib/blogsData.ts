@@ -1,4 +1,6 @@
 export interface BlogItem {
+  toolName?: string;
+  ctaLabel?: string;
   id: string;
   slug: string;
   title: string;
@@ -64,6 +66,8 @@ export const blogsData: BlogItem[] = [
     dateModified: "2026-10-20T11:30:00.000Z",
     excerpt: "Need a compliant passport, visa, or national ID photo fast? Using our passport size photo maker online free, you can remove backgrounds automatically with AI, select official country dimensions, and download print-ready sheets at 300 DPI with zero watermarks.",
     toolPath: "/tools/passport-photo",
+    toolName: "Free Passport Photo Maker",
+    ctaLabel: "Launch Free Passport Photo Maker",
     accentColor: "from-sky-500/20 to-indigo-500/20",
     icon: "Camera",
     thumbnail: "/blog/passport-photo-maker-thumbnail.webp",
@@ -271,6 +275,8 @@ export const blogsData: BlogItem[] = [
     dateModified: "2026-10-24T00:00:00.000Z",
     excerpt: "Learn how to fit vertical portraits and wide landscape photos into a full-size WhatsApp profile picture without awkward cropping or losing HD quality.",
     toolPath: "/tools/full-dp-maker",
+    toolName: "Free Full DP Maker",
+    ctaLabel: "Launch Free Full DP Maker",
     accentColor: "from-purple-500/20 to-pink-500/20",
     icon: "Maximize2",
     thumbnail: "/blog/whatsapp-full-dp-maker-thumbnail.webp",
@@ -460,6 +466,8 @@ export const blogsData: BlogItem[] = [
     dateModified: "2026-10-24T00:00:00.000Z",
     excerpt: "Generate permanent static vector QR codes for website URLs, Wi-Fi networks, Google Maps locations, UPI payments, and vCards with custom brand logos and zero expiry.",
     toolPath: "/tools/qr-generator",
+    toolName: "Free QR Code Generator",
+    ctaLabel: "Launch Free QR Code Generator",
     accentColor: "from-teal-500/20 to-emerald-500/20",
     icon: "QrCode",
     thumbnail: "/blog/custom-qr-code-with-logo-thumbnail.webp",
@@ -658,6 +666,8 @@ export const blogsData: BlogItem[] = [
     dateModified: "2026-10-24T00:00:00.000Z",
     excerpt: "Reduce bloated PDF documents for email, job portals, and web uploads without compromising clarity, vector fonts, or document readability.",
     toolPath: "/tools/pdf-compressor",
+    toolName: "Free PDF Compressor",
+    ctaLabel: "Launch Free PDF Compressor",
     accentColor: "from-rose-500/20 to-orange-500/20",
     icon: "FileArchive",
     thumbnail: "/blog/pdf-compressor-hero.webp",
@@ -806,6 +816,8 @@ export const blogsData: BlogItem[] = [
     dateModified: "2026-10-24T00:00:00.000Z",
     excerpt: "Reorganize fragmented documents. Merge multiple PDFs in custom order or extract page ranges with zero data leaks and zero cloud uploads.",
     toolPath: "/tools/pdf-organizer",
+    toolName: "Free PDF Organizer",
+    ctaLabel: "Launch Free PDF Organizer",
     accentColor: "from-blue-500/20 to-cyan-500/20",
     icon: "Layers",
     decisionBox: {
@@ -952,6 +964,8 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Learn the exact steps to turn locked PDF contracts and reports into fully editable Word documents while keeping exact layout geometry intact.",
     excerpt: "Transform static PDF forms and contracts into editable DOCX files while retaining structural tables, headers, and typography without server uploads.",
     toolPath: "/tools/pdf-to-word",
+    toolName: "Free PDF to Word Converter",
+    ctaLabel: "Launch Free PDF to Word Converter",
     accentColor: "from-indigo-500/20 to-blue-500/20",
     icon: "FileText",
     thumbnail: "/blog/pdf-to-word-thumbnail.webp",
@@ -1075,6 +1089,8 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Step-by-step guide to encrypting PDF documents with AES-256 keys directly on your device. Set permissions without exposing data to servers.",
     excerpt: "A systematic, security-first guide to the two PDF password types (open password vs. permission password), how to disable copying, printing, and editing, and how to legally unlock restricted PDFs without exposing your confidential data to remote servers.",
     toolPath: "/tools/protect-pdf",
+    toolName: "Free PDF Protector",
+    ctaLabel: "Launch Free PDF Protector",
     accentColor: "from-violet-500/20 to-purple-500/20",
     icon: "Lock",
     thumbnail: "/blog/password-protect-pdf-hero.webp",
@@ -1222,6 +1238,8 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Step-by-step walkthrough on decrypting password-protected PDFs and removing permission blocks completely client-side in your web browser.",
     excerpt: "Strip annoying password prompts and printing restrictions from your personal or business PDFs permanently with 100% private in-browser decryption.",
     toolPath: "/tools/unlock-pdf",
+    toolName: "Free PDF Unlocker",
+    ctaLabel: "Launch Free PDF Unlocker",
     accentColor: "from-emerald-500/20 to-teal-500/20",
     icon: "Unlock",
     thumbnail: "/blog/remove-password-from-pdf-thumbnail.webp",
@@ -1330,6 +1348,8 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Step-by-step guide on stamping confidentiality watermarks across PDF pages with custom opacity, rotation, and anti-tamper stream flattening.",
     excerpt: "Protecting confidential documents, contracts, and creative work requires clear attribution before sharing files across the web. When you distribute an unsecured PDF, anyone can copy, screenshot, or republish your content without permission. Using a free PDF watermark adder, you can imprint copyright notices, brand logos, or status stamps across your document in seconds. Whether you need to mark a contract as a 'DRAFT', stamp 'CONFIDENTIAL' diagonally across every page, or add your company logo, this comprehensive guide covers the fastest free methods available online and offline.",
     toolPath: "/tools/add-watermark",
+    toolName: "Free PDF Watermark Tool",
+    ctaLabel: "Launch Free PDF Watermark Tool",
     thumbnail: "/blog/pdf-watermark-hero.webp",
     accentColor: "from-pink-500/20 to-rose-500/20",
     icon: "Stamp",
@@ -1490,6 +1510,8 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Learn how structural content stream parsing deletes unwanted background stamps and watermark overlays without degrading original PDF pages.",
     excerpt: "Erase distracting background stamps, draft watermarks, and diagonal logo overlays from PDF pages without destroying text crispness or page layout.",
     toolPath: "/tools/remove-watermark",
+    toolName: "Free Watermark Remover",
+    ctaLabel: "Launch Free Watermark Remover",
     accentColor: "from-amber-500/20 to-orange-500/20",
     icon: "Eraser",
     decisionBox: {
@@ -1588,6 +1610,8 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Learn how downscaling embedded media and deflating XML streams cuts Word document sizes by up to 80% without losing typographic formatting.",
     excerpt: "Shrink bloated Word documents that exceed email attachment limits by optimizing high-resolution embedded images and cleaning redundant XML packages.",
     toolPath: "/tools/word-compressor",
+    toolName: "Free Word Compressor",
+    ctaLabel: "Launch Free Word Compressor",
     accentColor: "from-blue-600/20 to-indigo-600/20",
     icon: "FileArchive",
     decisionBox: {
@@ -1685,6 +1709,8 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Discover how neural OCR technology detects tables, headers, and multilingual text in images to export cleanly formatted Word DOCX files.",
     excerpt: "Transform physical paperwork, book photos, and scanned receipts into editable DOCX files using high-precision in-browser Optical Character Recognition (OCR).",
     toolPath: "/tools/img-to-word",
+    toolName: "Free Image to Word Tool",
+    ctaLabel: "Launch Free Image to Word Tool",
     accentColor: "from-emerald-500/20 to-teal-500/20",
     icon: "ScanText",
     decisionBox: {

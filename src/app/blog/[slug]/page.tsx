@@ -530,29 +530,29 @@ export default function BlogPostPage({ params }: PageProps) {
             )}
 
             {/* Prominent Call-To-Action Card (Step 1) */}
-            <div className="glass-card p-4 sm:p-5 rounded-2xl border border-brand-500/30 bg-gradient-to-r from-brand-500/10 via-purple-500/5 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-4 not-prose my-6 shadow-sm">
-              <div className="flex items-center gap-3.5">
+            <div className="glass-card p-4 sm:p-5 rounded-2xl border border-brand-500/30 bg-gradient-to-r from-brand-500/10 via-purple-500/5 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-4 not-prose my-6 shadow-sm flex-wrap min-w-0 overflow-hidden">
+              <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div
                   className={`w-12 h-12 rounded-xl bg-gradient-to-br ${blog.accentColor} flex items-center justify-center text-zinc-900 dark:text-white shrink-0 border border-zinc-200/70 dark:border-zinc-700/70 shadow-sm`}
                 >
                   <IconComponent className="w-6 h-6 text-brand-600 dark:text-brand-400" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5" /> 100% In-Browser • Zero File Uploads
+                    <ShieldCheck className="w-3.5 h-3.5 shrink-0" /> 100% In-Browser • Zero File Uploads
                   </p>
-                  <p className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white m-0">
-                    Try the Free {blog.decisionBox?.items?.[0]?.toolName || blog.title}
+                  <p className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white m-0 truncate">
+                    Try the {blog.toolName || 'Free Tool'}
                   </p>
                 </div>
               </div>
 
               <Link
                 href={blog.toolPath}
-                className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md"
+                className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md max-w-full"
               >
-                <span>Launch {blog.targetKeyword}</span>
-                <ArrowRight className="w-4 h-4" />
+                <span className="truncate">{blog.ctaLabel || 'Launch Free Tool'}</span>
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </Link>
             </div>
 
@@ -1021,7 +1021,7 @@ export default function BlogPostPage({ params }: PageProps) {
                   100% In-Browser Privacy
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 dark:text-white mb-3">
-                  Experience {blog.title}
+                  Experience {blog.toolName || blog.title}
                 </h3>
                 <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
                   Zero file uploads, no watermarks, and no sign-up required. Your files remain completely secure in device RAM.
@@ -1053,8 +1053,8 @@ export default function BlogPostPage({ params }: PageProps) {
             )}
 
             {/* ============ TRY THE FREE TOOL NEAR END (Step 1) ============ */}
-            <div className="my-8 p-5 sm:p-6 rounded-2xl bg-brand-500/5 dark:bg-brand-500/10 border border-brand-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 not-prose shadow-sm">
-              <div>
+            <div className="my-8 p-5 sm:p-6 rounded-2xl bg-brand-500/5 dark:bg-brand-500/10 border border-brand-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 not-prose shadow-sm flex-wrap min-w-0 overflow-hidden">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white m-0">
                   Ready to test it yourself?
                 </p>
@@ -1064,10 +1064,10 @@ export default function BlogPostPage({ params }: PageProps) {
               </div>
               <Link
                 href={blog.toolPath}
-                className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md"
+                className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md max-w-full"
               >
-                <span>Try the free {blog.decisionBox?.items?.[0]?.toolName || 'tool'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <span className="truncate">{blog.ctaLabel || 'Try the Free Tool'}</span>
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </Link>
             </div>
 
