@@ -127,7 +127,7 @@ export default function WhatUsersSay() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setFormError(null);
-    triggerRef.current?.focus();
+    // CompixorModal restores focus with preventScroll after the exit starts.
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

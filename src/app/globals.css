@@ -790,7 +790,7 @@
     }
 
     /* Remove real-time backdrop-filter on mobile across general elements, but preserve on full-screen mobile-drawer-glass */
-    [class*="backdrop-blur"]:not(.mobile-drawer-glass),
+    [class*="backdrop-blur"]:not(.mobile-drawer-glass):not(.modal-backdrop-blur),
     .glass-card,
     .glass-nav,
     .slide-blur-panel,

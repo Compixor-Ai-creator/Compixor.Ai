@@ -191,7 +191,7 @@ export default function CompixorModal({
           {/* Keep blur static and animate only the tint. Chromium can briefly clear
               a GPU backdrop texture when blur and opacity share one layer. */}
           <div
-            className="fixed inset-0 backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] pointer-events-none"
+            className="modal-backdrop-blur fixed inset-0 bg-white/10 dark:bg-[#0a0819]/20 backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] pointer-events-none"
             aria-hidden="true"
           />
           <motion.div
