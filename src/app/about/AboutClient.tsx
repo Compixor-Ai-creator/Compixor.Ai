@@ -96,7 +96,7 @@ export default function AboutClient() {
       <section className="mb-24">
         <div className="text-center max-w-xl mx-auto mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold font-display text-zinc-900 dark:text-white mb-3">
-            Core Engineering Principles
+            How Compixor Keeps Your Files Private
           </h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
             Built from day one so you get fast results without giving up your privacy.
@@ -136,7 +136,7 @@ export default function AboutClient() {
             Atmospheric Minimalism
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold font-display text-zinc-900 dark:text-white">
-            Engineering Effortless Power
+            Fast, Simple Tools for Everyday Documents
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
             Our team of engineers and designers build tools for the modern web. We saw common problems with everyday file tasks: slow uploads, broken layouts, and privacy risks with cloud servers.

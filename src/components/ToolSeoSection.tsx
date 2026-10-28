@@ -29,6 +29,14 @@ interface ToolSeoSectionProps {
 /** Tools whose work is done by our OCR server, so "zero uploads" copy must not be used. */
 const SERVER_OCR_TOOLS = new Set<string>(['pdf-to-word', 'img-to-word']);
 
+const TOOL_SECTION_H2: Partial<Record<ToolSlug, string>> = {
+  'add-watermark': 'Add a Text or Logo Watermark to Any PDF',
+  'pdf-organizer': 'Merge, Split and Reorder PDF Pages Online Free',
+  'pdf-compressor': 'Compress PDF Online Free Without Losing Quality',
+  'remove-watermark': 'Remove Watermarks from PDF Without Blurring Text',
+  'qr-generator': 'Free QR Code Generator with Logo, No Signup',
+};
+
 const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
   'qr-generator': {
     title: 'How to Make a Custom QR Code with a Logo',
@@ -100,11 +108,13 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
           <ShareToolButton toolName={tool.name} toolSlug={toolSlug} />
         </div>
         <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
-          {toolSlug === 'passport-photo'
-            ? `${tool.h1} — Official Biometric Standards`
-            : SERVER_OCR_TOOLS.has(toolSlug || '')
-              ? `${tool.h1} — Accurate OCR, Nothing Stored`
-              : `${tool.h1} — Safe, Fast & Zero Data Leak`}
+          {TOOL_SECTION_H2[toolSlug as ToolSlug]
+            ? TOOL_SECTION_H2[toolSlug as ToolSlug]
+            : toolSlug === 'passport-photo'
+              ? `${tool.h1} — Official Biometric Standards`
+              : SERVER_OCR_TOOLS.has(toolSlug || '')
+                ? `${tool.h1} — Accurate OCR, Nothing Stored`
+                : `${tool.h1} — Safe, Fast & Zero Data Leak`}
         </h2>
         <div className="mb-4">
           <PrivacyBadge toolSlug={toolSlug} />

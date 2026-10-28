@@ -411,7 +411,7 @@ export default function HomePage() {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
-              Engineered with Zero Compromise
+              Private Tools That Never Upload Your Files
             </h2>
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
               How CompixorAi redefines privacy and performance for online utilities.

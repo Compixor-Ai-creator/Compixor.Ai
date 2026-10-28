@@ -151,7 +151,7 @@ export default function ProtectPdfPage() {
         {/* Security Features */}
         <section aria-labelledby="features-heading">
           <h2 id="features-heading" className="text-2xl font-bold font-display text-zinc-900 dark:text-white mb-6 text-center">
-            Engineered for Total Confidentiality
+            Why Protect PDF Files with AES-256 Encryption
           </h2>
           <div className="grid sm:grid-cols-3 gap-6">
             <div className="glass-card p-5 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60">

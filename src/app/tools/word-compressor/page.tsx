@@ -564,11 +564,11 @@ export default function WordCompressorPage() {
         </div>
       </div>
 
-      {/* Why choose Compixor? Feature Grid (SlideSpeak Style) */}
+      {/* Why Use Compixor to Compress Word Files? Feature Grid (SlideSpeak Style) */}
       <section className="mt-16">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">
-            Why choose Compixor?
+            Why Use Compixor to Compress Word Files?
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 max-w-xl mx-auto">
             Accurate, fast and reliable. Our FREE tool to compress and optimize Word documents.
