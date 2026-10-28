@@ -69,6 +69,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 // Unknown blog slugs return immediate HTTP 404
+export const dynamic = 'force-static';
 export const dynamicParams = false;
 
 // Statically pre-render all 12 blog posts for instant TTFB & SEO

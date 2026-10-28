@@ -1,3 +1,4 @@
+export const dynamic = 'force-static';
 import React from 'react';
 import { ShieldCheck, Lock, EyeOff, ServerOff, CheckCircle, Cpu, Server } from 'lucide-react';
 
