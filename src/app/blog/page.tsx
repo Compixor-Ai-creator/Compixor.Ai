@@ -22,9 +22,45 @@ export const metadata: Metadata = {
   },
 };
 
+
+const blogIndexSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Compixor AI Blog & Guides',
+  description: 'Comprehensive step-by-step guides on PDF compression, password protection, passport photo sizing, and file privacy.',
+  url: 'https://compixor-ai.cloud/blog',
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://compixor-ai.cloud',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Blog',
+      item: 'https://compixor-ai.cloud/blog',
+    },
+  ],
+};
+
 export default function BlogIndexPage() {
   return (
     <div className="relative pt-24 pb-20 overflow-x-clip">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogIndexSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
         {/* Breadcrumb */}
         <nav

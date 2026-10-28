@@ -138,7 +138,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         {
           url: blog.thumbnail
             ? `https://compixor-ai.cloud${blog.thumbnail}`
-            : 'https://compixor-ai.cloud/icon.png',
+            : 'https://compixor-ai.cloud/brand/logo-512.png',
           width: 1200,
           height: 630,
           alt: blog.title,
@@ -152,7 +152,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: [
         blog.thumbnail
           ? `https://compixor-ai.cloud${blog.thumbnail}`
-          : 'https://compixor-ai.cloud/icon.png',
+          : 'https://compixor-ai.cloud/brand/logo-512.png',
       ],
     },
   };
@@ -200,7 +200,7 @@ export default function BlogPostPage({ params }: PageProps) {
     image: [
       blog.thumbnail
         ? `https://compixor-ai.cloud${blog.thumbnail}`
-        : 'https://compixor-ai.cloud/icon.png',
+        : 'https://compixor-ai.cloud/brand/logo-512.png',
     ],
     datePublished: blog.datePublished || '2026-10-18T00:00:00.000Z',
     dateModified: blog.dateModified || '2026-10-18T00:00:00.000Z',
@@ -215,7 +215,7 @@ export default function BlogPostPage({ params }: PageProps) {
       name: 'Compixor AI',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://compixor-ai.cloud/icon.png',
+        url: 'https://compixor-ai.cloud/brand/logo-512.png',
       },
     },
     mainEntityOfPage: {
@@ -271,7 +271,7 @@ export default function BlogPostPage({ params }: PageProps) {
           description: blog.metaDescription,
           image: blog.thumbnail
             ? `https://compixor-ai.cloud${blog.thumbnail}`
-            : 'https://compixor-ai.cloud/icon.png',
+            : 'https://compixor-ai.cloud/brand/logo-512.png',
           step: blog.content.steps.map((s) => ({
             '@type': 'HowToStep',
             position: s.stepNumber,

@@ -1641,7 +1641,7 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
     image: OG_IMAGE_URL,
     applicationCategory: tool.applicationCategory || 'UtilitiesApplication',
     operatingSystem: tool.operatingSystem || 'Any (Web Browser)',
-    browserRequirements: 'Requires a modern web browser with HTML5 and WebAssembly support',
+    browserRequirements: 'Requires JavaScript. Requires HTML5.',
     offers: {
       '@type': 'Offer',
       price: '0',
@@ -1657,7 +1657,7 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
       '@type': 'Organization',
       name: 'Compixor AI',
       url: BASE_URL,
-      logo: `${BASE_URL}/icon.png`,
+      logo: `${BASE_URL}/brand/logo-512.png`,
     },
   };
 
@@ -1741,7 +1741,7 @@ export function getHomepageSchemas(): Record<string, any>[] {
       '@type': 'Organization',
       name: 'Compixor AI',
       url: BASE_URL,
-      logo: `${BASE_URL}/icon.png`,
+      logo: `${BASE_URL}/brand/logo-512.png`,
     },
     image: OG_IMAGE_URL,
     potentialAction: {
@@ -1759,12 +1759,20 @@ export function getHomepageSchemas(): Record<string, any>[] {
     '@type': 'Organization',
     name: 'Compixor AI',
     url: BASE_URL,
-    logo: `${BASE_URL}/icon.png`,
+    logo: `${BASE_URL}/brand/logo-512.png`,
+    email: 'support@compixor-ai.cloud',
+    sameAs: ['https://github.com/Compixor-Ai-creator'],
     founder: {
       '@type': 'Person',
       name: AUTHOR_NAME,
       jobTitle: 'Founder & Lead Developer',
-      url: BASE_URL,
+      url: `${BASE_URL}/about`,
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'Customer Support',
+      email: 'support@compixor-ai.cloud',
+      url: `${BASE_URL}/contact`,
     },
     description:
       'Free, privacy-first document and media toolkit with zero permanent storage developed by Haroon Ali.',
