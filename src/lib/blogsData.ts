@@ -66,7 +66,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/passport-photo",
     accentColor: "from-sky-500/20 to-indigo-500/20",
     icon: "Camera",
-    thumbnail: "/blog/passport-photo-maker-thumbnail.jpg",
+    thumbnail: "/blog/passport-photo-maker-thumbnail.webp",
     decisionBox: {
       title: "What Kind of Passport or ID Photo Do You Need? (10-Second Guide)",
       items: [
@@ -273,7 +273,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/full-dp-maker",
     accentColor: "from-purple-500/20 to-pink-500/20",
     icon: "Maximize2",
-    thumbnail: "/blog/whatsapp-full-dp-maker-thumbnail.jpg",
+    thumbnail: "/blog/whatsapp-full-dp-maker-thumbnail.webp",
     decisionBox: {
       title: "What Kind of Image Are You Resizing? A Ten-Second Guide",
       items: [
@@ -462,7 +462,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/qr-generator",
     accentColor: "from-teal-500/20 to-emerald-500/20",
     icon: "QrCode",
-    thumbnail: "/blog/custom-qr-code-with-logo-thumbnail.jpg",
+    thumbnail: "/blog/custom-qr-code-with-logo-thumbnail.webp",
     decisionBox: {
       title: "What Type of QR Code Do You Need? (10-Second Guide)",
       items: [
@@ -660,7 +660,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/pdf-compressor",
     accentColor: "from-rose-500/20 to-orange-500/20",
     icon: "FileArchive",
-    thumbnail: "/blog/pdf-compressor-hero.png",
+    thumbnail: "/blog/pdf-compressor-hero.webp",
     decisionBox: {
       title: "What Kind of PDF Are You Compressing? A 10-Second Guide",
       items: [
@@ -793,7 +793,7 @@ export const blogsData: BlogItem[] = [
   {
     id: "pdf-merge-split",
     slug: "how-to-merge-and-split-pdf-files-online",
-    thumbnail: "/blog/merge-and-split-pdf-hero.jpg",
+    thumbnail: "/blog/merge-and-split-pdf-hero.webp",
     title: "How to Merge and Split PDF Files Online Free (Zero Uploads)",
     category: "PDF Tools",
     readTime: "6 min read",
@@ -954,7 +954,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/pdf-to-word",
     accentColor: "from-indigo-500/20 to-blue-500/20",
     icon: "FileText",
-    thumbnail: "/blog/pdf-to-word-thumbnail.png",
+    thumbnail: "/blog/pdf-to-word-thumbnail.webp",
     decisionBox: {
       title: "PDF to Word: Fast Workflow Navigator",
       items: [
@@ -1077,7 +1077,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/protect-pdf",
     accentColor: "from-violet-500/20 to-purple-500/20",
     icon: "Lock",
-    thumbnail: "/blog/password-protect-pdf-hero.jpg",
+    thumbnail: "/blog/password-protect-pdf-hero.webp",
     decisionBox: {
       title: "What Do You Want to Do? (10-Second Decision Matrix)",
       items: [
@@ -1224,7 +1224,7 @@ export const blogsData: BlogItem[] = [
     toolPath: "/tools/unlock-pdf",
     accentColor: "from-emerald-500/20 to-teal-500/20",
     icon: "Unlock",
-    thumbnail: "/blog/remove-password-from-pdf-thumbnail.jpg",
+    thumbnail: "/blog/remove-password-from-pdf-thumbnail.webp",
     decisionBox: {
       title: "PDF Password Removal: 10-Second Decision Guide",
       items: [
@@ -1330,7 +1330,7 @@ export const blogsData: BlogItem[] = [
     metaDescription: "Protect contracts and confidential PDFs with free custom text or logo watermarks. Learn diagonal stamps, opacity tuning, and anti-removal flattening.",
     excerpt: "Protecting confidential documents, contracts, and creative work requires clear attribution before sharing files across the web. When you distribute an unsecured PDF, anyone can copy, screenshot, or republish your content without permission. Using a free PDF watermark adder, you can imprint copyright notices, brand logos, or status stamps across your document in seconds. Whether you need to mark a contract as a 'DRAFT', stamp 'CONFIDENTIAL' diagonally across every page, or add your company logo, this comprehensive guide covers the fastest free methods available online and offline.",
     toolPath: "/tools/add-watermark",
-    thumbnail: "/blog/pdf-watermark-hero.jpg",
+    thumbnail: "/blog/pdf-watermark-hero.webp",
     accentColor: "from-pink-500/20 to-rose-500/20",
     icon: "Stamp",
     decisionBox: {

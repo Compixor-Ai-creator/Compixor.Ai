@@ -10,10 +10,10 @@ export default function DocumentLayersVisual() {
       <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
         <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
           <Image
-            src="/blog/pdf-security-layers.jpg"
+            src="/blog/pdf-security-layers.webp"
             alt="PDF Security Multi-Layer Pipeline Architecture: Document, Encryption, Watermark, Flatten"
             fill
-            sizes="(max-width: 768px) 100vw, 768px"
+            sizes="(max-width: 768px) 100vw, 800px"
             className="object-cover"
           />
         </div>

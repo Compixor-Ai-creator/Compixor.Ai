@@ -55,3 +55,6 @@ dist/
 *.traineddata
 scratch/
 test-results/
+
+# Backup folder for original uncompressed blog images
+backup-blog-images/

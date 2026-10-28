@@ -589,11 +589,11 @@ export default function BlogPostPage({ params }: PageProps) {
                     <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
                       <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
                         <Image
-                          src="/blog/pdf-compression-benchmark.png"
+                          src="/blog/pdf-compression-benchmark.webp"
                           alt="PDF Compression Efficiency Benchmark: Text, Color Scan, B&W Scan, CAD Drawing"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 1024px) 100vw, 800px"
+                          sizes="(max-width: 768px) 100vw, 800px"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -611,11 +611,11 @@ export default function BlogPostPage({ params }: PageProps) {
                     <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
                       <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
                         <Image
-                          src="/blog/mrc-layer-segmentation.png"
+                          src="/blog/mrc-layer-segmentation.webp"
                           alt="Mixed Raster Content (MRC) 3-Layer Decomposition Architecture"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 1024px) 100vw, 800px"
+                          sizes="(max-width: 768px) 100vw, 800px"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -633,11 +633,11 @@ export default function BlogPostPage({ params }: PageProps) {
                     <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
                       <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
                         <Image
-                          src="/blog/pdf-watermark-architecture.png"
+                          src="/blog/pdf-watermark-architecture.webp"
                           alt="PDF Watermark Architecture Comparison: Text Watermark vs Image Watermark (ISO 32000 Standard)"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 1024px) 100vw, 800px"
+                          sizes="(max-width: 768px) 100vw, 800px"
                           className="w-full h-full object-contain sm:object-cover"
                         />
                       </div>
@@ -655,11 +655,11 @@ export default function BlogPostPage({ params }: PageProps) {
                     <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
                       <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
                         <Image
-                          src="/blog/pdf-security-workflow.jpg"
+                          src="/blog/pdf-security-workflow.webp"
                           alt="PDF Security Architecture Visualized: Encrypt, Watermark, and Flatten (ISO 32000 Standard)"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 1024px) 100vw, 800px"
+                          sizes="(max-width: 768px) 100vw, 800px"
                           className="w-full h-full object-contain sm:object-cover"
                         />
                       </div>
@@ -677,12 +677,11 @@ export default function BlogPostPage({ params }: PageProps) {
                     <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
                       <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
                         <Image
-                          src="/blog/whatsapp-full-dp-banner.jpg"
+                          src="/blog/whatsapp-full-dp-banner.webp"
                           alt="WhatsApp DP Comparison: Annoying Crop Window vs Uncropped Full DP with Ambient Frosted Blur"
                           width={1200}
                           height={675}
-                          priority
-                          sizes="(max-width: 1024px) 100vw, 800px"
+                          sizes="(max-width: 768px) 100vw, 800px"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -700,11 +699,11 @@ export default function BlogPostPage({ params }: PageProps) {
                     <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
                       <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900">
                         <Image
-                          src="/blog/aspect-ratio-comparison.jpg"
+                          src="/blog/aspect-ratio-comparison.webp"
                           alt="Aspect Ratio Comparison: 9:16 Portrait Forced Square Crop vs 1:1 Expanded Canvas with Circular Safe Zone"
                           width={1200}
                           height={675}
-                          sizes="(max-width: 1024px) 100vw, 800px"
+                          sizes="(max-width: 768px) 100vw, 800px"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -722,11 +721,11 @@ export default function BlogPostPage({ params }: PageProps) {
                     <div className="relative rounded-3xl bg-zinc-950/90 border border-zinc-800/80 p-3 sm:p-6 shadow-2xl overflow-hidden backdrop-blur-xl">
                       <div className="relative w-full rounded-2xl overflow-hidden border border-zinc-800/60 shadow-lg bg-zinc-900/90 flex items-center justify-center p-2 sm:p-4">
                         <Image
-                          src="/blog/passport-print-sheet-sample.jpg"
+                          src="/blog/passport-print-sheet-sample.webp"
                           alt="A5 passport photo sheet with 6 Pakistan NADRA 35x45mm photos, corner cut marks, and 300 DPI layout"
                           width={1000}
                           height={700}
-                          sizes="(max-width: 1024px) 100vw, 800px"
+                          sizes="(max-width: 768px) 100vw, 800px"
                           loading="lazy"
                           className="w-full h-auto rounded-xl object-contain shadow-md"
                         />

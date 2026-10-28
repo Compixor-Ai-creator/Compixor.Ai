@@ -44,7 +44,7 @@ export default function ArticleHeroBanner({
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -55,12 +55,12 @@ export default function ArticleHeroBanner({
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
-          src="/blog/pdf-to-word-thumbnail.png"
+          src="/blog/pdf-to-word-thumbnail.webp"
           alt={title}
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -71,12 +71,12 @@ export default function ArticleHeroBanner({
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
-          src="/blog/remove-password-from-pdf-thumbnail.jpg"
+          src="/blog/remove-password-from-pdf-thumbnail.webp"
           alt={title}
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -86,12 +86,12 @@ export default function ArticleHeroBanner({
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
-          src="/blog/passport-photo-maker-thumbnail.jpg"
+          src="/blog/passport-photo-maker-thumbnail.webp"
           alt="Passport size photo maker online free: instant biometric transformation and 300 DPI sheet"
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -102,12 +102,12 @@ export default function ArticleHeroBanner({
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
-          src="/blog/password-protect-pdf-hero.jpg"
+          src="/blog/password-protect-pdf-hero.webp"
           alt={title}
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -118,12 +118,12 @@ export default function ArticleHeroBanner({
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
-          src="/blog/pdf-compressor-hero.png"
+          src="/blog/pdf-compressor-hero.webp"
           alt={title}
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -134,12 +134,12 @@ export default function ArticleHeroBanner({
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
-          src="/blog/pdf-watermark-hero.jpg"
+          src="/blog/pdf-watermark-hero.webp"
           alt={title}
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -150,12 +150,12 @@ export default function ArticleHeroBanner({
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
-          src="/blog/whatsapp-full-dp-maker-thumbnail.jpg"
+          src="/blog/whatsapp-full-dp-maker-thumbnail.webp"
           alt={title}
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -166,12 +166,12 @@ export default function ArticleHeroBanner({
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
-          src="/blog/merge-and-split-pdf-hero.jpg"
+          src="/blog/merge-and-split-pdf-hero.webp"
           alt={title}
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
@@ -182,12 +182,12 @@ export default function ArticleHeroBanner({
     return (
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
-          src="/blog/custom-qr-code-with-logo-thumbnail.jpg"
+          src="/blog/custom-qr-code-with-logo-thumbnail.webp"
           alt={title}
           width={1200}
           height={675}
           priority
-          sizes="(max-width: 1024px) 100vw, 800px"
+          sizes="(max-width: 768px) 100vw, 800px"
           className="w-full h-full object-cover"
         />
       </div>
