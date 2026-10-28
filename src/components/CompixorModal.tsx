@@ -4,21 +4,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
-// Global scroll lock counter with scrollbar width compensation to eliminate layout shift
+// Global scroll lock counter. The app reserves scrollbar space with
+// `scrollbar-gutter: stable`, so adding body padding here would double-shift
+// centered content when the modal opens.
 let scrollLockCount = 0;
 let originalBodyOverflow = '';
-let originalBodyPaddingRight = '';
+let savedScrollY = 0;
 
 function lockScroll() {
   if (typeof document === 'undefined') return;
   scrollLockCount++;
   if (scrollLockCount === 1) {
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    savedScrollY = window.scrollY;
     originalBodyOverflow = document.body.style.overflow;
-    originalBodyPaddingRight = document.body.style.paddingRight;
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    }
     document.body.style.overflow = 'hidden';
   }
 }
@@ -28,7 +26,7 @@ function unlockScroll() {
   scrollLockCount = Math.max(0, scrollLockCount - 1);
   if (scrollLockCount === 0) {
     document.body.style.overflow = originalBodyOverflow;
-    document.body.style.paddingRight = originalBodyPaddingRight;
+    window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
   }
 }
 
@@ -79,29 +77,29 @@ export default function CompixorModal({
   // Focus management and focus trapping
   useEffect(() => {
     if (!isOpen) {
-      // Return focus to trigger when closing
+      // Return focus without allowing the browser to scroll the page.
       const returnTarget = triggerRef?.current || previousActiveElement.current;
       if (returnTarget && typeof returnTarget.focus === 'function') {
-        returnTarget.focus();
+        returnTarget.focus({ preventScroll: true });
       }
       return;
     }
 
-    // Set initial focus inside modal
-    const focusTimer = setTimeout(() => {
+    // Set initial focus inside modal without a focus-induced page jump.
+    const focusTimer = window.requestAnimationFrame(() => {
       if (initialFocusRef?.current) {
-        initialFocusRef.current.focus();
+        initialFocusRef.current.focus({ preventScroll: true });
       } else if (dialogRef.current) {
         const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
           'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
         );
         if (focusable.length > 0) {
-          focusable[0].focus();
+          focusable[0].focus({ preventScroll: true });
         }
       }
-    }, 40);
+    });
 
-    return () => clearTimeout(focusTimer);
+    return () => window.cancelAnimationFrame(focusTimer);
   }, [isOpen, initialFocusRef, triggerRef]);
 
   // Global keyboard listener for Escape and Tab trapping
@@ -190,14 +188,19 @@ export default function CompixorModal({
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 print:hidden"
           
         >
-          {/* Minimal, unique background overlay: subtle brand-purple tint with constant blur */}
+          {/* Keep blur static and animate only the tint. Chromium can briefly clear
+              a GPU backdrop texture when blur and opacity share one layer. */}
+          <div
+            className="fixed inset-0 backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] pointer-events-none"
+            aria-hidden="true"
+          />
           <motion.div
             variants={overlayVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
             onClick={onClose}
-            className="fixed inset-0 bg-[#4c1d95]/[0.10] dark:bg-[#0a0819]/[0.45] backdrop-blur-[6px] backdrop-saturate-[1.15] will-change-[opacity]"
+            className="fixed inset-0 bg-[#0f1219]/[0.38] dark:bg-[#0a0819]/[0.58]"
             aria-hidden="true"
           />
 
