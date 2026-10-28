@@ -103,7 +103,7 @@ export default function ErrorStage({
               {/* Floating Robot Mascot Illustration */}
               <div className={`relative z-10 w-full h-full flex items-center justify-center p-4 ${styles.mascotFloat}`}>
                 <img
-                  src="/images/404-robot.png"
+                  src="/images/404-robot.webp"
                   alt="System Error Mascot"
                   className="w-[360px] max-w-[90%] h-auto object-contain pointer-events-none select-none mix-blend-multiply drop-shadow-[0_12px_28px_rgba(124,58,237,0.18)]"
                 />

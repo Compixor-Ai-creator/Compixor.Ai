@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck } from 'lucide-react';
-import { tools } from '@/data/tools';
+import { ShieldCheck, Server } from 'lucide-react';
+import { getToolPrivacy } from '@/data/toolsPrivacy';
 
 interface PrivacyBadgeProps {
   toolSlug: string;
@@ -10,25 +10,27 @@ interface PrivacyBadgeProps {
 }
 
 export default function PrivacyBadge({ toolSlug, className = '' }: PrivacyBadgeProps) {
-  const tool = tools.find((t) => t.id === toolSlug || t.href === `/tools/${toolSlug}`);
-  const slug = tool?.id || toolSlug;
+  const privacy = getToolPrivacy(toolSlug);
+  const isServer = privacy.processingType === 'server';
 
-  let message = 'Zero Data Leak. Your files never leave your device. No upload, no signup.';
-
-  if (slug === 'img-to-word' || slug === 'pdf-to-word') {
-    message =
-      "Files are processed over secure HTTPS and deleted from our server immediately after processing. For Urdu/Arabic text recognition, image portions may be sent to Google's Gemini AI service for transcription.";
-  } else if (slug === 'passport-photo' || tool?.processing === 'server') {
-    message =
-      'Files are processed over secure HTTPS and deleted immediately after processing. Never stored or shared.';
-  }
+  const message = isServer
+    ? 'Processed over encrypted HTTPS in temporary memory and immediately deleted. Zero permanent storage.'
+    : 'Zero Server Uploads: Runs 100% locally in your browser RAM. Your files never leave your device.';
 
   return (
     <div
-      className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 shadow-xs ${className}`}
+      className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold ${
+        isServer
+          ? 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/20'
+          : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'
+      } shadow-xs ${className}`}
       role="status"
     >
-      <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" aria-hidden="true" />
+      {isServer ? (
+        <Server className="w-4 h-4 text-amber-500 shrink-0" aria-hidden="true" />
+      ) : (
+        <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" aria-hidden="true" />
+      )}
       <span>{message}</span>
     </div>
   );

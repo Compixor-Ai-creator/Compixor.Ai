@@ -21,6 +21,7 @@ import { seoConfig, ToolSlug, BASE_URL } from '@/lib/seo-config';
 import ToolHowToVictory from '@/components/ToolHowToVictory';
 import ShareToolButton from '@/components/ShareToolButton';
 import PrivacyBadge from '@/components/PrivacyBadge';
+import { getToolPrivacy } from '@/data/toolsPrivacy';
 
 interface ToolSeoSectionProps {
   toolSlug: ToolSlug;
@@ -127,11 +128,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
         <div className="mt-6 pt-5 border-t border-zinc-100 dark:border-zinc-800/60 flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            {toolSlug === 'passport-photo'
-              ? 'In-Memory / On-Device Privacy'
-              : SERVER_OCR_TOOLS.has(toolSlug || '')
-                ? 'No Files Kept On Our Side'
-                : 'Zero Server Uploads'}
+            getToolPrivacy(toolSlug).badgeLabel
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
@@ -143,7 +140,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            {toolSlug === 'passport-photo' ? '300 DPI Studio Quality' : SERVER_OCR_TOOLS.has(toolSlug || '') ? 'Converted In Memory, Then Dropped' : 'Runs in Browser Memory'}
+            {getToolPrivacy(toolSlug).processingType === 'server' ? 'Converted In Memory, Then Dropped' : 'Runs in Browser Memory'}
           </span>
         </div>
 

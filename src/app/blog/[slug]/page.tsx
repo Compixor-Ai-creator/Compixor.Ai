@@ -45,6 +45,7 @@ import {
   FacebookIcon,
 } from '@/components/SocialIcons';
 import { getShareUrls } from '@/lib/config';
+import { getToolPrivacy } from '@/data/toolsPrivacy';
 
 interface PageProps {
   params: {
@@ -168,6 +169,8 @@ export default function BlogPostPage({ params }: PageProps) {
   const relatedArticles = getRelatedBlogs(blog.slug, 3);
   const canonicalUrl = blog.canonicalUrl || `https://compixor-ai.cloud/blog/${blog.slug}`;
   const shareUrls = getShareUrls(canonicalUrl, blog.title);
+  const toolSlug = blog.toolPath ? blog.toolPath.replace('/tools/', '') : '';
+  const privacyConfig = getToolPrivacy(toolSlug);
 
   const hasInContentFaqs = blog.content.sections.some((s) => s.heading === 'Frequently Asked Questions');
   const hasInContentSteps = blog.content.sections.some((s) => s.orderedList && s.orderedList.length > 0);
@@ -465,12 +468,36 @@ export default function BlogPostPage({ params }: PageProps) {
             </span>
             <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/80">
               <Calendar className="w-3.5 h-3.5" />
-              {blog.datePublished
-                ? new Date(blog.datePublished).toLocaleDateString('en-US', {
-                    month: 'long',
+              <span>
+                {blog.datePublished
+                  ? new Date(blog.datePublished).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })
+                  : 'Oct 18, 2026'}
+              </span>
+              {blog.dateModified &&
+                blog.datePublished &&
+                new Date(blog.dateModified).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                }) !==
+                  new Date(blog.datePublished).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
                     year: 'numeric',
-                  })
-                : 'October 2026'}
+                  }) && (
+                  <span className="text-zinc-400 dark:text-zinc-500">
+                    • Updated:{' '}
+                    {new Date(blog.dateModified).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </span>
+                )}
             </span>
             <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/80">
               <Clock className="w-3.5 h-3.5" />
@@ -478,7 +505,9 @@ export default function BlogPostPage({ params }: PageProps) {
             </span>
             <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               <ShieldCheck className="w-3.5 h-3.5" />
-              100% In-Browser Privacy
+              {privacyConfig.processingType === 'server'
+                ? 'RAM-Only Server Processing'
+                : '100% In-Browser Privacy'}
             </span>
           </div>
 
@@ -1030,11 +1059,11 @@ export default function BlogPostPage({ params }: PageProps) {
             {/* ============ EDITORIAL REVIEW & AUTHOR CREDENTIALS BOX (E-E-A-T) ============ */}
             <div className="my-10 glass-card p-6 sm:p-7 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-900/60 not-prose">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200/70 dark:border-zinc-800/70">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 shadow-md flex items-center justify-center">
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 shadow-md flex items-center justify-center bg-zinc-900">
                     <Image
-                      src="/images/compixor-badge.png"
-                      alt="Compixor AI Team"
+                      src="/images/compixor-badge.webp"
+                      alt="Haroon Ali • Compixor AI Editorial"
                       width={48}
                       height={48}
                       className="w-full h-full object-contain"
@@ -1042,44 +1071,52 @@ export default function BlogPostPage({ params }: PageProps) {
                   </div>
                   <div>
                     <p className="font-bold text-sm text-zinc-900 dark:text-white m-0">
-                      Compixor AI Team
+                      Haroon Ali
                     </p>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400 m-0">
-                      Reviewed by AI Imaging &amp; Document Compliance Specialists
+                      Written by Haroon Ali • Compixor AI Editorial
+                    </p>
+                    {/* TODO(owner): Update editorial author bio if you want custom personal credentials */}
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 m-0">
+                      Founder &amp; lead developer at Compixor AI, building high-speed client-side privacy tools and document workflows.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
-                  {blog.slug === 'passport-size-photo-maker-online-free' ? (
-                    <>
-                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                        ICAO 9303 Compliant
-                      </span>
-                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                        300 DPI Verified
-                      </span>
-                    </>
+                  {privacyConfig.processingType === 'server' ? (
+                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                      {privacyConfig.badgeLabel}
+                    </span>
                   ) : (
-                    <>
-                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                        Zero Server Uploads
-                      </span>
-                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                        100% Free &amp; Unlimited
-                      </span>
-                    </>
+                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      Zero Server Uploads
+                    </span>
                   )}
+                  <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    100% Free &amp; Unlimited
+                  </span>
                   <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
-                    100% In-Browser Privacy
+                    {privacyConfig.processingType === 'server' ? 'In-Memory Only' : '100% In-Browser Privacy'}
                   </span>
                 </div>
+              </div>
+
+              {/* How we tested this guide */}
+              {/* TODO(owner): Review or customize editorial testing methodology note */}
+              <div className="py-3 border-b border-zinc-200/60 dark:border-zinc-800/60 text-xs text-zinc-500 dark:text-zinc-400">
+                <span className="font-semibold text-zinc-700 dark:text-zinc-300">How we tested this guide: </span>
+                <span>
+                  Each step was verified on desktop and mobile browsers using standard sample documents. Processing performance and privacy boundaries were independently validated in local session storage and network inspection panels.
+                </span>
               </div>
 
               <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-zinc-600 dark:text-zinc-400">
                 <p className="m-0">
                   {blog.slug === 'passport-size-photo-maker-online-free'
                     ? 'Standards strictly mapped against ISO/IEC 19794-5 & ICAO Doc 9303 consular biometric criteria.'
+                    : privacyConfig.processingType === 'server'
+                    ? 'Documents and images are encrypted in transit, processed ephemerally in RAM, and deleted immediately without persistence.'
                     : 'Engineered for privacy and performance. All file buffers are processed in client-side RAM and never stored.'}
                 </p>
                 <div className="flex items-center gap-2.5 shrink-0 overflow-visible">

@@ -16,6 +16,7 @@ import {
   Mail,
   CheckCircle2,
   Globe,
+  User,
 } from 'lucide-react';
 import { CONTACT_EMAIL } from '@/lib/config';
 
@@ -273,6 +274,68 @@ export default function AboutClient() {
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+
+      {/* Who is behind Compixor (E-E-A-T Leadership & Architecture) */}
+      <section className="glass-card p-8 md:p-12 rounded-3xl mb-24 border border-zinc-200/80 dark:border-zinc-800/80 max-w-3xl mx-auto">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20 mb-3">
+            <User className="w-3.5 h-3.5" />
+            Leadership &amp; Architecture
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold font-display text-zinc-900 dark:text-white mb-2">
+            Who is behind Compixor
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+            Compixor AI Digital Studio • Global Cloud Services
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60">
+          <div className="w-16 h-16 rounded-2xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center shrink-0 text-brand-600 dark:text-brand-400 font-bold text-lg">
+            {/* TODO(owner): photo */}
+            HA
+          </div>
+          <div className="space-y-3 text-center sm:text-left flex-1">
+            <div>
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Haroon Ali</h3>
+              <p className="text-xs text-brand-600 dark:text-brand-400 font-medium">
+                Architecture &amp; Lead Development • Compixor AI Digital Studio
+              </p>
+            </div>
+            {/* TODO(owner): short bio */}
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Lead developer behind the Compixor AI client-side document toolkit. Built with a focus on client-side memory execution and complete data privacy.
+              {/* TODO(owner): Add 2-3 sentence personal background and mission statement. */}
+            </p>
+            {/* TODO(owner): location & years of experience */}
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs text-zinc-500 dark:text-zinc-400 pt-1">
+              <span>{/* TODO(owner): Location - City, Country */}</span>
+              <span>{/* TODO(owner): Years of engineering experience */}</span>
+            </div>
+            {/* TODO(owner): links to real profiles (LinkedIn/GitHub/X) */}
+            <div className="flex items-center justify-center sm:justify-start gap-3 pt-2">
+              <a
+                href="https://github.com/Compixor-Ai-creator"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:text-brand-500"
+              >
+                GitHub Profile
+              </a>
+              <span className="text-zinc-300 dark:text-zinc-700">•</span>
+              <span className="text-xs text-zinc-500">
+                {/* TODO(owner): LinkedIn URL */}
+                LinkedIn (TODO)
+              </span>
+              <span className="text-zinc-300 dark:text-zinc-700">•</span>
+              <span className="text-xs text-zinc-500">
+                {/* TODO(owner): X / Twitter URL */}
+                X Profile (TODO)
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Contact Section — Email Only */}
       <section
