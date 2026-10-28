@@ -74,6 +74,10 @@ const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
     title: 'Convert PDF to Editable Word Online Free (Preserve Formatting & Tables)',
     href: '/blog/convert-pdf-to-editable-word-online',
   },
+  'img-to-word': {
+    title: 'How to Extract Text from an Image into Word',
+    href: '/blog/extract-text-from-image-to-word',
+  },
 };
 
 export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
