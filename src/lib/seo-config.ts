@@ -85,8 +85,7 @@ export const OG_IMAGE_URL = `${BASE_URL}/images/og-banner-v2.png`;
 
 export const homepageSeoData: HomepageSeoData = {
   title: 'Free Online PDF Tools - Private & Fast | Compixor',
-  description:
-    'Free online PDF tools no upload needed. Client side PDF, Word, photo, and QR toolkit. 100% private, free, and works in your browser.',
+  description: 'Free online PDF tools with no file upload required. Client-side PDF, Word, photo, and QR toolkit. 100% private, free, and in your browser.',
   canonicalUrl: BASE_URL,
   primaryKeyword: 'free online pdf tools no upload',
   secondaryKeywords: [
@@ -137,7 +136,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: FileArchive,
     title: 'Compress PDF Online Free - Reduce File Size',
     description:
-      'Compress PDF online free without uploading files. Reduce PDF size to 100kb, 200kb, or 1mb with no quality loss. Fast, private, works in your browser today.',
+      'Compress PDF online free without uploading files. Reduce PDF size to 100kb, 200kb, or 1mb with zero quality loss. Fast, private, in-browser.',
     canonicalUrl: `${BASE_URL}/tools/pdf-compressor`,
     primaryKeyword: 'compress pdf online free',
     searchIntent:
@@ -263,7 +262,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: Combine,
     title: 'Merge PDF Online Free - Combine & Split Pages',
     description:
-      'Merge PDF online free without upload. Combine PDF files into one, split pages, or extract sheets with no watermark. Free, no signup, works in your browser.',
+      'Merge PDF online free without upload. Combine PDF files into one, split pages, or extract sheets with no watermark. Free and works in browser.',
     canonicalUrl: `${BASE_URL}/tools/pdf-organizer`,
     primaryKeyword: 'merge pdf online free',
     searchIntent:
@@ -381,7 +380,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: Stamp,
     title: 'Add Watermark to PDF Online Free - Text & Logo',
     description:
-      'Add watermark to PDF online free without upload. Stamp custom text or transparent logo images with full privacy. Free, no signup, works in your browser now.',
+      'Add watermark to PDF online free without upload. Stamp custom text or transparent logo images with full privacy. Free, works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/add-watermark`,
     primaryKeyword: 'add watermark to pdf online free',
     searchIntent:
@@ -503,7 +502,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: Eraser,
     title: 'Remove Watermark from PDF Free - Erase Stamps',
     description:
-      'Remove watermark from PDF free without upload or Adobe Acrobat. Erase stamps, logos, and text overlays in seconds. Free, no signup, works in your browser.',
+      'Remove watermark from PDF free without upload or Adobe Acrobat. Erase stamps, logos, and text overlays in seconds. Free, works in your browser.',
     canonicalUrl: `${BASE_URL}/tools/remove-watermark`,
     primaryKeyword: 'remove watermark from pdf free',
     searchIntent:
@@ -625,7 +624,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: Lock,
     title: 'Password Protect PDF Online Free - AES-256',
     description:
-      'Password protect PDF online free with strong AES-256 encryption. Lock PDF files, restrict editing and printing safely. Free, no signup, no upload required.',
+      'Password protect PDF online free with strong AES-256 encryption. Lock PDF files, restrict editing and printing safely with zero file uploads.',
     canonicalUrl: `${BASE_URL}/tools/protect-pdf`,
     primaryKeyword: 'password protect pdf online free',
     searchIntent:
@@ -739,7 +738,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: LockOpen,
     title: 'Unlock PDF Online Free - Remove Password',
     description:
-      'Unlock PDF online free without uploading files. Remove PDF password security and printing restrictions instantly. 100% private, works in your browser today.',
+      'Unlock PDF online free without uploading files. Remove PDF password security and printing restrictions instantly. 100% private and in-browser.',
     canonicalUrl: `${BASE_URL}/tools/unlock-pdf`,
     primaryKeyword: 'unlock pdf online free',
     searchIntent:
@@ -853,7 +852,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: FileArchive,
     title: 'Compress Word Document Online Free (DOCX)',
     description:
-      'Compress Word document online free without losing quality. Reduce DOCX file size with embedded images for email attachments. Free, no upload, works in browser.',
+      'Compress Word document online free without losing quality. Reduce DOCX file size with embedded images for email attachments. Zero upload.',
     canonicalUrl: `${BASE_URL}/tools/word-compressor`,
     primaryKeyword: 'compress word document online free',
     searchIntent:
@@ -971,7 +970,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: IdCard,
     title: 'Passport Size Photo Maker Online Free',
     description:
-      'Free passport size photo maker online. Create compliant 35x45 mm, NADRA CNIC and 2x2 inch photos. Print on A4, A5 and A6 sheets at 300 DPI with crop marks.',
+      'Free passport size photo maker online. Create compliant 35x45 mm, NADRA CNIC and 2x2 inch photos. Print at 300 DPI with crop marks instantly.',
     canonicalUrl: `${BASE_URL}/tools/passport-photo`,
     primaryKeyword: 'passport size photo maker online free',
     searchIntent:
@@ -1122,7 +1121,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: FullDpIcon,
     title: 'WhatsApp DP Without Crop - Full Size Photo',
     description:
-      'WhatsApp DP without crop maker online. Post full size profile pictures for Instagram & WhatsApp with stylish blur backgrounds. Free, works in your browser.',
+      'WhatsApp DP without crop maker online. Post full size profile pictures for Instagram and WhatsApp with stylish blur backgrounds. Free & private.',
     canonicalUrl: `${BASE_URL}/tools/full-dp-maker`,
     primaryKeyword: 'whatsapp dp without crop',
     searchIntent:
@@ -1236,7 +1235,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: QrCode,
     title: 'QR Code Generator Free No Signup - SVG & Logo',
     description:
-      'QR code generator free no signup required. Create custom color QR codes with logos for URLs, WiFi, and WhatsApp links in SVG or PNG. Works in your browser.',
+      'Free QR code generator with no signup required. Create custom color QR codes with logos for URLs, WiFi, and WhatsApp links in SVG or PNG format.',
     canonicalUrl: `${BASE_URL}/tools/qr-generator`,
     primaryKeyword: 'qr code generator free no signup',
     searchIntent:
@@ -1350,7 +1349,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: FileText,
     title: 'Convert PDF to Word Online Free - Editable DOCX',
     description:
-      'Convert PDF to Word online free with no signup. Turn digital or scanned PDFs into editable DOCX with OCR for English, Urdu and Arabic. Nothing is stored.',
+      'Convert PDF to Word online free with no signup. Turn digital or scanned PDFs into editable DOCX with OCR for English, Urdu and Arabic in RAM.',
     canonicalUrl: `${BASE_URL}/tools/pdf-to-word`,
     primaryKeyword: 'convert pdf to word online free',
     searchIntent:
@@ -1464,7 +1463,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: ScanText,
     title: 'Image to Word Converter Online Free',
     description:
-      'Convert JPG, PNG, or WEBP images to editable Word .docx files free online. In-browser Tesseract OCR, zero upload, 10+ languages. Instant download, no signup.',
+      'Convert JPG, PNG, or WEBP images to editable Word DOCX files free online. In-browser Tesseract OCR, zero upload, 10+ languages, instant download.',
     canonicalUrl: `${BASE_URL}/tools/img-to-word`,
     primaryKeyword: 'image to word converter online free',
     searchIntent:
@@ -1595,20 +1594,8 @@ export function getToolMetadata(slug: ToolSlug): Metadata {
   return {
     title: tool.title,
     description: tool.description,
-    keywords: tool.keywords,
     alternates: {
       canonical: tool.canonicalUrl,
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
     },
     openGraph: {
       title: `${tool.title} | Compixor`,

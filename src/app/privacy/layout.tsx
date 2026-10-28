@@ -3,8 +3,7 @@ import { BreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy - Files Never Leave Your Browser',
-  description:
-    'Read Compixor AI privacy policy. Discover our zero-server architecture: files are processed entirely in your browser with zero uploads and zero data retention.',
+  description: 'Read Compixor AI privacy policy. Discover our zero-server architecture: files are processed in your browser with zero uploads and zero data retention.',
   alternates: {
     canonical: 'https://compixor-ai.cloud/privacy',
   },

@@ -3,8 +3,7 @@ import { BreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Terms of Service - Free Private PDF Tools',
-  description:
-    'Read Compixor AI terms of service. Learn about permitted use, zero-upload architecture, and full copyright ownership of your processed documents and assets.',
+  description: 'Read Compixor AI terms of service. Learn about permitted use, zero-upload architecture, and full copyright ownership of your processed documents.',
   alternates: {
     canonical: 'https://compixor-ai.cloud/terms',
   },

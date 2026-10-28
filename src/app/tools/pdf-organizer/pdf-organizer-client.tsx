@@ -2339,12 +2339,12 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
       <ToolFeedback toolName="pdf-organizer" />
 
       {/* ============================================================== */}
-      {/* FEATURE GRID: "Engineered with Zero Compromise"                 */}
+      {/* FEATURE GRID: "Merge and Split PDF Files in Your Browser"                 */}
       {/* ============================================================== */}
       <section className="mt-16 pt-10 border-t border-zinc-200/80 dark:border-zinc-800/80">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-2">
-            Engineered with Zero Compromise
+            Merge and Split PDF Files in Your Browser
           </h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
             How Compixor.Ai redefines privacy and performance for modern document workflows.

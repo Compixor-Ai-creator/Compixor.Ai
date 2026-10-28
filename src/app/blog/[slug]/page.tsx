@@ -122,27 +122,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: blog.metaTitle,
     description: blog.metaDescription,
-    keywords: [
-      blog.targetKeyword,
-      blog.category,
-      'client-side',
-      'in-browser tool',
-      'privacy first',
-      'Compixor',
-    ],
-    alternates: {
+        alternates: {
       canonical: canonicalUrl,
     },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-image-preview': 'large',
-      },
-    },
-    openGraph: {
+        openGraph: {
       title: `${blog.metaTitle} | Compixor`,
       description: blog.metaDescription,
       url: canonicalUrl,
@@ -209,7 +192,7 @@ export default function BlogPostPage({ params }: PageProps) {
   // Structured Data (Article & FAQPage Schema)
   const articleSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: blog.title,
     description: blog.metaDescription,
     image: [

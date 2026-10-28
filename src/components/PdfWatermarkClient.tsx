@@ -2167,10 +2167,14 @@ export default function PdfWatermarkClient({
       <section className="mt-16 pt-10 border-t border-zinc-200/80 dark:border-zinc-800/80">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-2">
-            Engineered with Zero Compromise
+            {activeMode === 'remove'
+              ? 'Remove PDF Watermarks Without Losing Quality'
+              : 'How Our Free PDF Watermark Tool Works'}
           </h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            How Compixor.Ai redefines privacy, vector precision, and speed for PDF watermarking.
+            {activeMode === 'remove'
+              ? 'How Compixor.Ai removes watermarks cleanly while preserving original document vectors.'
+              : 'How Compixor.Ai redefines privacy, vector precision, and speed for PDF watermarking.'}
           </p>
         </div>
 

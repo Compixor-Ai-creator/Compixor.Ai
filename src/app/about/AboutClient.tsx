@@ -24,21 +24,21 @@ const values = [
     icon: Zap,
     title: 'Lightning Speed',
     description:
-      'Time is your most valuable asset. Our algorithms execute directly on your CPU/GPU hardware using WebAssembly and HTML5 APIs, turning minutes of waiting into instantaneous processing.',
+      'Your time matters. Our tools run directly on your device using WebAssembly. You get instant results without waiting in long server lines.',
     color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
   },
   {
     icon: Lock,
     title: 'Privacy-First Architecture',
     description:
-      'Privacy by design. 9 tools run 100% locally in your browser memory, while server tools process requests over encrypted HTTPS and delete files immediately.',
+      'Privacy comes first. Your files are processed right inside your browser memory. We never store, read, or share your documents.',
     color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
   },
   {
     icon: Target,
     title: 'Clinical Precision',
     description:
-      'Zero compromise on output fidelity. Whether compressing multi-gigabyte PDFs, re-encoding document XMLs, or generating vector QR codes, we preserve structure and quality.',
+      'Top quality every time. Whether you compress large PDFs or make sharp QR codes, we preserve your original layout and text.',
     color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
   },
 ];
@@ -68,9 +68,7 @@ export default function AboutClient() {
           The Mission Behind <span className="text-gradient">CompixorAi</span>
         </h1>
         <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300 leading-relaxed">
-          We believe professional file transformation shouldn&apos;t require clunky software subscriptions,
-          data tracking, or tedious workflows. We bring clinical precision and instantaneous
-          private and instantaneous computing to everyone.
+          We believe editing files should be simple, private, and fast. You should not have to pay for costly software, wait in slow upload queues, or give away your personal data. Compixor gives you fast, private tools that run right in your web browser.
         </p>
       </motion.div>
 
@@ -101,7 +99,7 @@ export default function AboutClient() {
             Core Engineering Principles
           </h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Engineered from day one around the belief that privacy and speed must go hand in hand.
+            Built from day one so you get fast results without giving up your privacy.
           </p>
         </div>
 
@@ -141,14 +139,10 @@ export default function AboutClient() {
             Engineering Effortless Power
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
-            The CompixorAi team is composed of engineers, designers, and systems architects dedicated
-            to refining the modern digital workspace. We witnessed the daily friction in file
-            management—corrupted formatting, privacy leaks, slow web upload queues, and bloated software.
+            Our team of engineers and designers build tools for the modern web. We saw common problems with everyday file tasks: slow uploads, broken layouts, and privacy risks with cloud servers.
           </p>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
-            Our platform operates on an <strong>atmospheric minimalism</strong> philosophy. The interface stays
-            clean, unobtrusive, and lightweight, while heavy binary computation happens silently and instantaneously
-            inside modern browser threads.
+            We keep our tools simple and clean. You get a clear interface with zero clutter. All heavy processing happens silently and fast right inside your browser.
           </p>
         </div>
 
@@ -179,7 +173,7 @@ export default function AboutClient() {
             How Client-Side Computing Protects Your Data
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
-            Unlike legacy SaaS document platforms that force users to upload confidential files to centralized cloud clusters, Compixor runs compiled WebAssembly binaries directly inside your local browser tab.
+            Most online tools make you upload sensitive files to remote servers. Compixor works differently. All code runs right inside your web browser tab.
           </p>
         </div>
 
@@ -190,7 +184,7 @@ export default function AboutClient() {
             </div>
             <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-2">Zero Network Transmission</h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Document buffers, image pixels, and encryption keys never travel across the internet. Computation takes place in device RAM and terminates immediately when you close the tab.
+              Your documents, images, and keys never travel over the internet. Everything stays in your device RAM and disappears as soon as you close your tab.
             </p>
           </div>
 
@@ -200,7 +194,7 @@ export default function AboutClient() {
             </div>
             <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-2">V8 Memory Sandboxing</h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Every operation executes within the browser&apos;s hardware-isolated virtual machine sandbox, strictly isolated from persistent filesystem storage and tracking scripts.
+              Each task runs inside your browser&apos;s secure sandbox. It stays completely separate from tracking scripts and cannot touch your personal files.
             </p>
           </div>
 
@@ -210,7 +204,7 @@ export default function AboutClient() {
             </div>
             <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-2">Corporate Compliance Ready</h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Compliant with non-disclosure agreements (NDAs), GDPR privacy guidelines, and HIPAA confidentiality principles because no third-party data processing occurs.
+              Safe for sensitive contracts, business plans, and personal records. Since no files ever reach our servers, your data remains fully confidential.
             </p>
           </div>
         </div>
@@ -227,7 +221,7 @@ export default function AboutClient() {
             Built Strictly to International Specifications
           </h2>
           <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Every output generated by Compixor adheres to recognized ISO, consular, and document interchange standards.
+            Every file you create meets official worldwide standards for formats, printing, and security.
           </p>
         </div>
 
@@ -236,7 +230,7 @@ export default function AboutClient() {
             <span className="text-xs font-bold uppercase text-brand-600 dark:text-brand-400 tracking-wider">ISO 32000-1 / 2</span>
             <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-1 mb-2">PDF Document Architecture</h4>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-              Standard-compliant xref indexing, object dictionaries, and AES-256 cryptographic structures for universal viewer compatibility.
+              Standard PDF formatting and AES-256 encryption. Your PDF files open smoothly in Adobe Acrobat and any modern reader.
             </p>
           </div>
 
@@ -244,7 +238,7 @@ export default function AboutClient() {
             <span className="text-xs font-bold uppercase text-brand-600 dark:text-brand-400 tracking-wider">ICAO Doc 9303</span>
             <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-1 mb-2">Biometric Passport Photos</h4>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-              Facial landmark positioning, crown-to-chin ratios, 300 DPI JFIF resolution, and printable multi-photo layout sheets.
+              Exact photo sizes and head dimensions at 300 DPI. Ready to print on photo paper for visas and passports.
             </p>
           </div>
 
@@ -252,7 +246,7 @@ export default function AboutClient() {
             <span className="text-xs font-bold uppercase text-brand-600 dark:text-brand-400 tracking-wider">ISO/IEC 18004</span>
             <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-1 mb-2">Vector QR Matrix Codes</h4>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-              Level H (30%) Reed-Solomon error correction, permanent static encoding, and infinite vector SVG/high-res PNG exports.
+              High error correction and sharp vector graphics. Your QR codes scan quickly and never expire.
             </p>
           </div>
 
@@ -260,7 +254,7 @@ export default function AboutClient() {
             <span className="text-xs font-bold uppercase text-brand-600 dark:text-brand-400 tracking-wider">ECMA-376 / OOXML</span>
             <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-1 mb-2">Office OpenXML Packaging</h4>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-              Native Microsoft Word (.docx) syntax preservation, table cell geometry, and structural image stream optimization.
+              Clean Word DOCX format. Keeps your tables, text styles, and images looking just right in Microsoft Word.
             </p>
           </div>
         </div>

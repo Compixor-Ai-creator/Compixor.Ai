@@ -61,7 +61,6 @@ export const metadata: Metadata = {
     template: '%s | Compixor',
   },
   description: homepageSeoData.description,
-  keywords: homepageSeoData.keywords,
   authors: [{ name: AUTHOR_NAME, url: BASE_URL }],
   creator: AUTHOR_NAME,
   publisher: 'Compixor AI',
@@ -108,16 +107,9 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    'max-snippet': -1,
-    'max-image-preview': 'large',
     'max-video-preview': -1,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
+    'max-image-preview': 'large',
+    'max-snippet': -1,
   },
 };
 
