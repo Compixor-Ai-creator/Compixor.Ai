@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Send, Loader2, CheckCircle2, ShieldCheck, ArrowRight, MessageSquare, AlertCircle } from 'lucide-react';
+import { Mail, Send, Loader2, CheckCircle2, ShieldCheck, ArrowRight, MessageSquare, AlertCircle, Clock, LifeBuoy, HelpCircle, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ContactClient() {
@@ -257,6 +257,105 @@ export default function ContactClient() {
           </div>
         </div>
       </div>
+
+      {/* ============ HOW WE CAN HELP YOU SECTION ============ */}
+      <section className="mt-16 pt-12 border-t border-zinc-200/80 dark:border-zinc-800/80">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20 mb-3">
+            <LifeBuoy className="w-3.5 h-3.5" />
+            Support Channels
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-3">
+            How We Can Help You
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+            Our team is committed to providing prompt technical guidance, resolving browser quirks, and hearing your ideas for new tools.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="glass-card p-6 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
+            <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+              <LifeBuoy className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              Technical &amp; Bug Support
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Encountering an unexpected error during client-side WebAssembly rendering or Canvas transformation? Send us your browser details and error traces for rapid diagnosis.
+            </p>
+          </div>
+
+          <div className="glass-card p-6 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              Tool Assistance &amp; Guidance
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Need assistance selecting biometric passport sheet dimensions, AES-256 PDF encryption parameters, or vector QR error correction levels? We are happy to guide you.
+            </p>
+          </div>
+
+          <div className="glass-card p-6 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
+            <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+              <Clock className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              24?48 Hour Response Window
+            </h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Every message sent through our form or sent to <strong className="text-zinc-900 dark:text-zinc-200 font-semibold">support@compixor-ai.cloud</strong> is reviewed by engineering within 24 to 48 business hours.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ FAQS BEFORE CONTACTING SUPPORT SECTION ============ */}
+      <section className="mt-16 pt-12 border-t border-zinc-200/80 dark:border-zinc-800/80">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20 mb-3">
+            <HelpCircle className="w-3.5 h-3.5" />
+            Instant Answers
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-3">
+            Frequently Asked Questions Before Contacting Support
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+            Check our most common support questions below?you might find your answer immediately.
+          </p>
+        </div>
+
+        <div className="space-y-4 max-w-3xl mx-auto">
+          <div className="glass-card p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80">
+            <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white mb-2">
+              Can you recover a file I processed on Compixor?
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              No. Compixor operates on a 100% zero-upload, client-side processing architecture. When you compress a PDF, generate a QR code, or format a passport photo, the file buffers reside exclusively within your device&apos;s volatile RAM. Your files never touch external cloud servers and are immediately purged the moment you close or refresh your browser tab. We have no copies of your files.
+            </p>
+          </div>
+
+          <div className="glass-card p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80">
+            <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white mb-2">
+              Are Compixor tools completely free for commercial use?
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Yes. All tools on Compixor AI are completely free for both individual and commercial projects. We never require account signups, credit card information, artificial queue waiting limits, or forced promotional watermark stamps on your exported documents.
+            </p>
+          </div>
+
+          <div className="glass-card p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80">
+            <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white mb-2">
+              How do I report a browser compatibility issue?
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              To help us reproduce and resolve the problem swiftly, please include your exact browser name and version (e.g., Google Chrome 124, Safari 17.4), your operating system (Windows 11, macOS Sonoma, iOS, Android), the tool URL (e.g., /tools/pdf-to-word), and any error text logged in your browser&apos;s developer console.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

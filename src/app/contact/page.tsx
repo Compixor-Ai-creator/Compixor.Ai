@@ -63,6 +63,37 @@ const breadcrumbSchema = {
   ],
 };
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Can you recover a file I processed on Compixor?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Compixor operates on a 100% zero-upload, client-side processing architecture. File transformations run strictly inside your browser memory (RAM) and are discarded immediately. Files never touch our servers.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Are Compixor tools completely free for commercial use?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. All Compixor tools are 100% free for personal and commercial usage with zero subscriptions, no hidden watermarks, and no sign-ups required.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I report a browser compatibility issue?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Please include your browser name and version, your operating system, the specific tool URL, and any console error descriptions.',
+      },
+    },
+  ],
+};
+
 export default function ContactPage() {
   return (
     <>
@@ -73,6 +104,10 @@ export default function ContactPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <ContactClient />
     </>

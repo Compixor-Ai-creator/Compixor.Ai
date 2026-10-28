@@ -8,14 +8,14 @@ import BlogFilter from '@/components/BlogFilter';
 export const metadata: Metadata = {
   title: 'Client-Side Guides & Tutorials',
   description:
-    'Comprehensive step-by-step guides on PDF compression, password protection, passport photo sizing, WhatsApp DP formatting, and QR code generation.',
+    'Step-by-step guides on private PDF compression, password security, 300 DPI passport photos, full WhatsApp DPs, and custom QR codes.',
   alternates: {
     canonical: 'https://compixor-ai.cloud/blog',
   },
   openGraph: {
     title: 'Client-Side Guides & Tutorials | Compixor AI',
     description:
-      'Learn how to convert, compress, protect, and optimize files locally in your browser with zero server uploads.',
+      'Step-by-step guides on private PDF compression, password security, 300 DPI passport photos, full WhatsApp DPs, and custom QR codes.',
     url: 'https://compixor-ai.cloud/blog',
     siteName: 'Compixor AI',
     type: 'website',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: 'summary',
     title: 'Client-Side Guides & Tutorials | Compixor AI',
     description:
-      'Learn how to convert, compress, protect, and optimize files locally in your browser with zero server uploads.',
+      'Step-by-step guides on private PDF compression, password security, 300 DPI passport photos, full WhatsApp DPs, and custom QR codes.',
     images: ['https://compixor-ai.cloud/brand/logo-512.png'],
   },
 };
@@ -42,7 +42,7 @@ const blogIndexSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: 'Compixor AI Blog & Guides',
-  description: 'Comprehensive step-by-step guides on PDF compression, password protection, passport photo sizing, and file privacy.',
+  description: 'Step-by-step guides on private PDF compression, password security, 300 DPI passport photos, full WhatsApp DPs, and custom QR codes.',
   url: 'https://compixor-ai.cloud/blog',
 };
 

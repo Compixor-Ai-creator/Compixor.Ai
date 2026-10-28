@@ -166,7 +166,7 @@ export default function BlogPostPage({ params }: PageProps) {
   }
 
   const IconComponent = iconMap[blog.icon] || FileText;
-  const relatedArticles = getRelatedBlogs(blog.slug, 3);
+  const relatedArticles = getRelatedBlogs(blog.slug, 11);
   const canonicalUrl = blog.canonicalUrl || `https://compixor-ai.cloud/blog/${blog.slug}`;
   const shareUrls = getShareUrls(canonicalUrl, blog.title);
   const toolSlug = blog.toolPath ? blog.toolPath.replace('/tools/', '') : '';
@@ -1198,7 +1198,7 @@ export default function BlogPostPage({ params }: PageProps) {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedArticles.map((rel) => {
                 const RelIcon = iconMap[rel.icon] || FileText;
                 return (

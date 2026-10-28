@@ -39,53 +39,53 @@ const TOOL_SECTION_H2: Partial<Record<ToolSlug, string>> = {
 };
 
 const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
-  'qr-generator': {
-    title: 'How to Make a Custom QR Code with a Logo',
-    href: '/blog/how-to-create-custom-qr-code-with-logo',
-  },
-  'pdf-organizer': {
-    title: 'How to Merge and Split PDFs Online (No Upload)',
-    href: '/blog/how-to-merge-and-split-pdf-files-online',
-  },
   'pdf-compressor': {
     title: 'How to Compress a PDF Without Losing Quality',
     href: '/blog/how-to-compress-pdf-without-losing-quality',
   },
-  'full-dp-maker': {
-    title: 'Full DP Without Cropping for All Social Media',
-    href: '/blog/how-to-set-full-dp-whatsapp-without-cropping',
-  },
-  'passport-photo': {
-    title: 'Passport Photo Size Guide: 300 DPI by Country',
-    href: '/blog/passport-size-photo-maker-online-free',
-  },
-  'protect-pdf': {
-    title: 'How to Password Protect a PDF with AES-256',
-    href: '/blog/password-protect-pdf-files-online',
-  },
-  'unlock-pdf': {
-    title: 'How to Remove a Password from a PDF (Free)',
-    href: '/blog/how-to-remove-password-from-pdf',
-  },
-  'add-watermark': {
-    title: 'How to Add a Watermark to a PDF (Step-by-Step)',
-    href: '/blog/how-to-add-watermark-to-pdf',
-  },
-  'remove-watermark': {
-    title: 'How to Remove a PDF Watermark Cleanly',
-    href: '/blog/remove-watermark-from-pdf-cleanly',
-  },
-  'word-compressor': {
-    title: 'How to Compress a Word File Without Quality Loss',
-    href: '/blog/how-to-compress-word-docx-files',
-  },
   'pdf-to-word': {
-    title: 'Convert PDF to Editable Word Without Layout Loss',
+    title: 'How to Convert PDF to Editable Word Without Layout Loss',
     href: '/blog/convert-pdf-to-editable-word-online',
   },
   'img-to-word': {
-    title: 'How to Extract Text from an Image into Word',
+    title: 'How to Extract Text from an Image into Word via OCR',
     href: '/blog/extract-text-from-image-to-word',
+  },
+  'word-compressor': {
+    title: 'How to Compress a Word DOCX File Without Quality Loss',
+    href: '/blog/how-to-compress-word-docx-files',
+  },
+  'pdf-organizer': {
+    title: 'How to Merge and Split PDF Files Online',
+    href: '/blog/how-to-merge-and-split-pdf-files-online',
+  },
+  'protect-pdf': {
+    title: 'How to Password Protect a PDF with AES-256 Encryption',
+    href: '/blog/password-protect-pdf-files-online',
+  },
+  'unlock-pdf': {
+    title: 'How to Remove a Password and Restrictions from a PDF',
+    href: '/blog/how-to-remove-password-from-pdf',
+  },
+  'add-watermark': {
+    title: 'Step-by-Step Guide to Adding Watermarks to PDF',
+    href: '/blog/how-to-add-watermark-to-pdf',
+  },
+  'remove-watermark': {
+    title: 'How to Remove Watermark Overlays from a PDF Cleanly',
+    href: '/blog/remove-watermark-from-pdf-cleanly',
+  },
+  'passport-photo': {
+    title: 'Official 300 DPI Biometric Passport Photo Size Guide',
+    href: '/blog/passport-size-photo-maker-online-free',
+  },
+  'full-dp-maker': {
+    title: 'How to Set a Full Size DP on WhatsApp & Social Media Without Cropping',
+    href: '/blog/how-to-set-full-dp-whatsapp-without-cropping',
+  },
+  'qr-generator': {
+    title: 'How to Design a Custom Vector QR Code with a Logo',
+    href: '/blog/how-to-create-custom-qr-code-with-logo',
   },
 };
 
@@ -123,6 +123,18 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
           {tool.introParagraph}
         </p>
+        {TOOL_GUIDE_MAP[toolSlug] && (
+          <p className="mt-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+            Looking for an in-depth walkthrough? Read our companion guide:{' '}
+            <Link
+              href={TOOL_GUIDE_MAP[toolSlug].href}
+              className="font-semibold text-brand-600 dark:text-brand-400 hover:underline inline-flex items-center gap-0.5"
+            >
+              <span>{TOOL_GUIDE_MAP[toolSlug].title}</span>
+              <ArrowRight className="w-3.5 h-3.5 inline ml-0.5" />
+            </Link>
+          </p>
+        )}
 
         {/* Feature Badges */}
         <div className="mt-6 pt-5 border-t border-zinc-100 dark:border-zinc-800/60 flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-semibold text-zinc-600 dark:text-zinc-400">

@@ -3,14 +3,14 @@ import { BreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy - Files Never Leave Your Browser',
-  description: 'Read Compixor AI privacy policy. Discover our zero-server architecture: files are processed in your browser with zero uploads and zero data retention.',
+  description: 'Read the Compixor AI privacy policy. Our zero-server architecture processes all files locally in your browser with zero uploads.',
   alternates: {
     canonical: 'https://compixor-ai.cloud/privacy',
   },
   openGraph: {
     title: 'Privacy Policy — Client-Side Local Processing Architecture | Compixor AI',
     description:
-      'Read Compixor AI privacy policy. Discover our zero-server architecture: files are processed entirely in your browser with zero uploads and zero data retention.',
+      'Read the Compixor AI privacy policy. Our zero-server architecture processes all files locally in your browser with zero uploads.',
     url: 'https://compixor-ai.cloud/privacy',
     type: 'website',
     images: [
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Privacy Policy — Client-Side Local Processing Architecture | Compixor AI',
     description:
-      'Read Compixor AI privacy policy. Discover our zero-server architecture: files are processed entirely in your browser with zero uploads and zero data retention.',
+      'Read the Compixor AI privacy policy. Our zero-server architecture processes all files locally in your browser with zero uploads.',
     images: ['https://compixor-ai.cloud/images/og-banner-v2.png'],
   },
 };

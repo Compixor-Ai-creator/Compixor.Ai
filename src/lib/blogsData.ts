@@ -958,7 +958,7 @@ export const blogsData: BlogItem[] = [
   {
     id: "pdf-to-word",
     slug: "convert-pdf-to-editable-word-online",
-    title: "How to Transform Complex PDF Files into Clean Editable Word Documents",
+    title: "How to Convert Complex PDFs into Editable Word Files",
     category: "Conversion",
     readTime: "7 min read",
     targetKeyword: "convert pdf to editable word online free",
@@ -990,16 +990,16 @@ export const blogsData: BlogItem[] = [
       ]
     },
     content: {
-      intro: "While the PDF format is the global standard for universal document viewing and printing, editing existing text, revising contractual terms, or updating tabular figures inside a compiled PDF is notoriously painful. Manually copying text into Microsoft Word typically corrupts formatting, misaligns columns, and turns structured tables into fractured paragraphs. Compixor's PDF to Word converter reconstructs read-only PDF streams into native Office OpenXML (.docx) files directly in your web browser with structural table preservation and zero cloud privacy exposure.",
+      intro: "PDF is the world standard for reading and printing documents. However, editing text or updating tables inside a locked PDF is frustrating. Copying and pasting text into Microsoft Word often breaks formatting, scrambles tables, and jumbles columns. Compixor solves this problem directly in your browser. Our converter translates raw PDF code into real Microsoft Word (.docx) files. You get clean paragraphs, editable tables, and accurate fonts without sending your files to a cloud server.",
       sections: [
         {
           heading: "How Native OpenXML (.docx) Reconstruction Works",
           body: "Inferior online converters take shortcuts by turning each line of text into an absolute-positioned floating text box. When you attempt to insert a sentence or edit a paragraph in Word, these text boxes overlap, collapse, and destroy your layout. Compixor's conversion engine analyzes document typography to assemble continuous semantic paragraphs, heading hierarchies, and genuine Word table cells:",
           list: [
-            "Continuous Paragraph Reflow: Text flows naturally from sentence to sentence. Adding or deleting words automatically reflows subsequent lines without manual adjustment.",
-            "Tabular Geometry Preservation: Detects vector grid lines and cell coordinates, compiling them into genuine editable Microsoft Word table objects with row/column headers intact.",
-            "Typographic Hierarchy Mapping: Analyzes font size, weight, and vertical spacing to map PDF styles to corresponding Word styles (H1, H2, H3, Body Text, and Bulleted Lists).",
-            "Inline Image Extraction: Extracts embedded images and positions them relative to surrounding paragraphs rather than floating erratically."
+            "Continuous Paragraph Reflow: Text flows naturally from sentence to sentence. When you add or delete words, lines re-align smoothly without overlapping.",
+            "True Table Preservation: Recognizes grid lines and cell positions. It converts them into real editable Word tables with intact rows, columns, and headers.",
+            "Heading & Style Matching: Reads font sizes, bold weights, and line spacing. It maps them directly to Word heading styles, body text, and bullet lists.",
+            "Inline Image Extraction: Extracts embedded graphics and positions them neatly beside paragraphs instead of floating erratically across pages."
           ]
         },
         {
@@ -1508,7 +1508,7 @@ export const blogsData: BlogItem[] = [
   {
     id: "remove-pdf-watermark",
     slug: "remove-watermark-from-pdf-cleanly",
-    title: "How to Erase Watermark Overlays from PDF Documents Without Blurring Text",
+    title: "How to Remove Watermark Overlays from a PDF Cleanly",
     category: "PDF Tools",
     readTime: "6 min read",
     targetKeyword: "remove watermark from pdf cleanly free",
@@ -1540,15 +1540,15 @@ export const blogsData: BlogItem[] = [
       ]
     },
     content: {
-      intro: "Receiving a document with an aggressive 'DRAFT', 'CONFIDENTIAL', or third-party watermark splashed across every page makes presentations look unprofessional and impairs reading. However, most amateur methods for removing watermarks—such as converting pages to images and painting over them—blur vector text, increase file size exponentially, and destroy searchability. Compixor's Watermark Remover operates on the underlying PDF object stream, cleanly excising stamp layers while preserving razor-sharp vector text and layout geometry.",
+      intro: "Watermarks like 'DRAFT' or 'SAMPLE' can distract readers and look unprofessional in meetings. Common amateur fixes?like turning pages into pictures and painting over them?blur your text and bloat file sizes. They also destroy your ability to search or copy text. Compixor uses a cleaner method. Our tool inspects the internal PDF code stream to delete the watermark layer directly. The result is a clean document with crisp vector text, sharp fonts, and original page layouts.",
       sections: [
         {
           heading: "How PDF Watermarks Are Structured in Document Syntax",
           body: "Under ISO 32000 specifications, watermarks generally exist in one of three internal representations:",
           list: [
-            "Native Artifacts (/Artifact Dictionary): Standard watermarks applied by Adobe Acrobat or professional software are tagged with the /Artifact property, identifying them as non-structural background elements designed for easy modification.",
-            "Separate Content Streams or Form XObjects: Watermarks placed as independent sub-streams or reusable vector graphic objects overlaid on page content.",
-            "Flattened Bitmaps (Scanned / Rasterized): Watermarks permanently burned into the pixel grid of a scanned document. These cannot be excised with vector tools without inpainting or OCR reconstruction."
+            "Native Artifacts (/Artifact Dictionary): Standard watermarks added by professional software. They carry an internal label that marks them as non-content decorations, making them easy to identify and strip.",
+            "Independent Content Streams & XObjects: Watermarks stored as separate overlay layers. They sit above or below the text as reusable graphic objects.",
+            "Flattened Scanned Images: Watermarks baked directly into the pixel grid of paper scans. Because the words and stamps are fused into a single photograph, vector removers cannot separate them without OCR."
           ]
         },
         {
@@ -1616,7 +1616,7 @@ export const blogsData: BlogItem[] = [
     targetKeyword: "compress word document docx file size online",
     datePublished: "2026-10-18T00:00:00.000Z",
     metaTitle: "How to Compress a Word File Without Quality Loss",
-    metaDescription: "Learn how downscaling embedded media and deflating XML streams cuts Word document sizes by up to 80% without losing typographic formatting.",
+    metaDescription: "Learn how downscaling embedded images and deflating XML cuts Word DOCX file sizes by up to 80% while keeping formatting intact.",
     excerpt: "Shrink bloated Word documents that exceed email attachment limits by optimizing high-resolution embedded images and cleaning redundant XML packages.",
     toolPath: "/tools/word-compressor",
     toolName: "Free Word Compressor",
@@ -1710,7 +1710,7 @@ export const blogsData: BlogItem[] = [
   {
     id: "img-to-word",
     slug: "extract-text-from-image-to-word",
-    title: "How to Convert Scanned Images into Editable Word Documents via OCR",
+    title: "How to Extract Text from an Image into Word via OCR",
     category: "Conversion",
     readTime: "7 min read",
     targetKeyword: "extract text from image to word ocr free",
@@ -1741,16 +1741,16 @@ export const blogsData: BlogItem[] = [
       ]
     },
     content: {
-      intro: "Re-typing printed contracts, physical book chapters, photographed receipts, or meeting whiteboard notes by hand is one of the most tedious and error-prone tasks in the modern office. Optical Character Recognition (OCR) technology has revolutionized document digitization, enabling computers to recognize glyph shapes and reconstruct editable text instantly. Compixor's Image to Word OCR tool delivers state-of-the-art character recognition directly in your web browser—allowing you to convert JPG, PNG, and scanned photos into editable Microsoft Word (.docx) files without risking confidential paperwork on public cloud servers.",
+      intro: "Re-typing printed contracts, receipts, or book pages by hand is slow and frustrating. Optical Character Recognition (OCR) changes that. OCR is software that reads letter shapes in photos and turns them into editable digital text. Compixor's free Image to Word tool runs this recognition directly inside your web browser. You can convert JPG, PNG, and scanned photos into clean Word (.docx) files in seconds. Best of all, your confidential files never leave your device or get uploaded to cloud servers.",
       sections: [
         {
           heading: "How Modern Neural OCR Technology Works",
           body: "Modern Optical Character Recognition encompasses a multi-stage machine learning and image processing pipeline:",
           list: [
-            "Binarization & Adaptive Thresholding: Converts colorful or shadowed photos into high-contrast black-and-white pixel matrices, separating ink glyphs from page paper.",
-            "Deskewing & Perspective Correction: Detects baseline text angles and corrects camera tilt, flattening warped page captures before recognition.",
-            "Convolutional Neural Character Recognition: Classifies individual glyph contours against neural language models, accurately resolving challenging character pairs (e.g., '1', 'l', and 'I').",
-            "Layout & Tabular Structure Analysis: Groups recognized words into logical sentences, paragraphs, and multi-column tables rather than disconnected text fragments."
+            "Binarization & Adaptive Thresholding: Cleans up shadows and background tint from your photo. It turns the image into crisp black ink on pure white paper so characters stand out clearly.",
+            "Deskewing & Perspective Correction: Straightens crooked captures. It automatically corrects angled smartphone photos, leveling tilted text lines before reading.",
+            "Neural Character Recognition: Uses deep learning models to identify letter shapes. It easily distinguishes tricky character pairs, like the number '1', lowercase 'l', and uppercase 'I'.",
+            "Layout & Table Analysis: Reconstructs document structure. It organizes recognized words into real paragraphs, bulleted lists, and structured Word tables instead of loose text fragments."
           ]
         },
         {
@@ -1856,24 +1856,26 @@ const CUSTOM_RELATED_POOLS: Record<string, string[]> = {
   ],
 };
 
-export function getRelatedBlogs(currentSlug: string, limit = 3): BlogItem[] {
-  if (CUSTOM_RELATED_POOLS[currentSlug]) {
-    const customList = CUSTOM_RELATED_POOLS[currentSlug]
-      .map((slug) => getBlogBySlug(slug))
-      .filter((b): b is BlogItem => Boolean(b));
-    if (customList.length > 0) {
-      return customList.slice(0, limit);
-    }
-  }
-
+export function getRelatedBlogs(currentSlug: string, limit = 11): BlogItem[] {
   const current = getBlogBySlug(currentSlug);
-  if (!current) return blogsData.slice(0, limit);
-  const sameCategory = blogsData.filter(
-    (b) => b.slug !== currentSlug && b.category === current.category
-  );
-  if (sameCategory.length >= limit) return sameCategory.slice(0, limit);
+  const prioritizedSlugs = CUSTOM_RELATED_POOLS[currentSlug] || [];
+  const prioritized = prioritizedSlugs
+    .map((slug) => getBlogBySlug(slug))
+    .filter((b): b is BlogItem => b !== undefined && b.slug !== currentSlug);
+
+  const prioritizedSet = new Set(prioritized.map((b) => b.slug));
+
+  const sameCategory = current
+    ? blogsData.filter(
+        (b) => b.slug !== currentSlug && b.category === current.category && !prioritizedSet.has(b.slug)
+      )
+    : [];
+
+  sameCategory.forEach((b) => prioritizedSet.add(b.slug));
+
   const others = blogsData.filter(
-    (b) => b.slug !== currentSlug && b.category !== current.category
+    (b) => b.slug !== currentSlug && !prioritizedSet.has(b.slug)
   );
-  return [...sameCategory, ...others].slice(0, limit);
+
+  return [...prioritized, ...sameCategory, ...others].slice(0, limit);
 }

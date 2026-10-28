@@ -1463,7 +1463,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: ScanText,
     title: 'Image to Word Converter Online Free',
     description:
-      'Convert JPG, PNG, or WEBP images to editable Word DOCX files free online. In-browser Tesseract OCR, zero upload, 10+ languages, instant download.',
+      'Convert JPG, PNG, or WEBP images to editable Word DOCX free online. Private in-browser OCR for 10+ languages with instant download.',
     canonicalUrl: `${BASE_URL}/tools/img-to-word`,
     primaryKeyword: 'image to word converter online free',
     searchIntent:
