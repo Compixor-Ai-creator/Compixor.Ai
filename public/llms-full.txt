@@ -1,0 +1,70 @@
+# Compixor AI - Full Documentation
+
+> Free, 100% private document and media processing toolkit running in client-side RAM with zero permanent storage.
+
+Compixor AI (https://compixor-ai.cloud) is a modern web application providing private, client-side document and media processing utilities.
+
+## Core Architecture & Privacy Principles
+
+1. **Client-Side First**: Utilities such as PDF compression, merge/split, watermarking, password encryption/decryption, DOCX image optimization, QR code generation, and biometric photo canvas rendering execute entirely in the user's browser using WebAssembly, Web Workers, and HTML5 Canvas APIs.
+2. **Zero Permanent Retention**: No user file buffers, processed documents, or personal images are ever stored on persistent server disks.
+3. **Zero Artificial Friction**: No account creation, no sign-ups, no subscription paywalls, no artificial file size traps, and zero platform watermarks stamped onto user files.
+
+## Tools Directory
+
+### 1. PDF Compressor
+- **URL**: https://compixor-ai.cloud/tools/pdf-compressor
+- **Capabilities**: Client-side vector stream downscaling, image resampling, and structural deduplication. Target sizes include 100KB, 200KB, 500KB, 1MB, or custom quality settings.
+
+### 2. PDF Merge & Split
+- **URL**: https://compixor-ai.cloud/tools/pdf-organizer
+- **Capabilities**: Drag-and-drop page reorganization, multi-file merging into a single PDF, page rotation, and extraction of custom page ranges.
+
+### 3. Add Watermark
+- **URL**: https://compixor-ai.cloud/tools/add-watermark
+- **Capabilities**: Stamp customizable vector text or PNG logo overlays across all or selected page ranges with rotation, opacity, and positioning controls.
+
+### 4. Remove Watermark
+- **URL**: https://compixor-ai.cloud/tools/remove-watermark
+- **Capabilities**: Digital stream text/image deletion combined with interactive visual bounding box stamp eraser for clean document output.
+
+### 5. Protect PDF
+- **URL**: https://compixor-ai.cloud/tools/protect-pdf
+- **Capabilities**: In-browser AES-256 password encryption with customizable user/owner passwords and granular permissions (print, copy, edit).
+
+### 6. Unlock PDF
+- **URL**: https://compixor-ai.cloud/tools/unlock-pdf
+- **Capabilities**: Client-side decryption to strip passwords and permissions from owned PDF files without server uploads.
+
+### 7. Word Compressor
+- **URL**: https://compixor-ai.cloud/tools/word-compressor
+- **Capabilities**: In-memory inspection of .docx ZIP archives, extracting and re-compressing high-resolution embedded images while preserving XML layout and typography.
+
+### 8. Biometric Passport Photo Maker
+- **URL**: https://compixor-ai.cloud/tools/passport-photo
+- **Capabilities**: Precise biometric cropping presets (Pakistan NADRA 35x45mm, US Visa 2x2", UK/Schengen), portrait AI background removal, and 300 DPI high-resolution printable sheets (A4, A5, A6).
+
+### 9. Full DP Maker
+- **URL**: https://compixor-ai.cloud/tools/full-dp-maker
+- **Capabilities**: Generate 1:1 aspect ratio square avatars for WhatsApp, Instagram, and LinkedIn with aesthetic gaussian blur backgrounds and no forced cropping.
+
+### 10. Vector QR Code Generator
+- **URL**: https://compixor-ai.cloud/tools/qr-generator
+- **Capabilities**: Permanent static QR codes for URLs, WiFi networks, WhatsApp chat links, and vCards with vector SVG and 4K PNG exports.
+
+### 11. PDF to Word Converter
+- **URL**: https://compixor-ai.cloud/tools/pdf-to-word
+- **Capabilities**: In-memory document parsing converting digital and scanned PDFs to editable Microsoft Word (.docx) documents with OCR support.
+
+### 12. Image to Word Converter
+- **URL**: https://compixor-ai.cloud/tools/img-to-word
+- **Capabilities**: Extract text and tabular structures from JPG, PNG, WEBP, and scanned documents into editable .docx files with multi-language OCR.
+
+## Platform Links
+
+- [Homepage](https://compixor-ai.cloud/)
+- [About Us](https://compixor-ai.cloud/about)
+- [Privacy Policy](https://compixor-ai.cloud/privacy)
+- [Terms of Service](https://compixor-ai.cloud/terms)
+- [Guides & Articles](https://compixor-ai.cloud/blog)
+- [Contact Support](https://compixor-ai.cloud/contact)
