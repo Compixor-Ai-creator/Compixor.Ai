@@ -42,7 +42,7 @@ export default function Footer() {
             {/* Copyright & Architecture Note */}
             <div className="pt-2 space-y-1">
               <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                © 2026 Compixor AI. Architecture by <span className="font-semibold text-zinc-700 dark:text-zinc-300">Haroon Ali</span>. Compixor AI Digital Studio • Global Cloud Services.
+                © 2026 Compixor AI. <span className="hidden">Architecture by <span className="font-semibold text-zinc-700 dark:text-zinc-300">Haroon Ali</span>. </span>Compixor AI Digital Studio • Global Cloud Services.
               </p>
               <p className="text-xs text-zinc-400 dark:text-zinc-500">
                 Updated October 2026 · Zero Server Storage Policy
