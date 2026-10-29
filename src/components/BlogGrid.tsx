@@ -51,7 +51,7 @@ export default function BlogGrid({ blogs }: BlogGridProps) {
         return (
           <article
             key={blog.id}
-            className="glass-card p-6 sm:p-7 h-full flex flex-col justify-between rounded-3xl border border-white/80 dark:border-zinc-800/80 hover:border-brand-500/40 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 group"
+            className="glass-card p-5 sm:p-7 h-full flex flex-col justify-between rounded-3xl border border-white/80 dark:border-zinc-800/80 hover:border-brand-500/40 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 group"
           >
             <div>
               {/* Top Meta Row */}
@@ -92,7 +92,7 @@ export default function BlogGrid({ blogs }: BlogGridProps) {
               )}
 
               {/* H2 Title */}
-              <h2 className="text-lg sm:text-xl font-serif font-bold text-zinc-900 dark:text-white mb-2.5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-zinc-900 dark:text-white mb-2.5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug break-words">
                 <Link href={`/blog/${blog.slug}`}>{blog.title}</Link>
               </h2>
 
@@ -106,7 +106,7 @@ export default function BlogGrid({ blogs }: BlogGridProps) {
             <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between gap-2">
               <Link
                 href={`/blog/${blog.slug}`}
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 group-hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 group-hover:underline cursor-pointer min-h-[44px] py-2"
               >
                 <span>Read Full Guide</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -114,7 +114,7 @@ export default function BlogGrid({ blogs }: BlogGridProps) {
 
               <Link
                 href={blog.toolPath}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-brand-500/10 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-300 transition-all border border-transparent hover:border-brand-500/20 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-brand-500/10 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-300 transition-all border border-transparent hover:border-brand-500/20 cursor-pointer min-h-[44px]"
               >
                 <span>Try Tool</span>
                 <ExternalLink className="w-3.5 h-3.5" />

@@ -53,7 +53,7 @@ const stats = [
 
 export default function AboutClient() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-20">
       {/* Hero */}
       <motion.div
         className="text-center max-w-3xl mx-auto mb-20"
@@ -65,7 +65,7 @@ export default function AboutClient() {
           <Sparkles className="w-3.5 h-3.5" />
           Our Mission & Architecture
         </div>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black font-display text-zinc-900 dark:text-white leading-[1.1] mb-6">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black font-display text-zinc-900 dark:text-white leading-[1.1] mb-6">
           The Mission Behind <span className="text-gradient">CompixorAi</span>
         </h1>
         <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300 leading-relaxed">
@@ -147,7 +147,7 @@ export default function AboutClient() {
           </p>
         </div>
 
-        <div className="p-8 rounded-2xl bg-zinc-900 text-white font-mono text-xs space-y-3 shadow-2xl border border-zinc-800">
+        <div className="p-5 sm:p-8 rounded-2xl bg-zinc-900 text-white font-mono text-xs space-y-3 shadow-2xl border border-zinc-800 overflow-x-auto max-w-full">
           <div className="flex items-center gap-2 pb-3 border-b border-zinc-800 text-zinc-400">
             <div className="w-3 h-3 rounded-full bg-red-500/80" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
@@ -318,7 +318,7 @@ export default function AboutClient() {
                 href="https://github.com/Compixor-Ai-creator"
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                className="text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:text-brand-500"
+                className="text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:text-brand-500 min-h-[44px] inline-flex items-center py-2"
               >
                 GitHub Profile
               </a>
@@ -353,7 +353,7 @@ export default function AboutClient() {
         </p>
         <a
           href={`mailto:${CONTACT_EMAIL}`}
-          className="btn-primary inline-flex items-center gap-2 text-sm sm:text-base px-6 py-3 font-semibold"
+          className="btn-primary inline-flex items-center gap-2 text-sm sm:text-base px-6 py-3 font-semibold min-h-[48px]"
         >
           <Mail className="w-4 h-4" />
           <span>Contact Support ({CONTACT_EMAIL})</span>

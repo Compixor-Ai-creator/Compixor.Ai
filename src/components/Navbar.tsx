@@ -1,4 +1,5 @@
 'use client';
+// Phase 3 mobile-optimize
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -100,6 +101,18 @@ export default function Navbar() {
     setPdfDropdownOpen(false);
     setWordDropdownOpen(false);
   }, [pathname]);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
 
   const handleMouseEnter = () => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -472,7 +485,7 @@ export default function Navbar() {
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-brand-500/10 text-zinc-600 dark:text-zinc-400 cursor-pointer"
+                className="relative w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-brand-500/10 text-zinc-600 dark:text-zinc-400 cursor-pointer"
                 aria-label="Toggle theme"
               >
                 {theme === 'dark' ? (
@@ -493,7 +506,7 @@ export default function Navbar() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden w-10 h-10 rounded-xl flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
+                className="lg:hidden w-11 h-11 rounded-xl flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
                 aria-label="Toggle menu"
               >
                 {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -514,7 +527,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setMobilePdfAccordionOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between p-3.5 text-base font-bold text-zinc-900 dark:text-white"
+                className="w-full flex items-center justify-between p-3.5 text-base font-bold text-zinc-900 dark:text-white min-h-[48px]"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-500">
@@ -548,7 +561,7 @@ export default function Navbar() {
                                     key={item.href}
                                     href={item.href}
                                     onClick={() => setMobileOpen(false)}
-                                    className={`flex items-center gap-3 p-2.5 rounded-xl transition ${
+                                    className={`flex items-center gap-3 p-2.5 rounded-xl transition min-h-[44px] ${
                                       isCurrent
                                         ? 'bg-brand-500 text-white shadow-glow'
                                         : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5'
@@ -585,7 +598,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setMobileWordAccordionOpen((prev) => !prev)}
-                  className="w-full flex items-center justify-between p-3.5 text-base font-bold text-zinc-900 dark:text-white"
+                  className="w-full flex items-center justify-between p-3.5 text-base font-bold text-zinc-900 dark:text-white min-h-[48px]"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-500">
@@ -613,7 +626,7 @@ export default function Navbar() {
                               key={item.href}
                               href={item.href}
                               onClick={() => setMobileOpen(false)}
-                              className={`flex items-center gap-3 p-2.5 rounded-xl transition ${
+                              className={`flex items-center gap-3 p-2.5 rounded-xl transition min-h-[44px] ${
                                 isCurrent
                                   ? 'bg-brand-500 text-white shadow-glow'
                                   : 'text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5'
@@ -651,7 +664,7 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className={`flex items-center gap-3 p-3.5 rounded-2xl ultra-subcard text-base font-semibold transition-all duration-200 ${
+                    className={`flex items-center gap-3 p-3.5 rounded-2xl ultra-subcard text-base font-semibold transition-all duration-200 min-h-[48px] ${
                       isActive
                         ? 'bg-brand-500 text-white shadow-glow'
                         : 'text-zinc-800 dark:text-zinc-200 hover:bg-white/80 dark:hover:bg-white/10'
@@ -677,8 +690,7 @@ export default function Navbar() {
               </p>
             </div>
           </div>
-        )}
+      )}
     </>
   );
 }
-

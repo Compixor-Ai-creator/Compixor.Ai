@@ -5,9 +5,29 @@
 @tailwind utilities;
 
 @layer base {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   html {
     scroll-behavior: smooth;
     scrollbar-gutter: stable;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
   }
 
   :root {
@@ -183,6 +203,116 @@
     -webkit-backdrop-filter: blur(24px) saturate(135%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.10);
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.40);
+  }
+
+  /* ==========================================================================
+     COMPOSE AI–STYLE FLOATING CRYSTAL GLASS HEADER
+     ========================================================================== */
+
+  /* Floating wrapper that detaches the bar from the top edge. */
+  .compixor-header-wrapper {
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+    width: calc(100% - 24px);
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .compixor-glass-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    border-radius: 16px;
+
+    /* True translucent crystal glass -- lets background colors & cards show through */
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.42) 0%,
+      rgba(241, 245, 249, 0.26) 100%
+    ) !important;
+
+    /* Rich optical blur + color saturation boost */
+    backdrop-filter: blur(14px) saturate(190%) contrast(102%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(190%) contrast(102%) !important;
+
+    /* Crisp 1px glass edge + top specular highlight + floating shadow */
+    border: 1px solid rgba(255, 255, 255, 0.65) !important;
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.85),
+      inset 0 -1px 0 0 rgba(148, 163, 184, 0.18),
+      0 10px 30px -6px rgba(15, 23, 42, 0.12),
+      0 2px 6px -1px rgba(15, 23, 42, 0.06) !important;
+
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Dark Mode Smoked Crystal Glass (matches Compose AI dark glass) */
+  .dark .compixor-glass-navbar,
+  [data-theme="dark"] .compixor-glass-navbar {
+    background: linear-gradient(
+      135deg,
+      rgba(24, 24, 36, 0.54) 0%,
+      rgba(39, 39, 58, 0.36) 100%
+    ) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.28),
+      0 12px 32px -4px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* Nav items with subtle frosted hover pill */
+  .compixor-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    transition: all 0.2s ease;
+  }
+
+  .compixor-nav-link:hover {
+    background: rgba(255, 255, 255, 0.55);
+    color: #4f46e5;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  .dark .compixor-nav-link,
+  [data-theme="dark"] .compixor-nav-link {
+    color: #f1f5f9;
+  }
+
+  .dark .compixor-nav-link:hover,
+  [data-theme="dark"] .compixor-nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  /* Glossy 3D Pill CTA Button ("Get Started") */
+  .compixor-cta-btn {
+    padding: 9px 18px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #ffffff;
+    background: linear-gradient(180deg, #7c3aed 0%, #5b21b6 100%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      0 4px 14px rgba(109, 40, 217, 0.35);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .compixor-cta-btn:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 6px 20px rgba(109, 40, 217, 0.45);
   }
 
   /* Ultra-Clean Frosted Glass Dropdown Menu (Floating Translucent Glass Panel) */
@@ -927,8 +1057,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.06);

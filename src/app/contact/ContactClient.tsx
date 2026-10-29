@@ -58,7 +58,7 @@ export default function ContactClient() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-20">
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20 mb-4">
           <Mail className="w-3.5 h-3.5" />
@@ -86,7 +86,7 @@ export default function ContactClient() {
               </p>
               <a
                 href="mailto:support@compixor-ai.cloud"
-                className="text-xs sm:text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline mt-1 inline-block"
+                className="text-xs sm:text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline mt-1 inline-flex items-center min-h-[44px]"
               >
                 support@compixor-ai.cloud
               </a>
@@ -104,7 +104,7 @@ export default function ContactClient() {
               </p>
               <Link
                 href="/privacy"
-                className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline mt-2 inline-flex items-center gap-1"
+                className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline mt-2 inline-flex items-center gap-1 min-h-[44px]"
               >
                 Read Privacy Policy <ArrowRight className="w-3 h-3" />
               </Link>
@@ -122,7 +122,7 @@ export default function ContactClient() {
               </p>
               <Link
                 href="/about"
-                className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline mt-2 inline-flex items-center gap-1"
+                className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline mt-2 inline-flex items-center gap-1 min-h-[44px]"
               >
                 About Compixor <ArrowRight className="w-3 h-3" />
               </Link>
@@ -132,7 +132,7 @@ export default function ContactClient() {
 
         {/* Contact Form */}
         <div className="md:col-span-2">
-          <div className="glass-card p-8 sm:p-10 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80">
+          <div className="glass-card p-5 sm:p-8 md:p-10 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80">
             {submitted ? (
               <div className="text-center py-12 space-y-4">
                 <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto">
@@ -186,7 +186,7 @@ export default function ContactClient() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Jane Doe"
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="w-full px-3.5 py-3 rounded-xl text-base bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 min-h-[44px]"
                     />
                   </div>
 
@@ -200,7 +200,7 @@ export default function ContactClient() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="jane@example.com"
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="w-full px-3.5 py-3 rounded-xl text-base bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 min-h-[44px]"
                     />
                   </div>
                 </div>
@@ -212,7 +212,7 @@ export default function ContactClient() {
                   <select
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3.5 py-3 rounded-xl text-base bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 min-h-[44px]"
                   >
                     <option value="General Inquiry">General Inquiry</option>
                     <option value="Bug / Technical Issue">Bug / Technical Issue</option>
@@ -231,14 +231,14 @@ export default function ContactClient() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="How can we help you?"
-                    className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3.5 py-3 rounded-xl text-base bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-primary w-full py-3 inline-flex items-center justify-center gap-2 text-sm font-semibold cursor-pointer disabled:opacity-50"
+                  className="btn-primary w-full py-3 min-h-[48px] inline-flex items-center justify-center gap-2 text-sm sm:text-base font-semibold cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>

@@ -6,7 +6,7 @@ import { Sparkles, CheckCircle2, ArrowRight, Download, FileText, QrCode, Smartph
 export function DpMakerPreviewMockup() {
   return (
     <div className="w-full max-w-3xl mx-auto my-8">
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
+      <div className="glass-card rounded-3xl p-4 sm:p-6 md:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20 mb-1">
@@ -85,7 +85,7 @@ export function DpMakerPreviewMockup() {
 export function QrGeneratorPreviewMockup() {
   return (
     <div className="w-full max-w-3xl mx-auto my-8">
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
+      <div className="glass-card rounded-3xl p-4 sm:p-6 md:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 mb-1">
@@ -210,7 +210,7 @@ export function QrGeneratorPreviewMockup() {
 export function PdfCompressorPreviewMockup() {
   return (
     <div className="w-full max-w-3xl mx-auto my-8">
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
+      <div className="glass-card rounded-3xl p-4 sm:p-6 md:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-1">
@@ -268,7 +268,7 @@ export function PdfCompressorPreviewMockup() {
         </div>
 
         {/* Crisp Vector Quality Note */}
-        <div className="mt-4 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 px-1">
+        <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-zinc-500 dark:text-zinc-400 px-1">
           <span className="flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
             <span>Text remains 100% searchable & selectable (Ctrl+F)</span>
@@ -286,7 +286,7 @@ export function PdfCompressorPreviewMockup() {
 export function ImgToWordPreviewMockup() {
   return (
     <div className="w-full max-w-3xl mx-auto my-8">
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
+      <div className="glass-card rounded-3xl p-4 sm:p-6 md:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 mb-1">
@@ -344,7 +344,7 @@ export function ImgToWordPreviewMockup() {
         </div>
 
         {/* Quality Footnotes */}
-        <div className="mt-4 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 px-1">
+        <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-zinc-500 dark:text-zinc-400 px-1">
           <span className="flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
             <span>Compatible with Microsoft Word, LibreOffice &amp; Google Docs</span>

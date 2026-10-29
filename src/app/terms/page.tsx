@@ -7,13 +7,13 @@ import { FileText } from 'lucide-react';
 
 export default function TermsPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
       <div className="text-center mb-16">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-500 dark:text-brand-300 border border-brand-500/20 mb-4">
           <FileText className="w-3.5 h-3.5" />
           Legal Agreement
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
           Terms of Service
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">

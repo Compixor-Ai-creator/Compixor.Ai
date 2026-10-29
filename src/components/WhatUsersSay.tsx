@@ -251,8 +251,8 @@ export default function WhatUsersSay() {
       {/* ============ WHAT USERS SAY SECTION ============ */}
       {items.length === 0 ? (
         // Clean empty state when no reviews exist yet
-        <section className="py-16 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-          <div className="glass-card p-8 sm:p-12 rounded-3xl max-w-xl mx-auto text-center border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm">
+        <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+          <div className="glass-card p-5 sm:p-8 md:p-12 rounded-3xl max-w-xl mx-auto text-center border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm">
             <div className="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto mb-4">
               <MessageSquareHeart className="w-6 h-6" />
             </div>
@@ -265,7 +265,7 @@ export default function WhatUsersSay() {
             <button
               type="button"
               onClick={handleOpenModal}
-              className="btn-primary inline-flex items-center gap-2 text-xs sm:text-sm px-5 py-2.5 font-semibold cursor-pointer"
+              className="btn-primary inline-flex items-center justify-center gap-2 text-xs sm:text-sm px-5 py-2.5 font-semibold cursor-pointer min-h-[44px]"
             >
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
               <span>Share Your Feedback</span>
@@ -274,8 +274,8 @@ export default function WhatUsersSay() {
         </section>
       ) : (
         // Reviews Grid when reviews exist
-        <section className="py-16 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
+        <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 sm:mb-10">
             <div className="text-center sm:text-left">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-2">
                 What users say
@@ -287,14 +287,14 @@ export default function WhatUsersSay() {
             <button
               type="button"
               onClick={handleOpenModal}
-              className="btn-primary inline-flex items-center gap-2 text-xs sm:text-sm px-4 py-2.5 font-semibold cursor-pointer shrink-0"
+              className="btn-primary inline-flex items-center justify-center gap-2 text-xs sm:text-sm px-4 sm:px-5 py-2.5 font-semibold cursor-pointer shrink-0 min-h-[44px]"
             >
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
               <span>Share Feedback</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {items.map((fb, idx) => (
               <motion.div
                 key={fb.id || idx}
@@ -302,7 +302,7 @@ export default function WhatUsersSay() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: idx * 0.05 }}
-                className="glass-card p-6 rounded-2xl flex flex-col justify-between hover:shadow-lg transition-all duration-300"
+                className="glass-card p-5 sm:p-6 rounded-2xl flex flex-col justify-between hover:shadow-lg transition-all duration-300 overflow-hidden"
               >
                 <div className="space-y-3">
                   {/* Stars & Tool Name */}
@@ -325,7 +325,7 @@ export default function WhatUsersSay() {
                   </div>
 
                   {/* Message */}
-                  <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
+                  <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap break-words">
                     {fb.message}
                   </p>
                 </div>

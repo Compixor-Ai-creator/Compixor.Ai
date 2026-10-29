@@ -72,7 +72,7 @@ export function ContainerTextFlip({
   return (
     <motion.span
       className={cn(
-        "relative inline-flex items-center justify-center border border-white/60 dark:border-white/20 bg-white/45 dark:bg-white/[0.08] shadow-[0_8px_32px_rgba(124,58,237,0.12)] rounded-[0.3em] overflow-hidden align-baseline text-center",
+        "relative inline-flex items-center justify-center border border-white/60 dark:border-white/20 bg-white/45 dark:bg-white/[0.08] shadow-[0_8px_32px_rgba(124,58,237,0.12)] rounded-[0.3em] overflow-hidden align-baseline text-center max-w-full",
         className
       )}
       style={{

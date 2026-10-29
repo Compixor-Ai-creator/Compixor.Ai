@@ -3,10 +3,10 @@ import { Shield, Zap, Lock, Cpu, CheckCircle2, FileCheck } from 'lucide-react';
 
 export default function ClientSideGuideSection() {
   return (
-    <section className="py-16 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="glass-card p-8 sm:p-12 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl relative overflow-hidden">
+    <section className="py-10 sm:py-16 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="glass-card p-5 sm:p-8 md:p-12 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl relative overflow-hidden">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-brand-500/10 text-brand-700 dark:text-brand-300 border border-brand-500/20 mb-4">
             <Cpu className="w-3.5 h-3.5 text-brand-500" />
             In-Browser Architecture
@@ -20,9 +20,9 @@ export default function ClientSideGuideSection() {
         </div>
 
         {/* 4 Informational Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 mb-8 sm:mb-12">
           {/* Card 1 */}
-          <div className="space-y-3 p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60">
+          <div className="space-y-3 p-4 sm:p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60">
             <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold mb-2">
               <Zap className="w-5 h-5" />
             </div>
@@ -35,7 +35,7 @@ export default function ClientSideGuideSection() {
           </div>
 
           {/* Card 2 */}
-          <div className="space-y-3 p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60">
+          <div className="space-y-3 p-4 sm:p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold mb-2">
               <Lock className="w-5 h-5" />
             </div>
@@ -48,7 +48,7 @@ export default function ClientSideGuideSection() {
           </div>
 
           {/* Card 3 */}
-          <div className="space-y-3 p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60">
+          <div className="space-y-3 p-4 sm:p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold mb-2">
               <Shield className="w-5 h-5" />
             </div>
@@ -61,7 +61,7 @@ export default function ClientSideGuideSection() {
           </div>
 
           {/* Card 4 */}
-          <div className="space-y-3 p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60">
+          <div className="space-y-3 p-4 sm:p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60">
             <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400 font-bold mb-2">
               <FileCheck className="w-5 h-5" />
             </div>

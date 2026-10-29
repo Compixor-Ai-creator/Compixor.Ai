@@ -2,15 +2,18 @@ import type { Metadata } from 'next';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - Files Never Leave Your Browser',
-  description: 'Read the Compixor AI privacy policy. Our zero-server architecture processes all files locally in your browser with zero uploads.',
+  title: {
+    absolute: 'Compixor AI Privacy Policy | PDF & Document Tools',
+  },
+  description:
+    'Read Compixor AI’s Privacy Policy to understand file processing, technical logs, browser storage, third-party services, and how our PDF and document tools handle data.',
   alternates: {
     canonical: 'https://compixor-ai.cloud/privacy',
   },
   openGraph: {
-    title: 'Privacy Policy — Client-Side Local Processing Architecture | Compixor AI',
+    title: 'Compixor AI Privacy Policy',
     description:
-      'Read the Compixor AI privacy policy. Our zero-server architecture processes all files locally in your browser with zero uploads.',
+      'Learn how Compixor AI handles file processing, technical information, browser storage, and third-party processing across its document tools.',
     url: 'https://compixor-ai.cloud/privacy',
     type: 'website',
     images: [
@@ -23,10 +26,10 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Privacy Policy — Client-Side Local Processing Architecture | Compixor AI',
+    card: 'summary',
+    title: 'Compixor AI Privacy Policy',
     description:
-      'Read the Compixor AI privacy policy. Our zero-server architecture processes all files locally in your browser with zero uploads.',
+      'Learn how Compixor AI handles file processing, technical information, browser storage, and third-party processing across its document tools.',
     images: ['https://compixor-ai.cloud/images/og-banner-v2.png'],
   },
 };

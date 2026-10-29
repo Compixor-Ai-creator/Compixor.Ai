@@ -534,7 +534,7 @@ export default function BlogPostPage({ params }: PageProps) {
         {/* ============ MAIN TWO-COLUMN READING LAYOUT ============ */}
         <div className="flex flex-col xl:flex-row xl:gap-12 justify-center items-start mt-8">
           {/* Left: Article Content Column */}
-          <main className="w-full max-w-3xl min-w-0 prose dark:prose-invert">
+          <main className="w-full max-w-3xl min-w-0 prose dark:prose-invert break-words prose-pre:overflow-x-auto prose-pre:max-w-full prose-table:overflow-x-auto prose-img:max-w-full prose-img:h-auto">
             {/* Intro Callout */}
             <div className="glass-card p-6 sm:p-7 rounded-2xl border-l-4 border-l-brand-500 border-zinc-200/80 dark:border-zinc-800/80 my-6 bg-zinc-50/70 dark:bg-zinc-900/60 not-prose">
               <p className="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium m-0">
@@ -577,7 +577,7 @@ export default function BlogPostPage({ params }: PageProps) {
 
               <Link
                 href={blog.toolPath}
-                className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md max-w-full"
+                className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md max-w-full min-h-[44px]"
               >
                 <span className="truncate">{blog.ctaLabel || 'Launch Free Tool'}</span>
                 <ArrowRight className="w-4 h-4 shrink-0" />
@@ -930,7 +930,7 @@ export default function BlogPostPage({ params }: PageProps) {
                   <div className="mt-8 not-prose text-center sm:text-left">
                     <Link
                       href={section.cta.href}
-                      className="btn-primary inline-flex items-center gap-2 px-8 py-3.5 text-sm font-bold shadow-md cursor-pointer"
+                      className="btn-primary inline-flex items-center gap-2 px-8 py-3.5 text-sm font-bold shadow-md cursor-pointer min-h-[48px]"
                     >
                       <span>{section.cta.text}</span>
                       <ArrowRight className="w-4 h-4" />
@@ -978,7 +978,7 @@ export default function BlogPostPage({ params }: PageProps) {
 
             {/* Direct Cross-Link to Paired Guide */}
             {DIRECT_RELATED_GUIDES[blog.slug] && (
-              <div className="my-8 p-5 rounded-2xl bg-zinc-50/90 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-zinc-700/80 flex items-center justify-between gap-4 not-prose shadow-sm">
+              <div className="my-8 p-4 sm:p-5 rounded-2xl bg-zinc-50/90 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-zinc-700/80 flex items-center justify-between gap-4 not-prose shadow-sm">
                 <div className="flex items-center gap-3.5">
                   <div className="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
                     <Sparkles className="w-5 h-5" />
@@ -989,7 +989,7 @@ export default function BlogPostPage({ params }: PageProps) {
                     </p>
                     <Link
                       href={DIRECT_RELATED_GUIDES[blog.slug].href}
-                      className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                      className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 transition-colors inline-block min-h-[44px] py-1.5"
                     >
                       {DIRECT_RELATED_GUIDES[blog.slug].title} &rarr;
                     </Link>
@@ -1013,7 +1013,7 @@ export default function BlogPostPage({ params }: PageProps) {
                 </p>
                 <Link
                   href={blog.toolPath}
-                  className="btn-primary inline-flex items-center gap-2 text-sm sm:text-base px-8 py-3.5 font-bold cursor-pointer"
+                  className="btn-primary inline-flex items-center gap-2 text-sm sm:text-base px-8 py-3.5 font-bold cursor-pointer min-h-[48px]"
                 >
                   <span>Launch Tool in Browser</span>
                   <ArrowRight className="w-4 h-4" />
@@ -1049,7 +1049,7 @@ export default function BlogPostPage({ params }: PageProps) {
               </div>
               <Link
                 href={blog.toolPath}
-                className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md max-w-full"
+                className="btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-md max-w-full min-h-[44px]"
               >
                 <span className="truncate">{blog.ctaLabel || 'Try the Free Tool'}</span>
                 <ArrowRight className="w-4 h-4 shrink-0" />
@@ -1119,7 +1119,7 @@ export default function BlogPostPage({ params }: PageProps) {
                     ? 'Documents and images are encrypted in transit, processed ephemerally in RAM, and deleted immediately without persistence.'
                     : 'Engineered for privacy and performance. All file buffers are processed in client-side RAM and never stored.'}
                 </p>
-                <div className="flex items-center gap-2.5 shrink-0 overflow-visible">
+                <div className="flex items-center gap-2.5 shrink-0 overflow-visible flex-wrap">
                   <span className="font-semibold text-zinc-800 dark:text-zinc-200 text-xs sm:text-sm mr-1">Share this guide:</span>
                   <a
                     href={shareUrls.linkedIn}

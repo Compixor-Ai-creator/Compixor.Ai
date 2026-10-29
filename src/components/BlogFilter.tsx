@@ -22,7 +22,7 @@ export default function BlogFilter() {
       : blogsData.filter((item) => item.category === activeCategory);
 
   return (
-    <section id="blog-section" className="relative py-20 scroll-mt-20 overflow-hidden">
+    <section id="blog-section" className="relative py-12 sm:py-20 scroll-mt-20 overflow-hidden">
       {/* Background Atmosphere */}
       <div
         aria-hidden="true"
@@ -71,7 +71,7 @@ export default function BlogFilter() {
                 key={cat}
                 type="button"
                 onClick={() => setActiveCategory(cat)}
-                className={`relative px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 ${
+                className={`relative px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 min-h-[44px] ${
                   isActive
                     ? 'bg-gradient-to-r from-brand-600 via-purple-600 to-indigo-600 text-white shadow-md shadow-brand-500/25 scale-[1.02]'
                     : 'bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:border-brand-500/30 backdrop-blur-md'

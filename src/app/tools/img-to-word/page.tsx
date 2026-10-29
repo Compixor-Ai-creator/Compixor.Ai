@@ -203,7 +203,7 @@ export default function ImgToWordPage() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
       {/* Fullscreen Drop Anywhere Drag & Drop Overlay */}
       <DropAnywhere
         onFileDrop={handleFileDrop}
@@ -274,24 +274,24 @@ export default function ImgToWordPage() {
         </div>
 
         {/* Animated Badge Pill */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/25 mb-4 animate-float-subtle shadow-xs">
+        <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/25 mb-4 animate-float-subtle shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-violet-500 animate-spin-slow" />
           Universal AI Document Engine &amp; Image to DOCX
         </div>
 
         {/* H1 with Option 3 Vibrant Prism (Violet-Fuchsia-Pink) Gradient + Floating Particles */}
         <div className="relative inline-block mb-4">
-          <div className="absolute -top-3 -left-5 w-2 h-2 rounded-full bg-violet-400/80 animate-pulse" />
+          <div className="absolute -top-3 -left-2 sm:-left-5 w-2 h-2 rounded-full bg-violet-400/80 animate-pulse" />
           <div
-            className="absolute -top-2 -right-5 w-1.5 h-1.5 rounded-full bg-fuchsia-400/80 animate-pulse"
+            className="absolute -top-2 -right-2 sm:-right-5 w-1.5 h-1.5 rounded-full bg-fuchsia-400/80 animate-pulse"
             style={{ animationDelay: '0.6s' }}
           />
           <div
             className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-pink-400/70 animate-pulse"
             style={{ animationDelay: '1.2s' }}
           />
-          <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-fuchsia-400/70 animate-spin-slow" />
-          <h1 className="text-4xl sm:text-5xl font-black font-display tracking-tight text-zinc-900 dark:text-white">
+          <Sparkles className="absolute -top-5 sm:-top-6 right-0 sm:right-1 w-4 h-4 text-fuchsia-400/70 animate-spin-slow" />
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-zinc-900 dark:text-white">
             <span className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-400 bg-clip-text text-transparent">
               Image to Word Converter
             </span>{' '}
@@ -332,7 +332,7 @@ export default function ImgToWordPage() {
 
       {/* Main Workspace Glass Card */}
       <motion.div
-        className="glass-card p-6 sm:p-8 rounded-3xl"
+        className="glass-card p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
@@ -412,11 +412,11 @@ export default function ImgToWordPage() {
               </div>
 
               {/* Actions: Change Image (with icon) & Remove (with icon) */}
-              <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+              <div className="w-full sm:w-auto flex items-center justify-end sm:justify-start gap-2 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-zinc-200/60 dark:border-zinc-700/60">
                 {!isProcessing && (
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center gap-1.5 cursor-pointer text-xs font-semibold px-3 py-2 rounded-xl border border-violet-500/30 text-violet-600 dark:text-violet-400 bg-violet-500/5 hover:bg-violet-500/15 transition shadow-xs"
+                    className="inline-flex items-center justify-center gap-1.5 cursor-pointer text-xs font-semibold px-3.5 py-2.5 rounded-xl border border-violet-500/30 text-violet-600 dark:text-violet-400 bg-violet-500/5 hover:bg-violet-500/15 transition shadow-xs min-h-[44px] flex-1 sm:flex-none"
                     title="Select a different image"
                   >
                     <Upload className="w-3.5 h-3.5" />
@@ -426,7 +426,7 @@ export default function ImgToWordPage() {
                 <button
                   onClick={reset}
                   disabled={isProcessing}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl text-zinc-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition disabled:opacity-30 cursor-pointer"
+                  className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-3.5 py-2.5 rounded-xl text-zinc-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition disabled:opacity-30 cursor-pointer min-h-[44px] flex-1 sm:flex-none"
                   title="Remove image"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -452,7 +452,7 @@ export default function ImgToWordPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="p-6 sm:p-7 rounded-2xl bg-white/90 dark:bg-zinc-900/90 border border-violet-200 dark:border-violet-500/40 space-y-5 shadow-xl backdrop-blur-sm"
+                  className="p-4 sm:p-6 md:p-7 rounded-2xl bg-white/90 dark:bg-zinc-900/90 border border-violet-200 dark:border-violet-500/40 space-y-5 shadow-xl backdrop-blur-sm"
                 >
                   {/* Large Transformation Cards with Continuous Laser Scan Beam */}
                   <div className="flex items-center justify-center gap-5 sm:gap-8 py-3">
@@ -560,7 +560,7 @@ export default function ImgToWordPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="rounded-3xl bg-gradient-to-br from-emerald-50/90 via-teal-50/70 to-blue-50/60 dark:from-emerald-950/40 dark:via-zinc-900 dark:to-teal-950/30 border border-emerald-300/70 dark:border-emerald-800/60 p-5 sm:p-7 shadow-lg"
+                  className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-50/90 via-teal-50/70 to-blue-50/60 dark:from-emerald-950/40 dark:via-zinc-900 dark:to-teal-950/30 border border-emerald-300/70 dark:border-emerald-800/60 p-4 sm:p-6 md:p-7 shadow-lg"
                 >
                   <div className="flex items-center gap-3.5 mb-5">
                     {/* Prominent Word Logo in Result Header */}
@@ -587,7 +587,7 @@ export default function ImgToWordPage() {
                   <div className="flex flex-wrap items-center gap-2.5">
                     <button
                       onClick={handleDownload}
-                      className="flex-1 min-w-[160px] inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:via-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-md shadow-violet-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                      className="w-full sm:flex-1 sm:min-w-[160px] inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:via-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-md shadow-violet-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer min-h-[48px]"
                     >
                       <Download className="w-4 h-4 shrink-0" />
                       <span className="sm:hidden">Download .docx</span>
@@ -597,7 +597,7 @@ export default function ImgToWordPage() {
                     {previewText && (
                       <button
                         onClick={() => setShowPreview(!showPreview)}
-                        className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors cursor-pointer shadow-xs"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors cursor-pointer shadow-xs min-h-[44px]"
                       >
                         <Eye className="w-4 h-4 text-violet-500 shrink-0" />
                         <span>{showPreview ? 'Hide' : 'Preview'} Text</span>
@@ -605,7 +605,7 @@ export default function ImgToWordPage() {
                     )}
                     <button
                       onClick={reset}
-                      className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors cursor-pointer shadow-xs"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors cursor-pointer shadow-xs min-h-[44px]"
                     >
                       <RotateCcw className="w-3.5 h-3.5 shrink-0" />
                       <span>Convert Another</span>
@@ -640,7 +640,7 @@ export default function ImgToWordPage() {
                 <button
                   onClick={handleConvert}
                   disabled={!file || isProcessing}
-                  className="w-full py-4 px-6 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:via-indigo-500 hover:to-purple-500 text-white rounded-2xl text-base font-bold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:scale-[1.005] active:scale-[0.99] flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="w-full py-4 px-6 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:via-indigo-500 hover:to-purple-500 text-white rounded-2xl text-base font-bold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:scale-[1.005] active:scale-[0.99] flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 min-h-[48px]"
                 >
                   {isProcessing ? (
                     <>
@@ -665,7 +665,7 @@ export default function ImgToWordPage() {
       <ToolFeedback toolName="img-to-word" />
 
       {/* ── 3 Feature Highlight Cards (Directly below Workspace, matching PDF Compressor standard) ── */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8">
         {/* Card 1: Universal Neural OCR */}
         <div className="p-6 rounded-2xl glass-card flex flex-col justify-between">
           <div>
@@ -715,7 +715,7 @@ export default function ImgToWordPage() {
       </section>
 
       {/* ── How Image to Word OCR Works in Your Browser (Visual Step-by-Step Walkthrough) ── */}
-      <section className="mt-16 p-6 sm:p-8 rounded-3xl glass-card border border-zinc-200/80 dark:border-zinc-800/80">
+      <section className="mt-10 sm:mt-16 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl glass-card border border-zinc-200/80 dark:border-zinc-800/80">
         <div className="max-w-3xl mx-auto space-y-6">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-bold font-display text-zinc-900 dark:text-white">
@@ -727,7 +727,7 @@ export default function ImgToWordPage() {
           </div>
 
           {/* Visual Step-by-Step Cards (Matching PDF Compressor Layout) */}
-          <div className="space-y-12 pt-4">
+          <div className="space-y-8 sm:space-y-12 pt-4">
             {/* Step 1 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               {/* Visual Card 1 */}

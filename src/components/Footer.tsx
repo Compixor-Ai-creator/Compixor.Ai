@@ -19,9 +19,9 @@ export default function Footer() {
   return (
     <footer className="relative mt-24 border-t border-black/[0.06] dark:border-white/[0.06] bg-zinc-50/50 dark:bg-surface-900/40">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10">
           {/* Brand */}
-          <div className="md:col-span-2 space-y-4">
+          <div className="sm:col-span-2 lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center shadow-glow">
                 <Sparkles className="w-4 h-4 text-white" />
@@ -62,7 +62,7 @@ export default function Footer() {
                   <li key={tool.href}>
                     <Link
                       href={tool.href}
-                      className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors flex items-center gap-2 group"
+                      className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors flex items-center gap-2 group min-h-[36px]"
                     >
                       <Icon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-brand-500 transition-colors shrink-0" aria-hidden="true" />
                       <span>{tool.name}</span>
@@ -82,7 +82,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
                 >
                   About Us
                 </Link>
@@ -90,7 +90,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/blog"
-                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
                 >
                   Blogs &amp; Guides
                 </Link>
@@ -98,7 +98,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/privacy"
-                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
                 >
                   Privacy Policy
                 </Link>
@@ -106,7 +106,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/terms"
-                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
                 >
                   Terms of Service
                 </Link>
@@ -114,7 +114,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
                 >
                   Contact Us
                 </Link>
@@ -122,7 +122,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
                 >
                   {CONTACT_EMAIL}
                 </a>
@@ -138,7 +138,7 @@ export default function Footer() {
                       );
                     }
                   }}
-                  className="text-sm text-brand-600 dark:text-brand-400 hover:underline inline-flex items-center gap-1.5"
+                  className="py-1 text-sm text-brand-600 dark:text-brand-400 hover:underline inline-flex items-center gap-1.5 min-h-[36px]"
                 >
                   <MessageSquarePlus className="w-3.5 h-3.5" />
                   <span>Request a Tool</span>
@@ -155,7 +155,7 @@ export default function Footer() {
                       );
                     }
                   }}
-                  className="text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors"
+                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
                 >
                   Give Feedback
                 </a>
@@ -181,13 +181,13 @@ export default function Footer() {
             {/* Share Compixor */}
             <div className="space-y-2 mb-4">
               <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Share Compixor</p>
-              <div className="flex items-center gap-2 overflow-visible">
+              <div className="flex items-center gap-2.5 flex-wrap overflow-visible">
                 <a
                   href={shareUrls.linkedIn}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                   aria-label="Share on LinkedIn"
-                  className="social-btn"
+                  className="social-btn min-w-[44px] min-h-[44px]"
                   style={{ '--glow': '#0A66C2' } as React.CSSProperties}
                 >
                   <LinkedInIcon className="w-[18px] h-[18px]" />
@@ -197,7 +197,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                   aria-label="Share on X"
-                  className="social-btn social-btn-x"
+                  className="social-btn social-btn-x min-w-[44px] min-h-[44px]"
                 >
                   <TwitterXIcon className="w-[18px] h-[18px]" />
                 </a>
@@ -206,7 +206,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                   aria-label="Share on WhatsApp"
-                  className="social-btn"
+                  className="social-btn min-w-[44px] min-h-[44px]"
                   style={{ '--glow': '#25D366' } as React.CSSProperties}
                 >
                   <WhatsAppIcon className="w-[18px] h-[18px]" />
@@ -216,7 +216,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                   aria-label="Share on Facebook"
-                  className="social-btn"
+                  className="social-btn min-w-[44px] min-h-[44px]"
                   style={{ '--glow': '#1877F2' } as React.CSSProperties}
                 >
                   <FacebookIcon className="w-[18px] h-[18px]" />
@@ -233,7 +233,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="View source on GitHub"
-                  className="social-btn"
+                  className="social-btn min-w-[44px] min-h-[44px]"
                   style={{ '--glow': '#8b5cf6' } as React.CSSProperties}
                 >
                   <GitHubIcon className="w-[18px] h-[18px]" />

@@ -93,7 +93,7 @@ export default function HomePage() {
     <div className="relative overflow-x-clip">
       <FaqJsonLd faqs={homeFaqs} />
       {/* ============ HERO SECTION ============ */}
-      <section className="relative isolate">
+      <section className="relative isolate overflow-hidden">
         {/* Visible Purple & Pink Blurred Blobs Behind Hero Content */}
         <div
           aria-hidden="true"
@@ -153,7 +153,7 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-20 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 md:pt-20 pb-10 sm:pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Left Column: Hero Copy & CTA with smooth stagger */}
             <motion.div
@@ -186,7 +186,7 @@ export default function HomePage() {
                 aria-hidden="true"
                 className="font-black font-display mb-6 tracking-tight"
                 style={{
-                  fontSize: 'clamp(2rem, 5.2vw, 4.25rem)',
+                  fontSize: 'clamp(1.65rem, 5.5vw, 4.25rem)',
                   lineHeight: 1.1,
                   letterSpacing: '-0.02em',
                 }}
@@ -222,7 +222,7 @@ export default function HomePage() {
               {/* Sub-tags / Badges with smooth stagger */}
               <motion.div
                 variants={itemVariants}
-                className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-1"
+                className="flex flex-wrap items-center gap-1.5 sm:gap-2.5 pt-1"
               >
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
@@ -333,10 +333,10 @@ export default function HomePage() {
       </section>
 
       {/* ============ TOOLS SUITE GRID ============ */}
-      <section id="tools" className="relative py-16 scroll-mt-20">
+      <section id="tools" className="relative py-10 sm:py-16 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="text-center mb-14"
+            className="text-center mb-8 sm:mb-14"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -351,7 +351,7 @@ export default function HomePage() {
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.02 }}
@@ -362,7 +362,7 @@ export default function HomePage() {
               return (
                 <motion.div key={tool.href} variants={itemVariants}>
                   <Link href={tool.href} className="block group h-full">
-                    <div className="glass-card p-7 sm:p-8 h-full flex flex-col justify-between rounded-[22px] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/10">
+                    <div className="glass-card p-5 sm:p-7 md:p-8 h-full flex flex-col justify-between rounded-[22px] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/10">
                       <div>
                         <div className="flex items-start justify-between gap-4 mb-6">
                           <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-1 transition-all duration-300 shadow-md`}>
@@ -401,10 +401,10 @@ export default function HomePage() {
       </section>
 
       {/* ============ TRUST ARCHITECTURE ============ */}
-      <section className="relative py-16">
+      <section className="relative py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="text-center mb-14"
+            className="text-center mb-8 sm:mb-14"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -419,7 +419,7 @@ export default function HomePage() {
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -431,7 +431,7 @@ export default function HomePage() {
                 <motion.div
                   key={i}
                   variants={itemVariants}
-                  className="glass-card p-6 text-center rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-brand-500/30 group"
+                  className="glass-card p-5 sm:p-6 text-center rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-brand-500/30 group"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-500 group-hover:scale-110 transition-transform duration-300">
                     <Icon className="w-6 h-6" />
@@ -459,7 +459,7 @@ export default function HomePage() {
       <ClientSideGuideSection />
 
       {/* ============ FAQ ACCORDION ============ */}
-      <section className="py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-10 sm:py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-black font-display text-zinc-900 dark:text-white mb-3">
             Frequently Asked Questions
@@ -473,7 +473,7 @@ export default function HomePage() {
       </section>
 
       {/* ============ CTA BOX ============ */}
-      <section className="py-16 relative overflow-hidden">
+      <section className="py-10 sm:py-16 relative overflow-hidden">
         {/* Ambient glow behind the CTA box (Desktop only) */}
         <div
           aria-hidden="true"
@@ -490,7 +490,7 @@ export default function HomePage() {
 
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            className="glow-border p-10 sm:p-14 rounded-3xl"
+            className="glow-border p-6 sm:p-10 md:p-14 rounded-3xl"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -504,10 +504,10 @@ export default function HomePage() {
             </p>
             <a
               href="#tools"
-              className="btn-primary inline-flex items-center gap-2 text-base px-8 py-3.5 font-bold cursor-pointer"
+              className="btn-primary inline-flex items-center justify-center gap-2 text-sm sm:text-base px-6 sm:px-8 py-3.5 font-bold cursor-pointer w-full sm:w-auto min-h-[44px]"
             >
               <span>Start Now — Make Your Life Easy</span>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5 shrink-0" />
             </a>
           </motion.div>
         </div>
