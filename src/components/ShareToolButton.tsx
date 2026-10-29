@@ -91,8 +91,8 @@ export default function ShareToolButton({
         onClick={handleShareClick}
         aria-expanded={dropdownOpen}
         aria-haspopup="true"
-        aria-label={`Share ${toolName}`}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-200 hover:text-brand-600 dark:hover:text-brand-300 border border-zinc-200/80 dark:border-zinc-700/60 shadow-xs hover:shadow-sm hover:border-brand-500/30 transition-all cursor-pointer backdrop-blur-sm"
+        aria-label={`Share this tool: ${toolName}`}
+        className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[38px] sm:min-h-[36px] rounded-xl text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-200 hover:text-brand-600 dark:hover:text-brand-300 border border-zinc-200/80 dark:border-zinc-700/60 shadow-xs hover:shadow-sm hover:border-brand-500/30 transition-all cursor-pointer backdrop-blur-sm"
       >
         <Share2 className="w-3.5 h-3.5 text-brand-500 shrink-0" aria-hidden="true" />
         <span>Share this tool</span>
