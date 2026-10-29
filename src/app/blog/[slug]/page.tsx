@@ -1076,10 +1076,6 @@ export default function BlogPostPage({ params }: PageProps) {
                     <p className="text-xs text-zinc-500 dark:text-zinc-400 m-0">
                       Written by Haroon Ali • Compixor AI Editorial
                     </p>
-                    {/* TODO(owner): Update editorial author bio if you want custom personal credentials */}
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 m-0">
-                      Founder &amp; lead developer at Compixor AI, building high-speed client-side privacy tools and document workflows.
-                    </p>
                   </div>
                 </div>
 
