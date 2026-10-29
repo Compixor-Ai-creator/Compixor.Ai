@@ -1623,6 +1623,7 @@ export const blogsData: BlogItem[] = [
     ctaLabel: "Launch Free Word Compressor",
     accentColor: "from-blue-600/20 to-indigo-600/20",
     icon: "FileArchive",
+    thumbnail: "/blog/how-to-compress-word-docx-files-thumbnail.webp",
     decisionBox: {
       title: "Word Compression Decision Guide",
       items: [
@@ -1723,6 +1724,7 @@ export const blogsData: BlogItem[] = [
     ctaLabel: "Launch Free Image to Word Tool",
     accentColor: "from-emerald-500/20 to-teal-500/20",
     icon: "ScanText",
+    thumbnail: "/blog/extract-text-from-image-to-word-thumbnail.webp",
     decisionBox: {
       title: "OCR & Document Extraction Selector",
       items: [

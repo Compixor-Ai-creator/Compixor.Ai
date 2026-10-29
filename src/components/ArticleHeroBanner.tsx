@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -56,6 +56,38 @@ export default function ArticleHeroBanner({
       <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
         <Image
           src="/blog/pdf-to-word-thumbnail.webp"
+          alt={title}
+          width={1200}
+          height={675}
+          priority
+          sizes="(max-width: 768px) 100vw, 800px"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  if (id === 'word-compressor' || id === 'how-to-compress-word-docx-files') {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
+        <Image
+          src="/blog/how-to-compress-word-docx-files-thumbnail.webp"
+          alt={title}
+          width={1200}
+          height={675}
+          priority
+          sizes="(max-width: 768px) 100vw, 800px"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  if (id === 'img-to-word' || id === 'extract-text-from-image-to-word') {
+    return (
+      <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl bg-zinc-950 my-8">
+        <Image
+          src="/blog/extract-text-from-image-to-word-thumbnail.webp"
           alt={title}
           width={1200}
           height={675}
