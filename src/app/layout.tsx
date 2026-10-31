@@ -4,7 +4,7 @@ import { Inter, Outfit, Playfair_Display } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import Navbar from '@/components/Navbar';
+import CompixorNavbar from '@/components/CompixorNavbar';
 import Footer from '@/components/Footer';
 import WebMcpRegister from '@/components/WebMcpRegister';
 import { Toaster } from 'sonner';
@@ -198,9 +198,9 @@ export default function RootLayout({
             {/* Hero Top Glow (Desktop only) */}
             <div className="hidden md:block fixed inset-0 pointer-events-none bg-hero-glow dark:bg-hero-glow-dark" />
 
-            <Navbar />
+            <CompixorNavbar />
 
-            <main id="main-content" className="flex-1 pt-16 relative z-10">
+            <main id="main-content" className="flex-1 pt-24 sm:pt-28 relative z-10">
               {children}
             </main>
 

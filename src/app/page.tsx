@@ -235,6 +235,10 @@ export default function HomePage() {
           className="pointer-events-none absolute -z-10 w-[450px] h-[450px] rounded-full blur-[90px] opacity-45 dark:opacity-35"
           style={{ top: '60px', right: '5%', backgroundColor: '#ec4899' }}
         />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -z-10 top-10 right-1/4 h-72 w-72 rounded-full bg-cyan-400/30 blur-3xl"
+        />
 
         {/* ============ BREADCRUMB NAVIGATION WITH MICRODATA ============ */}
         <nav aria-label="Breadcrumb" className="breadcrumb max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
