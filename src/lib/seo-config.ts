@@ -84,8 +84,8 @@ export const AUTHOR_NAME = 'Haroon Ali';
 export const OG_IMAGE_URL = `${BASE_URL}/images/og-banner-v2.png`;
 
 export const homepageSeoData: HomepageSeoData = {
-  title: 'Free Online PDF Tools - Private & Fast | Compixor',
-  description: 'Free online PDF tools with no file upload required. Client-side PDF, Word, photo, and QR toolkit. 100% private, free, and in your browser.',
+  title: 'Free PDF, Word & Photo Tools Online - Private & Fast | Compixor',
+  description: 'Free online PDF, Word and photo tools with no file upload required. Client-side document converter, photo editor, and QR toolkit. 100% private and in your browser.',
   canonicalUrl: BASE_URL,
   primaryKeyword: 'free online pdf tools no upload',
   secondaryKeywords: [

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -16,6 +16,7 @@ import {
   HelpCircle,
   Layers,
   BookOpen,
+  ChevronDown,
 } from 'lucide-react';
 import { FaqJsonLd } from '@/components/JsonLd';
 import WhyTrustCompixor from '@/components/WhyTrustCompixor';
@@ -52,22 +53,22 @@ const howToSteps = [
   {
     step: '1',
     title: 'Pick a Tool',
-    description: 'Pick the free PDF, Word, photo, or QR tool you need from the main list on this page.',
+    description: 'Choose the free PDF, Word, photo, or QR tool you need from the main list on this page.',
   },
   {
     step: '2',
-    title: 'Drop Your File',
-    description: 'Drop your file into the box on your screen so your web browser can read it right away.',
+    title: 'Drop Your Document',
+    description: 'Drag your document into the box on screen so your web browser can read it right away.',
   },
   {
     step: '3',
     title: 'Process Quickly',
-    description: 'Click the start button to merge, split, shrink, or change your file in just a few seconds.',
+    description: 'Click the start button to merge, split, shrink, or convert your document in just seconds.',
   },
   {
     step: '4',
     title: 'Save to Device',
-    description: 'Save your new file straight to your phone or PC with zero cloud uploads and zero data leaks.',
+    description: 'Download your converted output straight to your phone or PC with zero cloud uploads.',
   },
 ];
 
@@ -125,34 +126,42 @@ const glossaryTerms = [
 
 const homeFaqs = [
   {
+    id: 'what-is-compixor-faq',
     q: 'What is Compixor and how does it work?',
     a: 'Compixor is a free web toolkit that lets you fix, merge, shrink, and change PDF, Word, and photo files right in your browser. All tools run on your own phone or PC instead of a cloud server. Your files stay fast, safe, and free to use at all times.',
   },
   {
+    id: 'are-files-safe-faq',
     q: 'Are my PDF and Word files safe from data leaks?',
     a: 'Yes, your files stay safe because they never leave your own device at any point. Compixor runs all code inside your web browser tab with zero server uploads and zero cloud storage. No person, bot, or third party can ever see, read, or copy your private work.',
   },
   {
+    id: 'what-tools-are-free-faq',
     q: 'Which PDF, Word and photo tools are free to use?',
     a: 'Every single tool on Compixor is free to use with no paywalls, no daily caps, and no sign-up forms. You can shrink large PDF files, turn PDF pages into Word docs, clean up photos, and make custom QR codes as many times as you want each day.',
   },
   {
+    id: 'does-it-work-on-phone-faq',
     q: 'Can I use these PDF and photo tools on my phone?',
     a: 'Yes, you can run every tool on any phone, tablet, laptop, or desktop PC that has a modern web browser. You do not need to install any app or plug-in to start working. Just open the site, pick a tool, and save your finished file in seconds.',
   },
   {
+    id: 'how-fast-are-tools-faq',
     q: 'Why do browser tools run faster than cloud sites?',
     a: 'Browser tools refers to web apps that use your own device speed instead of slow web uploads. With old cloud sites, you wait to send large files up to a server and wait again to get them back. Compixor skips the upload step so your files finish right away.',
   },
   {
+    id: 'do-files-get-watermarks-faq',
     q: 'Will Compixor add watermarks to my saved PDF files?',
     a: 'No, Compixor never puts ugly stamps, logos, or watermarks on your saved PDF pages, Word docs, or photos. The file you save to your device stays clean and ready for work, school, or print. You get full quality output for free without paying for a pro plan.',
   },
   {
+    id: 'can-i-work-offline-faq',
     q: 'Can I edit my PDF and photo files without web access?',
     a: 'Yes, once the page loads in your web browser, the tools can run right on your device even if your web link drops. Because no cloud server does the work, you can merge, split, or shrink your files smoothly on a plane, train, or slow mobile link.',
   },
   {
+    id: 'is-account-needed-faq',
     q: 'Do I need an account or email to save my files?',
     a: 'No, you never need to make an account, type an email address, or share a password to use Compixor. We do not track who you are or ask for credit card details. You just open the tool, fix your file in the browser, and save it right away.',
   },
@@ -177,45 +186,77 @@ const itemVariants = {
 export default function HomePage() {
   const previewTools = tools.slice(0, 6);
 
+  // FAQ interactive state
+  const [faqSearch, setFaqSearch] = useState('');
+  const [openFaqIndices, setOpenFaqIndices] = useState<number[]>([0]);
+
+  const toggleFaq = (idx: number) => {
+    setOpenFaqIndices((prev) =>
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
+    );
+  };
+
+  const handleFaqSearch = (query: string) => {
+    setFaqSearch(query);
+    if (query.trim()) {
+      const q = query.toLowerCase().trim();
+      const matching = homeFaqs
+        .map((faq, i) =>
+          faq.q.toLowerCase().includes(q) || faq.a.toLowerCase().includes(q) ? i : -1
+        )
+        .filter((i) => i !== -1);
+      setOpenFaqIndices(matching);
+    } else {
+      setOpenFaqIndices([0]);
+    }
+  };
+
+  const filteredFaqs = faqSearch.trim()
+    ? homeFaqs.filter((faq) => {
+        const q = faqSearch.toLowerCase().trim();
+        return faq.q.toLowerCase().includes(q) || faq.a.toLowerCase().includes(q);
+      })
+    : homeFaqs;
+
   return (
     <div className="relative overflow-x-clip">
       <FaqJsonLd faqs={homeFaqs} />
 
-      {/* ============ BREADCRUMB NAVIGATION WITH MICRODATA ============ */}
-      <nav aria-label="Breadcrumb" className="breadcrumb max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
-        <ol itemScope itemType="https://schema.org/BreadcrumbList" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 list-none p-0 m-0">
-          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" className="inline-flex items-center">
-            <Link itemProp="item" href="https://compixor-ai.cloud" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
-              <span itemProp="name">Home</span>
-            </Link>
-            <meta itemProp="position" content="1" />
-          </li>
-          <li aria-hidden="true" className="text-zinc-400 dark:text-zinc-600">
-            /
-          </li>
-          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" aria-current="page" className="text-zinc-800 dark:text-zinc-200 font-medium inline-flex items-center">
-            <span itemProp="name">All PDF, Word and Photo Tools</span>
-            <meta itemProp="item" content="https://compixor-ai.cloud/#tools" />
-            <meta itemProp="position" content="2" />
-          </li>
-        </ol>
-      </nav>
-
-      {/* ============ HERO SECTION ============ */}
-      <section id="hero-section" className="relative isolate overflow-hidden">
-        {/* Glow Orbs */}
+      {/* ============ HERO SECTION (Seamless Breadcrumb Merge) ============ */}
+      <section id="hero-section" className="relative isolate overflow-x-clip pt-4 sm:pt-6">
+        {/* Glow Orbs - Flowing seamlessly behind breadcrumb and hero copy */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 w-[420px] h-[420px] rounded-full blur-[80px] opacity-55"
-          style={{ top: '-80px', left: '-80px', backgroundColor: '#8b5cf6' }}
+          className="pointer-events-none absolute -z-10 w-[500px] h-[500px] rounded-full blur-[90px] opacity-50 dark:opacity-40"
+          style={{ top: '-100px', left: '-100px', backgroundColor: '#8b5cf6' }}
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 w-[420px] h-[420px] rounded-full blur-[80px] opacity-55"
-          style={{ top: '120px', right: '10%', backgroundColor: '#ec4899' }}
+          className="pointer-events-none absolute -z-10 w-[450px] h-[450px] rounded-full blur-[90px] opacity-45 dark:opacity-35"
+          style={{ top: '60px', right: '5%', backgroundColor: '#ec4899' }}
         />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 md:pt-14 pb-10 sm:pb-14">
+        {/* ============ BREADCRUMB NAVIGATION WITH MICRODATA ============ */}
+        <nav aria-label="Breadcrumb" className="breadcrumb max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+          <ol itemScope itemType="https://schema.org/BreadcrumbList" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 list-none p-0 m-0">
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" className="inline-flex items-center">
+              <Link itemProp="item" href="https://compixor-ai.cloud" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+                <span itemProp="name">Home</span>
+              </Link>
+              <meta itemProp="position" content="1" />
+            </li>
+            <li aria-hidden="true" className="text-zinc-400 dark:text-zinc-600">
+              /
+            </li>
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" aria-current="page" className="text-zinc-800 dark:text-zinc-200 font-medium inline-flex items-center">
+              <span itemProp="name">All PDF, Word and Photo Tools</span>
+              <meta itemProp="item" content="https://compixor-ai.cloud/#tools" />
+              <meta itemProp="position" content="2" />
+            </li>
+          </ol>
+        </nav>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 md:pt-8 pb-10 sm:pb-14">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Left Column: Hero Copy & CTA */}
             <motion.div
@@ -238,7 +279,7 @@ export default function HomePage() {
               {/* Author & Last-Updated Byline using DIV to preserve voice percentage */}
               <motion.div variants={itemVariants} className="mb-4">
                 <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                  By <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Haroon Ali</strong> (Compixor AI) · Last updated: <time dateTime="2026-10-31">October 31, 2026</time>
+                  By <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Haroon Ali</strong> (Compixor AI) • Last updated: <time dateTime="2026-10-31">October 31, 2026</time>
                 </div>
               </motion.div>
 
@@ -283,49 +324,15 @@ export default function HomePage() {
                 Compixor is a free web toolkit that lets you fix, merge, shrink, and change PDF, Word, and photo files right in your browser. All tools run on your own phone or PC instead of a cloud server. Your files stay fast, safe, and free to use at all times.
               </p>
 
-              {/* Declarative WebMCP Form 2: submitQuestion */}
-              <motion.div variants={itemVariants} className="mb-6">
-                <form
-                  id="compixor-tool-submit-form"
-                  action="#tools"
-                  method="GET"
-                  // @ts-expect-error declarative WebMCP attribute
-                  toolname="submitQuestion"
-                  tooldescription="Submit a question or find a specific browser tool on Compixor"
-                  className="max-w-xl relative flex items-center"
-                >
-                  <label htmlFor="tool-query-input" className="sr-only">
-                    Ask or Find Tool
-                  </label>
-                  <input
-                    id="tool-query-input"
-                    name="question"
-                    type="search"
-                    placeholder="Ask or find a tool (e.g., merge pdf, compress word, make qr)..."
-                    // @ts-expect-error declarative WebMCP attribute
-                    toolparamdescription="Question text or tool name"
-                    data-tool-param-description="Question text or tool name"
-                    className="w-full pl-4 pr-28 py-3 rounded-2xl bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/80 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-500 backdrop-blur-md shadow-sm transition"
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="absolute right-1.5 top-1.5 bottom-1.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
-                  >
-                    <span>Find Tool</span>
-                  </button>
-                </form>
-              </motion.div>
-
               {/* Primary CTA */}
-              <motion.div variants={itemVariants}>
+              <motion.div variants={itemVariants} className="mb-6">
                 <HeroCTA />
               </motion.div>
 
               {/* Badges using spans */}
               <motion.div
                 variants={itemVariants}
-                className="flex flex-wrap items-center gap-1.5 sm:gap-2.5 pt-4"
+                className="flex flex-wrap items-center gap-1.5 sm:gap-2.5 pt-2"
               >
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
@@ -333,121 +340,109 @@ export default function HomePage() {
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  Instant Execution
+                  Zero Server Uploads
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  Zero Data Leak
+                  No Account Needed
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  No Sign-Up
+                  No Watermarks
                 </span>
               </motion.div>
             </motion.div>
 
-            {/* Right Column: Core Tools Feature Highlight Card (streamlined to reduce DOM size) */}
+            {/* Right Column: Interactive Tool Cards Preview */}
             <motion.div
-              className="lg:col-span-5 hidden lg:block"
-              initial={{ opacity: 0, x: 25 }}
+              className="lg:col-span-5 grid grid-cols-2 gap-3 sm:gap-4"
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <div className="glass-panel p-5 sm:p-6 rounded-[22px] relative overflow-hidden flex flex-col hover:border-brand-500/30 transition-all duration-300">
-                <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-white/60 dark:border-white/10 shrink-0">
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                    </span>
-                    <span className="text-xs font-black uppercase tracking-wider text-zinc-900 dark:text-white">
-                      Core Suite
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-500/15 text-brand-600 dark:text-brand-300 border border-brand-500/20">
-                    {tools.length} Free Tools
-                  </span>
-                </div>
-
-                <div className="space-y-1.5">
-                  {previewTools.map((feat) => {
-                    const Icon = feat.navIcon || feat.icon;
-                    return (
-                      <Link
-                        key={feat.href}
-                        href={feat.href}
-                        className="group flex items-center gap-3.5 p-2.5 rounded-2xl transition-all duration-200 hover:bg-white/70 dark:hover:bg-white/10"
-                      >
-                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${feat.color} flex items-center justify-center text-white shrink-0 shadow-sm`}>
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-sm font-bold text-zinc-900 dark:text-white truncate group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
-                            {feat.title}
-                          </div>
-                          <div className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
-                            {feat.description}
-                          </div>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-
-                <div className="pt-3 mt-1 border-t border-white/60 dark:border-white/10 text-center">
-                  <a href="#tools" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
-                    View all {tools.length} browser tools ↓
-                  </a>
-                </div>
-              </div>
+              {previewTools.map((tool) => {
+                const Icon = tool.icon;
+                return (
+                  <Link
+                    key={tool.id}
+                    href={tool.href}
+                    className="glass-card group p-4 sm:p-5 rounded-2xl flex flex-col justify-between hover:scale-[1.03] transition-all duration-300 relative overflow-hidden"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
+                    />
+                    <div>
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div className="font-bold text-sm text-zinc-900 dark:text-white mb-1 group-hover:text-brand-500 transition-colors">
+                        {tool.title}
+                      </div>
+                      <div className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2">
+                        {tool.description}
+                      </div>
+                    </div>
+                    <div className="mt-3 flex items-center gap-1 text-[11px] font-semibold text-brand-600 dark:text-brand-400">
+                      <span>Launch tool</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </Link>
+                );
+              })}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ============ TOOLS SUITE GRID ============ */}
+      {/* ============ ALL TOOLS CATALOG ============ */}
       <section id="tools" className="relative py-10 sm:py-16 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 id="tools-suite-heading" className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
-              Free Online PDF, Word and Photo Tools
+          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+            <h2 id="tools-catalog-heading" className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
+              Explore All Free Private Tools
             </h2>
-            <div className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
-              Every tool runs fast right in your browser with zero server uploads and zero data leaks.
+            <div className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
+              Transform, compress, convert, and protect your files in your browser with zero limits.
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {tools.map((tool) => {
               const Icon = tool.icon;
-              const toolId = `tool-${tool.href.replace('/tools/', '')}`;
               return (
-                <div key={tool.href} className="block group h-full">
-                  <Link href={tool.href} className="block h-full">
-                    <div className="glass-card p-5 sm:p-7 md:p-8 h-full flex flex-col justify-between rounded-[22px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-brand-500/30">
-                      <div>
-                        <div className="flex items-start justify-between gap-4 mb-4">
-                          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0 shadow-md`}>
-                            <Icon className="w-6 h-6 text-white" />
-                          </div>
-                          <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full glass-pill text-zinc-700 dark:text-zinc-200">
+                <div key={tool.id}>
+                  <Link
+                    href={tool.href}
+                    className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full hover:scale-[1.02] hover:border-brand-500/40 hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
+                    />
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        {tool.badge && (
+                          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
                             {tool.badge}
                           </span>
-                        </div>
-
-                        <h3 id={toolId} className="text-xl font-bold font-display text-zinc-900 dark:text-white mb-1.5 flex items-center gap-2">
-                          {tool.title}
-                          <ArrowRight className="w-4 h-4 text-brand-500 opacity-0 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-300" />
-                        </h3>
-                        <div className="text-xs font-semibold text-brand-600 dark:text-brand-400 mb-2">
-                          {tool.tagline}
-                        </div>
-                        <div className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
-                          {tool.description}
-                        </div>
+                        )}
                       </div>
-
-                      <div className="pt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                      <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors">
+                        {tool.title}
+                      </h3>
+                      <div className="text-xs text-brand-600 dark:text-brand-400 font-semibold mb-2">
+                        {tool.tagline}
+                      </div>
+                      <div className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
+                        {tool.description}
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
+                      <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
                         <span>{tool.stats}</span>
                         <span className="text-brand-500 flex items-center gap-1">
                           Launch Tool &rarr;
@@ -645,25 +640,26 @@ export default function HomePage() {
       {/* ============ CLIENT-SIDE ARCHITECTURE GUIDE ============ */}
       <ClientSideGuideSection />
 
-      {/* ============ FAQ SECTION (8 Direct Sibling Question and Answer Pairs) ============ */}
-      <section id="faq-section" className="py-10 sm:py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-20">
-        <div className="text-center mb-8">
-          <h2 id="common-questions" className="text-3xl font-black font-display text-zinc-900 dark:text-white mb-3">
+      {/* ============ FAQ SECTION (Modern Accordion with Live Filter & Direct Sibling Pairs) ============ */}
+      <section id="faq-section" className="pt-20 sm:pt-28 pb-10 sm:pb-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
+        <div className="text-center mb-8 sm:mb-10">
+          <h2 id="common-questions" className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
             Questions About Our Free PDF, Word and Photo Tools
           </h2>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
+          <div className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mb-6 max-w-2xl mx-auto">
             Find simple answers to top questions about our free web tools, file privacy, and phone support.
           </div>
 
-          {/* Declarative WebMCP Form 1: searchFAQ */}
+          {/* Declarative WebMCP Form 1: searchFAQ with Real-Time Filtering */}
           <form
             id="compixor-faq-search-form"
             action="#faq-section"
             method="GET"
+            onSubmit={(e) => e.preventDefault()}
             // @ts-expect-error declarative WebMCP attribute
             toolname="searchFAQ"
             tooldescription="Search Compixor FAQ answers about free PDF, Word, and photo tools"
-            className="max-w-xl mx-auto mb-8 relative flex items-center"
+            className="max-w-xl mx-auto mb-6 relative flex items-center"
           >
             <label htmlFor="faq-query-input" className="sr-only">
               Search FAQ
@@ -672,11 +668,12 @@ export default function HomePage() {
               id="faq-query-input"
               name="q"
               type="search"
+              value={faqSearch}
+              onChange={(e) => handleFaqSearch(e.target.value)}
               placeholder="Search FAQ (e.g., safe files, phone support, free tools)..."
               // @ts-expect-error declarative WebMCP attribute
               toolparamdescription="Search keyword"
               data-tool-param-description="Search keyword"
-              required
               className="w-full pl-4 pr-32 py-3 rounded-2xl bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/80 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-500 backdrop-blur-md shadow-sm transition"
             />
             <button
@@ -686,72 +683,86 @@ export default function HomePage() {
               <span>Search FAQ</span>
             </button>
           </form>
+
+          {faqSearch.trim() && (
+            <div className="text-xs text-zinc-500 dark:text-zinc-400 flex items-center justify-center gap-2">
+              <span>Showing {filteredFaqs.length} of {homeFaqs.length} questions</span>
+              <button
+                type="button"
+                onClick={() => handleFaqSearch('')}
+                className="text-brand-600 dark:text-brand-400 underline font-semibold hover:opacity-80"
+              >
+                Clear filter
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* 8 Direct Sibling Question and Answer Pairs strictly 42 to 55 words each, placed directly in section */}
-        <h3 id="what-is-compixor-faq" className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2 mt-8 mb-3">
-          <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
-          <span>What is Compixor and how does it work?</span>
-        </h3>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-          Compixor is a free web toolkit that lets you fix, merge, shrink, and change PDF, Word, and photo files right in your browser. All tools run on your own phone or PC instead of a cloud server. Your files stay fast, safe, and free to use at all times.
-        </p>
+        {/* 8 Direct Sibling Question and Answer Pairs strictly 42 to 55 words each */}
+        <div className="space-y-3.5">
+          {filteredFaqs.length > 0 ? (
+            filteredFaqs.map((faq) => {
+              const originalIndex = homeFaqs.findIndex((item) => item.id === faq.id);
+              const isOpen = openFaqIndices.includes(originalIndex) || faqSearch.trim().length > 0;
 
-        <h3 id="are-files-safe-faq" className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2 mt-8 mb-3">
-          <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
-          <span>Are my PDF and Word files safe from data leaks?</span>
-        </h3>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-          Yes, your files stay safe because they never leave your own device at any point. Compixor runs all code inside your web browser tab with zero server uploads and zero cloud storage. No person, bot, or third party can ever see, read, or copy your private work.
-        </p>
-
-        <h3 id="what-tools-are-free-faq" className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2 mt-8 mb-3">
-          <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
-          <span>Which PDF, Word and photo tools are free to use?</span>
-        </h3>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-          Every single tool on Compixor is free to use with no paywalls, no daily caps, and no sign-up forms. You can shrink large PDF files, turn PDF pages into Word docs, clean up photos, and make custom QR codes as many times as you want each day.
-        </p>
-
-        <h3 id="does-it-work-on-phone-faq" className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2 mt-8 mb-3">
-          <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
-          <span>Can I use these PDF and photo tools on my phone?</span>
-        </h3>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-          Yes, you can run every tool on any phone, tablet, laptop, or desktop PC that has a modern web browser. You do not need to install any app or plug-in to start working. Just open the site, pick a tool, and save your finished file in seconds.
-        </p>
-
-        <h3 id="how-fast-are-tools-faq" className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2 mt-8 mb-3">
-          <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
-          <span>Why do browser tools run faster than cloud sites?</span>
-        </h3>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-          Browser tools refers to web apps that use your own device speed instead of slow web uploads. With old cloud sites, you wait to send large files up to a server and wait again to get them back. Compixor skips the upload step so your files finish right away.
-        </p>
-
-        <h3 id="do-files-get-watermarks-faq" className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2 mt-8 mb-3">
-          <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
-          <span>Will Compixor add watermarks to my saved PDF files?</span>
-        </h3>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-          No, Compixor never puts ugly stamps, logos, or watermarks on your saved PDF pages, Word docs, or photos. The file you save to your device stays clean and ready for work, school, or print. You get full quality output for free without paying for a pro plan.
-        </p>
-
-        <h3 id="can-i-work-offline-faq" className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2 mt-8 mb-3">
-          <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
-          <span>Can I edit my PDF and photo files without web access?</span>
-        </h3>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-          Yes, once the page loads in your web browser, the tools can run right on your device even if your web link drops. Because no cloud server does the work, you can merge, split, or shrink your files smoothly on a plane, train, or slow mobile link.
-        </p>
-
-        <h3 id="is-account-needed-faq" className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2 mt-8 mb-3">
-          <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
-          <span>Do I need an account or email to save my files?</span>
-        </h3>
-        <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-          No, you never need to make an account, type an email address, or share a password to use Compixor. We do not track who you are or ask for credit card details. You just open the tool, fix your file in the browser, and save it right away.
-        </p>
+              return (
+                <div
+                  key={faq.id}
+                  className="glass-card rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden transition-all duration-300 hover:border-brand-500/30"
+                >
+                  <h3
+                    id={faq.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-answer-${faq.id}`}
+                    onClick={() => toggleFaq(originalIndex)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleFaq(originalIndex);
+                      }
+                    }}
+                    className="w-full p-4 sm:p-5 text-left text-base sm:text-lg font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between gap-3 cursor-pointer select-none hover:bg-zinc-500/5 transition-colors m-0"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
+                      <span>{faq.q}</span>
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-zinc-400 transition-transform duration-300 shrink-0 ${
+                        isOpen ? 'rotate-180 text-brand-500' : ''
+                      }`}
+                    />
+                  </h3>
+                  <p
+                    id={`faq-answer-${faq.id}`}
+                    className={`px-4 sm:px-5 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed transition-all duration-300 ${
+                      isOpen
+                        ? 'max-h-96 opacity-100 pb-4 sm:pb-5 pt-1 border-t border-zinc-100 dark:border-zinc-800/60'
+                        : 'max-h-0 opacity-0 pb-0 pt-0 m-0 overflow-hidden border-transparent'
+                    }`}
+                  >
+                    {faq.a}
+                  </p>
+                </div>
+              );
+            })
+          ) : (
+            <div className="glass-card p-8 rounded-2xl text-center border border-zinc-200/80 dark:border-zinc-800/80">
+              <div className="text-zinc-500 dark:text-zinc-400 text-sm mb-3">
+                No matching questions found for &quot;{faqSearch}&quot;.
+              </div>
+              <button
+                type="button"
+                onClick={() => handleFaqSearch('')}
+                className="btn-primary text-xs px-4 py-2"
+              >
+                Show All Questions
+              </button>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* ============ CTA BOX ============ */}
