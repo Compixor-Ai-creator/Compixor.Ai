@@ -31,30 +31,30 @@ export default function Footer() {
                 <span className="text-brand-500 dark:text-brand-400">.AI</span>
               </span>
             </Link>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm leading-relaxed">
+            <div className="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm leading-relaxed">
               Professional-grade document and media tools engineered for privacy and speed.
               Most tools run 100% locally in your browser with zero file uploads.
-            </p>
+            </div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               All Systems Operational
             </div>
             {/* Copyright & Architecture Note */}
             <div className="pt-2 space-y-1">
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              <div className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 © 2026 Compixor AI. <span className="hidden">Architecture by <span className="font-semibold text-zinc-700 dark:text-zinc-300">Haroon Ali</span>. </span>Compixor AI Digital Studio • Global Cloud Services.
-              </p>
-              <p className="text-xs text-zinc-400 dark:text-zinc-500">
+              </div>
+              <div className="text-xs text-zinc-400 dark:text-zinc-500">
                 Updated October 2026 · Zero Server Storage Policy
-              </p>
+              </div>
             </div>
           </div>
 
           {/* Tools */}
           <div>
-            <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
+            <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
               Tools Suite
-            </p>
+            </div>
             <ul className="space-y-3">
               {tools.map((tool) => {
                 const Icon = tool.navIcon || tool.icon;
@@ -75,9 +75,9 @@ export default function Footer() {
 
           {/* Company & Architecture */}
           <div>
-            <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
+            <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
               Company
-            </p>
+            </div>
             <ul className="space-y-3">
               <li>
                 <Link
@@ -165,22 +165,22 @@ export default function Footer() {
 
           {/* Guarantee & Social */}
           <div>
-            <p className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
+            <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
               Privacy &amp; Social
-            </p>
+            </div>
             <div className="glass-card p-4 rounded-2xl space-y-2 border-emerald-500/20 mb-4">
               <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="w-4 h-4" />
                 Privacy-First Architecture
               </div>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
+              <div className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
                 9 tools run 100% locally in your browser. Server tools process files in memory and delete them immediately.
-              </p>
+              </div>
             </div>
 
             {/* Share Compixor */}
             <div className="space-y-2 mb-4">
-              <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Share Compixor</p>
+              <div className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Share Compixor</div>
               <div className="flex items-center gap-2.5 flex-wrap overflow-visible">
                 <a
                   href={shareUrls.linkedIn}
@@ -226,7 +226,7 @@ export default function Footer() {
 
             {/* Official Open Source Link */}
             <div className="space-y-2">
-              <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Open Source</p>
+              <div className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Open Source</div>
               <div className="flex items-center gap-3 overflow-visible">
                 <a
                   href="https://github.com/Compixor-Ai-creator"

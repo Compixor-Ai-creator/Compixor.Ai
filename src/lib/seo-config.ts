@@ -1717,13 +1717,14 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
 }
 
 /**
- * Returns Homepage JSON-LD schemas covering all 10 recommended properties:
- * - WebSite schema with SearchAction
- * - Organization schema (Compixor AI, logo, social links, contactPoint)
- * - Person schema (Haroon Ali, founder, sameAs)
- * - WebPage schema with speakable, datePublished, dateModified
+ * Returns Homepage JSON-LD schemas covering all 10 recommended properties across 7 schema blocks:
+ * - Organization schema
+ * - Person schema
+ * - WebSite schema
+ * - WebPage schema
  * - BreadcrumbList schema
- * - ItemList schema listing all tools
+ * - ItemList schema
+ * - FAQPage schema
  */
 export function getHomepageSchemas(): Record<string, any>[] {
   const toolKeys = Object.keys(seoConfig) as ToolSlug[];
@@ -1734,6 +1735,7 @@ export function getHomepageSchemas(): Record<string, any>[] {
     '@id': `${BASE_URL}/#organization`,
     name: 'Compixor AI',
     url: BASE_URL,
+    image: OG_IMAGE_URL,
     logo: {
       '@type': 'ImageObject',
       url: `${BASE_URL}/brand/logo-512.png`,
@@ -1766,8 +1768,10 @@ export function getHomepageSchemas(): Record<string, any>[] {
     '@id': `${BASE_URL}/#author`,
     name: AUTHOR_NAME,
     jobTitle: 'Founder & Lead Developer',
+    description: 'Founder and lead engineer of Compixor AI, building browser-native client-side tools.',
     worksFor: { '@id': `${BASE_URL}/#organization` },
     url: `${BASE_URL}/about`,
+    image: `${BASE_URL}/brand/logo-512.png`,
     sameAs: [
       'https://www.linkedin.com/in/haroon-ali',
       'https://github.com/haroon-ali',
@@ -1800,8 +1804,10 @@ export function getHomepageSchemas(): Record<string, any>[] {
     '@type': 'WebPage',
     '@id': `${BASE_URL}/#webpage`,
     url: BASE_URL,
+    mainEntityOfPage: BASE_URL,
     name: 'Free Online PDF Tools - Private & Fast | Compixor',
     description: homepageSeoData.description,
+    image: OG_IMAGE_URL,
     isPartOf: { '@id': `${BASE_URL}/#website` },
     author: { '@id': `${BASE_URL}/#author` },
     publisher: { '@id': `${BASE_URL}/#organization` },
@@ -1817,6 +1823,10 @@ export function getHomepageSchemas(): Record<string, any>[] {
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
+    '@id': `${BASE_URL}/#breadcrumb`,
+    name: 'Compixor Navigation Breadcrumbs',
+    description: 'Breadcrumbs navigation hierarchy for Compixor AI tools',
+    numberOfItems: 2,
     itemListElement: [
       {
         '@type': 'ListItem',
@@ -1827,7 +1837,7 @@ export function getHomepageSchemas(): Record<string, any>[] {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'All PDF, Word & Photo Tools',
+        name: 'All PDF, Word and Photo Tools',
         item: `${BASE_URL}/#tools`,
       },
     ],
@@ -1836,8 +1846,12 @@ export function getHomepageSchemas(): Record<string, any>[] {
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
+    '@id': `${BASE_URL}/#tools-list`,
     name: 'Compixor AI Tools Suite',
     description: 'Complete collection of free, in-browser privacy-first document and media tools.',
+    url: `${BASE_URL}/#tools`,
+    mainEntityOfPage: `${BASE_URL}/#tools`,
+    numberOfItems: toolKeys.length,
     itemListElement: toolKeys.map((slug, idx) => {
       const tool = seoConfig[slug];
       return {
@@ -1846,8 +1860,84 @@ export function getHomepageSchemas(): Record<string, any>[] {
         name: tool.name,
         url: tool.canonicalUrl,
         description: tool.description,
+        image: tool.canonicalUrl ? `${BASE_URL}/brand/logo-512.png` : OG_IMAGE_URL,
       };
     }),
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    '@id': `${BASE_URL}/#faq`,
+    name: 'Compixor Frequently Asked Questions',
+    description: 'Frequently asked questions about Compixor free browser PDF, Word and photo tools',
+    url: `${BASE_URL}/#faq-section`,
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'What is Compixor and how does it work?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Compixor is a free web toolkit that lets you fix, merge, shrink, and change PDF, Word, and photo files right in your browser. All tools run on your own phone or PC instead of a cloud server. Your files stay fast, safe, and free to use at all times.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Are my PDF and Word files safe from data leaks?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, your files stay safe because they never leave your own device at any point. Compixor runs all code inside your web browser tab with zero server uploads and zero cloud storage. No person, bot, or third party can ever see, read, or copy your private work.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Which PDF, Word and photo tools are free to use?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Every single tool on Compixor is free to use with no paywalls, no daily caps, and no sign-up forms. You can shrink large PDF files, turn PDF pages into Word docs, clean up photos, and make custom QR codes as many times as you want each day.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I use these PDF and photo tools on my phone?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, you can run every tool on any phone, tablet, laptop, or desktop PC that has a modern web browser. You do not need to install any app or plug-in to start working. Just open the site, pick a tool, and save your finished file in seconds.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Why do browser tools run faster than cloud sites?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Browser tools refers to web apps that use your own device speed instead of slow web uploads. With old cloud sites, you wait to send large files up to a server and wait again to get them back. Compixor skips the upload step so your files finish right away.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Will Compixor add watermarks to my saved PDF files?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'No, Compixor never puts ugly stamps, logos, or watermarks on your saved PDF pages, Word docs, or photos. The file you save to your device stays clean and ready for work, school, or print. You get full quality output for free without paying for a pro plan.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I edit my PDF and photo files without web access?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes, once the page loads in your web browser, the tools can run right on your device even if your web link drops. Because no cloud server does the work, you can merge, split, or shrink your files smoothly on a plane, train, or slow mobile link.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do I need an account or email to save my files?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'No, you never need to make an account, type an email address, or share a password to use Compixor. We do not track who you are or ask for credit card details. You just open the tool, fix your file in the browser, and save it right away.',
+        },
+      },
+    ],
   };
 
   return [
@@ -1857,5 +1947,6 @@ export function getHomepageSchemas(): Record<string, any>[] {
     webpageSchema,
     breadcrumbSchema,
     itemListSchema,
+    faqSchema,
   ];
 }

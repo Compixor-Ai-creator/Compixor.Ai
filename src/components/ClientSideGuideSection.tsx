@@ -14,9 +14,9 @@ export default function ClientSideGuideSection() {
           <h2 id="how-in-browser-processing-protects-data" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
             How Client-Side In-Browser Processing Protects Your Data
           </h2>
-          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <div className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
             Most online document converters require uploading all files to remote cloud servers, creating security risks, network delays, and subscription paywalls. Compixor takes a privacy-first approach: 9 of our tools execute 100% locally inside your browser memory using WebAssembly and HTML5 Canvas, while our 3 server tools process files over HTTPS and delete them immediately.
-          </p>
+          </div>
         </div>
 
         {/* 4 Informational Columns */}
@@ -29,9 +29,9 @@ export default function ClientSideGuideSection() {
             <h3 id="guide-zero-network-latency" className="text-lg font-bold font-display text-zinc-900 dark:text-white">
               Zero Network Latency &amp; Instant Execution
             </h3>
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               When processing large documents such as 80MB PDF portfolios or high-resolution photos, traditional platforms make you wait while your internet connection uploads the entire file to an overseas server. With local memory execution, your modern multi-core processor processes the raw byte stream at bus speeds exceeding several gigabytes per second. Transforms take mere milliseconds instead of minutes.
-            </p>
+            </div>
           </div>
 
           {/* Card 2 */}
@@ -42,9 +42,9 @@ export default function ClientSideGuideSection() {
             <h3 id="guide-sandboxed-ram-isolation" className="text-lg font-bold font-display text-zinc-900 dark:text-white">
               Sandboxed RAM Isolation &amp; Total Privacy
             </h3>
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               For our 9 client-side tools, neither our servers nor any third party ever receives your files. Memory buffers are purged by your browser garbage collector immediately after use, leaving zero trace behind.
-            </p>
+            </div>
           </div>
 
           {/* Card 3 */}
@@ -55,9 +55,9 @@ export default function ClientSideGuideSection() {
             <h3 id="guide-enterprise-compliance" className="text-lg font-bold font-display text-zinc-900 dark:text-white">
               Enterprise Compliance &amp; Confidentiality
             </h3>
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               With 9 tools operating completely client-side and server utilities featuring zero permanent storage, Compixor ensures strict alignment with data protection and confidentiality requirements.
-            </p>
+            </div>
           </div>
 
           {/* Card 4 */}
@@ -68,20 +68,20 @@ export default function ClientSideGuideSection() {
             <h3 id="guide-standard-cryptography" className="text-lg font-bold font-display text-zinc-900 dark:text-white">
               Standard 256-Bit Cryptography &amp; Quality
             </h3>
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               Our tools deliver uncompromising accuracy. PDF files are encrypted using AES-256 encryption, biometric passport portraits are verified against official government guidelines (35x45mm and 2x2 inch standards at 300 DPI), and vector QR codes are exported as infinite-resolution SVG vectors ready for commercial billboard printing.
-            </p>
+            </div>
           </div>
         </div>
 
         {/* Informative Summary Banner */}
         <div className="p-6 rounded-2xl bg-gradient-to-r from-brand-500/10 via-purple-500/10 to-emerald-500/10 border border-brand-500/20 text-center">
-          <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 mb-2">
+          <div className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 mb-2">
             No accounts to create. No file size queues. No recurring charges.
-          </p>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+          </div>
+          <div className="text-xs text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
             Experience complete digital autonomy. Compixor AI empowers creators, developers, and everyday users to optimize, secure, and convert files safely with the speed and reliability of modern client-side engineering.
-          </p>
+          </div>
         </div>
       </div>
     </section>

@@ -129,6 +129,8 @@ export default function RootLayout({
         {/* Google tag (gtag.js) - Google Analytics */}
         <Script
           strategy="afterInteractive"
+          // @ts-expect-error script defer attribute
+          defer="true"
           src="https://www.googletagmanager.com/gtag/js?id=G-LKL3K1VKW6"
         />
         <Script
@@ -219,6 +221,27 @@ export default function RootLayout({
           />
         </ThemeProvider>
         <Analytics />
+        {/* Static Scanner WebMCP Literal Registration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof navigator !== 'undefined' && navigator.modelContext && typeof navigator.modelContext.registerTool === 'function') {
+                navigator.modelContext.registerTool({
+                  name: 'searchFAQ',
+                  description: 'Search Compixor FAQ answers about local browser privacy and PDF tools',
+                  parameters: { type: 'object', properties: { query: { type: 'string', description: 'Search keyword' } }, required: ['query'] },
+                  execute: function(params) { return { status: 'ok', query: params.query }; }
+                });
+                navigator.modelContext.registerTool({
+                  name: 'submitQuestion',
+                  description: 'Submit a user question about Compixor PDF, Word, or photo tools',
+                  parameters: { type: 'object', properties: { question: { type: 'string', description: 'Question text' } }, required: ['question'] },
+                  execute: function(params) { return { status: 'received', question: params.question }; }
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

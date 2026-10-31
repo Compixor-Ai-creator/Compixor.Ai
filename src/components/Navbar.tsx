@@ -216,9 +216,9 @@ export default function Navbar() {
                         <div className="space-y-4">
                           {pdfCategories.slice(0, 2).map((group) => (
                             <div key={group.category} className="space-y-1">
-                              <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-2">
+                              <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-2">
                                 {group.category}
-                              </p>
+                              </div>
                               <div className="space-y-1">
                                 {group.tools.map((item) => {
                                   const isCurrent = pathname === item.href;
@@ -242,18 +242,18 @@ export default function Navbar() {
                                       </div>
                                       <div className="min-w-0 flex-1">
                                         <div className="flex items-center gap-1.5">
-                                          <p className="text-xs font-bold leading-tight truncate">
+                                          <div className="text-xs font-bold leading-tight truncate">
                                             {item.label}
-                                          </p>
+                                          </div>
                                           {item.badge && (
                                             <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-brand-500/10 text-brand-600 dark:text-brand-300 shrink-0">
                                               {item.badge}
                                             </span>
                                           )}
                                         </div>
-                                        <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-1">
+                                        <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-1">
                                           {item.subtitle}
-                                        </p>
+                                        </div>
                                       </div>
                                       <ArrowRight className="w-3.5 h-3.5 text-zinc-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
                                     </Link>
@@ -267,9 +267,9 @@ export default function Navbar() {
                         {/* Column 2: Security & Privacy + Client-Side Privacy Card */}
                         <div className="space-y-4 flex flex-col justify-between">
                           <div className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-2">
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-2">
                               {pdfCategories[2].category}
-                            </p>
+                            </div>
                             <div className="space-y-1">
                               {pdfCategories[2].tools.map((item) => {
                                 const isCurrent = pathname === item.href;
@@ -292,18 +292,18 @@ export default function Navbar() {
                                     </div>
                                     <div className="min-w-0 flex-1">
                                       <div className="flex items-center gap-1.5">
-                                        <p className="text-xs font-bold leading-tight truncate">
+                                        <div className="text-xs font-bold leading-tight truncate">
                                           {item.label}
-                                        </p>
+                                        </div>
                                         {item.badge && (
                                           <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 shrink-0">
                                             {item.badge}
                                           </span>
                                         )}
                                       </div>
-                                      <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-1">
+                                      <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-1">
                                         {item.subtitle}
-                                      </p>
+                                      </div>
                                     </div>
                                     <ArrowRight className="w-3.5 h-3.5 text-zinc-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
                                   </Link>
@@ -320,9 +320,9 @@ export default function Navbar() {
                                 Privacy-First Architecture
                               </span>
                             </div>
-                            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
+                            <div className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
                               Local tools run in device RAM, server tools delete files immediately.
-                            </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -435,13 +435,13 @@ export default function Navbar() {
                                     </span>
                                   )}
                                 </div>
-                                <p
+                                <div
                                   className={`text-[11px] mt-0.5 line-clamp-1 ${
                                     isCurrent ? 'text-brand-600/70 dark:text-brand-300/70' : 'text-zinc-500 dark:text-zinc-400'
                                   }`}
                                 >
                                   {item.subtitle}
-                                </p>
+                                </div>
                               </div>
                             </Link>
                           );
@@ -549,9 +549,9 @@ export default function Navbar() {
                       <div className="space-y-3 py-1">
                         {pdfCategories.map((group) => (
                           <div key={group.category} className="space-y-1">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-2.5 pt-1">
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-2.5 pt-1">
                               {group.category}
-                            </p>
+                            </div>
                             <div className="space-y-1">
                               {group.tools.map((item) => {
                                 const isCurrent = pathname === item.href;
@@ -573,14 +573,14 @@ export default function Navbar() {
                                       <Icon className="w-4 h-4" />
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                      <p className="text-sm font-semibold leading-tight">{item.label}</p>
-                                      <p
+                                      <div className="text-sm font-semibold leading-tight">{item.label}</div>
+                                      <div
                                         className={`text-xs mt-0.5 ${
                                           isCurrent ? 'text-white/80' : 'text-zinc-500 dark:text-zinc-400'
                                         }`}
                                       >
                                         {item.subtitle}
-                                      </p>
+                                      </div>
                                     </div>
                                   </Link>
                                 );
@@ -638,14 +638,14 @@ export default function Navbar() {
                                 <Icon className="w-4 h-4" />
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="text-sm font-semibold leading-tight">{item.label}</p>
-                                <p
+                                <div className="text-sm font-semibold leading-tight">{item.label}</div>
+                                <div
                                   className={`text-xs mt-0.5 ${
                                     isCurrent ? 'text-white/80' : 'text-zinc-500 dark:text-zinc-400'
                                   }`}
                                 >
                                   {item.subtitle}
-                                </p>
+                                </div>
                               </div>
                             </Link>
                           );
@@ -685,9 +685,9 @@ export default function Navbar() {
               >
                 Start Compressing Files
               </Link>
-              <p className="text-center text-xs text-zinc-400">
+              <div className="text-center text-xs text-zinc-400">
                 Privacy-First Architecture • Fast &amp; Secure
-              </p>
+              </div>
             </div>
           </div>
       )}

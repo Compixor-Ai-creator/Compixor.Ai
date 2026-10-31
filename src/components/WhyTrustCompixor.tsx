@@ -42,9 +42,9 @@ export default function WhyTrustCompixor() {
         <h2 id="why-trust-compixor-heading" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
           Why Trust Compixor
         </h2>
-        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
           Straightforward utilities built with privacy and speed by design.
-        </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -66,9 +66,9 @@ export default function WhyTrustCompixor() {
                 <h3 id={`trust-point-${point.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="text-base font-bold font-display text-zinc-900 dark:text-white mb-2">
                   {point.title}
                 </h3>
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                <div className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                   {point.description}
-                </p>
+                </div>
               </div>
             </motion.div>
           );

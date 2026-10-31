@@ -259,9 +259,9 @@ export default function WhatUsersSay() {
             <h2 className="text-xl sm:text-2xl font-black font-display text-zinc-900 dark:text-white mb-2">
               Be the first to share your feedback
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mb-6 max-w-sm mx-auto">
+            <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mb-6 max-w-sm mx-auto">
               We value your honest experience. Use any tool and share your review with our community.
-            </p>
+            </div>
             <button
               type="button"
               onClick={handleOpenModal}
@@ -280,9 +280,9 @@ export default function WhatUsersSay() {
               <h2 id="what-users-say-heading" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-2">
                 What users say
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+              <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
                 Recent feedback from people using our client-side utilities.
-              </p>
+              </div>
             </div>
             <button
               type="button"
@@ -325,9 +325,9 @@ export default function WhatUsersSay() {
                   </div>
 
                   {/* Message */}
-                  <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap break-words">
+                  <div className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap break-words">
                     {fb.message}
-                  </p>
+                  </div>
                 </div>
 
                 {/* Author */}
@@ -364,9 +364,9 @@ export default function WhatUsersSay() {
                     >
                       Share Your Feedback
                     </h2>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    <div className="text-xs text-zinc-500 dark:text-zinc-400">
                       No sign up required. Helps us improve Compixor.
-                    </p>
+                    </div>
                   </div>
                 </div>
 
