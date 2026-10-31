@@ -6,6 +6,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import WebMcpRegister from '@/components/WebMcpRegister';
 import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
 import { homepageSeoData, getHomepageSchemas, AUTHOR_NAME, BASE_URL, OG_IMAGE_URL } from '@/lib/seo-config';
@@ -164,6 +165,7 @@ export default function RootLayout({
         />
         
         {/* AI & GEO Discovery */}
+        <link rel="sitemap" type="application/xml" title="Sitemap" href="https://compixor-ai.cloud/sitemap.xml" />
         <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt" />
         {/* JSON-LD Structured Data: WebSite, Organization & ItemList */}
         {homeSchemas.map((schema, index) => (
@@ -203,6 +205,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <FeedbackWidget />
+          <WebMcpRegister />
           <Toaster
             position="bottom-right"
             toastOptions={{

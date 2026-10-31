@@ -39,7 +39,7 @@ export default function WhyTrustCompixor() {
   return (
     <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
+        <h2 id="why-trust-compixor-heading" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
           Why Trust Compixor
         </h2>
         <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
@@ -63,7 +63,7 @@ export default function WhyTrustCompixor() {
                 <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center mb-4">
                   <Icon className={`w-6 h-6 ${point.iconColor}`} />
                 </div>
-                <h3 className="text-base font-bold font-display text-zinc-900 dark:text-white mb-2">
+                <h3 id={`trust-point-${point.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="text-base font-bold font-display text-zinc-900 dark:text-white mb-2">
                   {point.title}
                 </h3>
                 <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">

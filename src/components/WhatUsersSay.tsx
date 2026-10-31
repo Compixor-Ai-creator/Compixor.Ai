@@ -277,7 +277,7 @@ export default function WhatUsersSay() {
         <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 sm:mb-10">
             <div className="text-center sm:text-left">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-2">
+              <h2 id="what-users-say-heading" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-2">
                 What users say
               </h2>
               <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">

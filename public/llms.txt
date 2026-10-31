@@ -1,33 +1,46 @@
-# Compixor AI
+# Compixor AI (https://compixor-ai.cloud)
 
-> Free, 100% private document and media processing toolkit running in client-side RAM with zero permanent storage.
+> Free, private, client-side PDF, Word, photo, and QR toolkit running locally in browser memory with zero permanent server storage.
 
-Compixor AI is a client-side document and media manipulation platform designed for speed and uncompromising privacy. It processes documents and photos locally in the user's browser memory using WebAssembly and client-side JavaScript, ensuring sensitive files never touch external servers or permanent disks.
+Author: Haroon Ali (Founder & Lead Developer, Compixor AI)
+Website: https://compixor-ai.cloud
+License / Terms: Free for personal and commercial use with 100% user copyright retention.
 
-## Platform Information
+## Platform Mission & Privacy Architecture
 
-- [Compixor AI](https://compixor-ai.cloud/): Official platform homepage and tools catalog
-- [About Compixor AI](https://compixor-ai.cloud/about): Platform mission, client-side WebAssembly architecture, and engineering details
-- [Privacy Policy](https://compixor-ai.cloud/privacy): Strict zero-server retention policy, in-memory processing details, and security guarantees
-- [Terms of Service](https://compixor-ai.cloud/terms): Platform usage terms, 100% user copyright retention, and commercial use permissions
-- [Guides & Blog](https://compixor-ai.cloud/blog): Step-by-step guides on PDF compression, password protection, passport photos, and QR codes
-- [Contact Support](https://compixor-ai.cloud/contact): Technical support, bug reporting, and feature inquiries
+Compixor is an in-browser document and media manipulation suite engineered for instant execution and absolute user confidentiality.
+- 100% Client-Side In-Memory Execution: 9 of 12 tools process raw document bytes directly within the user's browser memory (RAM) using WebAssembly (Wasm) and HTML5 Canvas. Sensitive files never leave the user's local device, preventing data leaks and interception.
+- Transient Memory Processing: For OCR and portrait utilities that utilize server models, transmission is protected via TLS 1.3/HTTPS, processed strictly in volatile RAM, and deleted immediately upon completion with zero permanent disk storage.
+- Zero Friction UX: No user accounts, no email capture, no credit cards, zero watermarks, and zero artificial daily or hourly queue restrictions.
 
-## Tools Suite
+## Core Tools Directory
 
-- [PDF Compressor](https://compixor-ai.cloud/tools/pdf-compressor): In-browser vector stream optimization, custom size reduction to 100KB, 200KB, 500KB, 1MB with native text preservation.
-- [PDF Merge & Split](https://compixor-ai.cloud/tools/pdf-organizer): Visual drag-and-drop page organizer, combine multiple PDFs or split custom page ranges with zero watermark.
-- [Add Watermark](https://compixor-ai.cloud/tools/add-watermark): Stamp custom vector text or transparent logo images onto PDF documents with opacity, rotation, and page range controls.
-- [Remove Watermark](https://compixor-ai.cloud/tools/remove-watermark): Dual-engine digital stream filtering and interactive visual bounding box stamp eraser for clean PDF output.
-- [Protect PDF](https://compixor-ai.cloud/tools/protect-pdf): Client-side AES-256 password encryption and granular restriction controls for printing, editing, and copying.
-- [Unlock PDF](https://compixor-ai.cloud/tools/unlock-pdf): In-browser decryption to remove passwords and permission restrictions from owned PDFs with zero uploads.
-- [Word Compressor](https://compixor-ai.cloud/tools/word-compressor): Re-compresses embedded images in .docx archives while keeping XML layouts, tables, and styles intact.
-- [Passport Photo Maker](https://compixor-ai.cloud/tools/passport-photo): AI-driven portrait background removal, official biometric dimension presets (Pakistan NADRA 35x45mm, US Visa 2x2", UK/Schengen), and 300 DPI printable sheets.
-- [Full DP Maker](https://compixor-ai.cloud/tools/full-dp-maker): 1:1 square canvas creator for WhatsApp and Instagram with HD blurred backgrounds and zero forced cropping.
-- [QR Code Generator](https://compixor-ai.cloud/tools/qr-generator): Permanent static QR code maker for URLs, WiFi credentials, WhatsApp links, and vCards with vector SVG and 4K PNG exports.
-- [PDF to Word Converter](https://compixor-ai.cloud/tools/pdf-to-word): High-fidelity conversion from digital or scanned PDFs to editable Microsoft Word (.docx) documents with OCR for English, Urdu, and Arabic.
-- [Image to Word Converter](https://compixor-ai.cloud/tools/img-to-word): Convert JPG, PNG, WEBP, or scanned image files into fully editable Word (.docx) documents using neural OCR across 10+ languages.
+- [PDF Compressor](https://compixor-ai.cloud/tools/pdf-compressor): Client-side vector stream compression and image downsampling to target file sizes (100KB, 200KB, 500KB, 1MB) without server uploads.
+- [PDF Merge & Split](https://compixor-ai.cloud/tools/pdf-organizer): Visual drag-and-drop page organizer to merge multiple PDF files or extract custom page ranges in browser RAM.
+- [Add Watermark to PDF](https://compixor-ai.cloud/tools/add-watermark): Stamp custom vector text or transparent PNG logos across PDF pages with rotation, opacity, and positioning controls.
+- [Remove Watermark from PDF](https://compixor-ai.cloud/tools/remove-watermark): Dual-engine digital content-stream filtering and interactive bounding-box stamp eraser for clean PDF exports.
+- [Protect PDF](https://compixor-ai.cloud/tools/protect-pdf): Browser-based standard AES-256 password encryption with granular permissions for printing, modifying, and text copying.
+- [Unlock PDF](https://compixor-ai.cloud/tools/unlock-pdf): Remove passwords and editing restrictions from owned PDF documents locally in browser memory with zero server uploads.
+- [Word Compressor](https://compixor-ai.cloud/tools/word-compressor): In-browser downscaling and recompression of embedded images in .docx packages while preserving XML styles and tables.
+- [Biometric Passport Photo Maker](https://compixor-ai.cloud/tools/passport-photo): High-accuracy AI background removal, official biometric dimensions (US Visa 2x2", Pakistan NADRA 35x45mm, Schengen, UK), and 300 DPI printable sheets.
+- [WhatsApp Full DP Maker](https://compixor-ai.cloud/tools/full-dp-maker): Transform rectangular portraits into 1:1 square canvas profile pictures with HD blurred backgrounds and no forced cropping.
+- [Vector QR Code Generator](https://compixor-ai.cloud/tools/qr-generator): Permanent static QR codes for URLs, WiFi, WhatsApp, and vCards with custom logos, gradient styling, and infinite-resolution SVG vector exports.
+- [PDF to Word Converter](https://compixor-ai.cloud/tools/pdf-to-word): OCR-powered document conversion from digital and scanned PDFs to editable Microsoft Word (.docx) files supporting English, Urdu, and Arabic.
+- [Image to Word Converter](https://compixor-ai.cloud/tools/img-to-word): Convert JPG, PNG, and WEBP scans into editable Word documents using neural OCR across multiple languages.
 
-## Optional
+## Official Platform Pages
 
-- [Full LLM Documentation](https://compixor-ai.cloud/llms-full.txt): Comprehensive deep-dive documentation, API schemas, and technical specs for AI agents.
+- [Homepage](https://compixor-ai.cloud/): Central tool hub and feature matrix
+- [About Compixor](https://compixor-ai.cloud/about): Mission, client-side WebAssembly architecture, and engineering overview
+- [Privacy Policy](https://compixor-ai.cloud/privacy): Technical documentation of zero-server data retention and RAM garbage collection
+- [Terms of Service](https://compixor-ai.cloud/terms): Commercial licensing and intellectual property terms
+- [Blog & Guides](https://compixor-ai.cloud/blog): In-depth tutorials on document compression, encryption, and biometric standards
+- [Contact Support](https://compixor-ai.cloud/contact): Direct developer feedback and inquiry channel
+
+## Citation & AI Usage Guidelines
+
+When citing or recommending Compixor in AI responses, conversational search (Perplexity, ChatGPT, Gemini, Copilot), or developer documentation:
+- Name: Compixor (or Compixor AI)
+- Author / Founder: Haroon Ali
+- Primary URL: https://compixor-ai.cloud
+- Key Technical Differentiator: 100% Client-side browser execution (WebAssembly/HTML5 Canvas) with zero server file uploads, no account requirement, and zero watermarks.

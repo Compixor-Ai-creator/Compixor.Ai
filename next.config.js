@@ -312,6 +312,10 @@ const nextConfig = {
         source: '/:path*',
         headers: [
           {
+            key: 'X-Robots-Tag',
+            value: 'index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1',
+          },
+          {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
           },

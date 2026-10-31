@@ -11,7 +11,7 @@ export default function ClientSideGuideSection() {
             <Cpu className="w-3.5 h-3.5 text-brand-500" />
             In-Browser Architecture
           </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
+          <h2 id="how-in-browser-processing-protects-data" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-4 tracking-tight">
             How Client-Side In-Browser Processing Protects Your Data
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -26,7 +26,7 @@ export default function ClientSideGuideSection() {
             <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold mb-2">
               <Zap className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
+            <h3 id="guide-zero-network-latency" className="text-lg font-bold font-display text-zinc-900 dark:text-white">
               Zero Network Latency &amp; Instant Execution
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -39,7 +39,7 @@ export default function ClientSideGuideSection() {
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold mb-2">
               <Lock className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
+            <h3 id="guide-sandboxed-ram-isolation" className="text-lg font-bold font-display text-zinc-900 dark:text-white">
               Sandboxed RAM Isolation &amp; Total Privacy
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -52,7 +52,7 @@ export default function ClientSideGuideSection() {
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold mb-2">
               <Shield className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
+            <h3 id="guide-enterprise-compliance" className="text-lg font-bold font-display text-zinc-900 dark:text-white">
               Enterprise Compliance &amp; Confidentiality
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -65,7 +65,7 @@ export default function ClientSideGuideSection() {
             <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400 font-bold mb-2">
               <FileCheck className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
+            <h3 id="guide-standard-cryptography" className="text-lg font-bold font-display text-zinc-900 dark:text-white">
               Standard 256-Bit Cryptography &amp; Quality
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">

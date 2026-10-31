@@ -1717,65 +1717,120 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
 }
 
 /**
- * Returns Homepage JSON-LD schemas:
- * - WebSite schema
- * - Organization schema (Compixor AI, logo)
- * - ItemList schema listing all 11 tools
+ * Returns Homepage JSON-LD schemas covering all 10 recommended properties:
+ * - WebSite schema with SearchAction
+ * - Organization schema (Compixor AI, logo, social links, contactPoint)
+ * - Person schema (Haroon Ali, founder, sameAs)
+ * - WebPage schema with speakable, datePublished, dateModified
+ * - BreadcrumbList schema
+ * - ItemList schema listing all tools
  */
 export function getHomepageSchemas(): Record<string, any>[] {
   const toolKeys = Object.keys(seoConfig) as ToolSlug[];
 
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${BASE_URL}/#organization`,
+    name: 'Compixor AI',
+    url: BASE_URL,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${BASE_URL}/brand/logo-512.png`,
+      width: 512,
+      height: 512,
+    },
+    email: 'support@compixor-ai.cloud',
+    sameAs: [
+      'https://github.com/compixor',
+      'https://www.linkedin.com/company/compixor-ai',
+      'https://github.com/Compixor-Ai-creator',
+    ],
+    founder: {
+      '@id': `${BASE_URL}/#author`,
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: 'support@compixor-ai.cloud',
+      url: `${BASE_URL}/contact`,
+      availableLanguage: ['en', 'English'],
+    },
+    description:
+      'Free, privacy-first document and media toolkit with zero permanent storage developed by Haroon Ali.',
+  };
+
+  const personSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': `${BASE_URL}/#author`,
+    name: AUTHOR_NAME,
+    jobTitle: 'Founder & Lead Developer',
+    worksFor: { '@id': `${BASE_URL}/#organization` },
+    url: `${BASE_URL}/about`,
+    sameAs: [
+      'https://www.linkedin.com/in/haroon-ali',
+      'https://github.com/haroon-ali',
+    ],
+  };
+
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Compixor AI',
+    '@id': `${BASE_URL}/#website`,
+    name: 'Compixor - Free Online PDF, Word & Photo Tools',
     alternateName: ['Compixor', 'Compixor AI', 'Compixor.Ai'],
     url: BASE_URL,
     description: homepageSeoData.description,
-    author: {
-      '@type': 'Organization',
-      name: 'Compixor AI',
-      url: BASE_URL,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Compixor AI',
-      url: BASE_URL,
-      logo: `${BASE_URL}/brand/logo-512.png`,
-    },
+    publisher: { '@id': `${BASE_URL}/#organization` },
+    inLanguage: 'en',
     image: OG_IMAGE_URL,
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
+        urlTemplate: `${BASE_URL}/?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
   };
 
-  const organizationSchema = {
+  const webpageSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Compixor AI',
+    '@type': 'WebPage',
+    '@id': `${BASE_URL}/#webpage`,
     url: BASE_URL,
-    logo: `${BASE_URL}/brand/logo-512.png`,
-    email: 'support@compixor-ai.cloud',
-    sameAs: ['https://github.com/Compixor-Ai-creator'],
-    founder: {
-      '@type': 'Person',
-      name: AUTHOR_NAME,
-      jobTitle: 'Founder & Lead Developer',
-      url: `${BASE_URL}/about`,
+    name: 'Free Online PDF Tools - Private & Fast | Compixor',
+    description: homepageSeoData.description,
+    isPartOf: { '@id': `${BASE_URL}/#website` },
+    author: { '@id': `${BASE_URL}/#author` },
+    publisher: { '@id': `${BASE_URL}/#organization` },
+    datePublished: '2026-01-15T00:00:00Z',
+    dateModified: '2026-10-31T13:43:48Z',
+    inLanguage: 'en',
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['#hero-summary', '#what-is-compixor', '#faq-section'],
     },
-    contactPoint: {
-      '@type': 'ContactPoint',
-      contactType: 'Customer Support',
-      email: 'support@compixor-ai.cloud',
-      url: `${BASE_URL}/contact`,
-    },
-    description:
-      'Free, privacy-first document and media toolkit with zero permanent storage developed by Haroon Ali.',
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: BASE_URL,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'All PDF, Word & Photo Tools',
+        item: `${BASE_URL}/#tools`,
+      },
+    ],
   };
 
   const itemListSchema = {
@@ -1795,5 +1850,12 @@ export function getHomepageSchemas(): Record<string, any>[] {
     }),
   };
 
-  return [websiteSchema, organizationSchema, itemListSchema];
+  return [
+    organizationSchema,
+    personSchema,
+    websiteSchema,
+    webpageSchema,
+    breadcrumbSchema,
+    itemListSchema,
+  ];
 }
