@@ -21,7 +21,6 @@ import {
   Image as ImageIcon,
   Moon,
   Sun,
-  Sparkles,
   Menu,
   X,
 } from "lucide-react";
@@ -407,13 +406,19 @@ export default function CompixorNavbar() {
           className="cnav-bar"
         >
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <span className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">
-              COMPIXOR.AI
-            </span>
+          <Link
+            href="/"
+            aria-label="Compixor AI home"
+            className="flex items-center shrink-0 group"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.webp"
+              alt="Compixor AI logo"
+              width="44"
+              height="44"
+              className="h-[38px] lg:h-[44px] w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            />
           </Link>
 
           {/* Desktop Links (>= 1024px) */}
