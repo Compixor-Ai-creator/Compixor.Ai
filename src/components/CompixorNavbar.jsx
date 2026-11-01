@@ -35,7 +35,6 @@ const LINK_ICONS = {
 export default function CompixorNavbar() {
   const [dark, setDark] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   // Desktop dropdown state
   const [openGroup, setOpenGroup] = useState(null);
@@ -111,75 +110,162 @@ export default function CompixorNavbar() {
     } catch (e) {}
   };
 
-  // Slightly stronger glass after scrolling
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const glass = `
-    backdrop-blur-md backdrop-saturate-[180%]
-    border border-white/60 dark:border-white/15
-    shadow-[0_8px_32px_0_rgba(31,38,135,0.08),inset_0_1px_0_0_rgba(255,255,255,0.65)]
-    dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.45),inset_0_1px_0_0_rgba(255,255,255,0.12)]
-  `;
-
   return (
     <>
       <style
         dangerouslySetInnerHTML={{
           __html: `
+            /* Phase 1: One Shared Glass System */
+            :root {
+              --cglass-bg: rgba(255,255,255,0.72);
+              --cglass-border: rgba(255,255,255,0.65);
+              --cglass-blur: blur(28px) saturate(180%);
+              --cglass-shadow: 0 20px 50px rgba(88,60,200,0.18), inset 0 1px 0 rgba(255,255,255,0.7);
+              --cglass-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .7  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+            }
+            .dark {
+              --cglass-bg: rgba(20,18,35,0.72);
+              --cglass-border: rgba(255,255,255,0.10);
+              --cglass-shadow: 0 20px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+            }
+
+            /* shared surface: apply to header glass layer, dropdown, mobile panel */
+            .cglass {
+              background: var(--cglass-bg);
+              backdrop-filter: var(--cglass-blur);
+              -webkit-backdrop-filter: var(--cglass-blur);
+              border: 1px solid var(--cglass-border);
+              box-shadow: var(--cglass-shadow);
+              isolation: isolate;
+            }
+            /* frosted texture */
+            .cglass::after {
+              content: ""; position: absolute; inset: 0; border-radius: inherit;
+              background-image: var(--cglass-noise); background-size: 160px 160px;
+              opacity: .5; pointer-events: none; z-index: 0;
+            }
+            .cglass > * { position: relative; z-index: 1; }
+
+            @media (max-width: 1023px) { :root { --cglass-blur: blur(22px) saturate(170%); } }
+            @supports not (backdrop-filter: blur(1px)) { .cglass { background: rgba(255,255,255,0.96); } .dark .cglass { background: rgba(20,18,35,0.96); } }
+
+            /* Phase 2: Dedicated Header Structure */
+            .cnav-header {
+              position: fixed;
+              top: 12px;
+              left: 12px;
+              right: 12px;
+              max-width: 1280px;
+              margin: 0 auto;
+              z-index: 10000;
+              border-radius: 22px;
+            }
+            .cnav-glass {
+              position: absolute;
+              inset: 0;
+              border-radius: inherit;
+              z-index: 0;
+              pointer-events: none;
+            }
+            .cnav-bar {
+              position: relative;
+              z-index: 1;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 10px 18px;
+              border-radius: inherit;
+              color: #1a1530;
+            }
+            .dark .cnav-bar {
+              color: #f3f0ff;
+            }
+
+            /* Phase 3: Readability & High Contrast Typography */
+            .cnav-trigger, .cnav-desktop-link, .cnav-theme-btn {
+              color: #1a1530;
+            }
+            .dark .cnav-trigger, .dark .cnav-desktop-link, .dark .cnav-theme-btn {
+              color: #f3f0ff;
+            }
+
             /* Desktop Dropdowns (>= 1024px) */
             .cnav-group { position: relative; }
-            .cnav-trigger { display:flex; align-items:center; gap:6px; background:none; border:0; cursor:pointer; font: inherit; color: inherit; }
+            .cnav-trigger { display:flex; align-items:center; gap:6px; background:none; border:0; cursor:pointer; font: inherit; }
             .cnav-chev { transition: transform .2s ease; }
             .cnav-trigger[aria-expanded="true"] .cnav-chev { transform: rotate(180deg); }
 
             .cnav-drop {
-              position: absolute; top: calc(100% + 14px); left: 50%;
+              position: absolute;
+              top: calc(100% + 14px);
+              left: 50%;
               transform: translate(-50%, -6px);
-              min-width: 280px; padding: 8px; border-radius: 18px;
-              background: rgba(255,255,255,0.88);
-              backdrop-filter: blur(24px) saturate(180%);
-              -webkit-backdrop-filter: blur(24px) saturate(180%);
-              border: 1px solid rgba(255,255,255,0.6);
-              box-shadow: 0 20px 50px rgba(88,60,200,0.18);
-              opacity: 0; visibility: hidden; pointer-events: none;
+              min-width: 280px;
+              padding: 8px;
+              border-radius: 18px;
+              background: rgba(255, 255, 255, 0.80);
+              opacity: 0;
+              visibility: hidden;
+              pointer-events: none;
               transition: opacity .2s ease, transform .2s ease, visibility .2s;
               z-index: 10001;
             }
-            .cnav-drop.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, 0); }
-            .cnav-drop::before { content:""; position:absolute; top:-16px; left:0; right:0; height:16px; } /* hover bridge */
+            .cnav-drop.is-open {
+              opacity: 1;
+              visibility: visible;
+              pointer-events: auto;
+              transform: translate(-50%, 0);
+            }
+            .cnav-drop::before {
+              content: "";
+              position: absolute;
+              top: -16px;
+              left: 0;
+              right: 0;
+              height: 16px;
+            }
 
             .cnav-drop-item { display:block; padding:10px 14px; border-radius:12px; text-decoration:none; color:#1a1530; }
             .cnav-drop-item:hover { background: rgba(124,58,237,0.08); }
             .cnav-drop-title { display:block; font-weight:600; font-size:14px; }
-            .cnav-drop-desc  { display:block; font-size:12px; opacity:.65; }
+            .cnav-drop-desc  { display:block; font-size:12px; opacity: 0.7; }
 
-            .dark .cnav-drop { background: rgba(20,18,35,0.88); border-color: rgba(255,255,255,0.08); }
+            .dark .cnav-drop {
+              background: rgba(20, 18, 35, 0.82);
+              border-color: rgba(255, 255, 255, 0.10);
+            }
             .dark .cnav-drop-item { color:#f3f0ff; }
 
             /* Mobile Menu (< 1024px) */
             @media (max-width: 1023px) {
               .cnav-backdrop {
-                position: fixed; inset: 0; z-index: 9998;
-                background: rgba(20,10,50,0.25);
-                backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-                opacity: 0; pointer-events: none; transition: opacity .25s ease;
+                position: fixed;
+                inset: 0;
+                z-index: 9998;
+                background: rgba(20, 10, 50, 0.18);
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity .25s ease;
               }
               .cnav-backdrop.is-open { opacity: 1; pointer-events: auto; }
 
               .cnav-panel {
-                position: fixed; top: 84px; left: 12px; right: 12px;
-                max-height: calc(100dvh - 104px); overflow-y: auto; overscroll-behavior: contain;
-                padding: 10px; border-radius: 24px; z-index: 9999;
-                background: rgba(255,255,255,0.88);
-                backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
-                border: 1px solid rgba(255,255,255,0.6);
-                box-shadow: 0 20px 50px rgba(88,60,200,0.18);
-                opacity: 0; transform: translateY(-8px) scale(.98); pointer-events: none;
+                position: fixed;
+                top: 76px;
+                left: 12px;
+                right: 12px;
+                max-height: calc(100dvh - 96px);
+                overflow-y: auto;
+                overscroll-behavior: contain;
+                padding: 10px;
+                border-radius: 24px;
+                z-index: 9999;
+                background: rgba(255, 255, 255, 0.80);
+                opacity: 0;
+                transform: translateY(-8px) scale(.98);
+                pointer-events: none;
                 transition: opacity .25s ease, transform .25s ease;
               }
               .cnav-panel.is-open { opacity: 1; transform: none; pointer-events: auto; }
@@ -199,27 +285,36 @@ export default function CompixorNavbar() {
 
               .cnav-cta { display:block; margin-top:8px; padding:14px; text-align:center; font-weight:700; color:#fff; border-radius:14px; background: linear-gradient(135deg,#6d28d9,#7c3aed); text-decoration:none; }
 
-              .dark .cnav-panel { background: rgba(20,18,35,0.9); border-color: rgba(255,255,255,0.08); }
+              .dark .cnav-panel {
+                background: rgba(20, 18, 35, 0.82);
+                border-color: rgba(255, 255, 255, 0.10);
+              }
               .dark .cnav-acc-btn, .dark .cnav-link { color:#f3f0ff; }
               .dark .cnav-sub-item { color:#c9c2ee; }
             }
             @media (min-width: 1024px) { .cnav-panel, .cnav-backdrop { display:none; } }
             @media (prefers-reduced-motion: reduce) { .cnav-panel, .cnav-sub, .cnav-drop, .cnav-backdrop { transition: none; } }
-            @supports not (backdrop-filter: blur(1px)) { .cnav-panel, .cnav-drop { background: rgba(255,255,255,0.97); } }
+
+            /* Prefers Reduced Transparency Accessibility */
+            @media (prefers-reduced-transparency: reduce) {
+              .cglass {
+                background: rgba(255, 255, 255, 0.97) !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+              }
+              .dark .cglass {
+                background: rgba(20, 18, 35, 0.97) !important;
+              }
+            }
           `,
         }}
       />
-      <header className="fixed inset-x-0 top-4 z-[10000] mx-auto w-full max-w-[1280px] px-4">
+      <header className="cnav-header">
+        <div className="cnav-glass cglass" aria-hidden="true" />
         <nav
           ref={navRef}
           aria-label="Main Navigation"
-          className={`
-            flex items-center justify-between
-            rounded-2xl px-5 py-3
-            ${scrolled ? "bg-white/65 dark:bg-slate-900/60" : "bg-white/55 dark:bg-slate-900/50"}
-            ${glass}
-            transition-all duration-300
-          `}
+          className="cnav-bar"
         >
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group shrink-0">
@@ -245,7 +340,7 @@ export default function CompixorNavbar() {
                 >
                   <button
                     type="button"
-                    className="cnav-trigger flex items-center gap-1.5 rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200 whitespace-nowrap"
+                    className="cnav-trigger flex items-center gap-1.5 rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200 whitespace-nowrap"
                     aria-haspopup="true"
                     aria-expanded={openGroup === g.id}
                     onClick={() => setOpenGroup(openGroup === g.id ? null : g.id)}
@@ -256,7 +351,7 @@ export default function CompixorNavbar() {
                   </button>
 
                   <div
-                    className={`cnav-drop ${openGroup === g.id ? "is-open" : ""}`}
+                    className={`cnav-drop cglass ${openGroup === g.id ? "is-open" : ""}`}
                     role="menu"
                   >
                     {g.items.map((it) => (
@@ -283,7 +378,7 @@ export default function CompixorNavbar() {
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="flex items-center gap-1.5 rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200 whitespace-nowrap"
+                    className="cnav-desktop-link flex items-center gap-1.5 rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200 whitespace-nowrap"
                   >
                     {Icon && <Icon className={`h-4 w-4 ${linkMeta.accent}`} />}
                     <span>{l.label}</span>
@@ -300,8 +395,7 @@ export default function CompixorNavbar() {
               onClick={toggleTheme}
               aria-label="Toggle Dark Mode"
               className="
-                flex h-9 w-9 items-center justify-center rounded-xl
-                text-slate-700 dark:text-slate-200
+                cnav-theme-btn flex h-9 w-9 items-center justify-center rounded-xl
                 hover:bg-white/50 dark:hover:bg-white/10
                 border border-transparent hover:border-white/40
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
@@ -332,8 +426,7 @@ export default function CompixorNavbar() {
               aria-expanded={mobileOpen}
               aria-controls="cnav-mobile"
               className="
-                lg:hidden flex h-9 w-9 items-center justify-center rounded-xl
-                text-slate-700 dark:text-slate-200
+                cnav-theme-btn lg:hidden flex h-9 w-9 items-center justify-center rounded-xl
                 hover:bg-white/50 dark:hover:bg-white/10
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
                 transition-all
@@ -352,7 +445,7 @@ export default function CompixorNavbar() {
       />
       <nav
         id="cnav-mobile"
-        className={`cnav-panel ${mobileOpen ? "is-open" : ""}`}
+        className={`cnav-panel cglass ${mobileOpen ? "is-open" : ""}`}
         aria-hidden={!mobileOpen}
       >
         {NAV_GROUPS.map((g) => (
