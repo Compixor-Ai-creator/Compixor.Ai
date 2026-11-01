@@ -10,27 +10,45 @@ import {
   QrCode,
   BookOpen,
   Info,
+  ChevronDown,
+  FileDown,
+  Combine,
+  Stamp,
+  Eraser,
+  Lock,
+  Unlock,
+  FileType,
+  Image as ImageIcon,
   Moon,
   Sun,
   Sparkles,
   Menu,
   X,
-  ChevronDown,
 } from "lucide-react";
 import { NAV_GROUPS, NAV_LINKS } from "./nav-data";
 
-const GROUP_ICONS = {
-  pdf: { icon: Files, accent: "text-indigo-600 dark:text-indigo-400" },
-  word: { icon: FileText, accent: "text-purple-600 dark:text-purple-400" },
+const ICONS = {
+  Files,
+  FileText,
+  Camera,
+  Maximize2,
+  QrCode,
+  BookOpen,
+  Info,
+  FileDown,
+  Combine,
+  Stamp,
+  Eraser,
+  Lock,
+  Unlock,
+  FileType,
+  ImageIcon,
 };
 
-const LINK_ICONS = {
-  "/tools/passport-photo": { icon: Camera, accent: "text-slate-700 dark:text-slate-200" },
-  "/tools/full-dp-maker": { icon: Maximize2, accent: "text-slate-700 dark:text-slate-200" },
-  "/tools/qr-generator": { icon: QrCode, accent: "text-slate-700 dark:text-slate-200" },
-  "/blog": { icon: BookOpen, accent: "text-slate-700 dark:text-slate-200" },
-  "/about": { icon: Info, accent: "text-slate-700 dark:text-slate-200" },
-};
+function NavIcon({ name, size = 18 }) {
+  const Cmp = ICONS[name];
+  return Cmp ? <Cmp className="cnav-ico" size={size} strokeWidth={2} aria-hidden="true" /> : null;
+}
 
 export default function CompixorNavbar() {
   const [dark, setDark] = useState(false);
@@ -181,18 +199,46 @@ export default function CompixorNavbar() {
               color: #f3f0ff;
             }
 
-            /* Phase 3: Readability & High Contrast Typography */
-            .cnav-trigger, .cnav-desktop-link, .cnav-theme-btn {
+            /* Phase 3 & Icons CSS (icons must never shrink) */
+            .cnav-ico {
+              width: 18px;
+              height: 18px !important;
+              min-width: 18px;
+              min-height: 18px;
+              max-width: none;
+              flex: 0 0 18px;            /* never shrink in flex rows */
+              color: #7c3aed;            /* brand purple */
+              opacity: .95;
+              transform: none;
+            }
+            .dark .cnav-ico { color: #a78bfa; }
+            .cnav-chev {
+              width: 16px;
+              height: 16px !important;
+              min-width: 16px;
+              min-height: 16px;
+              flex: 0 0 16px;
+              opacity: .75;
+              transition: transform .2s ease;
+            }
+
+            /* desktop links / triggers */
+            .cnav-desktop-link, .cnav-link, .cnav-trigger {
+              display: inline-flex;
+              align-items: center;
+              gap: 8px;
+              white-space: nowrap;
               color: #1a1530;
             }
-            .dark .cnav-trigger, .dark .cnav-desktop-link, .dark .cnav-theme-btn {
+            .dark .cnav-desktop-link, .dark .cnav-link, .dark .cnav-trigger {
               color: #f3f0ff;
             }
+            .cnav-theme-btn { color: #1a1530; }
+            .dark .cnav-theme-btn { color: #f3f0ff; }
 
             /* Desktop Dropdowns (>= 1024px) */
             .cnav-group { position: relative; }
-            .cnav-trigger { display:flex; align-items:center; gap:6px; background:none; border:0; cursor:pointer; font: inherit; }
-            .cnav-chev { transition: transform .2s ease; }
+            .cnav-trigger { background:none; border:0; cursor:pointer; font: inherit; }
             .cnav-trigger[aria-expanded="true"] .cnav-chev { transform: rotate(180deg); }
 
             .cnav-drop {
@@ -225,18 +271,21 @@ export default function CompixorNavbar() {
               height: 16px;
             }
 
-            .cnav-drop-item { display:block; padding:10px 14px; border-radius:12px; text-decoration:none; color:#1a1530; }
+            /* dropdown items */
+            .cnav-drop-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; border-radius: 12px; text-decoration: none; color: #1a1530; }
             .cnav-drop-item:hover { background: rgba(124,58,237,0.08); }
-            .cnav-drop-title { display:block; font-weight:600; font-size:14px; }
-            .cnav-drop-desc  { display:block; font-size:12px; opacity: 0.7; }
+            .cnav-drop-item .cnav-ico { width: 16px; height: 16px !important; min-width: 16px; min-height: 16px; flex: 0 0 16px; margin-top: 3px; }
+            .cnav-drop-text { display: flex; flex-direction: column; }
+            .cnav-drop-title { display: block; font-weight: 600; font-size: 14px; }
+            .cnav-drop-desc  { display: block; font-size: 12px; opacity: 0.7; }
 
             .dark .cnav-drop {
               background: rgba(20, 18, 35, 0.82);
               border-color: rgba(255, 255, 255, 0.10);
             }
-            .dark .cnav-drop-item { color:#f3f0ff; }
+            .dark .cnav-drop-item { color: #f3f0ff; }
 
-            /* Mobile Menu (< 1024px) */
+            /* mobile: icon in a soft tile for easy recognition */
             @media (max-width: 1023px) {
               .cnav-backdrop {
                 position: fixed;
@@ -271,28 +320,69 @@ export default function CompixorNavbar() {
               .cnav-panel.is-open { opacity: 1; transform: none; pointer-events: auto; }
 
               .cnav-acc-btn, .cnav-link {
-                display:flex; align-items:center; justify-content:space-between;
-                width:100%; min-height:48px; padding:0 14px; background:none; border:0;
-                font: 600 16px/1 inherit; color:#1a1530; text-decoration:none; border-radius:14px; cursor:pointer;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                justify-content: flex-start;
+                width: 100%;
+                min-height: 48px;
+                padding: 0 14px;
+                background: none;
+                border: 0;
+                font: 600 16px/1 inherit;
+                color: #1a1530;
+                text-decoration: none;
+                border-radius: 14px;
+                cursor: pointer;
               }
               .cnav-acc-btn:active, .cnav-link:active { background: rgba(124,58,237,0.08); }
+              .cnav-acc-btn .cnav-chev { margin-left: auto; }
               .cnav-acc-btn[aria-expanded="true"] .cnav-chev { transform: rotate(180deg); }
 
-              .cnav-sub { max-height:0; overflow:hidden; opacity:0; transition: max-height .3s ease, opacity .3s ease; }
-              .cnav-sub.is-open { max-height: 420px; opacity: 1; }
-              .cnav-sub-item { display:block; min-height:44px; padding:12px 14px 12px 30px; font-size:15px; color:#4b4570; text-decoration:none; border-radius:12px; }
-              .cnav-sub-item:active { background: rgba(124,58,237,0.08); }
+              .cnav-acc-btn .cnav-ico, .cnav-panel .cnav-link .cnav-ico {
+                width: 22px;
+                height: 22px !important;
+                min-width: 22px;
+                min-height: 22px;
+                flex: 0 0 22px;
+              }
 
-              .cnav-cta { display:block; margin-top:8px; padding:14px; text-align:center; font-weight:700; color:#fff; border-radius:14px; background: linear-gradient(135deg,#6d28d9,#7c3aed); text-decoration:none; }
+              .cnav-sub { max-height: 0; overflow: hidden; opacity: 0; transition: max-height .3s ease, opacity .3s ease; }
+              .cnav-sub.is-open { max-height: 420px; opacity: 1; }
+              .cnav-sub-item { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 12px 14px 12px 20px; font-size: 15px; color: #4b4570; text-decoration: none; border-radius: 12px; }
+              .cnav-sub-item:active { background: rgba(124,58,237,0.08); }
+              .cnav-sub-item .cnav-ico {
+                width: 16px;
+                height: 16px !important;
+                min-width: 16px;
+                min-height: 16px;
+                flex: 0 0 16px;
+              }
+
+              .cnav-cta { display: block; margin-top: 8px; padding: 14px; text-align: center; font-weight: 700; color: #fff; border-radius: 14px; background: linear-gradient(135deg,#6d28d9,#7c3aed); text-decoration: none; }
 
               .dark .cnav-panel {
                 background: rgba(20, 18, 35, 0.82);
                 border-color: rgba(255, 255, 255, 0.10);
               }
-              .dark .cnav-acc-btn, .dark .cnav-link { color:#f3f0ff; }
-              .dark .cnav-sub-item { color:#c9c2ee; }
+              .dark .cnav-acc-btn, .dark .cnav-link { color: #f3f0ff; }
+              .dark .cnav-sub-item { color: #c9c2ee; }
             }
-            @media (min-width: 1024px) { .cnav-panel, .cnav-backdrop { display:none; } }
+
+            /* narrow desktops: keep icons, tighten spacing so the bar does not overflow */
+            @media (min-width: 1024px) and (max-width: 1279px) {
+              .cnav-bar { padding: 8px 12px; }
+              .cnav-desktop-link, .cnav-link, .cnav-trigger {
+                gap: 5px !important;
+                font-size: 12.5px !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
+              }
+              .cnav-ico { width: 16px; height: 16px !important; min-width: 16px; min-height: 16px; flex: 0 0 16px; }
+              .cnav-chev { width: 14px; height: 14px !important; min-width: 14px; flex: 0 0 14px; }
+            }
+
+            @media (min-width: 1024px) { .cnav-panel, .cnav-backdrop { display: none; } }
             @media (prefers-reduced-motion: reduce) { .cnav-panel, .cnav-sub, .cnav-drop, .cnav-backdrop { transition: none; } }
 
             /* Prefers Reduced Transparency Accessibility */
@@ -328,64 +418,59 @@ export default function CompixorNavbar() {
 
           {/* Desktop Links (>= 1024px) */}
           <ul className="hidden lg:flex items-center gap-1">
-            {NAV_GROUPS.map((g) => {
-              const groupMeta = GROUP_ICONS[g.id];
-              const Icon = groupMeta?.icon;
-              return (
-                <li
-                  key={g.id}
-                  className="cnav-group"
-                  onMouseEnter={() => openNow(g.id)}
-                  onMouseLeave={closeSoon}
+            {NAV_GROUPS.map((g) => (
+              <li
+                key={g.id}
+                className="cnav-group"
+                onMouseEnter={() => openNow(g.id)}
+                onMouseLeave={closeSoon}
+              >
+                <button
+                  type="button"
+                  className="cnav-trigger rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
+                  aria-haspopup="true"
+                  aria-expanded={openGroup === g.id}
+                  onClick={() => setOpenGroup(openGroup === g.id ? null : g.id)}
                 >
-                  <button
-                    type="button"
-                    className="cnav-trigger flex items-center gap-1.5 rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200 whitespace-nowrap"
-                    aria-haspopup="true"
-                    aria-expanded={openGroup === g.id}
-                    onClick={() => setOpenGroup(openGroup === g.id ? null : g.id)}
-                  >
-                    {Icon && <Icon className={`h-4 w-4 ${groupMeta.accent}`} />}
-                    <span>{g.label}</span>
-                    <ChevronDown className="cnav-chev" size={14} />
-                  </button>
+                  <NavIcon name={g.icon} size={18} />
+                  <span>{g.label}</span>
+                  <ChevronDown className="cnav-chev" size={16} />
+                </button>
 
-                  <div
-                    className={`cnav-drop cglass ${openGroup === g.id ? "is-open" : ""}`}
-                    role="menu"
-                  >
-                    {g.items.map((it) => (
-                      <Link
-                        key={it.href}
-                        href={it.href}
-                        role="menuitem"
-                        className="cnav-drop-item"
-                        onClick={() => setOpenGroup(null)}
-                      >
+                <div
+                  className={`cnav-drop cglass ${openGroup === g.id ? "is-open" : ""}`}
+                  role="menu"
+                >
+                  {g.items.map((it) => (
+                    <Link
+                      key={it.href}
+                      href={it.href}
+                      role="menuitem"
+                      className="cnav-drop-item"
+                      onClick={() => setOpenGroup(null)}
+                    >
+                      <NavIcon name={it.icon} size={16} />
+                      <div className="cnav-drop-text">
                         <span className="cnav-drop-title">{it.label}</span>
                         <span className="cnav-drop-desc">{it.desc}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </li>
-              );
-            })}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </li>
+            ))}
 
-            {NAV_LINKS.map((l) => {
-              const linkMeta = LINK_ICONS[l.href];
-              const Icon = linkMeta?.icon;
-              return (
-                <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    className="cnav-desktop-link flex items-center gap-1.5 rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200 whitespace-nowrap"
-                  >
-                    {Icon && <Icon className={`h-4 w-4 ${linkMeta.accent}`} />}
-                    <span>{l.label}</span>
-                  </Link>
-                </li>
-              );
-            })}
+            {NAV_LINKS.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  className="cnav-desktop-link rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
+                >
+                  <NavIcon name={l.icon} size={18} />
+                  <span>{l.label}</span>
+                </Link>
+              </li>
+            ))}
           </ul>
 
           {/* Right Actions */}
@@ -456,6 +541,7 @@ export default function CompixorNavbar() {
               aria-expanded={mobGroup === g.id}
               onClick={() => setMobGroup(mobGroup === g.id ? null : g.id)}
             >
+              <NavIcon name={g.icon} size={22} />
               <span>{g.label}</span>
               <ChevronDown size={18} className="cnav-chev" />
             </button>
@@ -467,7 +553,8 @@ export default function CompixorNavbar() {
                   className="cnav-sub-item"
                   onClick={() => setMobileOpen(false)}
                 >
-                  {it.label}
+                  <NavIcon name={it.icon} size={16} />
+                  <span>{it.label}</span>
                 </Link>
               ))}
             </div>
@@ -480,7 +567,8 @@ export default function CompixorNavbar() {
             className="cnav-link"
             onClick={() => setMobileOpen(false)}
           >
-            {l.label}
+            <NavIcon name={l.icon} size={22} />
+            <span>{l.label}</span>
           </Link>
         ))}
         <Link
