@@ -8,10 +8,6 @@
   html {
     /* Prevent blank background during mobile overscroll rubber-banding */
     background-color: #ffffff;
-    /* Allow native multi-touch pinch-zoom and fluid panning without gesture locking */
-    touch-action: manipulation;
-    /* Use clip instead of hidden: does not establish a restrictive scroll container, preventing tile drops & zoom freezing */
-    overflow-x: clip;
   }
 
   html.dark {
@@ -19,9 +15,7 @@
   }
 
   body {
-    overflow-x: clip;
     min-height: 100%;
-    touch-action: manipulation;
   }
 
   /* Desktop-only smooth scrolling & stable scrollbar gutter to prevent mobile touch lag, zoom freeze & tile dropping */
