@@ -47,7 +47,6 @@ import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import RelatedTools from '@/components/RelatedTools';
-import PassportBeforeAfter from '@/components/PassportBeforeAfter';
 import BeforeAfterSlider, { DEFAULT_BG_PRESETS } from '@/components/BeforeAfterSlider';
 import {
   removeBackground,
@@ -456,9 +455,7 @@ export default function PassportPhotoPage() {
   const [isTooCloseWarning, setIsTooCloseWarning] = useState(false);
   const [uploadErrorMessage, setUploadErrorMessage] = useState<string | null>(null);
   const [resetSignal, setResetSignal] = useState(0);
-
-  // Hero Demo Showcase & Live Before/After Comparison Slider state
-  const heroFileInputRef = useRef<HTMLInputElement | null>(null);
+  // Live Before/After Comparison Slider state
 
   const [isCompareMode, setIsCompareMode] = useState<boolean>(false);
   const [compareBeforeUrl, setCompareBeforeUrl] = useState<string | null>(null);
@@ -1416,14 +1413,6 @@ export default function PassportPhotoPage() {
       setResetSignal((s) => s + 1);
     }
   }, [clearTransformState, autoFitBiometric, compositeFinalCanvas]);
-
-  const handleHeroFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleFileDrop(file);
-      e.target.value = '';
-    }
-  };
 
   // Pan interactions (Desktop & Adjust mode)
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -2492,48 +2481,8 @@ export default function PassportPhotoPage() {
                 </div>
               </div>
 
-              {/* DUAL-MODE PREVIEW & COMPARISON SLIDER */}
-              {!imageSrc ? (
-                /* MODE A: HERO SHOWCASE (When no user photo is uploaded yet) */
-                <div className="space-y-4">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>AI Background Removal Showcase</span>
-                  </div>
-
-                  <div className="mx-auto" style={{ width: `${previewDimensions.width}px` }}>
-                    <BeforeAfterSlider
-                      beforeSrc="/images/demo/passport-demo-before.jpg?v=2"
-                      afterSrc="/images/demo/passport-demo-after.jpg?v=2"
-
-                      showColorSwitcher={false}
-                      showBiometricGuide={true}
-                      aspectRatio={`${previewDimensions.width} / ${previewDimensions.height}`}
-                      beforeLabel="Before"
-                      afterLabel="After"
-                      className="w-full"
-                    />
-                  </div>
-
-                  {/* Direct Upload CTA button */}
-                  <button
-                    type="button"
-                    onClick={() => heroFileInputRef.current?.click()}
-                    className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-xs font-bold shadow-glow cursor-pointer mt-1"
-                  >
-                    <Upload className="w-4 h-4" />
-                    Upload Your Photo to Try This Engine
-                  </button>
-                  <input
-                    type="file"
-                    ref={heroFileInputRef}
-                    onChange={handleHeroFileChange}
-                    accept="image/jpeg,image/png,image/webp,image/gif"
-                    className="hidden"
-                  />
-                </div>
-              ) : isCompareMode && compareBeforeUrl && compareAfterUrl ? (
-                /* MODE B: LIVE USER RESULT COMPARE SLIDER */
+              {isCompareMode && compareBeforeUrl && compareAfterUrl ? (
+                /* LIVE USER RESULT COMPARE SLIDER (STUDIO MODE ONLY) */
                 <div className="space-y-4">
                   <div className="mx-auto" style={{ width: `${previewDimensions.width}px` }}>
                     <BeforeAfterSlider
@@ -2563,7 +2512,7 @@ export default function PassportPhotoPage() {
                   </div>
                 </div>
               ) : (
-                /* MODE C: LIVE USER STUDIO INTERACTIVE CANVAS */
+                /* LIVE BIOMETRIC STUDIO CANVAS & TEMPLATE */
                 <div
                   ref={previewBoxRef}
                   className={`relative mx-auto rounded-2xl overflow-hidden shadow-lg border border-zinc-300 dark:border-zinc-700 select-none ${
@@ -2589,6 +2538,96 @@ export default function PassportPhotoPage() {
                   onTouchEnd={handleMouseUp}
                 >
                   <canvas ref={canvasRef} className="w-full h-full object-contain block" />
+
+                  {!imageSrc && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
+                      {/* Authentic Biometric Sample Portrait */}
+                      {/* Generic Passport Photo Illustration – no real person */}
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-sky-50 to-white dark:from-zinc-900 dark:to-zinc-950">
+                        <svg
+                          viewBox="0 0 200 260"
+                          className="w-3/4 h-3/4 opacity-80 dark:opacity-60"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          {/* Clean White Background */}
+                          <rect width="200" height="260" fill="white" rx="8" />
+                          {/* Head / Hair silhouette */}
+                          <ellipse cx="100" cy="88" rx="44" ry="52" fill="#cbd5e1" />
+                          {/* Face */}
+                          <ellipse cx="100" cy="100" rx="36" ry="44" fill="#e2e8f0" />
+                          {/* Neck */}
+                          <rect x="88" y="140" width="24" height="20" rx="4" fill="#e2e8f0" />
+                          {/* Shoulders / formal top */}
+                          <path d="M40,170 Q100,200 160,170 L175,260 L25,260 Z" fill="#94a3b8" />
+                          {/* Shirt collar */}
+                          <polygon points="100,160 86,175 100,195 114,175" fill="#f8fafc" />
+                          {/* Eyes */}
+                          <ellipse cx="86" cy="95" rx="5" ry="3.5" fill="#94a3b8" />
+                          <ellipse cx="114" cy="95" rx="5" ry="3.5" fill="#94a3b8" />
+                          {/* Neutral mouth */}
+                          <line x1="90" y1="118" x2="110" y2="118" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" />
+                          {/* Subtle guide lines */}
+                          <line x1="0" y1="95" x2="200" y2="95" stroke="#3b82f6" strokeWidth="0.6" strokeDasharray="4,4" opacity="0.5" />
+                          <line x1="100" y1="0" x2="100" y2="260" stroke="#3b82f6" strokeWidth="0.6" strokeDasharray="4,4" opacity="0.4" />
+                        </svg>
+                      </div>
+
+                      {/* Official Biometric Guidelines Overlay across sample */}
+                      <div className="absolute inset-0 pointer-events-none border-2 border-brand-500/50 rounded-2xl overflow-hidden">
+                        {/* Vertical Center Axis */}
+                        <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 border-l border-dashed border-cyan-400/70" />
+
+                        {/* Head Crown Guide */}
+                        <div
+                          className="absolute w-full border-t border-dashed border-amber-400/90 flex items-center justify-end pr-2"
+                          style={{ top: `${activePreset.biometricSpec.topMarginPercent}%` }}
+                        >
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-amber-900 bg-amber-300/95 px-1.5 py-0.5 rounded shadow-xs">
+                            Crown
+                          </span>
+                        </div>
+
+                        {/* Oval Biometric Head Enclosure (70-80% height guideline) */}
+                        <div
+                          className="absolute border-2 border-dashed border-brand-400/90 rounded-full shadow-xs"
+                          style={{
+                            top: `${activePreset.biometricSpec.topMarginPercent}%`,
+                            left: `${(100 - activePreset.biometricSpec.headWidthPercent) / 2}%`,
+                            width: `${activePreset.biometricSpec.headWidthPercent}%`,
+                            height: `${activePreset.biometricSpec.headHeightPercent}%`,
+                          }}
+                        />
+
+                        {/* Eye Level Guide */}
+                        <div
+                          className="absolute w-full border-t border-dashed border-emerald-400/90 flex items-center justify-start pl-2"
+                          style={{ top: `${activePreset.biometricSpec.eyeLinePercent}%` }}
+                        >
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-950 bg-emerald-300/95 px-1.5 py-0.5 rounded shadow-xs">
+                            Eyes {activePreset.biometricSpec.eyeLinePercent}%
+                          </span>
+                        </div>
+
+                        {/* Chin Guide */}
+                        <div
+                          className="absolute w-full border-t border-dashed border-amber-400/90 flex items-center justify-end pr-2"
+                          style={{
+                            top: `${activePreset.biometricSpec.topMarginPercent + activePreset.biometricSpec.headHeightPercent}%`,
+                          }}
+                        >
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-amber-900 bg-amber-300/95 px-1.5 py-0.5 rounded shadow-xs">
+                            Chin
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Subtle upload badge indicator */}
+                      <div className="absolute bottom-3 inset-x-3 py-2 px-3 rounded-xl bg-black/65 backdrop-blur-md border border-white/20 text-white text-center shadow-lg">
+                        <p className="text-[11px] font-semibold text-white/95">Biometric Studio Preview</p>
+                        <p className="text-[9px] text-zinc-300">Upload your portrait to align & export</p>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Loading UX */}
                   {isSegmenting && (
@@ -3104,9 +3143,6 @@ export default function PassportPhotoPage() {
           <ToolFeedback toolName="passport-photo" />
         </div>
       )}
-
-      {/* Before / After Visual Proof Mockup */}
-      <PassportBeforeAfter />
 
       {/* Official Compliance Standards */}
       <section className="mt-14">
