@@ -455,7 +455,8 @@ export default function PassportPhotoPage() {
   const [isTooCloseWarning, setIsTooCloseWarning] = useState(false);
   const [uploadErrorMessage, setUploadErrorMessage] = useState<string | null>(null);
   const [resetSignal, setResetSignal] = useState(0);
-  // Live Before/After Comparison Slider state
+  // Hero Demo Showcase & Live Before/After Comparison Slider state
+  const heroFileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [isCompareMode, setIsCompareMode] = useState<boolean>(false);
   const [compareBeforeUrl, setCompareBeforeUrl] = useState<string | null>(null);
@@ -735,8 +736,10 @@ export default function PassportPhotoPage() {
   useEffect(() => {
     if (isCompareMode) {
       updateCompareUrls();
+    } else if (imageSrc) {
+      compositeFinalCanvas();
     }
-  }, [isCompareMode, updateCompareUrls]);
+  }, [isCompareMode, imageSrc, updateCompareUrls, compositeFinalCanvas]);
 
   // Face detection helper & Biometric Auto-Aligner (ICAO 9303 70-80% head height alignment)
   // Supports both HTMLCanvasElement (cutout) and HTMLImageElement (raw photo)
@@ -1414,6 +1417,14 @@ export default function PassportPhotoPage() {
     }
   }, [clearTransformState, autoFitBiometric, compositeFinalCanvas]);
 
+  const handleHeroFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileDrop(file);
+      e.target.value = '';
+    }
+  };
+
   // Pan interactions (Desktop & Adjust mode)
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!imageSrc || !isAdjustMode) return;
@@ -2026,8 +2037,13 @@ export default function PassportPhotoPage() {
                       onClick={() => {
                         if (!isCompareMode) {
                           updateCompareUrls();
+                          setIsCompareMode(true);
+                        } else {
+                          setIsCompareMode(false);
+                          requestAnimationFrame(() => {
+                            compositeFinalCanvas();
+                          });
                         }
-                        setIsCompareMode(!isCompareMode);
                       }}
                       className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer min-h-[38px] ${
                         isCompareMode
@@ -2462,8 +2478,13 @@ export default function PassportPhotoPage() {
                       onClick={() => {
                         if (!isCompareMode) {
                           updateCompareUrls();
+                          setIsCompareMode(true);
+                        } else {
+                          setIsCompareMode(false);
+                          requestAnimationFrame(() => {
+                            compositeFinalCanvas();
+                          });
                         }
-                        setIsCompareMode(!isCompareMode);
                       }}
                       className={`px-2.5 py-1 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 cursor-pointer ${
                         isCompareMode
@@ -2481,115 +2502,158 @@ export default function PassportPhotoPage() {
                 </div>
               </div>
 
-              {isCompareMode && compareBeforeUrl && compareAfterUrl ? (
-                /* LIVE USER RESULT COMPARE SLIDER (STUDIO MODE ONLY) */
+              {/* DUAL-MODE PREVIEW & COMPARISON SLIDER */}
+              {!imageSrc ? (
+                /* MODE A: HERO SHOWCASE (When no user photo is uploaded yet) */
                 <div className="space-y-4">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>AI Background Removal Showcase</span>
+                  </div>
+
                   <div className="mx-auto" style={{ width: `${previewDimensions.width}px` }}>
                     <BeforeAfterSlider
-                      beforeSrc={compareBeforeUrl}
-                      afterSrc={compareAfterUrl}
-                      selectedBgColor={bgColor}
-                      onBgColorChange={(color) => setBgColor(color)}
+                      beforeSrc="/images/demo/passport-demo-before.jpg?v=2"
+                      afterSrc="/images/demo/passport-demo-after.jpg?v=2"
                       showColorSwitcher={false}
-                      showBiometricGuide={showGuidelines}
+                      showBiometricGuide={true}
                       aspectRatio={`${previewDimensions.width} / ${previewDimensions.height}`}
-                      colorOptions={DEFAULT_BG_PRESETS}
-                      beforeLabel="Original Upload"
-                      afterLabel="Clean Cutout"
+                      beforeLabel="Before"
+                      afterLabel="After"
                       className="w-full"
                     />
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 pt-1 px-1">
-                    <span>Inspecting hair-edge matting against backdrop</span>
-                    <button
-                      type="button"
-                      onClick={() => setIsCompareMode(false)}
-                      className="text-brand-500 hover:text-brand-600 font-bold underline cursor-pointer"
-                    >
-                      Return to Studio Canvas
-                    </button>
-                  </div>
+                  {/* Direct Upload CTA button */}
+                  <button
+                    type="button"
+                    onClick={() => heroFileInputRef.current?.click()}
+                    className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-xs font-bold shadow-glow cursor-pointer mt-1"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Upload Your Photo to Try This Engine
+                  </button>
+                  <input
+                    type="file"
+                    ref={heroFileInputRef}
+                    onChange={handleHeroFileChange}
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                  />
                 </div>
               ) : (
-                /* LIVE BIOMETRIC STUDIO CANVAS & TEMPLATE */
-                <div
-                  ref={previewBoxRef}
-                  className={`relative mx-auto rounded-2xl overflow-hidden shadow-lg border border-zinc-300 dark:border-zinc-700 select-none ${
-                    imageSrc && isAdjustMode ? 'cursor-grab active:cursor-grabbing ring-2 ring-brand-500' : ''
-                  }`}
-                  style={{
-                    width: `${previewDimensions.width}px`,
-                    height: `${previewDimensions.height}px`,
-                    touchAction: isAdjustMode ? 'none' : 'pan-y',
-                    backgroundColor: previewTab === 'cutout' || bgColor === 'transparent' ? '#ffffff' : bgColor,
-                    backgroundImage: (previewTab === 'cutout' || bgColor === 'transparent')
-                      ? 'linear-gradient(45deg, #e2e8f0 25%, transparent 25%), linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e2e8f0 75%), linear-gradient(-45deg, transparent 75%, #e2e8f0 75%)'
-                      : 'none',
-                    backgroundSize: '16px 16px',
-                    backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px',
-                  }}
-                  onMouseDown={handleMouseDown}
-                  onMouseMove={handleMouseMove}
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
-                  onTouchStart={handleTouchStart}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleMouseUp}
-                >
-                  <canvas ref={canvasRef} className="w-full h-full object-contain block" />
-
-                  {!imageSrc && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
-                      {/* Authentic Biometric Sample Portrait */}
-                      {/* Generic Passport Photo Illustration – no real person */}
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-sky-50 to-white dark:from-zinc-900 dark:to-zinc-950">
-                        <svg
-                          viewBox="0 0 200 260"
-                          className="w-3/4 h-3/4 opacity-80 dark:opacity-60"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          {/* Clean White Background */}
-                          <rect width="200" height="260" fill="white" rx="8" />
-                          {/* Head / Hair silhouette */}
-                          <ellipse cx="100" cy="88" rx="44" ry="52" fill="#cbd5e1" />
-                          {/* Face */}
-                          <ellipse cx="100" cy="100" rx="36" ry="44" fill="#e2e8f0" />
-                          {/* Neck */}
-                          <rect x="88" y="140" width="24" height="20" rx="4" fill="#e2e8f0" />
-                          {/* Shoulders / formal top */}
-                          <path d="M40,170 Q100,200 160,170 L175,260 L25,260 Z" fill="#94a3b8" />
-                          {/* Shirt collar */}
-                          <polygon points="100,160 86,175 100,195 114,175" fill="#f8fafc" />
-                          {/* Eyes */}
-                          <ellipse cx="86" cy="95" rx="5" ry="3.5" fill="#94a3b8" />
-                          <ellipse cx="114" cy="95" rx="5" ry="3.5" fill="#94a3b8" />
-                          {/* Neutral mouth */}
-                          <line x1="90" y1="118" x2="110" y2="118" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" />
-                          {/* Subtle guide lines */}
-                          <line x1="0" y1="95" x2="200" y2="95" stroke="#3b82f6" strokeWidth="0.6" strokeDasharray="4,4" opacity="0.5" />
-                          <line x1="100" y1="0" x2="100" y2="260" stroke="#3b82f6" strokeWidth="0.6" strokeDasharray="4,4" opacity="0.4" />
-                        </svg>
+                /* STUDIO PREVIEW & COMPARISON CONTAINER */
+                <div className="space-y-4">
+                  {/* MODE B: LIVE USER RESULT COMPARE SLIDER */}
+                  {isCompareMode && compareBeforeUrl && compareAfterUrl && (
+                    <div className="space-y-4">
+                      <div className="mx-auto" style={{ width: `${previewDimensions.width}px` }}>
+                        <BeforeAfterSlider
+                          beforeSrc={compareBeforeUrl}
+                          afterSrc={compareAfterUrl}
+                          selectedBgColor={bgColor}
+                          onBgColorChange={(color) => setBgColor(color)}
+                          showColorSwitcher={false}
+                          showBiometricGuide={showGuidelines}
+                          aspectRatio={`${previewDimensions.width} / ${previewDimensions.height}`}
+                          colorOptions={DEFAULT_BG_PRESETS}
+                          beforeLabel="Original Upload"
+                          afterLabel="Clean Cutout"
+                          className="w-full"
+                        />
                       </div>
 
-                      {/* Official Biometric Guidelines Overlay across sample */}
-                      <div className="absolute inset-0 pointer-events-none border-2 border-brand-500/50 rounded-2xl overflow-hidden">
-                        {/* Vertical Center Axis */}
-                        <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 border-l border-dashed border-cyan-400/70" />
+                      <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 pt-1 px-1">
+                        <span>Inspecting hair-edge matting against backdrop</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsCompareMode(false);
+                            requestAnimationFrame(() => compositeFinalCanvas());
+                          }}
+                          className="text-brand-500 hover:text-brand-600 font-bold underline cursor-pointer"
+                        >
+                          Return to Studio Canvas
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
-                        {/* Head Crown Guide */}
+                  {/* MODE C: LIVE USER STUDIO INTERACTIVE CANVAS (Mounted in DOM so canvas bitmap is preserved) */}
+                  <div
+                    ref={previewBoxRef}
+                    className={`relative mx-auto rounded-2xl overflow-hidden shadow-lg border border-zinc-300 dark:border-zinc-700 select-none ${
+                      isCompareMode ? 'hidden' : 'block'
+                    } ${
+                      imageSrc && isAdjustMode ? 'cursor-grab active:cursor-grabbing ring-2 ring-brand-500' : ''
+                    }`}
+                    style={{
+                      width: `${previewDimensions.width}px`,
+                      height: `${previewDimensions.height}px`,
+                      touchAction: isAdjustMode ? 'none' : 'pan-y',
+                      backgroundColor: previewTab === 'cutout' || bgColor === 'transparent' ? '#ffffff' : bgColor,
+                      backgroundImage: (previewTab === 'cutout' || bgColor === 'transparent')
+                        ? 'linear-gradient(45deg, #e2e8f0 25%, transparent 25%), linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e2e8f0 75%), linear-gradient(-45deg, transparent 75%, #e2e8f0 75%)'
+                        : 'none',
+                      backgroundSize: '16px 16px',
+                      backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px',
+                    }}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleMouseUp}
+                  >
+                    <canvas ref={canvasRef} className="w-full h-full object-contain block" />
+
+                    {/* Loading UX */}
+                    {isSegmenting && (
+                      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] p-4 text-white text-center animate-in fade-in duration-200 pointer-events-none">
+                        <div className="p-4 rounded-2xl bg-zinc-900/95 border border-white/10 shadow-2xl flex flex-col items-center gap-2.5 max-w-[220px]">
+                          <Loader2 className="w-7 h-7 text-brand-400 animate-spin" />
+                          {mattingState === 'uploading' ? (
+                            <div className="w-full space-y-1.5">
+                              <p className="text-xs font-bold text-zinc-100 leading-tight">
+                                Uploading photo ({uploadPercent}%)...
+                              </p>
+                              <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                                <div
+                                  className="bg-brand-500 h-full rounded-full transition-all duration-200"
+                                  style={{ width: `${uploadPercent}%` }}
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-xs font-bold text-zinc-100 leading-tight">
+                              Removing background... usually a few seconds
+                            </p>
+                          )}
+                          <span className="text-[9px] text-zinc-400">Compixor AI Secure Processing</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Biometric Guidelines Overlay */}
+                    {imageSrc && showGuidelines && (
+                      <div
+                        className="absolute inset-0 pointer-events-none border-2 border-brand-500/40 rounded-2xl overflow-hidden"
+                        key={activePreset.id}
+                      >
+                        <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 border-l border-dashed border-brand-500/30" />
+
                         <div
-                          className="absolute w-full border-t border-dashed border-amber-400/90 flex items-center justify-end pr-2"
+                          className="absolute w-full border-t border-dotted border-amber-500/70 flex items-center justify-end pr-2 transition-all duration-200"
                           style={{ top: `${activePreset.biometricSpec.topMarginPercent}%` }}
                         >
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-amber-900 bg-amber-300/95 px-1.5 py-0.5 rounded shadow-xs">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-white/90 dark:bg-zinc-900/90 px-1 rounded shadow-xs">
                             Crown
                           </span>
                         </div>
 
-                        {/* Oval Biometric Head Enclosure (70-80% height guideline) */}
                         <div
-                          className="absolute border-2 border-dashed border-brand-400/90 rounded-full shadow-xs"
+                          className="absolute border-2 border-dashed border-brand-500/80 rounded-full transition-all duration-200 shadow-xs"
                           style={{
                             top: `${activePreset.biometricSpec.topMarginPercent}%`,
                             left: `${(100 - activePreset.biometricSpec.headWidthPercent) / 2}%`,
@@ -2598,113 +2662,29 @@ export default function PassportPhotoPage() {
                           }}
                         />
 
-                        {/* Eye Level Guide */}
                         <div
-                          className="absolute w-full border-t border-dashed border-emerald-400/90 flex items-center justify-start pl-2"
+                          className="absolute w-full border-t border-dashed border-emerald-500/90 flex items-center justify-between px-2 transition-all duration-200"
                           style={{ top: `${activePreset.biometricSpec.eyeLinePercent}%` }}
                         >
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-950 bg-emerald-300/95 px-1.5 py-0.5 rounded shadow-xs">
-                            Eyes {activePreset.biometricSpec.eyeLinePercent}%
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-white/90 dark:bg-zinc-900/90 px-1 rounded shadow-xs flex items-center gap-0.5">
+                            <Eye className="w-2.5 h-2.5 inline" /> Eyes
+                          </span>
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-white/90 dark:bg-zinc-900/90 px-1 rounded shadow-xs">
+                            {activePreset.biometricSpec.eyeLinePercent}%
                           </span>
                         </div>
 
-                        {/* Chin Guide */}
                         <div
-                          className="absolute w-full border-t border-dashed border-amber-400/90 flex items-center justify-end pr-2"
-                          style={{
-                            top: `${activePreset.biometricSpec.topMarginPercent + activePreset.biometricSpec.headHeightPercent}%`,
-                          }}
+                          className="absolute w-full border-t border-dotted border-amber-500/70 flex items-center justify-end pr-2 transition-all duration-200"
+                          style={{ top: `${activePreset.biometricSpec.chinLinePercent}%` }}
                         >
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-amber-900 bg-amber-300/95 px-1.5 py-0.5 rounded shadow-xs">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-white/90 dark:bg-zinc-900/90 px-1 rounded shadow-xs">
                             Chin
                           </span>
                         </div>
                       </div>
-
-                      {/* Subtle upload badge indicator */}
-                      <div className="absolute bottom-3 inset-x-3 py-2 px-3 rounded-xl bg-black/65 backdrop-blur-md border border-white/20 text-white text-center shadow-lg">
-                        <p className="text-[11px] font-semibold text-white/95">Biometric Studio Preview</p>
-                        <p className="text-[9px] text-zinc-300">Upload your portrait to align & export</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Loading UX */}
-                  {isSegmenting && (
-                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] p-4 text-white text-center animate-in fade-in duration-200 pointer-events-none">
-                      <div className="p-4 rounded-2xl bg-zinc-900/95 border border-white/10 shadow-2xl flex flex-col items-center gap-2.5 max-w-[220px]">
-                        <Loader2 className="w-7 h-7 text-brand-400 animate-spin" />
-                        {mattingState === 'uploading' ? (
-                          <div className="w-full space-y-1.5">
-                            <p className="text-xs font-bold text-zinc-100 leading-tight">
-                              Uploading photo ({uploadPercent}%)...
-                            </p>
-                            <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-                              <div
-                                className="bg-brand-500 h-full rounded-full transition-all duration-200"
-                                style={{ width: `${uploadPercent}%` }}
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          <p className="text-xs font-bold text-zinc-100 leading-tight">
-                            Removing background... usually a few seconds
-                          </p>
-                        )}
-                        <span className="text-[9px] text-zinc-400">Compixor AI Secure Processing</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Biometric Guidelines Overlay */}
-                  {imageSrc && showGuidelines && (
-                    <div
-                      className="absolute inset-0 pointer-events-none border-2 border-brand-500/40 rounded-2xl overflow-hidden"
-                      key={activePreset.id}
-                    >
-                      <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 border-l border-dashed border-brand-500/30" />
-
-                      <div
-                        className="absolute w-full border-t border-dotted border-amber-500/70 flex items-center justify-end pr-2 transition-all duration-200"
-                        style={{ top: `${activePreset.biometricSpec.topMarginPercent}%` }}
-                      >
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-white/90 dark:bg-zinc-900/90 px-1 rounded shadow-xs">
-                          Crown
-                        </span>
-                      </div>
-
-                      <div
-                        className="absolute border-2 border-dashed border-brand-500/80 rounded-full transition-all duration-200 shadow-xs"
-                        style={{
-                          top: `${activePreset.biometricSpec.topMarginPercent}%`,
-                          left: `${(100 - activePreset.biometricSpec.headWidthPercent) / 2}%`,
-                          width: `${activePreset.biometricSpec.headWidthPercent}%`,
-                          height: `${activePreset.biometricSpec.headHeightPercent}%`,
-                        }}
-                      />
-
-                      <div
-                        className="absolute w-full border-t border-dashed border-emerald-500/90 flex items-center justify-between px-2 transition-all duration-200"
-                        style={{ top: `${activePreset.biometricSpec.eyeLinePercent}%` }}
-                      >
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-white/90 dark:bg-zinc-900/90 px-1 rounded shadow-xs flex items-center gap-0.5">
-                          <Eye className="w-2.5 h-2.5 inline" /> Eyes
-                        </span>
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-white/90 dark:bg-zinc-900/90 px-1 rounded shadow-xs">
-                          {activePreset.biometricSpec.eyeLinePercent}%
-                        </span>
-                      </div>
-
-                      <div
-                        className="absolute w-full border-t border-dotted border-amber-500/70 flex items-center justify-end pr-2 transition-all duration-200"
-                        style={{ top: `${activePreset.biometricSpec.chinLinePercent}%` }}
-                      >
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-white/90 dark:bg-zinc-900/90 px-1 rounded shadow-xs">
-                          Chin
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               )}
 
