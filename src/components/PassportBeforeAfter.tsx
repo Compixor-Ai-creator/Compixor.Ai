@@ -8,17 +8,17 @@ import BeforeAfterSlider, { DEFAULT_BG_PRESETS } from './BeforeAfterSlider';
 const DEMO_SAMPLES = [
   {
     id: 'sample1',
-    label: 'Sample 1: Casual Indoor Selfie',
+    label: 'Sample 1: Blonde Wavy Hair',
     beforeSrc: '/images/demo/portrait-before.jpg',
     afterSrc: '/images/demo/portrait-after-cutout.png',
-    description: 'Casual portrait with textured wall, indoor shadows, and casual dark collar.',
+    description: 'Delicate blonde wavy hair strands isolated against passport backdrops with zero halo fringe.',
   },
   {
     id: 'sample2',
-    label: 'Sample 2: Blonde Flyaway Hair',
+    label: 'Sample 2: Casual Indoor Selfie',
     beforeSrc: '/images/demo/portrait2-before.jpg',
     afterSrc: '/images/demo/portrait2-after-cutout.png',
-    description: 'Intricate wavy blonde hair strands with soft alpha matting against studio backdrops.',
+    description: 'Casual portrait with textured wall, indoor shadows, and casual dark collar.',
   },
 ];
 

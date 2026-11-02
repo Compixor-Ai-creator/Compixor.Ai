@@ -471,12 +471,12 @@ export default function PassportPhotoPage() {
       ? {
           beforeSrc: '/images/demo/portrait-before.jpg',
           afterSrc: '/images/demo/portrait-after-cutout.png',
-          label: 'Casual Selfie',
+          label: 'Blonde Portrait',
         }
       : {
           beforeSrc: '/images/demo/portrait2-before.jpg',
           afterSrc: '/images/demo/portrait2-after-cutout.png',
-          label: 'Flyaway Hair',
+          label: 'Casual Selfie',
         };
   }, [heroSampleId]);
   const pinchStartDistRef = useRef<number | null>(null);
@@ -2546,7 +2546,7 @@ export default function PassportPhotoPage() {
                           : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
                       }`}
                     >
-                      Casual Selfie
+                      Blonde Hair
                     </button>
                     <button
                       type="button"
@@ -2557,7 +2557,7 @@ export default function PassportPhotoPage() {
                           : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
                       }`}
                     >
-                      Flyaway Hair
+                      Casual Selfie
                     </button>
                   </div>
 
