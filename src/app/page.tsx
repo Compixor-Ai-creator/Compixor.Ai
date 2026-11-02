@@ -23,7 +23,7 @@ import WhyTrustCompixor from '@/components/WhyTrustCompixor';
 import WhatUsersSay from '@/components/WhatUsersSay';
 import HeroCTA from '@/components/HeroCTA';
 import ClientSideGuideSection from '@/components/ClientSideGuideSection';
-import HeroArtCard from '@/components/HeroArtCard';
+import CxArtCard from '@/components/CxArtCard';
 import { ContainerTextFlip } from '@/components/ui/container-text-flip';
 import { tools } from '@/data/tools';
 
@@ -363,7 +363,7 @@ export default function HomePage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <HeroArtCard />
+              <CxArtCard />
             </motion.div>
           </div>
         </div>
