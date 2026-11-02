@@ -1,33 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle2, XCircle, Sparkles, ShieldCheck, SlidersHorizontal } from 'lucide-react';
-import BeforeAfterSlider, { DEFAULT_BG_PRESETS } from './BeforeAfterSlider';
-
-const DEMO_SAMPLES = [
-  {
-    id: 'sample1',
-    label: 'Sample 1: Blonde Wavy Hair',
-    beforeSrc: '/images/demo/portrait-before.jpg',
-    afterSrc: '/images/demo/portrait-after-cutout.png',
-    description: 'Delicate blonde wavy hair strands isolated against passport backdrops with zero halo fringe.',
-  },
-  {
-    id: 'sample2',
-    label: 'Sample 2: Casual Indoor Selfie',
-    beforeSrc: '/images/demo/portrait2-before.jpg',
-    afterSrc: '/images/demo/portrait2-after-cutout.png',
-    description: 'Casual portrait with textured wall, indoor shadows, and casual dark collar.',
-  },
-];
+import React from 'react';
+import { CheckCircle2, XCircle, Sparkles, ShieldCheck } from 'lucide-react';
+import BeforeAfterSlider from './BeforeAfterSlider';
 
 export default function PassportBeforeAfter() {
-  const [activeSampleId, setActiveSampleId] = useState<string>('sample1');
-  const [selectedBgColor, setSelectedBgColor] = useState<string>('#FFFFFF');
-
-  const currentSample = DEMO_SAMPLES.find((s) => s.id === activeSampleId) || DEMO_SAMPLES[0];
-
   return (
     <section className="w-full max-w-5xl mx-auto my-12 px-2 sm:px-4">
       {/* Header Badge */}
@@ -40,25 +17,8 @@ export default function PassportBeforeAfter() {
           See the Difference: Casual Portrait to Official Passport Photo
         </h2>
         <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-2 max-w-2xl mx-auto leading-relaxed">
-          Drag the interactive slider below to inspect how our AI engine isolates individual hair strands, neutralizes backdrop shadows, and previews official government-approved background colors in real time.
+          Drag the interactive slider below to inspect how our AI engine isolates individual hair strands, removes the backdrop, and prepares official government-compliant portraits in real time.
         </p>
-
-        {/* Sample Switcher Tabs */}
-        <div className="inline-flex items-center gap-1.5 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 mt-5">
-          {DEMO_SAMPLES.map((sample) => (
-            <button
-              key={sample.id}
-              onClick={() => setActiveSampleId(sample.id)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
-                activeSampleId === sample.id
-                  ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-sm'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
-              }`}
-            >
-              {sample.label}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Comparison Showcase Container */}
@@ -67,17 +27,13 @@ export default function PassportBeforeAfter() {
           {/* Left Column: Interactive Slider (7 cols) */}
           <div className="lg:col-span-7 flex flex-col items-center">
             <BeforeAfterSlider
-              key={currentSample.id}
-              beforeSrc={currentSample.beforeSrc}
-              afterSrc={currentSample.afterSrc}
-              selectedBgColor={selectedBgColor}
-              onBgColorChange={setSelectedBgColor}
-              showColorSwitcher={true}
+              beforeSrc="/images/demo/portrait-before.jpg"
+              afterSrc="/images/demo/portrait-after.jpg"
+              showColorSwitcher={false}
               showBiometricGuide={true}
               aspectRatio="3/4"
-              colorOptions={DEFAULT_BG_PRESETS}
-              beforeLabel="Before (Original)"
-              afterLabel="After (Compixor AI)"
+              beforeLabel="Before"
+              afterLabel="After"
               className="max-w-md w-full"
             />
           </div>
@@ -92,7 +48,7 @@ export default function PassportBeforeAfter() {
                 Zero Fringe Halos & Natural Hair Transparency
               </h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1.5 leading-relaxed">
-                {currentSample.description} Our AI uses morphological edge smoothing and de-halo filtering to avoid artificial cutout cutlines.
+                Our AI uses morphological edge smoothing and de-halo filtering to preserve fine hair details while cleanly segmenting the subject.
               </p>
             </div>
 
@@ -104,7 +60,7 @@ export default function PassportBeforeAfter() {
                   <span>Before (Smartphone Selfie Issues)</span>
                 </div>
                 <ul className="text-[11px] text-zinc-600 dark:text-zinc-400 space-y-1 pl-6 list-disc">
-                  <li>Distracting indoor wallpaper, texture, and harsh corner shadows</li>
+                  <li>Distracting colored background, shadows, and wall textures</li>
                   <li>Inconsistent head proportions (often rejected by automated visa gates)</li>
                   <li>Uneven ambient color bleed onto clothing and shoulders</li>
                 </ul>
@@ -116,17 +72,12 @@ export default function PassportBeforeAfter() {
                   <span>After (Official Government Compliance)</span>
                 </div>
                 <ul className="text-[11px] text-zinc-700 dark:text-zinc-300 space-y-1 pl-6 list-disc font-medium">
-                  <li>100% solid, shadow-free background (Passport Blue, Royal, or White)</li>
+                  <li>Clean isolated subject ready for official passport backdrops</li>
                   <li>Exact biometric eye axis and chin-to-crown proportions</li>
                   <li>Sharp 300 DPI ready for automated online portals & photo printing</li>
                 </ul>
               </div>
             </div>
-
-            {/* Quick helper note */}
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 italic">
-              💡 Tip: Click any color pill below the slider to test hair-edge transparency against blue, royal, gray, and white backdrops.
-            </p>
           </div>
         </div>
 

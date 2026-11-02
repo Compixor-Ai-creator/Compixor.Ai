@@ -458,27 +458,11 @@ export default function PassportPhotoPage() {
   const [resetSignal, setResetSignal] = useState(0);
 
   // Hero Demo Showcase & Live Before/After Comparison Slider state
-  const [heroSampleId, setHeroSampleId] = useState<'sample1' | 'sample2'>('sample1');
-  const [heroBgColor, setHeroBgColor] = useState<string>('#FFFFFF');
   const heroFileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [isCompareMode, setIsCompareMode] = useState<boolean>(false);
   const [compareBeforeUrl, setCompareBeforeUrl] = useState<string | null>(null);
   const [compareAfterUrl, setCompareAfterUrl] = useState<string | null>(null);
-
-  const heroSample = useMemo(() => {
-    return heroSampleId === 'sample1'
-      ? {
-          beforeSrc: '/images/demo/portrait-before.jpg',
-          afterSrc: '/images/demo/portrait-after-cutout.png',
-          label: 'Blonde Portrait',
-        }
-      : {
-          beforeSrc: '/images/demo/portrait2-before.jpg',
-          afterSrc: '/images/demo/portrait2-after-cutout.png',
-          label: 'Casual Selfie',
-        };
-  }, [heroSampleId]);
   const pinchStartDistRef = useRef<number | null>(null);
   const pinchStartZoomRef = useRef<number>(1);
 
@@ -2519,46 +2503,15 @@ export default function PassportPhotoPage() {
 
                   <div className="mx-auto" style={{ width: `${previewDimensions.width}px` }}>
                     <BeforeAfterSlider
-                      key={heroSampleId}
-                      beforeSrc={heroSample.beforeSrc}
-                      afterSrc={heroSample.afterSrc}
-                      selectedBgColor={heroBgColor}
-                      onBgColorChange={setHeroBgColor}
-                      showColorSwitcher={true}
+                      beforeSrc="/images/demo/portrait-before.jpg"
+                      afterSrc="/images/demo/portrait-after.jpg"
+                      showColorSwitcher={false}
                       showBiometricGuide={true}
                       aspectRatio={`${previewDimensions.width} / ${previewDimensions.height}`}
-                      colorOptions={DEFAULT_BG_PRESETS}
-                      beforeLabel="Casual Portrait"
-                      afterLabel="Passport Ready"
+                      beforeLabel="Before"
+                      afterLabel="After"
                       className="w-full"
                     />
-                  </div>
-
-                  {/* Demo Photo Switcher */}
-                  <div className="flex items-center justify-center gap-2 pt-1">
-                    <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">Demo:</span>
-                    <button
-                      type="button"
-                      onClick={() => setHeroSampleId('sample1')}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer ${
-                        heroSampleId === 'sample1'
-                          ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs'
-                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
-                      }`}
-                    >
-                      Blonde Hair
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setHeroSampleId('sample2')}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer ${
-                        heroSampleId === 'sample2'
-                          ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs'
-                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
-                      }`}
-                    >
-                      Casual Selfie
-                    </button>
                   </div>
 
                   {/* Direct Upload CTA button */}
@@ -2587,7 +2540,7 @@ export default function PassportPhotoPage() {
                       afterSrc={compareAfterUrl}
                       selectedBgColor={bgColor}
                       onBgColorChange={(color) => setBgColor(color)}
-                      showColorSwitcher={true}
+                      showColorSwitcher={false}
                       showBiometricGuide={showGuidelines}
                       aspectRatio={`${previewDimensions.width} / ${previewDimensions.height}`}
                       colorOptions={DEFAULT_BG_PRESETS}
