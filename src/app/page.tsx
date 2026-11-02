@@ -222,21 +222,21 @@ export default function HomePage() {
       <FaqJsonLd faqs={homeFaqs} />
 
       {/* ============ HERO SECTION (Seamless Breadcrumb Merge) ============ */}
-      <section id="hero-section" className="relative isolate overflow-x-clip pt-4 sm:pt-6">
+      <section id="hero-section" className="cx-hero relative isolate overflow-x-clip pt-4 sm:pt-6">
         {/* Glow Orbs - Flowing seamlessly behind breadcrumb and hero copy */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 w-[500px] h-[500px] rounded-full blur-[90px] opacity-50 dark:opacity-40"
+          className="cx-hero-bg pointer-events-none absolute -z-10 w-[500px] h-[500px] rounded-full blur-[90px] opacity-50 dark:opacity-40"
           style={{ top: '-100px', left: '-100px', backgroundColor: '#8b5cf6' }}
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 w-[450px] h-[450px] rounded-full blur-[90px] opacity-45 dark:opacity-35"
+          className="cx-hero-bg pointer-events-none absolute -z-10 w-[450px] h-[450px] rounded-full blur-[90px] opacity-45 dark:opacity-35"
           style={{ top: '60px', right: '5%', backgroundColor: '#ec4899' }}
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 top-10 right-1/4 h-72 w-72 rounded-full bg-cyan-400/30 blur-3xl"
+          className="cx-hero-bg pointer-events-none absolute -z-10 top-10 right-1/4 h-72 w-72 rounded-full bg-cyan-400/30 blur-3xl"
         />
 
         {/* ============ BREADCRUMB NAVIGATION WITH MICRODATA ============ */}
@@ -313,6 +313,7 @@ export default function HomePage() {
                     <ContainerTextFlip
                       words={['First.', 'Guaranteed.', 'Protected.']}
                       interval={3000}
+                      className="cx-hl"
                       textClassName="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent font-black font-display"
                     />
                   </span>
@@ -335,7 +336,7 @@ export default function HomePage() {
               {/* Badges using spans */}
               <motion.div
                 variants={itemVariants}
-                className="flex flex-wrap items-center gap-1.5 sm:gap-2.5 pt-2"
+                className="cx-chips flex flex-wrap items-center gap-1.5 sm:gap-2.5 pt-2"
               >
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />

@@ -1,0 +1,159 @@
+/* ==========================================================================
+   Compixor — Mobile Hero Colour Fix  ·  MINIMAL level
+   File: hero-mobile-minimal.css
+   --------------------------------------------------------------------------
+   SCOPE: sirf mobile / tablet (max-width: 979px)
+          Desktop (>= 980px)  →  100% UNCHANGED, kuch bhi nahi badlega
+   ========================================================================== */
+
+@media (max-width: 979px) {
+  /* ---------------------------------------------------------------
+     1) BACKGROUND  —  full gradient hatao on light mode mobile
+        Result: white base + sirf top 190px mein halka lavender fade
+     --------------------------------------------------------------- */
+  .cx-hero {
+    position: relative;
+    isolation: isolate;
+    background-color: #ffffff !important;
+    background-image: none !important;
+  }
+
+  /* alag gradient layer hatao (glow orbs) */
+  .cx-hero .cx-hero-bg {
+    display: none !important;
+  }
+
+  /* top fade — colour "wahan tha" ka ehsaas, magar bilkul soft */
+  .cx-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 190px;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(233, 221, 255, 0.92) 0%,
+      rgba(243, 235, 255, 0.55) 42%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+
+  /* content fade ke upar rahe */
+  .cx-hero > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------------------------------------------------------------
+     2) TEXT CONTRAST  —  white background par readable text
+     --------------------------------------------------------------- */
+  .cx-hero h1,
+  .cx-hero h2 {
+    color: #101014;
+  }
+  .cx-hero p,
+  .cx-hero .cx-lead {
+    color: #3f3f49;
+  }
+
+  /* ---------------------------------------------------------------
+     3) HEADING  —  "First." ka white box hatao
+     --------------------------------------------------------------- */
+  .cx-hero .cx-hl,
+  .cx-hero h1 .cx-hl,
+  .cx-hero h2 .cx-hl {
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: inherit;
+  }
+  .cx-hero .cx-hl span,
+  .cx-hero h1 .cx-hl span,
+  .cx-hero h2 .cx-hl span {
+    background: linear-gradient(96deg, #8b3df0 0%, #d936c8 52%, #ef4d7a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ---------------------------------------------------------------
+     4) CTA BUTTON  —  do line mein na toote
+     --------------------------------------------------------------- */
+  .cx-hero .cx-cta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    font-size: clamp(13px, 3.9vw, 15px);
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  /* mobile par sirf "Start Now" — long part chhupa do */
+  .cx-hero .cx-cta .cx-cta-long {
+    display: none !important;
+  }
+
+  /* fallback agar CTA par class nahi ho */
+  .cx-hero a[class*="cta"],
+  .cx-hero a[href*="tool"],
+  .cx-hero button[class*="cta"] {
+    white-space: nowrap;
+  }
+
+  /* ---------------------------------------------------------------
+     5) TRUST CHIPS  —  1 column ki lambi list ki jagah 2x2 grid
+     --------------------------------------------------------------- */
+  .cx-hero .cx-chips {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-top: 16px !important;
+  }
+  .cx-hero .cx-chips > * {
+    justify-content: flex-start !important;
+    padding: 9px 10px !important;
+    font-size: 10.5px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   DARK MODE guard — dark theme mein yeh fix skip ho jayega
+   ------------------------------------------------------------------------- */
+html.dark .cx-hero,
+.dark .cx-hero,
+[data-theme="dark"] .cx-hero {
+  background-color: inherit !important;
+  background-image: inherit !important;
+}
+html.dark .cx-hero::before,
+.dark .cx-hero::before,
+[data-theme="dark"] .cx-hero::before {
+  display: none !important;
+}
+html.dark .cx-hero .cx-hero-bg,
+.dark .cx-hero .cx-hero-bg,
+[data-theme="dark"] .cx-hero .cx-hero-bg {
+  display: block !important;
+}
+html.dark .cx-hero h1,
+html.dark .cx-hero h2,
+.dark .cx-hero h1,
+.dark .cx-hero h2,
+[data-theme="dark"] .cx-hero h1,
+[data-theme="dark"] .cx-hero h2 {
+  color: inherit;
+}
+html.dark .cx-hero p,
+.dark .cx-hero p,
+[data-theme="dark"] .cx-hero p {
+  color: inherit;
+}
