@@ -2503,8 +2503,9 @@ export default function PassportPhotoPage() {
 
                   <div className="mx-auto" style={{ width: `${previewDimensions.width}px` }}>
                     <BeforeAfterSlider
-                      beforeSrc="/images/demo/portrait-before.jpg"
-                      afterSrc="/images/demo/portrait-after.jpg"
+                      beforeSrc="/images/demo/passport-demo-before.jpg?v=2"
+                      afterSrc="/images/demo/passport-demo-after.jpg?v=2"
+
                       showColorSwitcher={false}
                       showBiometricGuide={true}
                       aspectRatio={`${previewDimensions.width} / ${previewDimensions.height}`}

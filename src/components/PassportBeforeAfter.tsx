@@ -27,8 +27,8 @@ export default function PassportBeforeAfter() {
           {/* Left Column: Interactive Slider (7 cols) */}
           <div className="lg:col-span-7 flex flex-col items-center">
             <BeforeAfterSlider
-              beforeSrc="/images/demo/portrait-before.jpg"
-              afterSrc="/images/demo/portrait-after.jpg"
+              beforeSrc="/images/demo/passport-demo-before.jpg?v=2"
+              afterSrc="/images/demo/passport-demo-after.jpg?v=2"
               showColorSwitcher={false}
               showBiometricGuide={true}
               aspectRatio="3/4"
