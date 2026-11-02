@@ -23,6 +23,7 @@ import WhyTrustCompixor from '@/components/WhyTrustCompixor';
 import WhatUsersSay from '@/components/WhatUsersSay';
 import HeroCTA from '@/components/HeroCTA';
 import ClientSideGuideSection from '@/components/ClientSideGuideSection';
+import HeroArtCard from '@/components/HeroArtCard';
 import { ContainerTextFlip } from '@/components/ui/container-text-flip';
 import { tools } from '@/data/tools';
 
@@ -184,8 +185,6 @@ const itemVariants = {
 };
 
 export default function HomePage() {
-  const previewTools = tools.slice(0, 6);
-
   // FAQ interactive state
   const [faqSearch, setFaqSearch] = useState('');
   const [openFaqIndices, setOpenFaqIndices] = useState<number[]>([0]);
@@ -357,43 +356,14 @@ export default function HomePage() {
               </motion.div>
             </motion.div>
 
-            {/* Right Column: Interactive Tool Cards Preview */}
+            {/* Right Column: Hero SVG Art Card (Privacy & Tools Visualization) */}
             <motion.div
-              className="lg:col-span-5 grid grid-cols-2 gap-3 sm:gap-4"
+              className="lg:col-span-5 flex items-center justify-center lg:justify-end"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              {previewTools.map((tool) => {
-                const Icon = tool.icon;
-                return (
-                  <Link
-                    key={tool.id}
-                    href={tool.href}
-                    className="glass-card group p-4 sm:p-5 rounded-2xl flex flex-col justify-between hover:scale-[1.03] transition-all duration-300 relative overflow-hidden"
-                  >
-                    <div
-                      aria-hidden="true"
-                      className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
-                    />
-                    <div>
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white mb-3 shadow-md group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <div className="font-bold text-sm text-zinc-900 dark:text-white mb-1 group-hover:text-brand-500 transition-colors">
-                        {tool.title}
-                      </div>
-                      <div className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2">
-                        {tool.description}
-                      </div>
-                    </div>
-                    <div className="mt-3 flex items-center gap-1 text-[11px] font-semibold text-brand-600 dark:text-brand-400">
-                      <span>Launch tool</span>
-                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </Link>
-                );
-              })}
+              <HeroArtCard />
             </motion.div>
           </div>
         </div>
