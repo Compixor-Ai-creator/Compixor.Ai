@@ -283,7 +283,7 @@ export default function HomePage() {
               {/* Author & Last-Updated Byline using DIV to preserve voice percentage */}
               <motion.div variants={itemVariants} className="mb-4">
                 <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                  By <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Haroon Ali</strong> (Compixor AI) • Last updated: <time dateTime="2026-10-31">October 31, 2026</time>
+                  By <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Compixor Global Studio</strong> • Last updated: <time dateTime="2026-10-31">October 31, 2026</time>
                 </div>
               </motion.div>
 
