@@ -5,15 +5,39 @@
 @tailwind utilities;
 
 @layer base {
-  html,
-  body {
-    max-width: 100%;
-    overflow-x: hidden;
+  html {
+    /* Prevent blank background during mobile overscroll rubber-banding */
+    background-color: #ffffff;
+    /* Allow native multi-touch pinch-zoom and fluid panning without gesture locking */
+    touch-action: manipulation;
+    /* Use clip instead of hidden: does not establish a restrictive scroll container, preventing tile drops & zoom freezing */
+    overflow-x: clip;
   }
 
-  html {
-    scroll-behavior: smooth;
-    scrollbar-gutter: stable;
+  html.dark {
+    background-color: #0a0818;
+  }
+
+  body {
+    overflow-x: clip;
+    min-height: 100%;
+    touch-action: manipulation;
+  }
+
+  /* Desktop-only smooth scrolling & stable scrollbar gutter to prevent mobile touch lag, zoom freeze & tile dropping */
+  @media (hover: hover) and (pointer: fine) {
+    html {
+      scroll-behavior: smooth;
+      scrollbar-gutter: stable;
+    }
+  }
+
+  /* Ensure touch/mobile devices use fast, native uninhibited momentum scrolling */
+  @media (hover: none) and (pointer: coarse) {
+    html {
+      scroll-behavior: auto !important;
+      scrollbar-gutter: auto !important;
+    }
   }
 
   img,
@@ -1325,8 +1349,15 @@
     );
   }
 
-  /* content fade ke upar rahe */
-  .cx-hero > * {
+  /* Ambient glow orbs must stay strictly absolute & non-interactive on mobile */
+  .cx-hero .cx-hero-bg {
+    position: absolute !important;
+    pointer-events: none !important;
+    z-index: -10 !important;
+  }
+
+  /* content fade ke upar rahe — exclude background glow orbs so they never push 1200px blank space */
+  .cx-hero > :not(.cx-hero-bg) {
     position: relative;
     z-index: 1;
   }
@@ -1429,6 +1460,9 @@ html.dark .cx-hero .cx-hero-bg,
 .dark .cx-hero .cx-hero-bg,
 [data-theme="dark"] .cx-hero .cx-hero-bg {
   display: block !important;
+  position: absolute !important;
+  pointer-events: none !important;
+  z-index: -10 !important;
 }
 html.dark .cx-hero h1,
 html.dark .cx-hero h2,

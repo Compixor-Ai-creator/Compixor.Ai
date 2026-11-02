@@ -176,6 +176,8 @@ export default function CompixorNavbar() {
               margin: 0 auto;
               z-index: 10000;
               border-radius: 22px;
+              -webkit-transform: translateZ(0);
+              transform: translateZ(0);
             }
             .cnav-glass {
               position: absolute;
