@@ -17,7 +17,7 @@ export default function TermsPage() {
           Terms of Service
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
-          Last Updated: August 2026 • Please read carefully before using Compixor
+          Last Updated: August 2025 • Please read carefully before using Compixor
         </p>
       </div>
 

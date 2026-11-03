@@ -82,7 +82,7 @@ const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
   },
   'full-dp-maker': {
     title: 'How to Set a Full Size DP on WhatsApp & Social Media Without Cropping',
-    href: '/blog/how-to-set-full-dp-whatsapp-without-cropping',
+    href: '/blog/how-to-set-full-dp-on-whatsapp-without-cropping',
   },
   'qr-generator': {
     title: 'How to Design a Custom Vector QR Code with a Logo',
@@ -141,7 +141,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
         <div className="mt-6 pt-5 border-t border-zinc-100 dark:border-zinc-800/60 flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            getToolPrivacy(toolSlug).badgeLabel
+            {getToolPrivacy(toolSlug).badgeLabel}
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />

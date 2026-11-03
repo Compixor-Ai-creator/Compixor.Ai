@@ -82,6 +82,11 @@ const nextConfig = {
         destination: '/blog/how-to-remove-password-from-pdf',
         permanent: true,
       },
+      {
+        source: '/blog/how-to-set-full-dp-whatsapp-without-cropping',
+        destination: '/blog/how-to-set-full-dp-on-whatsapp-without-cropping',
+        permanent: true,
+      },
       // 301 Permanent Domain Redirects: old Vercel domain -> new official domain
       {
         source: '/:path*',

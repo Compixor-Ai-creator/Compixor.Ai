@@ -52,7 +52,7 @@ export default function PrivacyPage() {
           Learn how Compixor AI processes files, handles technical information, and manages data when you use our online PDF and document tools.
         </p>
         <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium">
-          Last Updated: October 2026 • Effective Immediately
+          Last Updated: October 2025 • Effective Immediately
         </p>
       </header>
 

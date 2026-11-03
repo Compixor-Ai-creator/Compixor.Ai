@@ -1638,21 +1638,30 @@ export function getToolMetadata(slug: ToolSlug): Metadata {
     throw new Error(`SEO config not found for slug: ${slug}`);
   }
 
+  const ogImageUrl =
+    slug === 'full-dp-maker'
+      ? `${BASE_URL}/blog/whatsapp-full-dp-maker-thumbnail.webp`
+      : OG_IMAGE_URL;
+
+  const ogTitle = tool.title.endsWith('| Compixor')
+    ? tool.title
+    : `${tool.title} | Compixor`;
+
   return {
-    title: tool.title,
+    title: tool.title.endsWith('| Compixor') ? { absolute: tool.title } : tool.title,
     description: tool.description,
     alternates: {
       canonical: tool.canonicalUrl,
     },
     openGraph: {
-      title: `${tool.title} | Compixor`,
+      title: ogTitle,
       description: tool.description,
       url: tool.canonicalUrl,
       type: 'website',
       siteName: 'Compixor AI',
       images: [
         {
-          url: OG_IMAGE_URL,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: `${tool.name} — Compixor AI`,
@@ -1663,7 +1672,7 @@ export function getToolMetadata(slug: ToolSlug): Metadata {
       card: 'summary_large_image',
       title: tool.title,
       description: tool.description,
-      images: [OG_IMAGE_URL],
+      images: [ogImageUrl],
     },
   };
 }
@@ -1679,13 +1688,18 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
   const tool = seoConfig[slug];
   if (!tool) return [];
 
+  const toolImage =
+    slug === 'full-dp-maker'
+      ? `${BASE_URL}/blog/whatsapp-full-dp-maker-thumbnail.webp`
+      : OG_IMAGE_URL;
+
   const webAppSchema = {
     '@context': 'https://schema.org',
-    '@type': 'WebApplication',
+    '@type': ['SoftwareApplication', 'WebApplication'],
     name: tool.name,
     url: tool.canonicalUrl,
     description: tool.description,
-    image: OG_IMAGE_URL,
+    image: toolImage,
     applicationCategory: tool.applicationCategory || 'UtilitiesApplication',
     operatingSystem: tool.operatingSystem || 'Any (Web Browser)',
     browserRequirements: 'Requires JavaScript. Requires HTML5.',
@@ -1858,8 +1872,8 @@ export function getHomepageSchemas(): Record<string, any>[] {
     isPartOf: { '@id': `${BASE_URL}/#website` },
     author: { '@id': `${BASE_URL}/#author` },
     publisher: { '@id': `${BASE_URL}/#organization` },
-    datePublished: '2026-01-15T00:00:00Z',
-    dateModified: '2026-10-31T13:43:48Z',
+    datePublished: '2025-01-15T00:00:00Z',
+    dateModified: '2025-10-31T13:43:48Z',
     inLanguage: 'en',
     speakable: {
       '@type': 'SpeakableSpecification',

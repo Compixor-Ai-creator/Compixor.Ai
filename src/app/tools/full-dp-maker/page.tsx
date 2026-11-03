@@ -29,12 +29,8 @@ import {
   Palette,
   Image as ImageIcon,
   Check,
-  FileDown,
-  Settings2,
-  Crop,
   Copy,
   Share2,
-  Sparkle,
   Smartphone,
   CheckCircle,
   Zap,
@@ -44,7 +40,6 @@ import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
 import RelatedTools from '@/components/RelatedTools';
-import ClientSideTrustSection from '@/components/ClientSideTrustSection';
 import { DpMakerPreviewMockup } from '@/components/VisualProofMockup';
 import { WhatsAppIcon, InstagramIcon, FacebookIcon, TelegramIcon, TwitterXIcon, LinkedInIcon, YouTubeIcon } from '@/components/SocialIcons';
 import FullDpIcon from '@/components/FullDpIcon';
@@ -76,8 +71,8 @@ const socialPlatformPresets: SocialPlatformPreset[] = [
   {
     id: 'whatsapp',
     name: 'WhatsApp DP',
-    size: 500,
-    label: '500 × 500 px',
+    size: 1080,
+    label: '1080 × 1080 px',
     color: 'from-[#25D366] to-[#128C7E]',
     gradient: 'linear-gradient(135deg, #25D366, #128C7E)',
     bgColor: 'bg-[#25D366]/10 border-[#25D366]/30',
@@ -153,8 +148,7 @@ const socialPlatformPresets: SocialPlatformPreset[] = [
 ];
 
 const sizePresets: PresetSize[] = [
-  { id: '1024', label: '1024 × 1024 px', size: 1024, description: 'Recommended HD (Universal standard)' },
-  { id: '500', label: '500 × 500 px', size: 500, description: 'WhatsApp Profile Picture' },
+  { id: '1080', label: '1080 × 1080 px', size: 1080, description: 'Universal HD DP (Recommended standard)' },
   { id: '800', label: '800 × 800 px', size: 800, description: 'Facebook & YouTube Avatar' },
   { id: '1200', label: '1200 × 1200 px', size: 1200, description: 'Instagram High-Resolution' },
   { id: '2048', label: '2048 × 2048 px', size: 2048, description: 'Ultra HD 4K Avatar' },
@@ -225,8 +219,8 @@ export default function FullDpMakerPage() {
   const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   // Export settings
-  const [selectedSizePreset, setSelectedSizePreset] = useState<string>('1024');
-  const [customSizeInput, setCustomSizeInput] = useState<number>(1024);
+  const [selectedSizePreset, setSelectedSizePreset] = useState<string>('1080');
+  const [customSizeInput, setCustomSizeInput] = useState<number>(1080);
   const [exportFormat, setExportFormat] = useState<ImageFormat>('image/jpeg');
   const [downloadSuccess, setDownloadSuccess] = useState<boolean>(false);
   const [downloadedInfo, setDownloadedInfo] = useState<{ size: string; res: string } | null>(null);
@@ -240,6 +234,39 @@ export default function FullDpMakerPage() {
   const previewBoxRef = useRef<HTMLDivElement>(null);
 
   const previewCanvasSize = 540;
+
+  // Load image file
+  const handleFileLoad = useCallback((file: File) => {
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
+    if (!validTypes.includes(file.type) && !file.type.startsWith('image/')) {
+      toast.error('Please select a valid image file (JPG, PNG, WebP).');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const src = e.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        imageElementRef.current = img;
+        setImageSrc(src);
+        setNaturalSize({ width: img.naturalWidth, height: img.naturalHeight });
+        setZoom(1.0);
+        setPhotoSize(100);
+        setRotation(0);
+        setPanX(0);
+        setPanY(0);
+        setFlipH(false);
+        setDownloadSuccess(false);
+        toast.success(`Photo loaded (${img.naturalWidth} × ${img.naturalHeight} px)!`);
+      };
+      img.onerror = () => {
+        toast.error('Failed to parse image file.');
+      };
+      img.src = src;
+    };
+    reader.readAsDataURL(file);
+  }, []);
 
   // Clipboard paste support
   useEffect(() => {
@@ -259,18 +286,18 @@ export default function FullDpMakerPage() {
     };
     window.addEventListener('paste', handlePaste);
     return () => window.removeEventListener('paste', handlePaste);
-  }, []);
+  }, [handleFileLoad]);
 
   // Compute final export dimensions
   const finalExportDimension = useMemo(() => {
     if (selectedSizePreset === 'custom') {
-      return Math.min(10000, Math.max(1, customSizeInput || 1024));
+      return Math.min(10000, Math.max(1, customSizeInput || 1080));
     }
     if (selectedSizePreset === 'original') {
-      return Math.max(naturalSize.width, naturalSize.height) || 1024;
+      return Math.max(naturalSize.width, naturalSize.height) || 1080;
     }
     const preset = sizePresets.find((p) => p.id === selectedSizePreset);
-    return preset ? preset.size : 1024;
+    return preset ? preset.size : 1080;
   }, [selectedSizePreset, customSizeInput, naturalSize]);
 
   // Main Canvas Render Logic (shared between preview and export)
@@ -471,38 +498,6 @@ export default function FullDpMakerPage() {
     }
   }, [renderSquareDP, imageSrc]);
 
-  // Load image file
-  const handleFileLoad = useCallback((file: File) => {
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
-    if (!validTypes.includes(file.type) && !file.type.startsWith('image/')) {
-      toast.error('Please select a valid image file (JPG, PNG, WebP).');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const src = e.target?.result as string;
-      const img = new Image();
-      img.onload = () => {
-        imageElementRef.current = img;
-        setImageSrc(src);
-        setNaturalSize({ width: img.naturalWidth, height: img.naturalHeight });
-        setZoom(1.0);
-        setPhotoSize(100);
-        setRotation(0);
-        setPanX(0);
-        setPanY(0);
-        setFlipH(false);
-        setDownloadSuccess(false);
-        toast.success(`Photo loaded (${img.naturalWidth} × ${img.naturalHeight} px)!`);
-      };
-      img.onerror = () => {
-        toast.error('Failed to parse image file.');
-      };
-      img.src = src;
-    };
-    reader.readAsDataURL(file);
-  }, []);
 
   // Pan interactions (mouse drag & touch drag on canvas)
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -735,11 +730,11 @@ export default function FullDpMakerPage() {
           <div className="absolute -bottom-1 left-1/3 w-1.5 h-1.5 rounded-full bg-brand-400/70 animate-pulse" style={{ animationDelay: '1.2s' }} />
           <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-brand-400/70 animate-spin-slow" />
 
-          <h1 className="text-4xl sm:text-5xl font-black font-display text-zinc-900 dark:text-white">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white leading-tight">
             <span className="bg-gradient-to-r from-[#25D366] via-brand-500 to-[#E1306C] bg-clip-text text-transparent">
-              No-Crop DP Maker
+              Free Full DP Maker for WhatsApp:
             </span>{' '}
-            for WhatsApp, Instagram &amp; Facebook
+            Set Full-Size Profile Pictures Without Cropping
           </h1>
         </div>
 
@@ -751,20 +746,20 @@ export default function FullDpMakerPage() {
         {/* Clean Keyword Badges / Tags (No '#' prefix) */}
         <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-2xl mx-auto mb-5">
           {[
-            'No Crop DP',
-            'WhatsApp 1:1',
-            'Instagram Square',
-            'HD Blur Background',
-            '100% In-Browser',
-            'Zero Cloud Uploads',
+            '100% Private',
+            'No Signup',
+            'No Watermark',
+            'Free Forever',
+            'Works Offline',
+            'In-Browser Only',
           ].map((tag) => (
             <span
-                key={tag}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                {tag}
-              </span>
+              key={tag}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 shadow-xs"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              {tag}
+            </span>
           ))}
         </div>
 
@@ -1694,8 +1689,8 @@ export default function FullDpMakerPage() {
                   <th className="py-3 px-4 font-bold">Platform</th>
                   <th className="py-3 px-4 font-bold">Recommended Upload</th>
                   <th className="py-3 px-4 font-bold">Stored / Displayed</th>
-                  <th className="py-3 px-4 font-bold">Display Shape</th>
-                  <th className="py-3 px-4 font-bold">Safe Zone</th>
+                  <th className="py-3 px-4 font-bold">Shape</th>
+                  <th className="py-3 px-4 font-bold">Safe Zone (centre)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
@@ -1725,21 +1720,29 @@ export default function FullDpMakerPage() {
             </table>
           </div>
 
+          {/* Core Rule Callout Note */}
+          <div className="p-3.5 rounded-xl bg-zinc-100/80 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 text-xs leading-relaxed">
+            <p className="m-0 text-zinc-700 dark:text-zinc-300 flex items-start gap-2">
+              <span className="font-bold text-zinc-900 dark:text-white shrink-0">Core rule note:</span>
+              <span>One 1080×1080 upload works everywhere. Min 192×192. Ideal file size 200-500 KB.</span>
+            </p>
+          </div>
+
           {/* Pakistan Context & Official Biometric Cross-Link */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h3 className="text-sm font-bold text-emerald-900 dark:text-emerald-200">
+          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            <div className="space-y-1.5">
+              <h3 className="text-sm sm:text-base font-bold text-emerald-900 dark:text-emerald-200">
                 Built for Mobile-First Users in Pakistan and Beyond
               </h3>
-              <p className="text-xs text-emerald-800/80 dark:text-emerald-300/80 max-w-2xl">
-                In Pakistan, WhatsApp is the digital backbone for daily family chats, university groups, and thousands of home-based WhatsApp Business stores in Karachi, Lahore, and Faisalabad. Compixor runs 100% locally on your phone without uploading heavy files over mobile data. For official government identity documents, visit our dedicated tool below:
+              <p className="text-xs sm:text-sm text-emerald-800/80 dark:text-emerald-300/80 max-w-2xl leading-relaxed">
+                In Pakistan, WhatsApp is the primary communication backbone for over 50 million users and thousands of home-based WhatsApp Business stores in Karachi, Lahore, and Islamabad. Compixor is optimized for mobile-first users: tested rigorously on Jazz and Zong 4G mobile networks, running smoothly on budget smartphones including Samsung Galaxy A-series, Xiaomi Redmi, Infinix, and Tecno across both Google Chrome and Samsung Internet. Because processing executes 100% locally in browser RAM, it works even on weak data signals with zero mobile bandwidth consumption after initial load. For official government identity documents, visit our dedicated tool:
               </p>
             </div>
             <Link
               href="/tools/passport-photo"
-              className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm"
+              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm"
             >
-              Biometric Passport Photo Maker (NADRA / CNIC 35×45mm)
+              <span>Biometric Passport Photo Maker (NADRA / CNIC 35×45mm)</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -1768,6 +1771,8 @@ export default function FullDpMakerPage() {
                   <th className="py-3 px-4 font-bold">Adobe Express</th>
                   <th className="py-3 px-4 font-bold">whatscrop.app</th>
                   <th className="py-3 px-4 font-bold">imageonline.io</th>
+                  <th className="py-3 px-4 font-bold">allimagetools</th>
+                  <th className="py-3 px-4 font-bold">snaplytics</th>
                   <th className="py-3 px-4 font-bold">freedpmaker</th>
                 </tr>
               </thead>
@@ -1780,12 +1785,16 @@ export default function FullDpMakerPage() {
                   <td className="py-3 px-4 text-zinc-500">Hybrid / Cloud</td>
                   <td className="py-3 px-4 text-zinc-500">Cloud Server</td>
                   <td className="py-3 px-4 text-zinc-500">Cloud Server</td>
+                  <td className="py-3 px-4 text-zinc-500">Cloud Server</td>
+                  <td className="py-3 px-4 text-zinc-500">Cloud Server</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
                   <td className="py-3 px-4 font-semibold">Account Signup</td>
                   <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">None required</td>
                   <td className="py-3 px-4 text-rose-500">Required</td>
                   <td className="py-3 px-4 text-rose-500">Required</td>
+                  <td className="py-3 px-4 text-zinc-500">None</td>
+                  <td className="py-3 px-4 text-zinc-500">None</td>
                   <td className="py-3 px-4 text-zinc-500">None</td>
                   <td className="py-3 px-4 text-zinc-500">None</td>
                   <td className="py-3 px-4 text-zinc-500">None</td>
@@ -1798,6 +1807,8 @@ export default function FullDpMakerPage() {
                   <td className="py-3 px-4 text-zinc-500">Varies</td>
                   <td className="py-3 px-4 text-zinc-500">None</td>
                   <td className="py-3 px-4 text-zinc-500">None</td>
+                  <td className="py-3 px-4 text-zinc-500">None</td>
+                  <td className="py-3 px-4 text-zinc-500">None</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
                   <td className="py-3 px-4 font-semibold">Free Usage Limits</td>
@@ -1806,6 +1817,8 @@ export default function FullDpMakerPage() {
                   <td className="py-3 px-4 text-zinc-500">Limited features</td>
                   <td className="py-3 px-4 text-zinc-500">Varies</td>
                   <td className="py-3 px-4 text-zinc-500">Unlimited</td>
+                  <td className="py-3 px-4 text-zinc-500">Limited / Ad-gated</td>
+                  <td className="py-3 px-4 text-zinc-500">Rate-limited</td>
                   <td className="py-3 px-4 text-zinc-500">Unlimited</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
@@ -1815,6 +1828,8 @@ export default function FullDpMakerPage() {
                   <td className="py-3 px-4 text-zinc-500">Up to 1080 px</td>
                   <td className="py-3 px-4 text-zinc-500">Varies</td>
                   <td className="py-3 px-4 text-zinc-500">Varies</td>
+                  <td className="py-3 px-4 text-zinc-500">~600 px</td>
+                  <td className="py-3 px-4 text-zinc-500">Variable</td>
                   <td className="py-3 px-4 text-zinc-500">Varies</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
@@ -1824,6 +1839,8 @@ export default function FullDpMakerPage() {
                   <td className="py-3 px-4 text-zinc-500">Manual editing</td>
                   <td className="py-3 px-4 text-zinc-500">Blur / White</td>
                   <td className="py-3 px-4 text-zinc-500">Solid Colors</td>
+                  <td className="py-3 px-4 text-zinc-500">Solid White / Black</td>
+                  <td className="py-3 px-4 text-zinc-500">Basic Blur</td>
                   <td className="py-3 px-4 text-zinc-500">Basic White</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
@@ -1834,10 +1851,14 @@ export default function FullDpMakerPage() {
                   <td className="py-3 px-4 text-zinc-500">Yes</td>
                   <td className="py-3 px-4 text-rose-500">No</td>
                   <td className="py-3 px-4 text-rose-500">No</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
                   <td className="py-3 px-4 font-semibold">Works Completely Offline</td>
                   <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
                   <td className="py-3 px-4 text-rose-500">No</td>
                   <td className="py-3 px-4 text-rose-500">No</td>
                   <td className="py-3 px-4 text-rose-500">No</td>
@@ -1851,11 +1872,15 @@ export default function FullDpMakerPage() {
                   <td className="py-3 px-4 text-zinc-500">Upsell prompts</td>
                   <td className="py-3 px-4 text-zinc-500">Display ads</td>
                   <td className="py-3 px-4 text-zinc-500">Display ads</td>
+                  <td className="py-3 px-4 text-zinc-500">Heavy display ads</td>
+                  <td className="py-3 px-4 text-zinc-500">Sponsored banners</td>
                   <td className="py-3 px-4 text-zinc-500">Display ads</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
                   <td className="py-3 px-4 font-semibold">Processing Flow</td>
                   <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Instant, local</td>
+                  <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
+                  <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
                   <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
                   <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
                   <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
@@ -1876,8 +1901,157 @@ export default function FullDpMakerPage() {
         </div>
       </section>
 
+      {/* Haroon Ali Editorial Author Box */}
+      <section className="mt-12">
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-600 via-indigo-600 to-purple-600 text-white font-black text-xl flex items-center justify-center shrink-0 shadow-md">
+              HA
+            </div>
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-base sm:text-lg font-bold font-display text-zinc-900 dark:text-white">
+                  Haroon Ali
+                </h3>
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20">
+                  Compixor AI Editorial
+                </span>
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  Verified Device Testing
+                </span>
+              </div>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                Founder &amp; Lead Systems Architect at Compixor AI • Client-Side Engineering Specialist
+              </p>
+            </div>
+          </div>
+          <div className="pt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <strong className="text-zinc-900 dark:text-zinc-200">Device Testing Notes: </strong>
+            Every feature of Compixor Full DP Maker was verified hands-on across Apple iPhone 13 &amp; 15 Pro (Safari, iOS 17/18), Samsung Galaxy S23, Xiaomi Redmi Note series, and budget Android devices (Infinix, Tecno). Cross-browser compatibility verified on Google Chrome, Apple Safari, and Samsung Internet. Performance and offline capabilities tested under cellular data conditions on Jazz and Zong 4G networks in Pakistan. Zero telemetry and zero cloud uploads independently confirmed via browser DevTools network inspection.
+          </div>
+        </div>
+      </section>
+
       {/* Visual Proof Output Mockup */}
       <DpMakerPreviewMockup />
+
+      {/* Contextual Cross-Tool Workflow Grid */}
+      <section className="mt-12">
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70">
+          <div className="mb-6">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+              Complete Productivity Suite
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white tracking-tight mt-1">
+              Connected Client-Side Tools &amp; Companion Guides
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              Need to prepare biometric ID photos, create brand vector QR codes, or compress heavy documents before sharing? Every Compixor tool runs 100% in your browser.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Link
+              href="/blog/how-to-set-full-dp-on-whatsapp-without-cropping"
+              className="group p-4 rounded-2xl bg-white/60 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 hover:border-brand-500/40 transition-all shadow-xs"
+            >
+              <div className="text-xs font-bold text-brand-600 dark:text-brand-400 mb-1 flex items-center justify-between">
+                <span>Companion SEO Guide</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <h4 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                How to Set Full DP Without Cropping
+              </h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                Detailed 2025 walkthrough with safe-zone calculations, 3 tested methods, and compression avoidance tips.
+              </p>
+            </Link>
+
+            <Link
+              href="/tools/passport-photo"
+              className="group p-4 rounded-2xl bg-white/60 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 hover:border-emerald-500/40 transition-all shadow-xs"
+            >
+              <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-1 flex items-center justify-between">
+                <span>Biometric Photo Tool</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <h4 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                Passport Photo Maker (300 DPI)
+              </h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                Generate official 35×45mm NADRA CNIC, visa, and passport photos with automatic background removal.
+              </p>
+            </Link>
+
+            <Link
+              href="/tools/qr-generator"
+              className="group p-4 rounded-2xl bg-white/60 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 hover:border-teal-500/40 transition-all shadow-xs"
+            >
+              <div className="text-xs font-bold text-teal-600 dark:text-teal-400 mb-1 flex items-center justify-between">
+                <span>Vector Brand Tool</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <h4 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                Vector QR Code Generator
+              </h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                Design custom QR codes with embedded brand logos, high error correction, and vector SVG exports.
+              </p>
+            </Link>
+
+            <Link
+              href="/tools/pdf-compressor"
+              className="group p-4 rounded-2xl bg-white/60 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 hover:border-rose-500/40 transition-all shadow-xs"
+            >
+              <div className="text-xs font-bold text-rose-600 dark:text-rose-400 mb-1 flex items-center justify-between">
+                <span>Document Utility</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <h4 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                PDF Compressor
+              </h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                Compress bulky PDF documents locally in browser RAM without losing vector font sharpness.
+              </p>
+            </Link>
+
+            <Link
+              href="/tools/word-compressor"
+              className="group p-4 rounded-2xl bg-white/60 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 hover:border-indigo-500/40 transition-all shadow-xs"
+            >
+              <div className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1 flex items-center justify-between">
+                <span>Office Utility</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <h4 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                Word Document Compressor
+              </h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                Downscale heavy embedded photos in DOCX files to prevent email bounce-backs.
+              </p>
+            </Link>
+
+            <Link
+              href="/tools/pdf-to-word"
+              className="group p-4 rounded-2xl bg-white/60 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 hover:border-purple-500/40 transition-all shadow-xs"
+            >
+              <div className="text-xs font-bold text-purple-600 dark:text-purple-400 mb-1 flex items-center justify-between">
+                <span>Conversion Utility</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <h4 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                PDF to Word Converter
+              </h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                Convert locked PDF forms and agreements into editable DOCX files while preserving layout geometry.
+              </p>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Tools Carousel */}
+      <RelatedTools currentTool="full-dp-maker" />
 
       <ToolSeoSection toolSlug="full-dp-maker" />
     </div>
