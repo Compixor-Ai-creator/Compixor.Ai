@@ -293,7 +293,7 @@ export default function HeroRightCard() {
               </svg>
             </span>
             <span className="cxg-sep" aria-hidden="true"></span>
-            <span className="cxg-lb">Passport Photo<i aria-hidden="true"></i></span>
+            <span className="cxg-lb">Image Resize<i aria-hidden="true"></i></span>
           </a>
         </div>
       
