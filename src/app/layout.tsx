@@ -11,6 +11,7 @@ import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
 import { homepageSeoData, getHomepageSchemas, AUTHOR_NAME, BASE_URL, OG_IMAGE_URL } from '@/lib/seo-config';
 import '@/styles/perf-smooth.css';
+import '@/styles/hero-card.css';
 
 const FeedbackWidget = dynamic(() => import('@/components/FeedbackWidget'), {
   ssr: false,

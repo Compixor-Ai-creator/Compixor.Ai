@@ -1,1 +1,1 @@
-export { default } from './CxArtCard';
+export { default } from './HeroRightCard';

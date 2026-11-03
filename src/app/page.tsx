@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -23,7 +23,7 @@ import WhyTrustCompixor from '@/components/WhyTrustCompixor';
 import WhatUsersSay from '@/components/WhatUsersSay';
 import HeroCTA from '@/components/HeroCTA';
 import ClientSideGuideSection from '@/components/ClientSideGuideSection';
-import CxArtCard from '@/components/CxArtCard';
+import HeroRightCard from '@/components/HeroRightCard';
 import { ContainerTextFlip } from '@/components/ui/container-text-flip';
 import { tools } from '@/data/tools';
 
@@ -364,7 +364,7 @@ export default function HomePage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <CxArtCard />
+              <HeroRightCard />
             </motion.div>
           </div>
         </div>
