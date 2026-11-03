@@ -1187,8 +1187,8 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     faqs: [
       {
-        q: 'What size should a WhatsApp DP be in 2026?',
-        a: 'The recommended upload size is 1080 × 1080 pixels (1:1 square aspect ratio). While WhatsApp stores photos at roughly 640 × 640 pixels, uploading at 1080p gives WhatsApp the cleanest master file to downsample, preventing blurriness on modern high-DPI AMOLED and Retina displays.',
+        q: 'What size should a WhatsApp DP be?',
+        a: 'The recommended upload size is 1080 × 1080 pixels (1:1 square aspect ratio). While WhatsApp stores photos at approximately 640 × 640 pixels, uploading at 1080p gives WhatsApp the cleanest master file to downsample, keeping facial details and text sharp on modern high-DPI AMOLED and Retina mobile displays.',
       },
       {
         q: 'How do I put a full photo on WhatsApp DP without cropping?',
@@ -1217,6 +1217,22 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       {
         q: 'Can I use the output for WhatsApp Business and Instagram too?',
         a: 'Yes. WhatsApp Business, personal WhatsApp, Instagram, Facebook, and Telegram all utilize the exact same 1:1 square avatar standard. A photo formatted on Compixor works seamlessly across all platforms.',
+      },
+      {
+        q: 'Does Compixor support transparent PNG images?',
+        a: 'Yes. You can import PNG photos with transparency. However, because WhatsApp fills transparent pixels with solid white or black depending on the viewer\'s dark mode setting, using our Smart Frosted Blur or a solid studio backdrop ensures consistent rendering.',
+      },
+      {
+        q: 'Can I save my customized DP if I disconnect from the internet?',
+        a: 'Yes. Once the Compixor Full DP Maker page loads in your browser, all image processing runs entirely offline in client RAM. You can disconnect your Wi-Fi or mobile data and still generate and download your profile pictures.',
+      },
+      {
+        q: 'How does Compixor\'s Smart Blur compare to standard solid white padding?',
+        a: 'Solid white padding can create harsh contrast lines in dark mode and look dated. Compixor\'s Smart Blur takes the authentic tones of your photograph and renders a feathered Gaussian ambient backdrop, producing a clean, modern editorial look.',
+      },
+      {
+        q: 'Is there any file size limit for uploaded photos?',
+        a: 'Compixor can process high-resolution images up to 25 MB directly in browser memory. The tool automatically exports an optimized 1080×1080 px image between 200 KB and 500 KB to avoid triggering WhatsApp\'s secondary compression blur.',
       },
     ],
     features: [

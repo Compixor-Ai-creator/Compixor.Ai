@@ -107,7 +107,8 @@ export default function CxArtCard() {
             <stop offset="1" stopColor="#8b5cf6" stopOpacity="0" />
           </radialGradient>
         </defs>
-        <rect width="560" height="420" fill="url(#cxgBgG)" />
+        <rect className="cxg-bg-light" width="560" height="420" fill="url(#cxgBgG)" />
+        <rect className="cxg-bg-dark" width="560" height="420" fill="url(#cxgBgGDark)" />
         {/* wave 1: top-right sweep */}
         <path d="M560 0v190c-78-10-152-44-206-92C310 62 300 26 296 0z" fill="url(#cxgWaveG)" opacity=".40" />
         {/* wave 2: left / bottom sweep */}

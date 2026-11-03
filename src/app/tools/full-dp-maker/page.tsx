@@ -2,6 +2,7 @@
 
 import ToolSeoSection from "@/components/ToolSeoSection";
 
+import Link from 'next/link';
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ToolFeedback from '@/components/ToolFeedback';
@@ -37,6 +38,7 @@ import {
   Smartphone,
   CheckCircle,
   Zap,
+  ArrowRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
@@ -181,14 +183,12 @@ const gradientPresets = [
 ];
 
 const platformSizes = [
-  { platform: 'WhatsApp', size: '500 × 500 px', minSize: '192 × 192 px', shape: 'Circle', notes: 'Displayed as circle in chat & contacts' },
-  { platform: 'Instagram', size: '320 × 320 px', minSize: '110 × 110 px', shape: 'Circle', notes: 'Best exported at 1024px for sharp retina screens' },
-  { platform: 'Facebook', size: '170 × 170 px', minSize: '800 × 800 px recommended', shape: 'Circle', notes: 'Shown as circle on mobile, square on pages' },
-  { platform: 'Telegram', size: '512 × 512 px', minSize: '512 × 512 px', shape: 'Circle', notes: 'Auto-crops to circle with high compression' },
-  { platform: 'Twitter / X', size: '400 × 400 px', minSize: '200 × 200 px', shape: 'Circle', notes: 'Max file size 2MB (JPG or PNG)' },
-  { platform: 'LinkedIn', size: '400 × 400 px', minSize: '400 × 400 px', shape: 'Circle', notes: 'Professional business portraits' },
-  { platform: 'YouTube', size: '800 × 800 px', minSize: '98 × 98 px', shape: 'Circle', notes: 'Channel avatar across web & mobile' },
-  { platform: 'Discord', size: '128 × 128 px', minSize: '512 × 512 px recommended', shape: 'Circle', notes: 'Supports animated GIF or static DP' },
+  { platform: 'WhatsApp', upload: '1080 × 1080 px', stored: '~640 × 640 px', shape: 'Circle (full square on tap)', safeZone: 'Central 75–80%' },
+  { platform: 'Instagram', upload: '1080 × 1080 px', stored: '~320 × 320 px', shape: 'Circle', safeZone: 'Central 75–80%' },
+  { platform: 'Facebook', upload: '1080 × 1080 px', stored: '176 × 176 (desktop), 196 × 196 (mobile)', shape: 'Circle', safeZone: 'Central 75–80%' },
+  { platform: 'LinkedIn', upload: '1080 × 1080 px', stored: '400 × 400 px', shape: 'Circle', safeZone: 'Central 75–80%' },
+  { platform: 'Twitter / X', upload: '1080 × 1080 px', stored: '~400 × 400 px', shape: 'Circle', safeZone: 'Central 75–80%' },
+  { platform: 'Telegram', upload: '1080 × 1080 px', stored: '~512 × 512 px', shape: 'Circle', safeZone: 'Central 75–80%' },
 ];
 
 export default function FullDpMakerPage() {
@@ -1674,10 +1674,10 @@ export default function FullDpMakerPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
-                Social Media Profile Picture Size Guide (2026)
+                Social Media Profile Picture Size Guide
               </h2>
               <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-                Official profile picture and avatar dimensions across all major apps
+                Official profile picture and avatar upload dimensions across all major apps
               </p>
             </div>
             <span className="text-xs font-semibold px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300">
@@ -1690,9 +1690,10 @@ export default function FullDpMakerPage() {
               <thead>
                 <tr className="border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400">
                   <th className="py-3 px-4 font-bold">Platform</th>
-                  <th className="py-3 px-4 font-bold">Recommended DP Size</th>
+                  <th className="py-3 px-4 font-bold">Recommended Upload</th>
+                  <th className="py-3 px-4 font-bold">Stored / Displayed</th>
                   <th className="py-3 px-4 font-bold">Display Shape</th>
-                  <th className="py-3 px-4 font-bold">Notes</th>
+                  <th className="py-3 px-4 font-bold">Safe Zone</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
@@ -1702,7 +1703,10 @@ export default function FullDpMakerPage() {
                       {p.platform}
                     </td>
                     <td className="py-3.5 px-4 font-mono text-brand-600 dark:text-brand-400 font-semibold">
-                      {p.size}
+                      {p.upload}
+                    </td>
+                    <td className="py-3.5 px-4 font-mono text-zinc-600 dark:text-zinc-300 text-xs">
+                      {p.stored}
                     </td>
                     <td className="py-3.5 px-4 text-zinc-600 dark:text-zinc-300">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-[11px] font-semibold">
@@ -1710,13 +1714,123 @@ export default function FullDpMakerPage() {
                         {p.shape}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-xs text-zinc-500 dark:text-zinc-400">
-                      {p.notes}
+                    <td className="py-3.5 px-4 text-xs font-semibold text-brand-600 dark:text-brand-300">
+                      {p.safeZone}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Pakistan Context & Official Biometric Cross-Link */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-emerald-900 dark:text-emerald-200">
+                Pakistan WhatsApp &amp; Official ID Photo Guidance
+              </h3>
+              <p className="text-xs text-emerald-800/80 dark:text-emerald-300/80 max-w-2xl">
+                WhatsApp is Pakistan&apos;s #1 daily platform for university study groups, corporate teams, and families. If you also require compliant biometric photos for government portals (such as NADRA CNIC, PAK-ID mobile biometric portal, or international passports with 35×45 mm white-background specifications), use our dedicated tool.
+              </p>
+            </div>
+            <Link
+              href="/tools/passport-photo"
+              className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm"
+            >
+              Passport Photo Maker
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 3: Competitor Comparison Matrix */}
+      <section className="mt-12">
+        <div className="glass-card p-8 rounded-3xl space-y-6">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+              Compixor vs. Alternative DP Makers &amp; Design Tools
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+              An honest, technical comparison of privacy, pricing, speed, and output quality.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm">
+              <thead>
+                <tr className="border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400">
+                  <th className="py-3 px-4 font-bold">Feature</th>
+                  <th className="py-3 px-4 font-bold text-brand-600 dark:text-brand-400">Compixor AI</th>
+                  <th className="py-3 px-4 font-bold">Canva / Adobe</th>
+                  <th className="py-3 px-4 font-bold">whatscrop.app</th>
+                  <th className="py-3 px-4 font-bold">imageonline / freedp</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300">
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">100% In-Browser Privacy</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Zero Server Contact)</td>
+                  <td className="py-3 px-4 text-rose-500">No (Uploaded to Cloud)</td>
+                  <td className="py-3 px-4 text-zinc-500">Partial / Unverified</td>
+                  <td className="py-3 px-4 text-rose-500">No (Server Uploads)</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Pricing &amp; Usage Limits</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">100% Free Forever, Unlimited</td>
+                  <td className="py-3 px-4 text-zinc-500">Freemium ($13–$20/mo)</td>
+                  <td className="py-3 px-4 text-zinc-500">Ad-Supported Free</td>
+                  <td className="py-3 px-4 text-zinc-500">Ad-Heavy Free</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Account / Signup Required</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">None (Instant Use)</td>
+                  <td className="py-3 px-4 text-rose-500">Mandatory Account</td>
+                  <td className="py-3 px-4 text-zinc-500">Optional / Ad wall</td>
+                  <td className="py-3 px-4 text-zinc-500">None</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Output Resolution</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Full 1080×1080 HD Export</td>
+                  <td className="py-3 px-4 text-zinc-500">Capped on Free Tier</td>
+                  <td className="py-3 px-4 text-zinc-500">Standard / Compressed</td>
+                  <td className="py-3 px-4 text-zinc-500">500×500 px Capped</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Live Circle Safe-Zone Preview</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Pixel-Accurate)</td>
+                  <td className="py-3 px-4 text-zinc-500">Manual Frame Only</td>
+                  <td className="py-3 px-4 text-zinc-500">Basic Overlay</td>
+                  <td className="py-3 px-4 text-rose-500">None</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Background Fill Modes</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Frosted Blur, Solid, Mirror, Gradient</td>
+                  <td className="py-3 px-4 text-zinc-500">Complex Manual Layers</td>
+                  <td className="py-3 px-4 text-zinc-500">Blur &amp; Solid Only</td>
+                  <td className="py-3 px-4 text-zinc-500">Solid White / Black Only</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Works Offline After Load</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Client-Side HTML5 Canvas)</td>
+                  <td className="py-3 px-4 text-rose-500">No (Fails Offline)</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Watermarks Added</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Never (100% Clean)</td>
+                  <td className="py-3 px-4 text-zinc-500">Watermarks on Premium Assets</td>
+                  <td className="py-3 px-4 text-zinc-500">No</td>
+                  <td className="py-3 px-4 text-zinc-500">No</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <strong className="text-zinc-900 dark:text-white font-semibold block mb-1">Our Editorial Take:</strong>
+            Canva and Adobe Express are powerhouse graphic suites with extensive template catalogs, but for the simple task of squaring a portrait for WhatsApp, they introduce high friction: mandatory signups, cloud uploads of personal photos, and heavy interfaces. Single-purpose utilities like whatscrop or imageonline offer quicker workflows but are frequently bogged down by third-party ads and lack client-side privacy guarantees. Compixor provides an uncompromised balance: dedicated one-click ambient blur and mirror modes, instant local client-side processing, full 1080p HD export, and absolute privacy.
           </div>
         </div>
       </section>

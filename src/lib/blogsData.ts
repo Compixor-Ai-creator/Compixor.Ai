@@ -341,31 +341,33 @@ export const blogsData: BlogItem[] = [
           ]
         },
         {
-          heading: "Ideal Profile Picture Size by Platform",
-          body: "To achieve high-definition clarity without triggering heavy algorithmic compression, match your upload to these technical specifications:",
+          heading: "Unified Profile Picture Sizes Across Social Media",
+          body: "One single upload at 1080 × 1080 pixels works seamlessly across all major social networks. WhatsApp, Instagram, Facebook, and Telegram downsample master files differently, but uploading a clean 1080p 1:1 master ensures maximum clarity:",
           table: {
-            headers: ["Metric", "Ideal Specification", "Why It Matters"],
+            headers: ["Platform", "Recommended Upload", "Stored / Displayed", "Shape", "Safe Zone (center)"],
             rows: [
-              ["Aspect Ratio", "1:1 (Square)", "Eliminates the crop frame completely on upload"],
-              ["Recommended Pixels", "1080 × 1080 px (or 2048 × 2048 px)", "Retains razor-sharp edges on OLED & Retina displays"],
-              ["Minimum Display Size", "500 × 500 px (100 × 100 px thumbnail)", "WhatsApp standard system rendering scale"],
-              ["Optimal File Size in KB", "200 KB – 500 KB", "Large enough for high bitrate; small enough to avoid compression blur"],
-              ["File Format", "JPG or PNG", "High compatibility and clean digital encoding"]
+              ["WhatsApp", "1080 × 1080 px", "~640 × 640 px", "Circle", "75–80%"],
+              ["Instagram", "1080 × 1080 px", "~320 × 320 px", "Circle", "75–80%"],
+              ["Facebook", "1080 × 1080 px", "~170 × 170 px", "Circle", "75–80%"],
+              ["Telegram", "1080 × 1080 px", "~512 × 512 px", "Circle", "75–80%"],
+              ["X (Twitter)", "1080 × 1080 px", "~400 × 400 px", "Circle", "75–80%"],
+              ["LinkedIn", "1080 × 1080 px", "~400 × 400 px", "Circle", "75–80%"],
+              ["YouTube", "1080 × 1080 px", "~800 × 800 px", "Circle", "75–80%"],
+              ["Discord", "1080 × 1080 px", "~128 × 128 px", "Circle", "75–80%"]
             ]
           }
         },
         {
           heading: "Compixor vs. Alternative DP Resizers & Mobile Apps",
-          body: "Compare how Compixor's client-side architecture outperforms ad-cluttered apps and cloud resizers:",
+          body: "Compare how Compixor's on-device HTML5 architecture stacks up against legacy cloud converters and ad-heavy mobile applications:",
           table: {
-            headers: ["Feature / Capability", "Compixor Full DP", "imageonline.io", "whatscrop.app", "Canva (Free)"],
+            headers: ["Tool / Editor", "Processing Location", "Signup Required", "Watermark", "Free Usage", "Max Resolution", "Fill Modes", "Safe-Zone Preview", "Works Offline"],
             rows: [
-              ["Privacy Architecture", "100% In-Browser (HTML5 RAM)", "Cloud Server Upload", "Cloud Server Upload", "Cloud Server Upload"],
-              ["No Signup Required", "Yes (Zero Friction)", "Yes", "Yes", "No (Account Required)"],
-              ["No Watermarks", "100% Watermark-Free", "Yes", "Watermarks on Free", "Limited Free Assets"],
-              ["Speed & Offline", "Instant (0.2s, Works Offline)", "Network Dependent", "Network Dependent", "Multi-step Export"],
-              ["Frosted Ambient Blur", "Yes (Automatic Multi-pass)", "Plain Solid Only", "Basic Blur", "Manual Setup Needed"],
-              ["Max Output Resolution", "Lossless 1080×1080+ HD", "Standard ~600px", "Compressed ~720px", "1080p (4K Paid)"]
+              ["Compixor Full DP", "On-Device (Browser RAM)", "No (Zero Signup)", "No Watermark", "Unlimited Free", "Lossless 1080×1080+ HD", "Blur, Studio, Gradient, Mirror", "Yes (Live Circle Overlay)", "Yes"],
+              ["Canva (Free)", "Cloud Server Upload", "Yes (Account Mandatory)", "On Pro Assets", "Limited Free", "1080p (4K Paid)", "Manual Setup Required", "No", "No"],
+              ["whatscrop.app", "Cloud Server Upload", "Yes", "Often Watermarked", "Ad-Gated", "Variable Compressed", "Basic Blur", "No", "No"],
+              ["imageonline.io", "Cloud Server Upload", "No", "No", "Limited Options", "Standard ~600px", "Solid White/Black Only", "No", "No"],
+              ["Adobe Express", "Cloud Server Upload", "Yes (Account Mandatory)", "Free Tier Limits", "Limited Free", "1080p", "Manual Canvas Setup", "No", "No"]
             ]
           }
         },
@@ -454,24 +456,52 @@ export const blogsData: BlogItem[] = [
       ],
       faqs: [
         {
-          question: "Why do WhatsApp and social media apps crop profile pictures?",
-          answer: "WhatsApp, Instagram, Facebook, and X enforce a strict 1:1 square ratio for profile avatars and mask the square into a circular viewport. Rectangular photos (such as 9:16 vertical portraits or 16:9 landscape group shots) cannot fit into a square window without cutting off the top, bottom, or sides unless you expand the canvas around them."
+          question: "Does WhatsApp have an official HD button for profile pictures?",
+          answer: "No. While WhatsApp rolled out an HD toggle for sending individual photos in chats, there is no official HD button for avatars. The only way to achieve maximum sharpness is to upload a pre-formatted 1080 × 1080 px image so WhatsApp's downsampling retains clean facial contours."
         },
         {
-          question: "What size and resolution is best for WhatsApp DP?",
-          answer: "The optimal resolution is 1080 × 1080 pixels (1:1 square aspect ratio) in JPG or PNG format, with a file size between 200 KB and 500 KB. This matches WhatsApp's rendering engine and prevents aggressive server compression blur."
+          question: "Why does my profile picture look blurry even after uploading an HD image?",
+          answer: "Blurriness usually happens when users upload screenshots or heavily compressed images forwarded through messaging apps. Starting with your original camera roll file and resizing it to 1080×1080 px under 500 KB prevents double compression."
         },
         {
-          question: "Does this work for wide group photos and landscape pictures?",
-          answer: "Yes! When you upload a horizontal landscape or group picture, Compixor Full DP Maker adds aesthetic frosted blur margins to the top and bottom, allowing every person on the far left and right to stay completely in frame."
+          question: "What happens if my photo touches the outer corners of the square?",
+          answer: "Because WhatsApp renders your DP as a circle in chat lists, any details touching the four outer corners of the 1080×1080 square will be clipped. Keep all critical features like eyes, forehead, and shoulders within the central 75–80% safe zone."
         },
         {
-          question: "Is Compixor Full DP Maker free to use?",
-          answer: "Yes, it is 100% free with no sign-ups, no subscription tiers, no watermarks, and no usage limits. Furthermore, your photos are processed entirely in your device RAM and are never uploaded to remote servers."
+          question: "Can I use a screenshot of my photo instead of a DP resizer?",
+          answer: "While taking a screenshot creates black bars that fit WhatsApp's square cropper, screenshots capture low viewport resolution with harsh black banding that looks dated and causes noticeable pixelation once compressed."
         },
         {
-          question: "How can I resize an image for WhatsApp DP without losing quality?",
-          answer: "Export your image at 1080 × 1080 pixels with a file size between 200 KB and 500 KB. When WhatsApp receives an asset that already matches its native square ratio and safe compression limit, it applies minimal additional compression."
+          question: "How does WhatsApp handle group photos with multiple people?",
+          answer: "Group photos are wide horizontal landscapes (16:9 or 4:3). Compixor adds matching top and bottom frosted blur padding, allowing every person on the far left and right edges to remain completely uncropped."
+        },
+        {
+          question: "Will my WhatsApp contacts see the blurred borders or only my face?",
+          answer: "In circular chat lists, contacts primarily see your centered face. When someone taps your avatar to view the full card, WhatsApp expands to the full square, showcasing your complete outfit and the ambient blurred frame."
+        },
+        {
+          question: "Does changing my DP on WhatsApp notify all my contacts?",
+          answer: "No. Unlike some social networks, updating your profile photo on WhatsApp does not generate a broadcast notification or status alert to your contacts."
+        },
+        {
+          question: "Why does my photo look darker or different in WhatsApp dark mode?",
+          answer: "If you upload a PNG photo with transparent backgrounds, WhatsApp fills transparency with black in dark mode and white in light mode. Compixor's Smart Frosted Blur or solid backdrops eliminate transparency issues across all themes."
+        },
+        {
+          question: "How can Pakistani e-commerce sellers format their WhatsApp Business catalog DPs?",
+          answer: "Pakistani sellers can upload wide flyers or square product menus to Compixor and select a clean white border. This prevents WhatsApp Business from cutting off contact phone numbers or price tags printed along the edges."
+        },
+        {
+          question: "Is 300 DPI relevant for WhatsApp profile pictures?",
+          answer: "No. DPI (Dots Per Inch) is strictly a print metric for paper printers. Digital smartphone screens read only raw pixel dimensions (1080 × 1080 px). A 72 DPI image and a 300 DPI image look completely identical on WhatsApp."
+        },
+        {
+          question: "Can I crop out people from the background before making a full DP?",
+          answer: "Yes. You can position and zoom your photo inside Compixor's interactive framing controls to center yourself while padding the perimeter with smart ambient blur."
+        },
+        {
+          question: "Why do third-party mobile DP apps show so many video ads?",
+          answer: "Free mobile utility apps monetize by injecting aggressive interstitial video ads and requesting broad storage permissions. Compixor is 100% web-based, runs in your browser without installations, and is free forever with zero ads."
         }
       ]
     }
