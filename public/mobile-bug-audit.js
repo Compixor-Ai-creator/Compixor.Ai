@@ -4,7 +4,8 @@
    KAISE CHALAYEIN:
    1. Chrome me apni site kholein
    2. DevTools (F12) → Console tab
-   3. Yeh poora file paste karein → Enter
+   3. `mobileAudit()` likh kar Enter dabayein
+      (ya yeh poora file console me paste karein — khud chal jayegi)
    4. Neeche table me har bug + us element ka exact CSS selector milega
 
    YA phone se test karne ke liye:
@@ -22,7 +23,7 @@
    • viewport meta tag missing
    ============================================================================ */
 
-(function mobileAudit() {
+function mobileAudit() {
   const DE0 = document.documentElement;
   const VW = DE0.clientWidth;                 /* asli layout width */
   const WIN = window.innerWidth;
@@ -212,6 +213,15 @@
   }
 
   window.__mobileAuditResult = uniq;
-  window.mobileAudit = mobileAudit;
   return uniq;
-})();
+}
+
+/* console se call karne ke liye global expose — `mobileAudit()` likhein */
+window.mobileAudit = mobileAudit;
+
+/* auto-run: page load par ek dafa chalta hai (DevTools bundle ke andar bhi) */
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function () { mobileAudit(); });
+} else {
+  mobileAudit();
+}
