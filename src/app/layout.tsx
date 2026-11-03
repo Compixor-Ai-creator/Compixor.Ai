@@ -141,7 +141,10 @@ export default function RootLayout({
     var saved=null;
     try{saved=localStorage.getItem('compixor-theme')||localStorage.getItem('theme');}catch(e){}
     var sys=window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var isDark = saved ? (saved==='dark'||saved==='true') : sys;
+    var isDark;
+    if (saved === 'dark'  || saved === 'true')       { isDark = true;  }
+    else if (saved === 'light' || saved === 'false') { isDark = false; }
+    else { isDark = sys; }   /* 'system' / null / unknown -> OS follow */
     var r=document.documentElement;
     r.classList.toggle('dark', isDark);
     r.classList.toggle('light', !isDark);
