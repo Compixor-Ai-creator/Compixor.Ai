@@ -1,0 +1,121 @@
+/* ============================================================================
+   MOBILE A11Y FIXES — STEP 6
+   ----------------------------------------------------------------------------
+   Source: `mobileAudit()` report (390px) — 4 asli issues.
+   Scope: sirf tap targets aur font sizes. Koi layout/design change nahi.
+
+   Lagane ka tareeqa: global CSS ke SAB SE AAKHIR me import karein
+   (perf-smooth.css ke bhi baad).
+
+   ⚠️ `a.py-1.text-sm` wala fix Tailwind utility classes par depend karta hai.
+      Agar aapki footer links Tailwind use nahi karti to wo rule kuch nahi karega.
+   ============================================================================ */
+
+
+/* ============================================================================
+   1. TAP TARGETS — 44×44px (WCAG 2.5.5 / Apple HIG)
+   Report: cnav-theme-btn 36×36, FAQ search 100×34, footer links 348×36
+   ============================================================================ */
+@media (max-width: 1023px), (hover: none), (pointer: coarse) {
+
+  /* 1a. header theme button 36×36 -> 44×44 */
+  .cnav-theme-btn,
+  [class*="theme-btn"],
+  [class*="theme-toggle"] {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 1b. FAQ search button — height 34px -> 44px
+        ⚠️ padding-inline bhi daala hai warna icon stretch ho jata hai */
+  #compixor-faq-search-form > button,
+  [class*="faq-search"] button {
+    min-height: 44px;
+    min-width: 44px;
+    padding-inline: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 1c. footer links — height 36px -> 44px
+        display:inline tha (min-height kaam nahi karta) -> inline-flex */
+  footer a,
+  [class*="footer"] a,
+  a.py-1.text-sm {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* 1d. generally — har button-type control ka minimum */
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 44px;
+  }
+}
+
+
+/* ============================================================================
+   2. FONT SIZES — 12px minimum
+   Report: .cxg-devpill / .cxg-okpill 10-11px, .cx-chips 10.5px
+   (Card ke pills STEP 2 ki CSS me already 12px ho chuke hain — ye defensive hai.)
+   ============================================================================ */
+@media (max-width: 1023px) {
+
+  /* ⚠️ !important zaroori hai — site ki apni rules (.cx-chips span etc.)
+        ki specificity zyada hoti hai, warna ye override nahi hota. */
+  .cxg-devpill,
+  .cxg-okpill {
+    font-size: 12px !important;
+  }
+
+  /* hero trust badges ("100% Free", "Zero Server Uploads", ...) */
+  .cx-chips,
+  .cx-chips span,
+  .cx-chips a,
+  .cx-chips li,
+  .cx-chips p,
+  .cx-chips div {
+    font-size: 12px !important;
+  }
+}
+
+
+/* ============================================================================
+   2b. IOS INPUT ZOOM — 16px se kam nahi
+   ----------------------------------------------------------------------------
+   iOS Safari focus par khud page zoom karta hai jab input font < 16px ho.
+   ============================================================================ */
+@media (max-width: 1023px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+
+/* ============================================================================
+   3. FALSE POSITIVES — inhe chhedna NAHI hai
+   ----------------------------------------------------------------------------
+   Audit ne yeh report kiye, magar ye sahi practice hai:
+     a.sr-only, #hero-heading  ->  1x1px (screen reader only)
+     table.w-full              ->  720px (scroll container ke andar safe)
+   ============================================================================ */
+/* Kuch nahi karna. */
+
+/* table ko responsive rakho (scroll container ke andar) */
+@media (max-width: 1023px) {
+  table.w-full {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+}
