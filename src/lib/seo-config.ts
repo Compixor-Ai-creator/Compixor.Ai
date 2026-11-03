@@ -1119,9 +1119,9 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'full-dp-maker',
     name: 'Full DP Maker',
     icon: FullDpIcon,
-    title: 'Free Full DP Maker for WhatsApp – No Crop, 1080p, Private | Compixor',
+    title: 'Free Full DP Maker for WhatsApp – No Crop, 1080p | Compixor',
     description:
-      'Create full size WhatsApp DP without cropping. 100% private in-browser, no signup, no watermark, aesthetic blur background. HD 1080x1080 export. Free forever.',
+      'Create full-size WhatsApp DP without cropping. 100% private in-browser tool, blur/gradient fills, live circle preview, HD 1080×1080. Free, no signup, no watermark.',
     canonicalUrl: `${BASE_URL}/tools/full-dp-maker`,
     primaryKeyword: 'full dp maker whatsapp',
     searchIntent:
@@ -1169,70 +1169,78 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'Create uncropped WhatsApp display pictures with Compixor\'s free Full DP Maker. Our 100% in-browser, client-side tool uses HTML5 Canvas so your personal photos are NEVER uploaded to any server. Fit any portrait (3:4, 9:16) or horizontal landscape into a sharp 1080×1080 HD square canvas with smart frosted ambient blur, clean studio white, or custom palette borders. Enjoy ultimate privacy, instant offline capability, zero signups, zero watermarks, no ads, and unlimited free exports across WhatsApp, Instagram, Facebook, and LinkedIn.',
     howToSteps: [
       {
-        name: 'Upload Your Photo',
-        text: 'Select any vertical portrait, wide landscape, or group photo. Your image is loaded 100% into local device memory with zero server uploads.',
+        name: 'Upload or Paste Your Image',
+        text: 'Click the upload area, drag and drop your photo, or press Ctrl+V (Cmd+V on Mac) to paste directly from your clipboard. Supports JPG, PNG, and WebP files up to 20 MB.',
       },
       {
         name: 'Choose Your Background Style',
-        text: 'Select Smart Ambient Frosted Blur (recommended), Minimalist Studio White, Pitch Black, or sample a custom tone directly from your outfit.',
+        text: 'Select Blur to organically extend photo colors, Studio for clean monochrome framing, Gradient for subtle tonal transitions, or Mirror to reflect outer edges.',
+      },
+      {
+        name: 'Adjust Scale and Positioning',
+        text: 'Use the zoom and pan controls to fit and center your portrait or landscape photo comfortably inside the canvas.',
       },
       {
         name: 'Verify Circular Safe Zone',
-        text: 'Toggle the circular guideline overlay to ensure eyes, faces, and brand logos remain safely within WhatsApp\'s circular chat viewport.',
+        text: 'Toggle the circle mask preview to confirm key subjects, faces, or product logos sit comfortably within the central 75% to 80% circle.',
       },
       {
-        name: 'Download Lossless HD DP',
-        text: 'Download your uncompressed 1080×1080 px square image and apply it in WhatsApp with zero cropping cutoff.',
+        name: 'Export in 1080x1080 Resolution',
+        text: 'Click Download Full DP to export a high-definition 1080x1080 pixel image directly to your device storage.',
+      },
+      {
+        name: 'Set Photo in WhatsApp',
+        text: 'Open WhatsApp Settings, select Edit Profile Photo, and pick your downloaded image. The entire photo fits without requiring any cropping.',
       },
     ],
     faqs: [
       {
-        q: 'What size should a WhatsApp DP be?',
-        a: 'The recommended upload size is 1080 × 1080 pixels (1:1 square aspect ratio). While WhatsApp stores photos at approximately 640 × 640 pixels, uploading at 1080p gives WhatsApp the cleanest master file to downsample, keeping facial details and text sharp on modern high-DPI AMOLED and Retina mobile displays.',
+        q: 'What is the recommended upload size for a WhatsApp DP?',
+        a: 'While Meta does not publish an official fixed dimension, the industry-standard recommendation for optimal clarity is 1080 × 1080 px. WhatsApp\'s servers internally downsample profile photos to approximately 640 × 640 px for network delivery. Uploading a master 1080 × 1080 px file guarantees that downsampling retains crisp lines and sharp facial details without pixelation.',
       },
       {
-        q: 'How do I put a full photo on WhatsApp DP without cropping?',
-        a: 'Upload your photo to Compixor Full DP Maker, select Smart Frosted Blur or a solid color to expand the canvas into a 1080×1080 square, and click Download HD. When setting it as your WhatsApp profile picture, the crop rectangle fits the entire square canvas with zero cropping required.',
+        q: 'Does Compixor store or upload my personal photos to a server?',
+        a: 'No. Compixor executes 100% locally in your web browser using HTML5 Canvas technology. Your photos are never sent across the internet, never processed by remote cloud workers, and never stored on any external server or database. When you close or refresh your browser tab, your image data is completely cleared from memory.',
       },
       {
-        q: 'Why does WhatsApp crop my DP automatically?',
-        a: 'WhatsApp uses a fixed 1:1 square aspect ratio for avatar storage and displays it through a circular mask. Smartphones take photos in tall 3:4 or 9:16 ratios. When an unpadded rectangular photo is uploaded, WhatsApp forces you to crop away over 40% of the image surface area.',
+        q: 'Why does my picture look circular in the chat list but square when tapped?',
+        a: 'WhatsApp employs a dual-presentation interface. In conversation feeds, contact lists, and status tabs, WhatsApp overlays a circular CSS mask over your avatar to maintain visual uniformity. When a contact taps on your profile photo, WhatsApp opens the raw file in its full-screen viewer, revealing the entire 1:1 square canvas including your background borders.',
       },
       {
-        q: 'Are my private photos uploaded to any external server?',
-        a: 'No. Absolutely zero bytes leave your device. Compixor operates exclusively on client-side HTML5 Canvas technology in your browser RAM. Your photos are never stored on or transmitted to external servers, ensuring total privacy.',
+        q: 'Which fill mode works best for vertical group pictures?',
+        a: 'For group shots and full-length portraits, the Blur fill mode is generally the most aesthetic. It creates a softened, mirrored color palette sampled directly from your photo’s existing background, giving the picture an organic, studio-edited appearance rather than leaving stark blank margins.',
       },
       {
-        q: 'Will Compixor add a watermark to my profile picture?',
-        a: 'No. Compixor is 100% free forever with no watermarks, no hidden paywalls, and no account signup requirements.',
+        q: 'What is the WhatsApp DP circle safe zone?',
+        a: 'The circle safe zone represents the central 75% to 80% area of your 1:1 square image. Because WhatsApp clips off the four outer corners in contact lists, any important visual elements—such as human faces, logos, or typography—must remain within this central circle to prevent awkward clipping.',
       },
       {
-        q: 'What is the WhatsApp DP safe zone?',
-        a: 'WhatsApp displays your DP as a circle in chat threads and status lists, but displays the full square when a contact taps your photo. The safe zone is the inner 70% to 80% circle of the square canvas. Always keep faces, eyes, and critical logos within this circular zone so they aren\'t obscured in contact lists.',
+        q: 'Can I use this tool offline or on a weak mobile network?',
+        a: 'Yes. Because the entire processing script loads into your browser cache upon initial visit, Compixor can resize and format profile pictures completely offline. You can turn on Airplane Mode or work through unstable cellular connections without experiencing delays or dropped uploads.',
       },
       {
-        q: 'Does this tool work on iPhone, Android, and PC?',
-        a: 'Yes. Compixor is fully responsive and compatible with Apple Safari, Google Chrome, Samsung Internet, Mozilla Firefox, and Microsoft Edge across all mobile phones, tablets, and desktop computers.',
+        q: 'Why is the exported image 1080 × 1080 instead of 500 × 500?',
+        a: 'Legacy online tools frequently export at 500 × 500 px to conserve server processing power and cloud bandwidth. However, modern smartphone displays utilize high pixel densities (Retina, AMOLED, Super AMOLED). An image exported at 500 × 500 px appears visibly blurry on modern phones. Compixor exports at 1080 × 1080 px to ensure superior high-definition clarity.',
       },
       {
-        q: 'Can I use the output for WhatsApp Business and Instagram too?',
-        a: 'Yes. WhatsApp Business, personal WhatsApp, Instagram, Facebook, and Telegram all utilize the exact same 1:1 square avatar standard. A photo formatted on Compixor works seamlessly across all platforms.',
+        q: 'Does this tool add any watermark or require an account?',
+        a: 'No. Compixor is committed to zero-friction utility: there are no signups, no credit systems, no subscription walls, and absolutely no watermarks stamped onto your exported pictures.',
       },
       {
-        q: 'Does Compixor support transparent PNG images?',
-        a: 'Yes. You can import PNG photos with transparency. However, because WhatsApp fills transparent pixels with solid white or black depending on the viewer\'s dark mode setting, using our Smart Frosted Blur or a solid studio backdrop ensures consistent rendering.',
+        q: 'How can small business owners format catalogue or product photos for WhatsApp?',
+        a: 'Business owners can upload rectangular product photos, select a neutral Studio white or subtle gray border, and scale the product so that important model numbers, labels, or product boundaries remain visible inside the circular safe-zone preview. This ensures customers see the product clearly in their chat inbox before even tapping to expand.',
       },
       {
-        q: 'Can I save my customized DP if I disconnect from the internet?',
-        a: 'Yes. Once the Compixor Full DP Maker page loads in your browser, all image processing runs entirely offline in client RAM. You can disconnect your Wi-Fi or mobile data and still generate and download your profile pictures.',
+        q: 'Will downloading my DP reduce the image resolution?',
+        a: 'No. Compixor preserves high visual fidelity by rendering your original pixels onto an ultra-sharp 1080 × 1080 canvas. Unlike messaging apps that aggressively strip image metadata and detail, our client-side exporter outputs clean, high-density JPG or PNG files within the ideal 200–500 KB range.',
       },
       {
-        q: 'How does Compixor\'s Smart Blur compare to standard solid white padding?',
-        a: 'Solid white padding can create harsh contrast lines in dark mode and look dated. Compixor\'s Smart Blur takes the authentic tones of your photograph and renders a feathered Gaussian ambient backdrop, producing a clean, modern editorial look.',
+        q: 'Can I use the same exported 1080 × 1080 picture for Instagram and Facebook?',
+        a: 'Yes. As outlined in our Unified Platform Dimension Matrix, Instagram, Facebook, Telegram, LinkedIn, and X (Twitter) all use 1:1 square master dimensions with circular cropping in primary feeds. A single 1080 × 1080 px export from Compixor works universally across all your social channels.',
       },
       {
-        q: 'Is there any file size limit for uploaded photos?',
-        a: 'Compixor can process high-resolution images up to 25 MB directly in browser memory. The tool automatically exports an optimized 1080×1080 px image between 200 KB and 500 KB to avoid triggering WhatsApp\'s secondary compression blur.',
+        q: 'Does Compixor work on budget Android smartphones and mobile browsers?',
+        a: 'Yes. We have tested Compixor extensively across budget and mid-range Android devices (including Samsung Galaxy A-series, Xiaomi Redmi, Infinix, and Tecno) using Chrome, Samsung Internet, and Firefox. The client-side canvas engine executes smoothly with negligible memory usage.',
       },
     ],
     features: [
@@ -1253,7 +1261,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         description: 'Simulates WhatsApp and Instagram circular viewports in real time to avoid cut-off ears, foreheads, or logos.',
       },
     ],
-    relatedToolSlugs: ['passport-photo', 'qr-generator', 'pdf-compressor'],
+    relatedToolSlugs: ['passport-photo', 'qr-generator', 'pdf-compressor', 'pdf-to-word', 'word-compressor'],
     applicationCategory: 'MultimediaApplication',
     operatingSystem: 'Any (Web Browser)',
     featureList: [

@@ -183,12 +183,14 @@ const gradientPresets = [
 ];
 
 const platformSizes = [
-  { platform: 'WhatsApp', upload: '1080 × 1080 px', stored: '~640 × 640 px', shape: 'Circle (full square on tap)', safeZone: 'Central 75–80%' },
-  { platform: 'Instagram', upload: '1080 × 1080 px', stored: '~320 × 320 px', shape: 'Circle', safeZone: 'Central 75–80%' },
-  { platform: 'Facebook', upload: '1080 × 1080 px', stored: '176 × 176 (desktop), 196 × 196 (mobile)', shape: 'Circle', safeZone: 'Central 75–80%' },
-  { platform: 'LinkedIn', upload: '1080 × 1080 px', stored: '400 × 400 px', shape: 'Circle', safeZone: 'Central 75–80%' },
-  { platform: 'Twitter / X', upload: '1080 × 1080 px', stored: '~400 × 400 px', shape: 'Circle', safeZone: 'Central 75–80%' },
-  { platform: 'Telegram', upload: '1080 × 1080 px', stored: '~512 × 512 px', shape: 'Circle', safeZone: 'Central 75–80%' },
+  { platform: 'WhatsApp', upload: '1080 × 1080 px', stored: '~640 × 640 px', shape: 'Circle', safeZone: '75-80%' },
+  { platform: 'Instagram', upload: '1080 × 1080 px', stored: '~320 × 320 px', shape: 'Circle', safeZone: '75-80%' },
+  { platform: 'Facebook', upload: '1080 × 1080 px', stored: '~170 × 170 px', shape: 'Circle', safeZone: '75-80%' },
+  { platform: 'Telegram', upload: '1080 × 1080 px', stored: '~512 × 512 px', shape: 'Circle', safeZone: '75-80%' },
+  { platform: 'X (Twitter)', upload: '1080 × 1080 px', stored: '~400 × 400 px', shape: 'Circle', safeZone: '75-80%' },
+  { platform: 'LinkedIn', upload: '1080 × 1080 px', stored: '~400 × 400 px', shape: 'Circle', safeZone: '75-80%' },
+  { platform: 'YouTube', upload: '1080 × 1080 px', stored: '~800 × 800 px', shape: 'Circle', safeZone: '75-80%' },
+  { platform: 'Discord', upload: '1080 × 1080 px', stored: '~128 × 128 px', shape: 'Circle', safeZone: '75-80%' },
 ];
 
 export default function FullDpMakerPage() {
@@ -1727,17 +1729,17 @@ export default function FullDpMakerPage() {
           <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <h3 className="text-sm font-bold text-emerald-900 dark:text-emerald-200">
-                Pakistan WhatsApp &amp; Official ID Photo Guidance
+                Built for Mobile-First Users in Pakistan and Beyond
               </h3>
               <p className="text-xs text-emerald-800/80 dark:text-emerald-300/80 max-w-2xl">
-                WhatsApp is Pakistan&apos;s #1 daily platform for university study groups, corporate teams, and families. If you also require compliant biometric photos for government portals (such as NADRA CNIC, PAK-ID mobile biometric portal, or international passports with 35×45 mm white-background specifications), use our dedicated tool.
+                In Pakistan, WhatsApp is the digital backbone for daily family chats, university groups, and thousands of home-based WhatsApp Business stores in Karachi, Lahore, and Faisalabad. Compixor runs 100% locally on your phone without uploading heavy files over mobile data. For official government identity documents, visit our dedicated tool below:
               </p>
             </div>
             <Link
               href="/tools/passport-photo"
               className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm"
             >
-              Passport Photo Maker
+              Biometric Passport Photo Maker (NADRA / CNIC 35×45mm)
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -1749,10 +1751,10 @@ export default function FullDpMakerPage() {
         <div className="glass-card p-8 rounded-3xl space-y-6">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
-              Compixor vs. Alternative DP Makers &amp; Design Tools
+              Compixor vs. Other WhatsApp DP Makers
             </h2>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-              An honest, technical comparison of privacy, pricing, speed, and output quality.
+              An honest, technical comparison of privacy, pricing, processing speed, and output quality.
             </p>
           </div>
 
@@ -1760,77 +1762,116 @@ export default function FullDpMakerPage() {
             <table className="w-full text-left text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400">
-                  <th className="py-3 px-4 font-bold">Feature</th>
+                  <th className="py-3 px-4 font-bold">Feature / Metric</th>
                   <th className="py-3 px-4 font-bold text-brand-600 dark:text-brand-400">Compixor AI</th>
-                  <th className="py-3 px-4 font-bold">Canva / Adobe</th>
+                  <th className="py-3 px-4 font-bold">Canva</th>
+                  <th className="py-3 px-4 font-bold">Adobe Express</th>
                   <th className="py-3 px-4 font-bold">whatscrop.app</th>
-                  <th className="py-3 px-4 font-bold">imageonline / freedp</th>
+                  <th className="py-3 px-4 font-bold">imageonline.io</th>
+                  <th className="py-3 px-4 font-bold">freedpmaker</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300">
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
-                  <td className="py-3 px-4 font-semibold">100% In-Browser Privacy</td>
-                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Zero Server Contact)</td>
-                  <td className="py-3 px-4 text-rose-500">No (Uploaded to Cloud)</td>
-                  <td className="py-3 px-4 text-zinc-500">Partial / Unverified</td>
-                  <td className="py-3 px-4 text-rose-500">No (Server Uploads)</td>
+                  <td className="py-3 px-4 font-semibold">Processing Location</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">100% In-Browser (Local)</td>
+                  <td className="py-3 px-4 text-zinc-500">Cloud Server</td>
+                  <td className="py-3 px-4 text-zinc-500">Cloud Server</td>
+                  <td className="py-3 px-4 text-zinc-500">Hybrid / Cloud</td>
+                  <td className="py-3 px-4 text-zinc-500">Cloud Server</td>
+                  <td className="py-3 px-4 text-zinc-500">Cloud Server</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
-                  <td className="py-3 px-4 font-semibold">Pricing &amp; Usage Limits</td>
-                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">100% Free Forever, Unlimited</td>
-                  <td className="py-3 px-4 text-zinc-500">Freemium ($13–$20/mo)</td>
-                  <td className="py-3 px-4 text-zinc-500">Ad-Supported Free</td>
-                  <td className="py-3 px-4 text-zinc-500">Ad-Heavy Free</td>
-                </tr>
-                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
-                  <td className="py-3 px-4 font-semibold">Account / Signup Required</td>
-                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">None (Instant Use)</td>
-                  <td className="py-3 px-4 text-rose-500">Mandatory Account</td>
-                  <td className="py-3 px-4 text-zinc-500">Optional / Ad wall</td>
+                  <td className="py-3 px-4 font-semibold">Account Signup</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">None required</td>
+                  <td className="py-3 px-4 text-rose-500">Required</td>
+                  <td className="py-3 px-4 text-rose-500">Required</td>
+                  <td className="py-3 px-4 text-zinc-500">None</td>
+                  <td className="py-3 px-4 text-zinc-500">None</td>
                   <td className="py-3 px-4 text-zinc-500">None</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
-                  <td className="py-3 px-4 font-semibold">Output Resolution</td>
-                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Full 1080×1080 HD Export</td>
-                  <td className="py-3 px-4 text-zinc-500">Capped on Free Tier</td>
-                  <td className="py-3 px-4 text-zinc-500">Standard / Compressed</td>
-                  <td className="py-3 px-4 text-zinc-500">500×500 px Capped</td>
+                  <td className="py-3 px-4 font-semibold">Watermark on Export</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">None</td>
+                  <td className="py-3 px-4 text-zinc-500">None (Free tier)</td>
+                  <td className="py-3 px-4 text-zinc-500">None (Free tier)</td>
+                  <td className="py-3 px-4 text-zinc-500">Varies</td>
+                  <td className="py-3 px-4 text-zinc-500">None</td>
+                  <td className="py-3 px-4 text-zinc-500">None</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
-                  <td className="py-3 px-4 font-semibold">Live Circle Safe-Zone Preview</td>
-                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Pixel-Accurate)</td>
-                  <td className="py-3 px-4 text-zinc-500">Manual Frame Only</td>
-                  <td className="py-3 px-4 text-zinc-500">Basic Overlay</td>
-                  <td className="py-3 px-4 text-rose-500">None</td>
+                  <td className="py-3 px-4 font-semibold">Free Usage Limits</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Unlimited</td>
+                  <td className="py-3 px-4 text-zinc-500">Limited assets</td>
+                  <td className="py-3 px-4 text-zinc-500">Limited features</td>
+                  <td className="py-3 px-4 text-zinc-500">Varies</td>
+                  <td className="py-3 px-4 text-zinc-500">Unlimited</td>
+                  <td className="py-3 px-4 text-zinc-500">Unlimited</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
-                  <td className="py-3 px-4 font-semibold">Background Fill Modes</td>
-                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Frosted Blur, Solid, Mirror, Gradient</td>
-                  <td className="py-3 px-4 text-zinc-500">Complex Manual Layers</td>
-                  <td className="py-3 px-4 text-zinc-500">Blur &amp; Solid Only</td>
-                  <td className="py-3 px-4 text-zinc-500">Solid White / Black Only</td>
+                  <td className="py-3 px-4 font-semibold">Export Canvas Size</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">1080 × 1080 px</td>
+                  <td className="py-3 px-4 text-zinc-500">Up to 1080 px</td>
+                  <td className="py-3 px-4 text-zinc-500">Up to 1080 px</td>
+                  <td className="py-3 px-4 text-zinc-500">Varies</td>
+                  <td className="py-3 px-4 text-zinc-500">Varies</td>
+                  <td className="py-3 px-4 text-zinc-500">Varies</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
-                  <td className="py-3 px-4 font-semibold">Works Offline After Load</td>
-                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Client-Side HTML5 Canvas)</td>
-                  <td className="py-3 px-4 text-rose-500">No (Fails Offline)</td>
+                  <td className="py-3 px-4 font-semibold">Background Fill Options</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Blur, Studio, Gradient, Mirror</td>
+                  <td className="py-3 px-4 text-zinc-500">Manual editing</td>
+                  <td className="py-3 px-4 text-zinc-500">Manual editing</td>
+                  <td className="py-3 px-4 text-zinc-500">Blur / White</td>
+                  <td className="py-3 px-4 text-zinc-500">Solid Colors</td>
+                  <td className="py-3 px-4 text-zinc-500">Basic White</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Live Circle Safe Preview</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (1-click toggle)</td>
+                  <td className="py-3 px-4 text-zinc-500">Manual guide</td>
+                  <td className="py-3 px-4 text-zinc-500">Manual guide</td>
+                  <td className="py-3 px-4 text-zinc-500">Yes</td>
                   <td className="py-3 px-4 text-rose-500">No</td>
                   <td className="py-3 px-4 text-rose-500">No</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
-                  <td className="py-3 px-4 font-semibold">Watermarks Added</td>
-                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Never (100% Clean)</td>
-                  <td className="py-3 px-4 text-zinc-500">Watermarks on Premium Assets</td>
-                  <td className="py-3 px-4 text-zinc-500">No</td>
-                  <td className="py-3 px-4 text-zinc-500">No</td>
+                  <td className="py-3 px-4 font-semibold">Works Completely Offline</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
+                  <td className="py-3 px-4 text-rose-500">No</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Advertising Experience</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Zero Ads</td>
+                  <td className="py-3 px-4 text-zinc-500">Upsell prompts</td>
+                  <td className="py-3 px-4 text-zinc-500">Upsell prompts</td>
+                  <td className="py-3 px-4 text-zinc-500">Display ads</td>
+                  <td className="py-3 px-4 text-zinc-500">Display ads</td>
+                  <td className="py-3 px-4 text-zinc-500">Display ads</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                  <td className="py-3 px-4 font-semibold">Processing Flow</td>
+                  <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Instant, local</td>
+                  <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
+                  <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
+                  <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
+                  <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
+                  <td className="py-3 px-4 text-zinc-500">Upload + wait</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            <strong className="text-zinc-900 dark:text-white font-semibold block mb-1">Our Editorial Take:</strong>
-            Canva and Adobe Express are powerhouse graphic suites with extensive template catalogs, but for the simple task of squaring a portrait for WhatsApp, they introduce high friction: mandatory signups, cloud uploads of personal photos, and heavy interfaces. Single-purpose utilities like whatscrop or imageonline offer quicker workflows but are frequently bogged down by third-party ads and lack client-side privacy guarantees. Compixor provides an uncompromised balance: dedicated one-click ambient blur and mirror modes, instant local client-side processing, full 1080p HD export, and absolute privacy.
+            <strong className="text-zinc-900 dark:text-white font-semibold block mb-1">Our Architectural Verdict:</strong>
+            Full-fledged design platforms like Canva and Adobe Express provide powerful multi-layer editing, but they require mandatory account signups and upload queues for what should be a 10-second task. Meanwhile, many ad-supported single-purpose web tools compress images down to low resolutions and bombard screens with banner ads. Compixor provides an honest balance: zero logins, zero advertisements, fast local processing on your device, and clean 1080 × 1080 px exports.
+            <span className="block mt-2 text-[11px] text-zinc-500 dark:text-zinc-500">
+              Note: Based on our hands-on testing at the time of writing; competitor features, limits, and interfaces may change over time.
+            </span>
           </div>
         </div>
       </section>
