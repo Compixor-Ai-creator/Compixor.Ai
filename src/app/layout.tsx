@@ -255,9 +255,13 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* Performance & Mobile Diagnostics (Read-only, Zero CSS/DOM mutation) */}
-        <Script src="/perf-diagnose.js" strategy="afterInteractive" />
-        <Script src="/mobile-bug-audit.js" strategy="afterInteractive" />
+        {/* Performance & Mobile Diagnostics (Development only) */}
+        {process.env.NODE_ENV !== 'production' && (
+          <>
+            <Script src="/perf-diagnose.js" strategy="afterInteractive" />
+            <Script src="/mobile-bug-audit.js" strategy="afterInteractive" />
+          </>
+        )}
         <Script src="/perf-smooth.js" strategy="afterInteractive" />
       </body>
     </html>
