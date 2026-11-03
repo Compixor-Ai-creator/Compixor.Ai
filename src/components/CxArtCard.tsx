@@ -92,6 +92,12 @@ export default function CxArtCard() {
             <stop offset=".72" stopColor="#ecdcfd" />
             <stop offset="1" stopColor="#fbf2fe" />
           </linearGradient>
+          <linearGradient id="cxgBgGDark" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#1a112f" />
+            <stop offset=".42" stopColor="#140d26" />
+            <stop offset=".72" stopColor="#100921" />
+            <stop offset="1" stopColor="#1c1234" />
+          </linearGradient>
           <linearGradient id="cxgWaveG" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="#a78bfa" />
             <stop offset="1" stopColor="#7c3aed" />
