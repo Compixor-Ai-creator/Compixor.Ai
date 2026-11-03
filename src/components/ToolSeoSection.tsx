@@ -36,6 +36,7 @@ const TOOL_SECTION_H2: Partial<Record<ToolSlug, string>> = {
   'pdf-compressor': 'Compress PDF Online Free Without Losing Quality',
   'remove-watermark': 'Remove Watermarks from PDF Without Blurring Text',
   'qr-generator': 'Free QR Code Generator with Logo, No Signup',
+  'full-dp-maker': 'Set Full WhatsApp DP Without Cropping Online',
 };
 
 const TOOL_GUIDE_MAP: Record<string, { title: string; href: string }> = {
