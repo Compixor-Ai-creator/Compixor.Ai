@@ -132,6 +132,27 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Anti-FOUC Theme Initializer: Runs synchronously before any stylesheet or paint to kill white flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('compixor-theme') || localStorage.getItem('theme');
+                  var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (saved === 'dark' || (!saved && sysDark)) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.dataset.theme = 'dark';
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.dataset.theme = 'light';
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+
         {/* Google tag (gtag.js) - Google Analytics */}
         <Script
           strategy="afterInteractive"
@@ -150,24 +171,6 @@ export default function RootLayout({
               gtag('config', 'G-LKL3K1VKW6', {
                 page_path: window.location.pathname,
               });
-            `,
-          }}
-        />
-
-        {/* Anti-FOUC Theme Initializer Script: runs synchronously before body render */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var saved = localStorage.getItem('compixor-theme');
-                  if (saved === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {}
-              })();
             `,
           }}
         />
