@@ -132,24 +132,24 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Anti-FOUC Theme Initializer: Runs synchronously before any stylesheet or paint to kill white flash */}
+        {/* Anti-FOUC Theme Initializer (STEP 5B): Runs synchronously before paint to kill white flash */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              (function() {
-                try {
-                  var saved = localStorage.getItem('compixor-theme') || localStorage.getItem('theme');
-                  var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (saved === 'dark' || (!saved && sysDark)) {
-                    document.documentElement.classList.add('dark');
-                    document.documentElement.dataset.theme = 'dark';
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                    document.documentElement.dataset.theme = 'light';
-                  }
-                } catch (e) {}
-              })();
-            `,
+(function(){
+  try{
+    var saved=null;
+    try{saved=localStorage.getItem('compixor-theme')||localStorage.getItem('theme');}catch(e){}
+    var sys=window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var isDark = saved ? (saved==='dark'||saved==='true') : sys;
+    var r=document.documentElement;
+    r.classList.toggle('dark', isDark);
+    r.classList.toggle('light', !isDark);
+    r.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    r.style.colorScheme = isDark ? 'dark' : 'light';
+  }catch(e){}
+})();
+`,
           }}
         />
 
