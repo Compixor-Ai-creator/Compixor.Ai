@@ -141,12 +141,9 @@ a {
    Inhe tab kholna hai jab `perfReport()` report kar de ke aapki site par ye
    patterns waqai hain. Warna ye kuch nahi karega (harmless, magar faida bhi
    nahi).
-
-   Kholein:  neeche ke comment ko hatayein  /* ← ye laga hua hai
    ============================================================================ */
 
-/*
-// 2.1 — animated element par blur (hang ka #1 source)
+/* 2.1 — animated element par blur (hang ka #1 source) */
 [class*="float"],
 [class*="animate-"],
 [class*="pulse"],
@@ -156,14 +153,22 @@ a {
   backdrop-filter: none !important;
 }
 
-// 2.2 — blur radius cap (20px se zyada = mehnga)
+/* 2.1b — animated orbs with filter: blur */
+.slide-blur-orb-1,
+.slide-blur-orb-2,
+.slide-blur-orb-3 {
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+/* 2.2 — blur radius cap (20px se zyada = mehnga) */
 [class*="glass"],
 [class*="backdrop"] {
   -webkit-backdrop-filter: blur(10px) saturate(150%);
   backdrop-filter: blur(10px) saturate(150%);
 }
 
-// 2.3 — mobile par blur bilkul band
+/* 2.3 — mobile par blur bilkul band */
 @media (max-width: 1023px), (hover: none), (pointer: coarse) {
   [class*="glass"]:not(.keep-blur),
   [class*="backdrop"]:not(.keep-blur) {
@@ -171,17 +176,6 @@ a {
     backdrop-filter: none !important;
   }
 }
-
-// 2.4 — bade decorative elements mobile par band
-// ⚠️ Ye content hide kar sakta hai. Sirf tab kholein jab classes confirm hon.
-@media (max-width: 1023px) {
-  [class*="blob"],
-  [class*="aurora"],
-  [class*="mesh"] {
-    display: none !important;
-  }
-}
-*/
 
 
 /* ============================================================================

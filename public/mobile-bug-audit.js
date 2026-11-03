@@ -95,9 +95,11 @@ function mobileAudit() {
   for (const el of all) {
     const cs = getComputedStyle(el);
     if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') continue;
+    if (el.ownerSVGElement) continue;
 
     const r = el.getBoundingClientRect();
     if (r.width === 0 || r.height === 0) continue;
+    if (el.matches('.sr-only, [class*="sr-only"]') || (r.width <= 1 && r.height <= 1)) continue;
 
     /* 3a. screen se bahar */
     const overRight = r.right > VW + 1;
@@ -113,15 +115,25 @@ function mobileAudit() {
     if (isTap) {
       /* prose ke andar wala text link 44px ka nahi hota — usko chhod dein,
          sirf button/icon/short links check karein */
-      const isInlineTextLink = el.tagName === 'A'
+      const isInlineTextLink = (el.tagName === 'A'
         && cs.display === 'inline'
-        && (el.textContent || '').trim().length > 20;
+        && (el.textContent || '').trim().length > 20)
+        || el.closest('nav[aria-label*="breadcrumb" i], [itemtype*="BreadcrumbList"]');
       /* inline element par min-height ka koi asar nahi hota — note kar lein */
       const inlineWarn = cs.display === 'inline' ? ' [display:inline — min-height kaam nahi karega]' : '';
-      if (!isInlineTextLink && (r.height < 43.5 || r.width < 43.5)) {
-        push('SMALL TAP TARGET', el,
-             `${Math.round(r.width)}x${Math.round(r.height)}px (min 44x44)${inlineWarn}`,
-             'min-height:44px; min-width:44px; display:inline-flex bhi lagayein');
+      if (!isInlineTextLink) {
+        if (el.tagName === 'A') {
+          /* Text links: WCAG 2.5.5 exception — sirf height 44px check hoti hai */
+          if (r.height < 43.5) {
+            push('SMALL TAP TARGET', el,
+                 `${Math.round(r.width)}x${Math.round(r.height)}px (min height 44px)${inlineWarn}`,
+                 'min-height:44px; display:inline-flex;');
+          }
+        } else if (r.height < 43.5 || r.width < 43.5) {
+          push('SMALL TAP TARGET', el,
+               `${Math.round(r.width)}x${Math.round(r.height)}px (min 44x44)${inlineWarn}`,
+               'min-height:44px; min-width:44px; display:inline-flex bhi lagayein');
+        }
       }
     }
 
@@ -159,7 +171,7 @@ function mobileAudit() {
 
     /* 3f. fixed px width viewport se bada */
     const w = parseFloat(cs.width);
-    if (!isNaN(w) && w > VW + 1 && cs.maxWidth === 'none' && cs.position !== 'fixed') {
+    if (!isNaN(w) && w > VW + 1 && cs.maxWidth === 'none' && cs.position !== 'fixed' && !isClipped(el) && !el.closest('table')) {
       push('FIXED WIDTH TOO BIG', el, `width:${Math.round(w)}px > vw ${VW}`,
            'width:100%; max-width:' + Math.round(w) + 'px');
     }

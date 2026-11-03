@@ -21,7 +21,9 @@
   /* 1a. header theme button 36×36 -> 44×44 */
   .cnav-theme-btn,
   [class*="theme-btn"],
-  [class*="theme-toggle"] {
+  [class*="theme-toggle"],
+  a.flex.items-center.shrink-0,
+  nav a[href="/"] {
     min-width: 44px;
     min-height: 44px;
     display: inline-flex;
@@ -76,12 +78,22 @@
   }
 
   /* hero trust badges ("100% Free", "Zero Server Uploads", ...) */
+  .cx-hero .cx-chips,
+  .cx-hero .cx-chips > *,
+  .cx-hero .cx-chips span,
   .cx-chips,
+  .cx-chips > *,
   .cx-chips span,
   .cx-chips a,
   .cx-chips li,
   .cx-chips p,
-  .cx-chips div {
+  .cx-chips div,
+  [class*="text-[11px]"],
+  [class*="text-[10px]"],
+  [class*="text-[9px]"],
+  .text-\[11px\],
+  .text-\[10px\],
+  .text-\[9px\] {
     font-size: 12px !important;
   }
 }

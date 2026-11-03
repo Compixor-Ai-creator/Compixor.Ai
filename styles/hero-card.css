@@ -107,6 +107,8 @@
      Chip float karti hai -> backdrop har frame dobara blur hota hai -> hang.
      Background smooth gradient hai, is liye blur ka koi visual farq nahi
      (measured: 0.6/255 average). Neeche baked glass look hai. */
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   background:linear-gradient(135deg, rgba(255,255,255,.72) 0%, rgba(255,255,255,.5) 100%);
   border:1px solid rgba(255,255,255,.9);
   box-shadow:
