@@ -1,0 +1,196 @@
+/* ============================================================================
+   PERF SMOOTH — STEP 1  (SAFE MODE)
+   ----------------------------------------------------------------------------
+   Is file ka TIER 1 universal hai: ye class names par depend NAHI karta, is liye
+   aapki site ka kuch bhi toot nahi sakta. Sirf wahi 6 cheezein theek karta hai
+   jo 100% safe hain.
+
+   TIER 2 (class-name based) comment me band hai — usse sirf tab kholna hai jab
+   `perfReport()` us naam ko confirm kar de.
+
+   Lagane ka tareeqa: global CSS ke SAB SE AAKHIR me import karein.
+   ============================================================================ */
+
+
+/* ============================================================================
+   TIER 1 — UNIVERSAL SAFE FIXES (kuch bhi nahi todega)
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   1. DARK MODE WHITE FLASH
+   Browser ko pehle se batao ke site dark mode support karti hai. Iske bina
+   browser pehle light paint karta hai, phir dark — wahi "mili-second flash".
+   ---------------------------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+}
+
+
+/* ----------------------------------------------------------------------------
+   2. THEME SWITCH PAR FREEZE
+   Dark mode toggle karte waqt agar koi transition chal rahi ho to poori page
+   200-300ms animate karti hai = freeze. Switch ke waqt transition band.
+   ---------------------------------------------------------------------------- */
+html.dark,
+html.dark *,
+html.dark *::before,
+html.dark *::after,
+[data-theme="dark"],
+[data-theme="dark"] *,
+[data-theme="dark"] *::before,
+[data-theme="dark"] *::after,
+html.light,
+html.light *,
+[data-theme="light"],
+[data-theme="light"] * {
+  transition: none !important;
+}
+
+
+/* ----------------------------------------------------------------------------
+   3. HORIZONTAL SCROLL (mobile ka #1 bug)
+   box-sizing missing ho to padding element ko container se chaura kar deti hai.
+   ---------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;      /* clip > hidden: position:sticky todta nahi */
+}
+
+
+/* ----------------------------------------------------------------------------
+   4. MEDIA SCREEN SE BAHAR
+   ---------------------------------------------------------------------------- */
+img,
+video,
+iframe,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+
+/* ----------------------------------------------------------------------------
+   5. IOS INPUT ZOOM
+   iOS Safari focus par khud zoom karta hai jab input font < 16px ho.
+   Isse "website zoom ho gayi" wala ehsaas hota hai.
+   ---------------------------------------------------------------------------- */
+@supports (-webkit-touch-callout: none) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+
+/* ----------------------------------------------------------------------------
+   6. 100vh PROBLEM (address bar ke neeche content katna)
+   ---------------------------------------------------------------------------- */
+@supports (height: 100dvh) {
+  .hero,
+  .hero-section,
+  [class*="hero"] {
+    min-height: 100dvh;
+  }
+}
+
+
+/* ----------------------------------------------------------------------------
+   7. TEXT LAYOUT NA TODE
+   Lambe URLs/email mobile par page ko chaura kar dete hain.
+   ---------------------------------------------------------------------------- */
+p,
+li,
+h1, h2, h3, h4, h5, h6,
+td,
+a {
+  overflow-wrap: break-word;
+}
+
+
+/* ----------------------------------------------------------------------------
+   8. USER KI SYSTEM SETTING RESPECT
+   ---------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ============================================================================
+   TIER 2 — OPT-IN (class names par depend karta hai)
+   ----------------------------------------------------------------------------
+   Inhe tab kholna hai jab `perfReport()` report kar de ke aapki site par ye
+   patterns waqai hain. Warna ye kuch nahi karega (harmless, magar faida bhi
+   nahi).
+
+   Kholein:  neeche ke comment ko hatayein  /* ← ye laga hua hai
+   ============================================================================ */
+
+/*
+// 2.1 — animated element par blur (hang ka #1 source)
+[class*="float"],
+[class*="animate-"],
+[class*="pulse"],
+[class*="bounce"],
+[class*="wiggle"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+// 2.2 — blur radius cap (20px se zyada = mehnga)
+[class*="glass"],
+[class*="backdrop"] {
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  backdrop-filter: blur(10px) saturate(150%);
+}
+
+// 2.3 — mobile par blur bilkul band
+@media (max-width: 1023px), (hover: none), (pointer: coarse) {
+  [class*="glass"]:not(.keep-blur),
+  [class*="backdrop"]:not(.keep-blur) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+// 2.4 — bade decorative elements mobile par band
+// ⚠️ Ye content hide kar sakta hai. Sirf tab kholein jab classes confirm hon.
+@media (max-width: 1023px) {
+  [class*="blob"],
+  [class*="aurora"],
+  [class*="mesh"] {
+    display: none !important;
+  }
+}
+*/
+
+
+/* ============================================================================
+   AFTER STEP 1 — yeh 6 cheezein verify karein
+   ----------------------------------------------------------------------------
+   1. Site load ho rahi hai, layout toota nahi
+   2. Hero section jaisa tha waisa
+   3. Dark mode toggle → white flash NAHI
+   4. 390px par horizontal scroll NAHI
+   5. Sticky header abhi bhi sticky hai (overflow-x: clip ki wajah se)
+   6. iPhone par input focus → page zoom NAHI
+   ============================================================================ */
