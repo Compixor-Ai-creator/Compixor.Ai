@@ -180,14 +180,25 @@ export default function CompixorNavbar() {
               }
             }
 
-            /* Dark mode mobile: clean solid panel, no glass/noise overlay */
+            /* Dark mode: clean solid header + panel, no glass/noise overlay on any screen */
+            .dark .cnav-glass {
+              background-color: #0f172a !important;
+              background-image: none !important;
+              border-color: rgba(255, 255, 255, 0.08) !important;
+            }
+            .dark .cglass::after { display: none !important; }
+            .dark .cnav-bar {
+              background: rgba(15, 23, 42, 0.92);
+              border: 1px solid rgba(255, 255, 255, 0.06);
+            }
+
             @media (max-width: 1023px) {
               .dark .cnav-panel {
                 background: #0f172a !important;
                 border: 1px solid rgba(255, 255, 255, 0.08);
                 box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
               }
-              .dark .cnav-panel::after { display: none; }
+              .dark .cnav-panel::after { display: none !important; }
               .dark .cnav-backdrop {
                 background: rgba(0, 0, 0, 0.45);
                 backdrop-filter: blur(8px);
