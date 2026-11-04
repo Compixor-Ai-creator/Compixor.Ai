@@ -257,7 +257,8 @@ export default function FeedbackWidget() {
 
           <MessageSquarePlus className="w-4 h-4 transition-transform group-hover:rotate-6" />
           <span className="text-xs sm:text-sm font-semibold tracking-wide font-display">
-            Feedback / Request Tool
+            <span className="sm:hidden">Feedback</span>
+            <span className="hidden sm:inline">Feedback / Request Tool</span>
           </span>
         </button>
       </div>
@@ -293,7 +294,7 @@ export default function FeedbackWidget() {
                   type="button"
                   onClick={handleClose}
                   aria-label="Close dialog"
-                  className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>

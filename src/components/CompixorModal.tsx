@@ -61,17 +61,10 @@ export default function CompixorModal({
 
   // Manage body scroll locking without layout shift
   useEffect(() => {
-    if (isOpen) {
-      previousActiveElement.current = document.activeElement as HTMLElement | null;
-      lockScroll();
-    } else {
-      unlockScroll();
-    }
-    return () => {
-      if (isOpen) {
-        unlockScroll();
-      }
-    };
+    if (!isOpen) return;
+    previousActiveElement.current = document.activeElement as HTMLElement | null;
+    lockScroll();
+    return () => unlockScroll();
   }, [isOpen]);
 
   // Focus management and focus trapping
@@ -185,7 +178,7 @@ export default function CompixorModal({
     <AnimatePresence mode="wait">
       {isOpen && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 print:hidden"
+          className="fixed inset-0 z-[10050] flex items-center justify-center p-4 sm:p-6 print:hidden"
           
         >
           {/* Keep blur static and animate only the tint. Chromium can briefly clear

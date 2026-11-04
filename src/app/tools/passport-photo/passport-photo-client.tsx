@@ -2467,7 +2467,7 @@ export default function PassportPhotoPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="glass-card p-6 md:p-8 rounded-3xl text-center space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <h3 className="text-base font-bold font-display text-zinc-900 dark:text-white">
                   {isCompareMode ? 'Before / After Comparison' : 'Biometric Studio Preview'}
                 </h3>
@@ -2496,7 +2496,7 @@ export default function PassportPhotoPage() {
                       {isCompareMode ? 'Studio Mode' : 'Compare Original'}
                     </button>
                   )}
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                  <span className="whitespace-nowrap text-xs font-semibold px-2.5 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
                     {activePreset.widthMm} × {activePreset.heightMm} mm
                   </span>
                 </div>
