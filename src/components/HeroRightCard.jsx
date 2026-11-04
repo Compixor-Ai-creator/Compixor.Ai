@@ -138,7 +138,7 @@ export default function HeroRightCard() {
               <stop offset="1" stopColor="#7c3aed" />
             </linearGradient>
             <radialGradient id="cxgHazeG" cx=".5" cy=".5" r=".5">
-              <stop stopColor="#8b5cf6" stopOpacity=".24" />
+              <stop stopColor="#8b5cf6" stopOpacity=".05" />
               <stop offset="1" stopColor="#8b5cf6" stopOpacity="0" />
             </radialGradient>
           </defs>
@@ -226,9 +226,9 @@ export default function HeroRightCard() {
               </defs>
       
               {/* ambient shadow (filter ke baghair) */}
-              <ellipse cx="120" cy="216" rx="86" ry="26" fill="url(#cxgPlateG)" opacity=".85" />
+              <ellipse cx="120" cy="216" rx="86" ry="26" fill="url(#cxgPlateG)" opacity=".3" />
               {/* platform glow */}
-              <ellipse cx="120" cy="206" rx="96" ry="30" fill="url(#cxgPlateG)" />
+              <ellipse cx="120" cy="206" rx="96" ry="30" fill="url(#cxgPlateG)" opacity=".25" />
               <g stroke="#a78bfa" fill="none" strokeLinecap="round">
                 <ellipse cx="120" cy="206" rx="80" ry="23" strokeOpacity=".55" strokeWidth="1.5" />
                 <ellipse cx="120" cy="206" rx="60" ry="16" strokeOpacity=".5" strokeWidth="1.4" />

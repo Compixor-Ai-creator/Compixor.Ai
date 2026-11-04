@@ -510,3 +510,17 @@ html.dark .cxg-tab:hover:not(.is-active),[data-theme="dark"] .cxg-tab:hover:not(
   .cxg-tabs{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
   .cxg-tab{color:#c9c1d8}
 }
+
+/* Keep the homepage illustration crisp without the purple halo. */
+.home-hero .cxg-card,
+.home-hero .cxg-card:hover {
+  box-shadow: 0 8px 24px rgba(30, 41, 59, .08);
+}
+.home-hero .cxg-chip,
+.home-hero .cxg-chip.is-lit,
+.home-hero .cxg-chip:hover {
+  box-shadow: 0 2px 8px rgba(30, 41, 59, .08);
+}
+.home-hero .cxg-chip:focus-visible {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, .45);
+}
