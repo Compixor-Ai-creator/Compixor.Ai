@@ -222,7 +222,7 @@ export default function HomePage() {
       <FaqJsonLd faqs={homeFaqs} />
 
       {/* ============ HERO SECTION (Seamless Breadcrumb Merge) ============ */}
-      <section id="hero-section" className="cx-hero relative isolate overflow-x-clip pt-4 sm:pt-6">
+      <section id="hero-section" className="cx-hero home-hero relative isolate overflow-x-clip pt-4 sm:pt-6">
         {/* Glow Orbs - Flowing seamlessly behind breadcrumb and hero copy */}
         <div
           aria-hidden="true"
@@ -271,7 +271,7 @@ export default function HomePage() {
               {/* Badge */}
               <motion.div variants={itemVariants} className="mb-4">
                 <span
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-white/45 dark:bg-white/[0.08] text-brand-700 dark:text-brand-300 border border-white/60 dark:border-white/20 shadow-sm animate-float-subtle"
+                  className="home-hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-white/45 dark:bg-white/[0.08] text-brand-700 dark:text-brand-300 border border-white/60 dark:border-white/20 shadow-sm animate-float-subtle"
                   style={{ backdropFilter: 'blur(14px)' }}
                 >
                   <Sparkles className="w-3.5 h-3.5 text-brand-500 animate-spin-slow" />
@@ -294,7 +294,7 @@ export default function HomePage() {
               {/* Visual Display Heading */}
               <div
                 aria-hidden="true"
-                className="font-black font-display mb-6 tracking-tight"
+                className="home-hero-heading font-black font-display mb-6 tracking-tight"
                 style={{
                   fontSize: 'clamp(1.65rem, 5.5vw, 4.25rem)',
                   lineHeight: 1.1,

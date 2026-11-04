@@ -104,26 +104,23 @@ export default function CompixorNavbar() {
     };
   }, []);
 
-  // Theme: saved choice -> else system preference
+  // The head initializer resolves the saved choice or system preference before paint.
   useEffect(() => {
-    let isDark = false;
-    try {
-      const saved = localStorage.getItem("compixor-theme");
-      isDark = saved
-        ? saved === "dark"
-        : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    } catch (e) {}
-    document.documentElement.classList.toggle("dark", isDark);
-    setDark(isDark);
+    setDark(document.documentElement.dataset.theme === "dark");
     setMounted(true);
   }, []);
 
   const toggleTheme = () => {
-    const next = !dark;
+    const next = document.documentElement.dataset.theme !== "dark";
+    const root = document.documentElement;
     setDark(next);
-    document.documentElement.classList.toggle("dark", next);
+    root.classList.toggle("dark", next);
+    root.classList.toggle("light", !next);
+    root.dataset.theme = next ? "dark" : "light";
+    root.style.colorScheme = next ? "dark" : "light";
     try {
-      localStorage.setItem("compixor-theme", next ? "dark" : "light");
+      localStorage.setItem("compixor-theme", root.dataset.theme);
+      localStorage.setItem("theme", root.dataset.theme);
     } catch (e) {}
   };
 
