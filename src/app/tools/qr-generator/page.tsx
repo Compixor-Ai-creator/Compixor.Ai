@@ -443,7 +443,113 @@ export default function QrGeneratorPage() {
         </div>
       </section>
 
-      {/* Visual Proof Output Mockup */}
+            {/* Competitor Comparison Matrix & Static vs Dynamic Truth Section */}
+      <section className="mt-16">
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 mb-2">
+                <Sparkles className="w-3.5 h-3.5" />
+                Transparent Tool Comparison
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+                Compixor vs. Alternative QR Code Generators
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                A factual breakdown of expiration rules, pricing traps, vector export rights, and data privacy.
+              </p>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800">
+            <table className="w-full text-left text-xs sm:text-sm min-w-[720px]">
+              <thead className="bg-zinc-50 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 font-semibold">
+                <tr>
+                  <th className="py-3.5 px-4">Feature / Capability</th>
+                  <th className="py-3.5 px-4 text-purple-600 dark:text-purple-400 font-bold">Compixor AI</th>
+                  <th className="py-3.5 px-4">QR Code Generator (Bitly)</th>
+                  <th className="py-3.5 px-4">QRCode Monkey</th>
+                  <th className="py-3.5 px-4">Canva</th>
+                  <th className="py-3.5 px-4">Adobe Express</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Permanent (Never Expires)</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (100% Static)</td>
+                  <td className="py-3.5 px-4 text-rose-500">Expires in 14 Days</td>
+                  <td className="py-3.5 px-4 text-emerald-600">Yes (Static)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Yes (Static)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Yes (Static)</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Pricing &amp; Recurring Fees</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">100% Free Forever ($0)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">$15–$35 every month</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Ad-Supported Free</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Freemium ($12.99/mo)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Freemium ($9.99/mo)</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Account / Signup Required</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">None (Instant Use)</td>
+                  <td className="py-3.5 px-4 text-rose-500">Mandatory Account</td>
+                  <td className="py-3.5 px-4 text-zinc-500">None</td>
+                  <td className="py-3.5 px-4 text-rose-500">Mandatory Account</td>
+                  <td className="py-3.5 px-4 text-rose-500">Mandatory Account</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Vector SVG Export (For Print)</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Free Infinite-Scale SVG</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Paid Plan Only</td>
+                  <td className="py-3.5 px-4 text-zinc-500">SVG Available</td>
+                  <td className="py-3.5 px-4 text-rose-500">Locked Behind Canva Pro</td>
+                  <td className="py-3.5 px-4 text-rose-500">Locked Behind Premium</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Error Correction Level</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Level H (30% Resilience)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Automatic / Standard</td>
+                  <td className="py-3.5 px-4 text-zinc-500">User Selectable</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Fixed Standard</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Fixed Standard</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Logo Embedding with Halo</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Auto-Centered Mask)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Paid Feature</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Yes</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Manual Canvas Layering</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Manual Canvas Layering</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Client-Side Privacy (Zero Logs)</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">100% In-Browser RAM</td>
+                  <td className="py-3.5 px-4 text-rose-500">Logs All Scans &amp; IPs</td>
+                  <td className="py-3.5 px-4 text-rose-500">Third-Party Tracking Cookies</td>
+                  <td className="py-3.5 px-4 text-rose-500">Cloud Account Logs</td>
+                  <td className="py-3.5 px-4 text-rose-500">Cloud Account Logs</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Watermarks Added</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Never (100% Clean)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Watermark / Frame Branding</td>
+                  <td className="py-3.5 px-4 text-zinc-500">None</td>
+                  <td className="py-3.5 px-4 text-zinc-500">None</td>
+                  <td className="py-3.5 px-4 text-zinc-500">None</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <strong className="text-zinc-900 dark:text-white font-semibold block mb-1">Our Editorial Take:</strong>
+            The biggest deception in the QR code industry is the &quot;free dynamic QR code&quot; trap. Platforms like Bitly and QR Code Generator lure users in with free dynamic barcodes that redirect through their proprietary servers, only to deactivate the links after a 14-day trial unless you commit to an expensive monthly subscription. Graphic suites like Canva and Adobe Express are fantastic design environments, but they lock print-critical vector SVG files behind Pro paywalls. Compixor provides an uncompromising utility: 100% permanent static QR codes, zero middleman redirect servers, free vector SVG and 4K PNG downloads, Level H (30%) logo error correction, and total client-side privacy.
+          </div>
+        </div>
+      </section>
+
+{/* Visual Proof Output Mockup */}
       <QrGeneratorPreviewMockup />
 
       <ToolSeoSection toolSlug="qr-generator" />
