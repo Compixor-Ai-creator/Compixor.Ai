@@ -180,6 +180,21 @@ export default function CompixorNavbar() {
               }
             }
 
+            /* Dark mode mobile: clean solid panel, no glass/noise overlay */
+            @media (max-width: 1023px) {
+              .dark .cnav-panel {
+                background: #0f172a !important;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+              }
+              .dark .cnav-panel::after { display: none; }
+              .dark .cnav-backdrop {
+                background: rgba(0, 0, 0, 0.45);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+              }
+            }
+
             /* Phase 2: Dedicated Header Structure */
             .cnav-header {
               position: fixed;
@@ -378,8 +393,10 @@ export default function CompixorNavbar() {
 
               .dark .cnav-panel {
                 background: #0f172a;
-                border-color: rgba(255, 255, 255, 0.10);
+                border-color: rgba(255, 255, 255, 0.08);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
               }
+              .dark .cnav-panel::after { display: none; }
               .dark .cnav-acc-btn, .dark .cnav-link { color: #f3f0ff; }
               .dark .cnav-sub-item { color: #c9c2ee; }
             }
