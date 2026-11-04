@@ -164,21 +164,19 @@ export default function CompixorNavbar() {
             .cglass > * { position: relative; z-index: 1; }
 
             @media (max-width: 1023px) {
-              :root { --cglass-blur: blur(22px) saturate(170%); --cglass-bg: rgb(228, 222, 239); }
-              .dark { --cglass-bg: rgb(32, 27, 46); }
+              :root { --cglass-blur: blur(22px) saturate(170%); --cglass-bg: #ffffff; }
+              .dark { --cglass-bg: #0f172a; }
             }
             @supports not (backdrop-filter: blur(1px)) { .cglass { background: rgba(255,255,255,0.96); } .dark .cglass { background: rgba(20,18,35,0.96); } }
             /* A solid, softly textured surface: no page content shows through. */
             @media (max-width: 1023px) {
               .cnav-glass {
-                background-color: rgb(228, 222, 239);
-                background-image: radial-gradient(ellipse at 15% 10%, rgba(186, 169, 217, 0.45), transparent 62%),
-                  radial-gradient(ellipse at 90% 90%, rgba(178, 191, 216, 0.4), transparent 65%);
+                background-color: #ffffff;
+                background-image: none;
               }
               .dark .cnav-glass {
-                background-color: rgb(32, 27, 46);
-                background-image: radial-gradient(ellipse at 15% 10%, rgba(106, 77, 151, 0.35), transparent 62%),
-                  radial-gradient(ellipse at 90% 90%, rgba(66, 81, 124, 0.3), transparent 65%);
+                background-color: #0f172a;
+                background-image: none;
               }
             }
 
@@ -328,7 +326,7 @@ export default function CompixorNavbar() {
                 padding: 10px;
                 border-radius: 24px;
                 z-index: 9999;
-                background: rgba(255, 255, 255, 0.80);
+                background: #ffffff;
                 opacity: 0;
                 transform: translateY(-8px) scale(.98);
                 pointer-events: none;
@@ -379,7 +377,7 @@ export default function CompixorNavbar() {
               .cnav-cta { display: block; margin-top: 8px; padding: 14px; text-align: center; font-weight: 700; color: #fff; border-radius: 14px; background: linear-gradient(135deg,#6d28d9,#7c3aed); text-decoration: none; }
 
               .dark .cnav-panel {
-                background: rgba(20, 18, 35, 0.82);
+                background: #0f172a;
                 border-color: rgba(255, 255, 255, 0.10);
               }
               .dark .cnav-acc-btn, .dark .cnav-link { color: #f3f0ff; }
