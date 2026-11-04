@@ -178,7 +178,7 @@ export default function QrGeneratorPage() {
               Center Logo Overlay
             </h3>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Upload custom brand logos. Error correction automatically upgrades to Level H to ensure 100% scannability.
+              Upload custom brand logos. Error correction switches to Level H, but scanning is not guaranteed; test your final code on multiple devices.
             </p>
           </div>
         </div>
@@ -220,7 +220,7 @@ export default function QrGeneratorPage() {
               Never Expires • No Account
             </h3>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Directly encodes payload data into the matrix. Zero redirects, zero middleman servers, scannable forever.
+              Encodes your data directly in a static code with no generator-imposed expiry. Scanning and the destination must still work.
             </p>
           </div>
         </div>
@@ -456,96 +456,25 @@ export default function QrGeneratorPage() {
                 Compixor vs. Alternative QR Code Generators
               </h2>
               <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                A factual breakdown of expiration rules, pricing traps, vector export rights, and data privacy.
+                A comparison of selected static QR features; check each provider for current terms.
               </p>
             </div>
           </div>
 
           <div className="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800">
-            <table className="w-full text-left text-xs sm:text-sm min-w-[720px]">
-              <thead className="bg-zinc-50 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 font-semibold">
-                <tr>
-                  <th className="py-3.5 px-4">Feature / Capability</th>
-                  <th className="py-3.5 px-4 text-purple-600 dark:text-purple-400 font-bold">Compixor AI</th>
-                  <th className="py-3.5 px-4">QR Code Generator (Bitly)</th>
-                  <th className="py-3.5 px-4">QRCode Monkey</th>
-                  <th className="py-3.5 px-4">Canva</th>
-                  <th className="py-3.5 px-4">Adobe Express</th>
-                </tr>
+            <table className="w-full text-left text-xs sm:text-sm min-w-[600px]">
+              <thead className="bg-zinc-50 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-300">
+                <tr><th className="p-4">Feature</th><th className="p-4">Compixor AI</th><th className="p-4">QR Code Generator</th><th className="p-4">QRCode Monkey</th></tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
-                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
-                  <td className="py-3.5 px-4 font-semibold">Permanent (Never Expires)</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (100% Static)</td>
-                  <td className="py-3.5 px-4 text-rose-500">Expires in 14 Days</td>
-                  <td className="py-3.5 px-4 text-emerald-600">Yes (Static)</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Yes (Static)</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Yes (Static)</td>
-                </tr>
-                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
-                  <td className="py-3.5 px-4 font-semibold">Pricing &amp; Recurring Fees</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">100% Free Forever ($0)</td>
-                  <td className="py-3.5 px-4 text-zinc-500">$15–$35 every month</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Ad-Supported Free</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Freemium ($12.99/mo)</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Freemium ($9.99/mo)</td>
-                </tr>
-                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
-                  <td className="py-3.5 px-4 font-semibold">Account / Signup Required</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">None (Instant Use)</td>
-                  <td className="py-3.5 px-4 text-rose-500">Mandatory Account</td>
-                  <td className="py-3.5 px-4 text-zinc-500">None</td>
-                  <td className="py-3.5 px-4 text-rose-500">Mandatory Account</td>
-                  <td className="py-3.5 px-4 text-rose-500">Mandatory Account</td>
-                </tr>
-                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
-                  <td className="py-3.5 px-4 font-semibold">Vector SVG Export (For Print)</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Free Infinite-Scale SVG</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Paid Plan Only</td>
-                  <td className="py-3.5 px-4 text-zinc-500">SVG Available</td>
-                  <td className="py-3.5 px-4 text-rose-500">Locked Behind Canva Pro</td>
-                  <td className="py-3.5 px-4 text-rose-500">Locked Behind Premium</td>
-                </tr>
-                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
-                  <td className="py-3.5 px-4 font-semibold">Error Correction Level</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Level H (30% Resilience)</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Automatic / Standard</td>
-                  <td className="py-3.5 px-4 text-zinc-500">User Selectable</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Fixed Standard</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Fixed Standard</td>
-                </tr>
-                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
-                  <td className="py-3.5 px-4 font-semibold">Logo Embedding with Halo</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Auto-Centered Mask)</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Paid Feature</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Yes</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Manual Canvas Layering</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Manual Canvas Layering</td>
-                </tr>
-                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
-                  <td className="py-3.5 px-4 font-semibold">Client-Side Privacy (Zero Logs)</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">100% In-Browser RAM</td>
-                  <td className="py-3.5 px-4 text-rose-500">Logs All Scans &amp; IPs</td>
-                  <td className="py-3.5 px-4 text-rose-500">Third-Party Tracking Cookies</td>
-                  <td className="py-3.5 px-4 text-rose-500">Cloud Account Logs</td>
-                  <td className="py-3.5 px-4 text-rose-500">Cloud Account Logs</td>
-                </tr>
-                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
-                  <td className="py-3.5 px-4 font-semibold">Watermarks Added</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Never (100% Clean)</td>
-                  <td className="py-3.5 px-4 text-zinc-500">Watermark / Frame Branding</td>
-                  <td className="py-3.5 px-4 text-zinc-500">None</td>
-                  <td className="py-3.5 px-4 text-zinc-500">None</td>
-                  <td className="py-3.5 px-4 text-zinc-500">None</td>
-                </tr>
+                <tr><th className="p-4">Static code expiration</th><td className="p-4">No generator-imposed expiry</td><td className="p-4">No expiry for static codes</td><td className="p-4">No expiry for static codes</td></tr>
+                <tr><th className="p-4">Account for basic static codes</th><td className="p-4">Not required</td><td className="p-4">Not required; some designs need an account</td><td className="p-4">Not required</td></tr>
+                <tr><th className="p-4">Free SVG export</th><td className="p-4">Yes</td><td className="p-4">Check current provider options</td><td className="p-4">Yes</td></tr>
+                <tr><th className="p-4">Logo support</th><td className="p-4">Yes</td><td className="p-4">Pro trial or paid account</td><td className="p-4">Yes</td></tr>
               </tbody>
             </table>
           </div>
-
-          <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            <strong className="text-zinc-900 dark:text-white font-semibold block mb-1">Our Editorial Take:</strong>
-            The biggest deception in the QR code industry is the &quot;free dynamic QR code&quot; trap. Platforms like Bitly and QR Code Generator lure users in with free dynamic barcodes that redirect through their proprietary servers, only to deactivate the links after a 14-day trial unless you commit to an expensive monthly subscription. Graphic suites like Canva and Adobe Express are fantastic design environments, but they lock print-critical vector SVG files behind Pro paywalls. Compixor provides an uncompromising utility: 100% permanent static QR codes, zero middleman redirect servers, free vector SVG and 4K PNG downloads, Level H (30%) logo error correction, and total client-side privacy.
-          </div>
+          <p className="text-xs text-zinc-600 dark:text-zinc-400">Provider features and pricing can change. See the official pages for <a className="underline" href="https://www.qr-code-generator.com/" target="_blank" rel="noopener noreferrer">QR Code Generator</a> and <a className="underline" href="https://www.qrcode-monkey.com/" target="_blank" rel="noopener noreferrer">QRCode Monkey</a>. A static code does not expire through the generator, but its destination can stop working and damaged or poorly designed codes may not scan.</p>
         </div>
       </section>
 

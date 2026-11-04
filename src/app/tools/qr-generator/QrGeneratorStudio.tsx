@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ToolFeedback from '@/components/ToolFeedback';
 import { incrementFilesDone } from '@/lib/feedbackCounter';
+import { buildWifiQrPayload } from '@/lib/wifiQr';
 import { QrCode,
   Link as LinkIcon,
   Type,
@@ -377,7 +378,7 @@ export default function QrGeneratorStudio() {
   const [activeTab, setActiveTab] = useState<TabType>('url');
 
   // Input states
-  const [urlInput, setUrlInput] = useState('https://compixor.ai');
+  const [urlInput, setUrlInput] = useState('https://compixor-ai.cloud');
   const [waPhone, setWaPhone] = useState('');
   const [waMessage, setWaMessage] = useState('Hi! I am contacting you via Compixor QR.');
 
@@ -524,7 +525,7 @@ export default function QrGeneratorStudio() {
   const getQrValue = (): string => {
     switch (activeTab) {
       case 'url':
-        return urlInput.trim() || 'https://compixor.ai';
+        return urlInput.trim() || 'https://compixor-ai.cloud';
       case 'whatsapp': {
         const cleanPhone = waPhone.replace(/[^\d+]/g, '').replace(/^\+/, '');
         const encodedMsg = encodeURIComponent(waMessage.trim());
@@ -549,7 +550,7 @@ export default function QrGeneratorStudio() {
       case 'text':
         return textInput.trim() || 'CompixorAi Client-Side Tools';
       case 'wifi':
-        return `WIFI:T:${wifiEncryption};S:${wifiSsid};P:${wifiPassword};H:${wifiHidden ? 'true' : 'false'};;`;
+        return buildWifiQrPayload(wifiSsid, wifiPassword, wifiEncryption, wifiHidden);
       case 'contact':
         return `BEGIN:VCARD\nVERSION:3.0\nN:${contactName}\nFN:${contactName}\nTITLE:${contactTitle}\nORG:${contactOrg}\nTEL:${contactPhone}\nEMAIL:${contactEmail}\nEND:VCARD`;
       case 'email':
@@ -557,7 +558,7 @@ export default function QrGeneratorStudio() {
       case 'phone':
         return `tel:${phoneNum.replace(/\s+/g, '')}`;
       default:
-        return 'https://compixor.ai';
+        return 'https://compixor-ai.cloud';
     }
   };
 
@@ -1432,6 +1433,9 @@ export default function QrGeneratorStudio() {
                     </select>
                   </div>
                 </div>
+                <p className="text-xs text-amber-700 dark:text-amber-300" role="note">
+                  This QR code contains the Wi-Fi password. Anyone with the code can decode it, so share it only with people you trust.
+                </p>
                 <label className="flex items-center gap-2 cursor-pointer pt-1">
                   <input
                     type="checkbox"
@@ -2106,7 +2110,7 @@ export default function QrGeneratorStudio() {
             </div>
             <div>
               <h4 className="text-sm font-bold text-zinc-900 dark:text-white">Static & Permanent</h4>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">Scannable forever with zero subscription lockouts.</p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">Static code with no generator-imposed expiry. Test scanning and keep your destination active.</p>
             </div>
           </div>
         </div>

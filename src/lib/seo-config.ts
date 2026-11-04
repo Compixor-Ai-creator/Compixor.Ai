@@ -1296,7 +1296,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: QrCode,
     title: 'QR Code Generator with Logo Free – No Expiry, SVG | Compixor',
     description:
-      'Create custom QR codes with your logo free. Permanent static barcodes for URLs, WiFi & WhatsApp that never expire. Vector SVG & 4K PNG. 100% private in-browser.',
+      'Create custom QR codes with your logo free. Permanent static barcodes for URLs, WiFi & WhatsApp that never expire. Vector SVG & 1000px PNG. 100% private in-browser.',
     canonicalUrl: `${BASE_URL}/tools/qr-generator`,
     primaryKeyword: 'qr code generator with logo free',
     searchIntent:
@@ -1342,11 +1342,11 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     h1: 'Free QR Code Generator with Logo (Permanent, No Expiry, Vector SVG)',
     introParagraph:
-      'Generate branded, scannable barcodes in seconds with Compixor\'s free custom QR code generator with logo. Unlike commercial services that hijack your links with redirect trackers and deactivate your codes after a 14-day trial, Compixor creates 100% permanent, static QR codes that never expire. Encode website URLs, guest Wi-Fi networks (WPA2/WPA3), direct WhatsApp messages, digital vCards, or Google Maps locations directly into the geometric matrix. Embed your custom company logo with high Reed-Solomon Level H (30%) error correction, customize dot styles and brand color palettes, and export razor-sharp vector SVG and 4K PNG files for flyers, packaging, and billboards—running 100% in your browser RAM with zero server tracking, zero signups, and zero watermarks.',
+      'Generate branded, scannable barcodes in seconds with Compixor\'s free custom QR code generator with logo. Compixor creates static QR codes with no generator-imposed expiry. Your destination must remain active and the code must remain readable. Encode website URLs, guest Wi-Fi networks (WPA2/WPA3), direct WhatsApp messages, digital vCards, or Google Maps locations directly into the geometric matrix. Embed your custom company logo with high Reed-Solomon Level H (30%) error correction, customize dot styles and brand color palettes, and export razor-sharp vector SVG and 1000px PNG files for flyers, packaging, and billboards—running 100% in your browser RAM with zero server tracking, zero signups, and zero watermarks.',
     howToSteps: [
       {
         name: 'Select QR Data Type',
-        text: 'Choose Website URL, Wi-Fi network, WhatsApp direct message, vCard digital business card, Google Maps location, or Plain Text.',
+        text: 'Choose Website URL, Wi-Fi network, WhatsApp direct message, vCard digital business card, or Plain Text. A Google Maps link can be entered as a URL.',
       },
       {
         name: 'Input Destination Details',
@@ -1354,17 +1354,17 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         name: 'Embed Brand Logo & Customize Palette',
-        text: 'Upload your company logo (PNG/SVG). Our engine sets 30% Reed-Solomon error correction and lets you customize dot patterns, corner eyes, and brand colors.',
+        text: 'Upload your company logo (PNG/SVG). The generator selects Level H error correction. Customize the design and test the result on different devices.',
       },
       {
-        name: 'Download Lossless Vector SVG or 4K PNG',
-        text: 'Download scalable vector SVG for commercial print flyers, packaging, and billboards, or 4K PNG for web and screens with permanent static zero-expiry encoding.',
+        name: 'Download Lossless Vector SVG or 1000px PNG',
+        text: 'Download scalable vector SVG for commercial print flyers, packaging, and billboards, or 1000px PNG for web and screens with permanent static zero-expiry encoding.',
       },
     ],
     faqs: [
       {
         q: 'Will my generated QR code ever expire or stop working?',
-        a: 'No, never. Compixor creates 100% permanent static QR codes. Your destination URL, text, or credentials are encoded directly into the physical pixel arrangement of the matrix. Because there are no middleman redirect servers, cloud proxies, or tracking databases, your QR code remains scannable forever with unlimited lifetime scans.',
+        a: 'The static code has no generator-imposed expiry. Compixor creates static QR codes. Your destination URL, text, or credentials are encoded directly into the physical pixel arrangement of the matrix. Because there are no middleman redirect servers, cloud proxies, or tracking databases, your QR code remains usable without a generator-imposed scan limit, as long as the code remains readable and its destination works.',
       },
       {
         q: 'Is adding a company logo completely free with no watermark?',
@@ -1372,15 +1372,15 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         q: 'What is the difference between static and dynamic QR codes?',
-        a: 'Static QR codes burn your data directly into the matrix—they work permanently offline, have zero redirects, and never expire. Dynamic QR codes route scanners through a third-party redirect server; most commercial providers use dynamic codes to hold your barcodes hostage after a 14-day trial, demanding $15 to $35/month. Compixor generates true static codes that you own forever.',
+        a: 'Static QR codes encode data directly and have no generator-imposed expiry. Dynamic codes generally use a redirect that can be edited and may depend on a provider subscription. A static code may still fail if the destination changes or the printed code is unreadable.',
       },
       {
         q: 'How does Reed-Solomon error correction allow a logo in the center?',
-        a: 'QR code specifications incorporate Reed-Solomon algebraic error correction algorithms. When you upload a logo, Compixor automatically sets error correction to Level H (High), which provides 30% mathematical data redundancy. This allows up to 30% of the center matrix to be obscured by your logo while optical phone cameras reconstruct 100% of the data flawlessly.',
+        a: 'When you add a logo, Compixor sets error correction to Level H. Its approximate 30% recovery rate refers to codewords, not a guaranteed logo coverage area. Keep logos small, preserve finder patterns and the quiet zone, and test the final code with different scanners and at the intended print size.',
       },
       {
-        q: 'Can I create a QR code for guest Wi-Fi connection without revealing the password?',
-        a: 'Yes. Select the Wi-Fi tab, type your network SSID and password, and choose your encryption type (WPA/WPA2/WPA3). Guests scan the code with their smartphone camera to join your Wi-Fi instantly without typing or viewing complex passwords. All encoding happens in your browser RAM, so your Wi-Fi password is never sent to our servers.',
+        q: 'Does a guest Wi-Fi QR code keep the password secret?',
+        a: 'No. A Wi-Fi QR code contains the network name and password in readable form when decoded. Guests may join without typing it, but anyone with the code can recover the password. Share the code only with trusted people; generation happens in your browser. Device support for Wi-Fi security types can vary.',
       },
       {
         q: 'How do I generate a direct WhatsApp chat QR code with a pre-filled message?',
@@ -1400,11 +1400,11 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         q: 'Can I customize colors, dot styles, and corner eye shapes?',
-        a: 'Yes. Compixor provides deep aesthetic customization. You can choose custom foreground colors matching your brand hex code, change background colors, select rounded or smooth module dots, and style outer and inner corner eye markers while ensuring high optical scanning contrast.',
+        a: 'Yes. Compixor provides deep aesthetic customization. You can choose custom foreground colors matching your brand hex code, change background colors, select rounded or smooth module dots, and style outer and inner corner eye markers and should choose high-contrast colors and test the result.',
       },
       {
         q: 'How does Compixor compare to QRCode Monkey, Canva, or Bitly QR generators?',
-        a: 'Unlike Bitly and QR Code Generator which lock dynamic codes behind expensive recurring subscriptions, Compixor\'s static codes never expire. Unlike Canva, which requires an account signup and charges $12.99/month for Canva Pro to export vector SVG, Compixor provides instant, free vector SVG and 4K PNG downloads with zero login friction.',
+        a: 'Compixor generates static codes with free SVG and PNG downloads and no signup. QRCode Monkey also offers free static codes and SVG exports, while QR Code Generator offers free static codes without an account. Check each provider for current dynamic-code and design terms.',
       },
       {
         q: 'Does Compixor support digital contactless payment QR codes (like Raast, UPI, or PayPal)?',
@@ -1418,10 +1418,10 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         title: 'Logo Embedding with Level H (30%) Error Correction',
-        description: 'Upload PNG or SVG company logos with mathematical 30% redundancy so cameras scan reliably under all conditions.',
+        description: 'Add a logo with Level H error correction. Scan reliability depends on the design and conditions, so test the final code.',
       },
       {
-        title: 'Vector SVG & 4K PNG Downloads',
+        title: 'Vector SVG & 1000px PNG Downloads',
         description: 'Download infinitely scalable vector SVG for print banners and billboards or high-density PNG for digital screens.',
       },
     ],
@@ -1431,10 +1431,10 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     featureList: [
       'Permanent static QR codes with zero expiration and unlimited scans',
       'Central logo embedding with Reed-Solomon Level H (30%) error correction',
-      'Lossless vector SVG and 4K PNG print exports',
+      'Lossless vector SVG and 1000px PNG print exports',
       'Presets for URLs, Wi-Fi networks, WhatsApp direct chat, and vCards',
       'Custom brand color swatches, dot modules, and corner eye styles',
-      '100% in-browser client-side privacy with zero server logging',
+      'QR generation in your browser without sending QR content to the generator server',
       'Free forever with no signup, no subscriptions, and no watermarks',
     ],
   },

@@ -198,7 +198,7 @@ export function QrGeneratorPreviewMockup() {
             </div>
             <div className="flex items-center gap-2 text-xs font-semibold text-zinc-800 dark:text-zinc-200">
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-              <span>Unlimited Free Vector SVG & 3000px PNG Downloads</span>
+              <span>Free Vector SVG & 1000px PNG Downloads</span>
             </div>
           </div>
         </div>
