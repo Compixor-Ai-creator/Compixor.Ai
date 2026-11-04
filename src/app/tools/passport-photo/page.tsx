@@ -380,6 +380,108 @@ export default function PassportPhotoPage() {
           </div>
         </div>
 
+                {/* Competitor Comparison Matrix */}
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm space-y-6">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              Transparent Technical Comparison
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold font-display text-zinc-900 dark:text-white">
+              Compixor vs. Alternative Passport Photo Makers
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              A factual comparison of privacy, pricing, Pakistan preset support, and 300 DPI print output quality.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800">
+            <table className="w-full text-left text-xs sm:text-sm min-w-[700px]">
+              <thead className="bg-zinc-50 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 font-semibold">
+                <tr>
+                  <th className="py-3.5 px-4">Feature / Capability</th>
+                  <th className="py-3.5 px-4 text-brand-600 dark:text-brand-400 font-bold">Compixor AI</th>
+                  <th className="py-3.5 px-4">PhotoAiD</th>
+                  <th className="py-3.5 px-4">123PassportPhoto</th>
+                  <th className="py-3.5 px-4">Cutout.pro</th>
+                  <th className="py-3.5 px-4">Canva</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">100% In-Browser Privacy</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Private Mode)</td>
+                  <td className="py-3.5 px-4 text-rose-500">No (Cloud Server)</td>
+                  <td className="py-3.5 px-4 text-rose-500">No (Server Upload)</td>
+                  <td className="py-3.5 px-4 text-rose-500">No (Server Stored)</td>
+                  <td className="py-3.5 px-4 text-rose-500">No (Cloud Server)</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Pricing &amp; Usage Limits</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">100% Free Forever, Unlimited</td>
+                  <td className="py-3.5 px-4 text-zinc-500">$10–$15 per download</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Ad-Supported Free</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Paid Credits System</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Freemium ($13/mo)</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Account / Signup Required</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">None (Instant Use)</td>
+                  <td className="py-3.5 px-4 text-rose-500">Mandatory Email</td>
+                  <td className="py-3.5 px-4 text-zinc-500">None</td>
+                  <td className="py-3.5 px-4 text-rose-500">Mandatory Account</td>
+                  <td className="py-3.5 px-4 text-rose-500">Mandatory Account</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Pakistan NADRA 35×45mm Preset</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (Calibrated Biometric)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Generic 35×45 mm</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Basic Manual Crop</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Generic Preset</td>
+                  <td className="py-3.5 px-4 text-rose-500">No (Manual Canvas)</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">300 DPI Print Sheets (A4, A5, A6)</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (With Crop Marks)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Locked Behind Paywall</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Single Sheet Only</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Paid Tier Only</td>
+                  <td className="py-3.5 px-4 text-rose-500">No Biometric Layout</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Portal File-Size Limiter (&lt;50KB)</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (PAK-ID / NADRA Ready)</td>
+                  <td className="py-3.5 px-4 text-rose-500">No Limiter</td>
+                  <td className="py-3.5 px-4 text-rose-500">No Limiter</td>
+                  <td className="py-3.5 px-4 text-rose-500">No Limiter</td>
+                  <td className="py-3.5 px-4 text-rose-500">No Limiter</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Biometric Head Overlay Guides</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (70–80% Ratio)</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Automated Black Box</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Basic Grid</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Auto Crop Only</td>
+                  <td className="py-3.5 px-4 text-rose-500">None</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
+                  <td className="py-3.5 px-4 font-semibold">Watermarks Added</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Never (100% Clean)</td>
+                  <td className="py-3.5 px-4 text-rose-500">Watermarked on Free</td>
+                  <td className="py-3.5 px-4 text-rose-500">Watermark / Ad Banner</td>
+                  <td className="py-3.5 px-4 text-rose-500">Low-Res on Free</td>
+                  <td className="py-3.5 px-4 text-zinc-500">Watermark on Pro Assets</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <strong className="text-zinc-900 dark:text-white font-semibold block mb-1">Our Editorial Take:</strong>
+            Commercial tools like PhotoAiD charge substantial fees ($10 to $15) for single photo downloads and require cloud uploads of sensitive biometric face portraits. Free web alternatives such as 123PassportPhoto or idphoto4you are heavily cluttered with third-party advertising, enforce watermarks, and lack critical Pakistani portal compliance features such as under-50KB file compression and NADRA-approved light blue background presets. Compixor gives you the best of all worlds: zero signups, zero watermarks, 100% in-browser Private Mode security, official 35×45 mm biometric alignment, and ready-to-print 300 DPI multi-photo sheets.
+          </div>
+        </div>
+
         {/* Previous Rich SEO Section & FAQs */}
         <ToolSeoSection toolSlug="passport-photo" />
       </section>
