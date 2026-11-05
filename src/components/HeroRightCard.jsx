@@ -342,26 +342,6 @@ export default function HeroRightCard() {
           </a>
         </nav>
       
-        {/* ================= PILLS (tab bar ke neeche) ================= */}
-        <div className="cxg-pills">
-            <span className="cxg-devpill">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
-                   strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <rect x="3" y="5" width="18" height="12" rx="2" /><path d="M2 20h20" />
-              </svg>
-              <i className="cxg-sep" aria-hidden="true"></i>
-              Your device
-            </span>
-            <span className="cxg-okpill">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" fill="#22c55e" />
-                <path d="M7.4 12.4l3.1 3.1 6-6.2" stroke="#fff" strokeWidth="2.1"
-                      strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              0 bytes uploaded
-            </span>
-          </div>
-      
     </aside>
   );
 }
