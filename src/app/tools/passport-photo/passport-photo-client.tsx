@@ -422,7 +422,7 @@ export default function PassportPhotoPage() {
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Device-only mode toggle & explicit retry
-  const [forceOnDevice, setForceOnDevice] = useState(false);
+  const [forceOnDevice, setForceOnDevice] = useState(true);
   const currentPhotoHashRef = useRef<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const activeRequestIdRef = useRef<number>(0);
@@ -993,10 +993,10 @@ export default function PassportPhotoPage() {
 
     setIsSegmenting(true);
     setProcessingStep('removing-bg');
-    setMattingState('uploading');
+    setMattingState('processing');
     setUploadPercent(0);
     setLastApiError(null);
-    setSegmentationStatus('Uploading photo to secure server...');
+    setSegmentationStatus('Initializing on-device AI matting (WebAssembly)...');
 
     const startTime = performance.now();
     const uploadKb = Math.round(preparedBlob.size / 1024);
@@ -1027,11 +1027,7 @@ export default function PassportPhotoPage() {
 
       const durationMs = Math.round(performance.now() - startTime);
 
-      if (result.mode === 'server') {
-        requestCountRef.current += 1;
-        const reqNum = requestCountRef.current;
-        console.log(`[passport] API call #${reqNum} ${durationMs}ms ${uploadKb}KB`);
-      }
+      console.log(`[passport] On-device matting completed in ${durationMs}ms`);
 
       const cutoutImg = new Image();
       const blobUrl = URL.createObjectURL(result.blob);
@@ -1076,10 +1072,10 @@ export default function PassportPhotoPage() {
 
       setDebugStats((prev) => ({
         ...prev,
-        requestsSent: prev.requestsSent + (result.mode === 'server' ? 1 : 0),
+        requestsSent: prev.requestsSent,
         lastDurationMs: durationMs,
-        lastUploadedKb: uploadKb,
-        lastResult: result.mode === 'server' ? 'ok' : 'fallback',
+        lastUploadedKb: 0,
+        lastResult: 'ok',
         mode: result.mode,
         cachedHash: photoHash.slice(0, 8),
       }));
@@ -2396,31 +2392,27 @@ export default function PassportPhotoPage() {
 
                       {/* Processing Mode & Redo Controls */}
                       <div className="flex flex-col gap-2.5 p-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
-                        {/* Private Mode toggle & Redo Button */}
-                        <div className="flex items-center justify-between gap-2">
-                          <label
-                            className="flex items-center gap-2 cursor-pointer"
-                            title="When enabled, background removal runs 100% inside your browser using WebAssembly. No photo data leaves your device."
-                          >
-                            <input
-                              type="checkbox"
-                              checked={forceOnDevice}
-                              onChange={(e) => setForceOnDevice(e.target.checked)}
-                              className="rounded text-brand-500 focus:ring-brand-500"
-                            />
-                            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-200">
-                              Private mode: don&apos;t upload my photo
-                            </span>
-                          </label>
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                            <div className="flex flex-col">
+                              <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                                100% On-Device Processing
+                              </span>
+                              <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                                Photo stays in your browser (AI model assets cached on first use).
+                              </span>
+                            </div>
+                          </div>
 
                           <button
                             type="button"
                             onClick={() => processSubjectCutout(true)}
                             disabled={isSegmenting}
-                            className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200 transition flex items-center gap-1.5 disabled:opacity-50 cursor-pointer min-h-[36px]"
+                            className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200 transition flex items-center gap-1.5 disabled:opacity-50 cursor-pointer min-h-[36px] shrink-0"
                           >
                             <RefreshCw className={`w-3 h-3 ${isSegmenting ? 'animate-spin' : ''}`} />
-                            Redo background removal
+                            Redo
                           </button>
                         </div>
 

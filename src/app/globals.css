@@ -1884,3 +1884,198 @@ html.dark .cx-hero p,
 [data-theme="dark"] .cx-hero p {
   color: inherit;
 }
+
+/* ============================================================================
+   PERF SMOOTH & MOBILE ACCESSIBILITY (Unified Global Scope)
+   ============================================================================ */
+
+:root {
+  color-scheme: light dark;
+}
+
+/* Theme switch freeze fix */
+html.dark,
+html.dark *,
+html.dark *::before,
+html.dark *::after,
+[data-theme="dark"],
+[data-theme="dark"] *,
+[data-theme="dark"] *::before,
+[data-theme="dark"] *::after,
+html.light,
+html.light *,
+[data-theme="light"],
+[data-theme="light"] * {
+  transition: none !important;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img,
+video,
+iframe,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+@supports (-webkit-touch-callout: none) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+@supports (height: 100dvh) {
+  .hero,
+  .hero-section,
+  [class*="hero"] {
+    min-height: 100dvh;
+  }
+}
+
+p,
+li,
+h1, h2, h3, h4, h5, h6,
+td,
+a {
+  overflow-wrap: break-word;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+[class*="float"],
+[class*="animate-"],
+[class*="pulse"],
+[class*="bounce"],
+[class*="wiggle"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.slide-blur-orb-1,
+.slide-blur-orb-2,
+.slide-blur-orb-3 {
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+[class*="glass"],
+[class*="backdrop"] {
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  backdrop-filter: blur(10px) saturate(150%);
+}
+
+@media (max-width: 1023px), (hover: none), (pointer: coarse) {
+  [class*="glass"]:not(.keep-blur),
+  [class*="backdrop"]:not(.keep-blur) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* Mobile Tap Targets - 44x44px */
+@media (max-width: 1023px), (hover: none), (pointer: coarse) {
+  .cnav-theme-btn,
+  [class*="theme-btn"],
+  [class*="theme-toggle"],
+  a.flex.items-center.shrink-0,
+  nav a[href="/"] {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #compixor-faq-search-form > button,
+  [class*="faq-search"] button {
+    min-height: 44px;
+    min-width: 44px;
+    padding-inline: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  footer a,
+  [class*="footer"] a,
+  a.py-1.text-sm {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 44px;
+  }
+}
+
+/* Minimum Font Size on Mobile */
+@media (max-width: 1023px) {
+  .cxg-devpill,
+  .cxg-okpill {
+    font-size: 12px !important;
+  }
+
+  .cx-hero .cx-chips,
+  .cx-hero .cx-chips > *,
+  .cx-hero .cx-chips span,
+  .cx-chips,
+  .cx-chips > *,
+  .cx-chips span,
+  .cx-chips a,
+  .cx-chips li,
+  .cx-chips p,
+  .cx-chips div,
+  [class*="text-[11px]"],
+  [class*="text-[10px]"],
+  [class*="text-[9px]"],
+  .text-\[11px\],
+  .text-\[10px\],
+  .text-\[9px\] {
+    font-size: 12px !important;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  table.w-full {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+}
+

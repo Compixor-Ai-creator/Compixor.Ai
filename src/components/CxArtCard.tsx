@@ -138,6 +138,7 @@ export default function CxArtCard() {
           className={`cxg-chip ${currentTool === 'compress' ? 'is-lit' : ''}`}
           href="/tools/pdf-compressor"
           data-tool="compress"
+          aria-label="Compress PDF tool"
         >
           <span className="cxg-tile" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -153,6 +154,7 @@ export default function CxArtCard() {
           className={`cxg-chip ${currentTool === 'protect' ? 'is-lit' : ''}`}
           href="/tools/protect-pdf"
           data-tool="protect"
+          aria-label="Protect PDF tool"
         >
           <span className="cxg-tile" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -268,6 +270,7 @@ export default function CxArtCard() {
           className={`cxg-chip ${currentTool === 'watermark' ? 'is-lit' : ''}`}
           href="/tools/add-watermark"
           data-tool="watermark"
+          aria-label="Add Watermark tool"
         >
           <span className="cxg-tile" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -282,6 +285,7 @@ export default function CxArtCard() {
           className={`cxg-chip ${currentTool === 'resize' ? 'is-lit' : ''}`}
           href="/tools/passport-photo"
           data-tool="resize"
+          aria-label="Passport Photo tool"
         >
           <span className="cxg-tile" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -309,6 +313,7 @@ export default function CxArtCard() {
           className={`cxg-tab ${activeTab === 0 ? 'is-active' : ''}`}
           href="/tools/pdf-compressor"
           data-tool="compress"
+          aria-label="Compress PDF tool"
           onClick={() => setActiveTab(0)}
         >
           <span className="cxg-tab-ic" aria-hidden="true">
@@ -324,6 +329,7 @@ export default function CxArtCard() {
           className={`cxg-tab ${activeTab === 1 ? 'is-active' : ''}`}
           href="/tools/add-watermark"
           data-tool="watermark"
+          aria-label="Add Watermark tool"
           onClick={() => setActiveTab(1)}
         >
           <span className="cxg-tab-ic" aria-hidden="true">
@@ -339,6 +345,7 @@ export default function CxArtCard() {
           className={`cxg-tab ${activeTab === 2 ? 'is-active' : ''}`}
           href="/tools/protect-pdf"
           data-tool="protect"
+          aria-label="Protect PDF tool"
           onClick={() => setActiveTab(2)}
         >
           <span className="cxg-tab-ic" aria-hidden="true">
@@ -354,6 +361,7 @@ export default function CxArtCard() {
           className={`cxg-tab ${activeTab === 3 ? 'is-active' : ''}`}
           href="/tools/passport-photo"
           data-tool="resize"
+          aria-label="Passport Photo tool"
           onClick={() => setActiveTab(3)}
         >
           <span className="cxg-tab-ic" aria-hidden="true">

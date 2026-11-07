@@ -35,16 +35,16 @@ export default function Footer() {
               Professional-grade document and media tools engineered for privacy and speed.
               Most tools run 100% locally in your browser with zero file uploads.
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 text-xs font-semibold border border-emerald-500/20">
+              <span className="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400" />
               All Systems Operational
             </div>
             {/* Copyright & Architecture Note */}
             <div className="pt-2 space-y-1">
-              <div className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              <div className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 © 2025 Compixor AI. <span className="hidden">Architecture by <span className="font-semibold text-zinc-700 dark:text-zinc-300">Haroon Ali</span>. </span>Compixor AI Digital Studio • Global Cloud Services.
               </div>
-              <div className="text-xs text-zinc-400 dark:text-zinc-500">
+              <div className="text-xs text-zinc-500 dark:text-zinc-400">
                 Updated October 2025 · Zero Server Storage Policy
               </div>
             </div>
@@ -169,12 +169,12 @@ export default function Footer() {
               Privacy &amp; Social
             </div>
             <div className="glass-card p-4 rounded-2xl space-y-2 border-emerald-500/20 mb-4">
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+              <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300">
                 <ShieldCheck className="w-4 h-4" />
                 Privacy-First Architecture
               </div>
               <div className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
-                9 tools run 100% locally in your browser. Server tools process files in memory and delete them immediately.
+                10 tools run locally on your device with zero uploads. Document conversion tools process over HTTPS with zero permanent file storage.
               </div>
             </div>
 

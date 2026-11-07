@@ -299,7 +299,7 @@ export default function HeroRightCard() {
       
         {/* ================= TAB BAR ================= */}
         <nav className="cxg-tabs" aria-label="Popular tools" data-rotate>
-          <a className="cxg-tab is-active" href="/tools/pdf-compressor" data-tool="compress">
+          <a className="cxg-tab is-active" href="/tools/pdf-compressor" data-tool="compress" aria-label="Compress PDF tool">
             <span className="cxg-tab-ic" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                    strokeLinecap="round" strokeLinejoin="round">
@@ -309,7 +309,7 @@ export default function HeroRightCard() {
             <span className="cxg-tab-tx">Compress</span>
             <i className="cxg-tab-ul" aria-hidden="true"></i>
           </a>
-          <a className="cxg-tab" href="/tools/add-watermark" data-tool="watermark">
+          <a className="cxg-tab" href="/tools/add-watermark" data-tool="watermark" aria-label="Add Watermark to PDF tool">
             <span className="cxg-tab-ic" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                    strokeLinecap="round" strokeLinejoin="round">
@@ -319,7 +319,7 @@ export default function HeroRightCard() {
             <span className="cxg-tab-tx">Watermark</span>
             <i className="cxg-tab-ul" aria-hidden="true"></i>
           </a>
-          <a className="cxg-tab" href="/tools/protect-pdf" data-tool="protect">
+          <a className="cxg-tab" href="/tools/protect-pdf" data-tool="protect" aria-label="Protect PDF with password tool">
             <span className="cxg-tab-ic" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                    strokeLinecap="round" strokeLinejoin="round">
@@ -329,7 +329,7 @@ export default function HeroRightCard() {
             <span className="cxg-tab-tx">Protect</span>
             <i className="cxg-tab-ul" aria-hidden="true"></i>
           </a>
-          <a className="cxg-tab" href="/tools/passport-photo" data-tool="resize">
+          <a className="cxg-tab" href="/tools/passport-photo" data-tool="resize" aria-label="Passport Photo Maker and Image Resize tool">
             <span className="cxg-tab-ic" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                    strokeLinecap="round" strokeLinejoin="round">

@@ -44,11 +44,12 @@ const playfair = Playfair_Display({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#28195e',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#090d16' },
+  ],
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export const metadata: Metadata = {
@@ -58,6 +59,9 @@ export const metadata: Metadata = {
     capable: true,
     title: 'Compixor AI',
     statusBarStyle: 'default',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
   },
   formatDetection: {
     telephone: false,

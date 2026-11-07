@@ -3,7 +3,7 @@ import { FaqItem } from '@/components/JsonLd';
 export const homeFaqs: FaqItem[] = [
   {
     q: 'How does Compixor process files privately?',
-    a: '9 of our tools process files 100% locally in your browser memory using WebAssembly and HTML5 Canvas with zero uploads. Our 3 server-assisted tools process files securely over HTTPS and delete them immediately after conversion.',
+    a: '10 of our tools process files locally on your device (9 run entirely in browser RAM with zero uploads, and Passport Photo runs on-device using WebAssembly). Our 2 document conversion tools process files securely over HTTPS with zero permanent file storage.',
   },
   {
     q: 'Is there a limit on how many files I can process?',
@@ -11,7 +11,7 @@ export const homeFaqs: FaqItem[] = [
   },
   {
     q: 'Can I use this on corporate or sensitive business files?',
-    a: 'Yes. For our 9 client-side tools, files never leave your device. For server-assisted tools, files are transmitted over secure HTTPS, processed in memory, and deleted immediately without permanent retention.',
+    a: 'Yes. For our 10 on-device tools, files never leave your device. For document conversion tools, files are transmitted over secure HTTPS, processed in memory, and deleted immediately without permanent retention.',
   },
   {
     q: 'Are printable passport photos formatted correctly for retail printing?',

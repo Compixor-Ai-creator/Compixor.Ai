@@ -8,7 +8,7 @@ const trustPoints = [
   {
     icon: Cpu,
     title: 'Privacy-First Architecture',
-    description: '9 tools run entirely in your browser memory with zero uploads. Server tools delete files immediately.',
+    description: '10 tools run locally on your device with zero uploads. Document conversion tools process over HTTPS with zero permanent file storage.',
     color: 'from-brand-500 to-indigo-500',
     iconColor: 'text-brand-500',
   },

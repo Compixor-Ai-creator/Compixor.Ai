@@ -15,7 +15,7 @@ export default function ClientSideGuideSection() {
             How Client-Side In-Browser Processing Protects Your Data
           </h2>
           <div className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Most online document converters require uploading all files to remote cloud servers, creating security risks, network delays, and subscription paywalls. Compixor takes a privacy-first approach: 9 of our tools execute 100% locally inside your browser memory using WebAssembly and HTML5 Canvas, while our 3 server tools process files over HTTPS and delete them immediately.
+            Most online document converters require uploading all files to remote cloud servers, creating security risks, network delays, and subscription paywalls. Compixor takes a privacy-first approach: 10 of our tools execute locally on your device using WebAssembly and HTML5 Canvas, while our 2 document conversion tools process files over HTTPS with zero permanent file storage.
           </div>
         </div>
 
@@ -56,7 +56,7 @@ export default function ClientSideGuideSection() {
               Enterprise Compliance &amp; Confidentiality
             </h3>
             <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              With 9 tools operating completely client-side and server utilities featuring zero permanent storage, Compixor ensures strict alignment with data protection and confidentiality requirements.
+              With 10 tools operating on-device and document conversion utilities featuring zero permanent storage, Compixor ensures strict alignment with data protection and confidentiality requirements.
             </div>
           </div>
 

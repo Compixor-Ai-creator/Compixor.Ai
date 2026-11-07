@@ -108,11 +108,11 @@ export const homepageSeoData: HomepageSeoData = {
   ],
   h1: 'Free Online PDF Tools — No Upload',
   introParagraph:
-    'Welcome to Compixor AI, your trusted suite of free online PDF and media tools. Designed for professionals, students, lawyers, and creators worldwide, Compixor offers privacy-first document tools where 9 tools run 100% locally in your web browser. Compress PDFs, merge and split pages, convert PDF to Word, add or remove watermarks, password protect documents, convert biometric passport photos, and generate vector QR codes. Free, no signup required, with zero permanent file storage and instant processing.',
+    'Welcome to Compixor AI, your trusted suite of free online PDF and media tools. Designed for professionals, students, lawyers, and creators worldwide, Compixor offers privacy-first document tools where 10 tools run locally in your web browser. Compress PDFs, merge and split pages, convert PDF to Word, add or remove watermarks, password protect documents, convert biometric passport photos, and generate vector QR codes. Free, no signup required, with zero permanent file storage and instant processing.',
   faqs: [
     {
       q: 'How does Compixor AI process files privately?',
-      a: '9 of our tools execute 100% locally inside your browser memory using WebAssembly and HTML5 Canvas with zero uploads. Our 3 server-assisted tools process files securely over HTTPS and delete them immediately after conversion.',
+      a: '10 of our tools execute locally inside your browser memory using WebAssembly and HTML5 Canvas with zero uploads. Our 2 document conversion tools process files securely over HTTPS with zero permanent file storage.',
     },
     {
       q: 'Are all Compixor AI tools completely free with no signup?',

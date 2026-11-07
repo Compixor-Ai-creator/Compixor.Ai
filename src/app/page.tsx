@@ -31,7 +31,7 @@ const trustSignals = [
   {
     icon: Lock,
     title: 'Privacy-First Architecture',
-    description: '9 tools run 100% locally in your browser memory using WebAssembly. Server tools delete files immediately after processing.',
+    description: '10 tools run locally on your device using browser memory and WebAssembly. Heavy conversion tools process over HTTPS with zero permanent file storage.',
   },
   {
     icon: Zap,
@@ -223,22 +223,6 @@ export default function HomePage() {
 
       {/* ============ HERO SECTION (Seamless Breadcrumb Merge) ============ */}
       <section id="hero-section" className="cx-hero relative isolate overflow-x-clip pt-4 sm:pt-6">
-        {/* Glow Orbs - Flowing seamlessly behind breadcrumb and hero copy */}
-        <div
-          aria-hidden="true"
-          className="cx-hero-bg pointer-events-none absolute -z-10 w-[500px] h-[500px] rounded-full blur-[90px] opacity-50 dark:opacity-40"
-          style={{ top: '-100px', left: '-100px', backgroundColor: '#8b5cf6' }}
-        />
-        <div
-          aria-hidden="true"
-          className="cx-hero-bg pointer-events-none absolute -z-10 w-[450px] h-[450px] rounded-full blur-[90px] opacity-45 dark:opacity-35"
-          style={{ top: '60px', right: '5%', backgroundColor: '#ec4899' }}
-        />
-        <div
-          aria-hidden="true"
-          className="cx-hero-bg pointer-events-none absolute -z-10 top-10 right-1/4 h-72 w-72 rounded-full bg-cyan-400/30 blur-3xl"
-        />
-
         {/* ============ BREADCRUMB NAVIGATION WITH MICRODATA ============ */}
         <nav aria-label="Breadcrumb" className="breadcrumb max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
           <ol itemScope itemType="https://schema.org/BreadcrumbList" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 list-none p-0 m-0">
@@ -268,14 +252,11 @@ export default function HomePage() {
               animate="visible"
               variants={containerVariants}
             >
-              {/* Badge */}
+              {/* Architecture Badge */}
               <motion.div variants={itemVariants} className="mb-4">
-                <span
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-white/45 dark:bg-white/[0.08] text-brand-700 dark:text-brand-300 border border-white/60 dark:border-white/20 shadow-sm animate-float-subtle"
-                  style={{ backdropFilter: 'blur(14px)' }}
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-brand-500 animate-spin-slow" />
-                  All-in-One Private PDF &amp; Image Toolkit
+                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200/90 dark:border-zinc-700/80">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                  All-in-One Private PDF &amp; Image Toolkit · In-Memory Execution
                 </span>
               </motion.div>
 
@@ -286,46 +267,21 @@ export default function HomePage() {
                 </div>
               </motion.div>
 
-              {/* Single Clean H1 */}
-              <h1 id="hero-heading" className="sr-only">
-                Free Private PDF, Word &amp; Photo Tools That Run in Your Browser
-              </h1>
-
-              {/* Visual Display Heading */}
-              <div
-                aria-hidden="true"
-                className="font-black font-display mb-6 tracking-tight"
-                style={{
-                  fontSize: 'clamp(1.65rem, 5.5vw, 4.25rem)',
-                  lineHeight: 1.1,
-                  letterSpacing: '-0.02em',
-                }}
+              {/* Clean, Visible High-Contrast H1 Heading */}
+              <motion.h1
+                variants={itemVariants}
+                id="hero-heading"
+                className="text-3xl sm:text-5xl lg:text-[3.25rem] font-bold font-display tracking-tight text-zinc-950 dark:text-white mb-6 leading-[1.14]"
               >
-                <span className="block whitespace-nowrap">
-                  <span className="text-zinc-900 dark:text-white">Transform </span>
-                  <span className="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent">
-                    Your Files.
-                  </span>
-                </span>
-                <span aria-hidden="true" className="block max-w-full">
-                  <span className="inline-flex flex-wrap items-baseline gap-x-[0.25em] gap-y-1 sm:whitespace-nowrap">
-                    <span className="text-zinc-900 dark:text-white">Privacy </span>
-                    <ContainerTextFlip
-                      words={['First.', 'Guaranteed.', 'Protected.']}
-                      interval={3000}
-                      className="cx-hl"
-                      textClassName="bg-gradient-to-r from-brand-600 via-purple-600 to-rose-500 bg-clip-text text-transparent font-black font-display"
-                    />
-                  </span>
-                </span>
-              </div>
+                Free Private PDF, Word &amp; Photo Tools That Run in Your Browser
+              </motion.h1>
 
-              {/* Answer-Targeting Definition Paragraph (47 words, simple syllables) */}
+              {/* Accurate & Grounded Product Summary */}
               <p
                 id="hero-summary"
-                className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mb-6 leading-relaxed"
+                className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 max-w-xl mb-6 leading-relaxed"
               >
-                Compixor is a free web toolkit that lets you fix, merge, shrink, and change PDF, Word, and photo files right in your browser. All tools run on your own phone or PC instead of a cloud server. Your files stay fast, safe, and free to use at all times.
+                Compixor is a private web toolkit to compress, merge, protect, watermark, and convert documents directly in your browser. 10 tools run locally on your device with zero photo or document uploads. Heavy document conversion tools (PDF & Image to Word) process securely over HTTPS with zero permanent file storage.
               </p>
 
               {/* Primary CTA */}
@@ -400,11 +356,13 @@ export default function HomePage() {
                         <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
                           <Icon className="w-6 h-6" />
                         </div>
-                        {tool.badge && (
-                          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
-                            {tool.badge}
-                          </span>
-                        )}
+                        <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md border ${
+                          tool.processing === 'local'
+                            ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
+                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
+                        }`}>
+                          {tool.id === 'passport-photo' ? 'On-Device Wasm' : tool.processing === 'local' ? 'Local RAM' : 'Secure HTTPS'}
+                        </span>
                       </div>
                       <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors">
                         {tool.title}
@@ -685,30 +643,25 @@ export default function HomePage() {
                   key={faq.id}
                   className="glass-card rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden transition-all duration-300 hover:border-brand-500/30"
                 >
-                  <h3
-                    id={faq.id}
-                    role="button"
-                    tabIndex={0}
-                    aria-expanded={isOpen}
-                    aria-controls={`faq-answer-${faq.id}`}
-                    onClick={() => toggleFaq(originalIndex)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        toggleFaq(originalIndex);
-                      }
-                    }}
-                    className="w-full p-4 sm:p-5 text-left text-base sm:text-lg font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between gap-3 cursor-pointer select-none hover:bg-zinc-500/5 transition-colors m-0"
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <HelpCircle className="w-5 h-5 text-brand-500 shrink-0" />
-                      <span>{faq.q}</span>
-                    </span>
-                    <ChevronDown
-                      className={`w-5 h-5 text-zinc-400 transition-transform duration-300 shrink-0 ${
-                        isOpen ? 'rotate-180 text-brand-500' : ''
-                      }`}
-                    />
+                  <h3 className="m-0">
+                    <button
+                      type="button"
+                      id={faq.id}
+                      aria-expanded={isOpen}
+                      aria-controls={`faq-answer-${faq.id}`}
+                      onClick={() => toggleFaq(originalIndex)}
+                      className="w-full p-4 sm:p-5 text-left text-base sm:text-lg font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between gap-3 select-none hover:bg-zinc-500/5 transition-colors"
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <HelpCircle className="w-5 h-5 text-brand-600 dark:text-brand-400 shrink-0" />
+                        <span>{faq.q}</span>
+                      </span>
+                      <ChevronDown
+                        className={`w-5 h-5 text-zinc-400 transition-transform duration-300 shrink-0 ${
+                          isOpen ? 'rotate-180 text-brand-500' : ''
+                        }`}
+                      />
+                    </button>
                   </h3>
                   <p
                     id={`faq-answer-${faq.id}`}

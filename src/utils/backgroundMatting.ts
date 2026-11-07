@@ -346,32 +346,20 @@ export async function removeBackground(
     forceOnDevice?: boolean;
     onFallback?: () => void;
   } = {}
-): Promise<{ blob: Blob; mode: 'server' | 'on-device' }> {
-  if (options.forceOnDevice) {
-    options.onStatusChange?.('Processing on device only...');
-    const blob = await removeBackgroundISNet(imageSource, (p) => {
-      options.onStatusChange?.(p.stage);
-    });
-    return { blob, mode: 'on-device' };
-  }
-
+): Promise<{ blob: Blob; mode: 'on-device' }> {
+  options.onStatusChange?.('Processing portrait locally on your device...');
   try {
-    const preparedBlob = await prepareUploadBlob(imageSource);
-    const blob = await removeBackgroundViaAPI(preparedBlob, {
-      signal: options.signal,
-      onUploadProgress: options.onUploadProgress,
-      onStatusChange: options.onStatusChange,
-    });
-    return { blob, mode: 'server' };
-  } catch (apiErr: any) {
-    if (apiErr?.name === 'AbortError') throw apiErr;
-    console.warn('[passport] Backend error or offline, falling back to on-device mode:', apiErr);
-    options.onFallback?.();
-    options.onStatusChange?.('Using on-device mode (IS-Net)...');
     const blob = await removeBackgroundISNet(imageSource, (p) => {
       options.onStatusChange?.(p.stage);
     });
     return { blob, mode: 'on-device' };
+  } catch (err: any) {
+    if (err?.name === 'AbortError') throw err;
+    console.error('[passport] On-device background removal failed:', err);
+    // Explicitly do NOT silently fall back to server upload.
+    throw new Error(
+      'On-device portrait matting encountered an issue. Your photo was not sent to any server. You can retry or use your photo without background removal.'
+    );
   }
 }
 

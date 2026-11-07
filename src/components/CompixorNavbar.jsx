@@ -356,9 +356,10 @@ export default function CompixorNavbar() {
                 opacity: 0;
                 transform: translateY(-8px) scale(.98);
                 pointer-events: none;
-                transition: opacity .25s ease, transform .25s ease;
+                visibility: hidden;
+                transition: opacity .25s ease, transform .25s ease, visibility .25s;
               }
-              .cnav-panel.is-open { opacity: 1; transform: none; pointer-events: auto; }
+              .cnav-panel.is-open { opacity: 1; transform: none; pointer-events: auto; visibility: visible; }
 
               .cnav-acc-btn, .cnav-link {
                 display: flex;
@@ -581,6 +582,7 @@ export default function CompixorNavbar() {
         id="cnav-mobile"
         className={`cnav-panel cglass ${mobileOpen ? "is-open" : ""}`}
         aria-hidden={!mobileOpen}
+        inert={!mobileOpen ? "" : undefined}
       >
         {NAV_GROUPS.map((g) => (
           <div key={g.id} className="cnav-acc">
