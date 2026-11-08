@@ -313,7 +313,7 @@ export default function ImgToWordPage() {
             { label: 'Table Grid Reconstruction', icon: CheckCircle2 },
             { label: 'English & Urdu Multilingual', icon: CheckCircle2 },
             { label: 'Native Word DOCX', icon: CheckCircle2 },
-            { label: 'In-Memory Processing', icon: CheckCircle2 },
+            { label: 'Secure Encrypted Processing', icon: CheckCircle2 },
           ].map(({ label, icon: Icon, highlight }) => (
             <span
               key={label}
@@ -761,11 +761,11 @@ export default function ImgToWordPage() {
                     1
                   </div>
                   <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
-                    Load &amp; Preprocess Image in Memory
+                    Load &amp; Preprocess Image Securely
                   </h3>
                 </div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pl-11">
-                  When you upload an image to Compixor, image contrast, grayscale thresholds, and dimensions are processed securely over HTTPS with immediate memory purge after conversion.
+                  When you upload an image to Compixor, image contrast, grayscale thresholds, and dimensions are processed securely over HTTPS and deleted right after processing.
                 </p>
               </div>
             </div>
@@ -862,7 +862,7 @@ export default function ImgToWordPage() {
           <div className="space-y-4 text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed pt-4">
             <p>
               Compixor processes files over secure encrypted HTTPS on dedicated neural conversion servers.
-              Once converted, the resulting Microsoft Word document is returned directly to your browser, and file buffers are deleted immediately from memory.
+              Once converted, the resulting Microsoft Word document is returned directly to your browser, and file buffers are processed over encrypted HTTPS and deleted right after processing.
             </p>
             <div>
               <p className="font-semibold text-zinc-900 dark:text-white mb-2">

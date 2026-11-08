@@ -5,7 +5,7 @@ import { blogsData } from '@/lib/blogsData';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = BASE_URL;
-  const siteBuildDate = new Date('2025-10-25T00:00:00.000Z');
+  const siteBuildDate = new Date('2026-11-08T00:00:00.000Z');
 
   return [
     {
@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     {
       url: `${baseUrl}/about`,
-      lastModified: new Date('2025-10-21T00:00:00.000Z'),
+      lastModified: new Date('2026-11-08T00:00:00.000Z'),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
@@ -34,13 +34,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/privacy`,
-      lastModified: new Date('2025-10-29T00:00:00.000Z'),
+      lastModified: new Date('2026-11-08T00:00:00.000Z'),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
       url: `${baseUrl}/terms`,
-      lastModified: new Date('2025-10-21T00:00:00.000Z'),
+      lastModified: new Date('2026-11-08T00:00:00.000Z'),
       changeFrequency: 'monthly',
       priority: 0.5,
     },

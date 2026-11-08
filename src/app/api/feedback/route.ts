@@ -171,7 +171,7 @@ export async function POST(request: Request) {
     rating,
     first_name: firstName,
     message: cleanedMessage,
-    status: 'approved',
+    status: 'pending',
     created_at: new Date().toISOString(),
   };
 
@@ -209,14 +209,14 @@ export async function POST(request: Request) {
         );
       }
 
-      // Insert feedback with status 'approved'
+      // Insert feedback with status 'pending' (requires admin review before public display)
       const { error: insertError } = await supabase.from('feedback').insert({
         id: newFeedbackItem.id,
         tool_name: matchedToolName,
         rating,
         first_name: firstName,
         message: cleanedMessage,
-        status: 'approved',
+        status: 'pending',
         ip_hash: ipHash,
       });
 
@@ -224,7 +224,7 @@ export async function POST(request: Request) {
         fallbackStore.unshift(newFeedbackItem);
         return NextResponse.json({
           success: true,
-          message: 'Thank you! Your feedback has been shared.',
+          message: 'Thank you! Your feedback has been submitted for review.',
           item: newFeedbackItem,
         });
       }
@@ -239,7 +239,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     success: true,
-    message: 'Thank you! Your feedback has been shared.',
+    message: 'Thank you! Your feedback has been submitted for review.',
     item: newFeedbackItem,
   });
 }

@@ -583,7 +583,7 @@ export default function PdfToWordPage() {
               color: 'text-emerald-500',
               bg: 'bg-emerald-500/10',
               title: 'Nothing Is Kept On Our Side',
-              desc: 'Your PDF is converted in server memory and dropped immediately — no account, no file history, no reuse of your data.',
+              desc: 'Your PDF is processed over encrypted HTTPS, never stored permanently, and deleted right after processing — no account, no file history, no reuse of your data.',
             },
             {
               icon: Globe,

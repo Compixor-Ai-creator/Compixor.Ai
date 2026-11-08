@@ -9,7 +9,6 @@
     "test": "tsx --test src/utils/pdfWatermarkEngine.test.ts"
   },
   "dependencies": {
-    "@mediapipe/selfie_segmentation": "^0.1.1675465747",
     "@mediapipe/tasks-vision": "^1.2.2",
     "@supabase/supabase-js": "^2.109.0",
     "@types/pako": "^1.0.7",

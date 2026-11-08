@@ -5,7 +5,11 @@ const COOKIE_NAME = 'compixor_admin_session';
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60; // 7 days in seconds
 
 function getSecret(): string {
-  return process.env.ADMIN_PASSWORD || 'compixor-admin-fallback-secret-2026';
+  const secret = process.env.ADMIN_PASSWORD;
+  if (!secret || secret.trim() === '') {
+    throw new Error('CRITICAL: ADMIN_PASSWORD environment variable is not set.');
+  }
+  return secret;
 }
 
 export function signAdminToken(): string {
@@ -17,25 +21,26 @@ export function signAdminToken(): string {
 
 export function verifyAdminToken(token: string | undefined | null): boolean {
   if (!token) return false;
-  const parts = token.split('.');
-  if (parts.length !== 2) return false;
-
-  const [timestampStr, providedSignature] = parts;
-  const timestamp = parseInt(timestampStr, 10);
-  if (isNaN(timestamp)) return false;
-
-  // Session expired after 7 days
-  if (Date.now() - timestamp > SESSION_MAX_AGE * 1000) return false;
-
-  const secret = getSecret();
-  const expectedSignature = crypto.createHmac('sha256', secret).update(timestampStr).digest('hex');
-
   try {
+    const parts = token.split('.');
+    if (parts.length !== 2) return false;
+
+    const [timestampStr, providedSignature] = parts;
+    const timestamp = parseInt(timestampStr, 10);
+    if (isNaN(timestamp)) return false;
+
+    // Session expired after 7 days
+    if (Date.now() - timestamp > SESSION_MAX_AGE * 1000) return false;
+
+    const secret = getSecret();
+    const expectedSignature = crypto.createHmac('sha256', secret).update(timestampStr).digest('hex');
+
     return crypto.timingSafeEqual(
       Buffer.from(providedSignature, 'utf-8'),
       Buffer.from(expectedSignature, 'utf-8')
     );
-  } catch {
+  } catch (err) {
+    console.error('[AdminAuth Verify Exception]', err);
     return false;
   }
 }
