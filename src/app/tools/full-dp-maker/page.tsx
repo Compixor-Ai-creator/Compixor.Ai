@@ -1963,7 +1963,7 @@ export default function FullDpMakerPage() {
                 How to Set Full DP Without Cropping
               </h4>
               <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
-                Detailed 2025 walkthrough with safe-zone calculations, 3 tested methods, and compression avoidance tips.
+                Detailed 2026 walkthrough with safe-zone calculations, 3 tested methods, and compression avoidance tips.
               </p>
             </Link>
 

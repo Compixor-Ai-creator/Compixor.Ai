@@ -20,7 +20,7 @@ export default function ClientSideTrustSection() {
               Most online file tools — including well-known names like Adobe and Smallpdf — upload your file to a remote server, process it there, and send back the result. Your document sits on someone else&apos;s infrastructure, even if briefly, and even if it&apos;s later deleted.
             </p>
             <p>
-              Compixor works differently: every tool runs entirely inside your browser using WebAssembly and client-side JavaScript. Your files, photos, and data are never uploaded, transmitted, or stored anywhere — they exist only in your device&apos;s memory while you&apos;re using the tool.
+              Compixor works differently: our client-side tools run entirely inside your browser using WebAssembly and client-side JavaScript. Your files, photos, and data are never uploaded, transmitted, or stored anywhere — they exist only in your device&apos;s memory while you&apos;re using the tool.
             </p>
           </div>
 

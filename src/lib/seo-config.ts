@@ -970,7 +970,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: IdCard,
     title: 'Pakistani Passport Size Photo Maker – 35x45mm 300 DPI | Compixor',
     description:
-      'Create official 35x45 mm Pakistan passport and NADRA CNIC photos online free. AI white or light blue background, 300 DPI print sheets, private in-browser tool.',
+      'Create official 35x45 mm Pakistan passport and NADRA CNIC photos online free. AI white or light blue background, 300 DPI print sheets, photo not stored on our servers.',
     canonicalUrl: `${BASE_URL}/tools/passport-photo`,
     primaryKeyword: 'pakistani passport size photo maker',
     searchIntent:
@@ -1468,8 +1468,8 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'pdf to editable docx online',
       'convert pdf to word without losing formatting',
       'scanned pdf to word ocr free',
-      'client side pdf to word converter',
-      'pdf to word converter no upload',
+      'secure pdf to word converter',
+      'pdf to word converter no account',
       'pdf table to word converter online',
       'urdu pdf to word converter online',
       'free pdf to docx converter no signup',
@@ -1482,7 +1482,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'scanned pdf to word ocr',
       'pdf to editable docx',
       'pdf to word without email',
-      'pdf to word converter no upload',
+      'pdf to word converter without signup',
     ],
     h1: 'Convert PDF to Word Online Free',
     introParagraph:
@@ -1538,7 +1538,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       },
       {
         title: 'No Storage On Our Side',
-        description: 'Files are converted in memory and dropped immediately — no account, no file history.',
+        description: 'Files are processed over encrypted HTTPS and deleted right after processing — no account, no file history.',
       },
     ],
     relatedToolSlugs: ['img-to-word', 'word-compressor', 'pdf-compressor'],
@@ -1579,7 +1579,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     longTailKeywords: [
       'convert jpg image to word document free',
-      'png to docx converter online no upload',
+      'png to docx converter online free',
       'ocr image to editable word document',
       'convert photo to word online free',
       'jpg to word converter no signup',
@@ -1598,7 +1598,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       'convert image to word online free',
       'photo to docx converter',
       'scan to word online',
-      'image to docx no upload',
+      'image to docx converter free',
       'tesseract ocr online',
       'screenshot to word converter',
     ],

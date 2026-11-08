@@ -478,7 +478,7 @@ export default function BlogPostPage({ params }: PageProps) {
                       day: 'numeric',
                       year: 'numeric',
                     })
-                  : 'Oct 18, 2025'}
+                  : 'Nov 8, 2026'}
               </span>
               {blog.dateModified &&
                 blog.datePublished &&

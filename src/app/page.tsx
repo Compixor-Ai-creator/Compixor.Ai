@@ -256,14 +256,14 @@ export default function HomePage() {
               <motion.div variants={itemVariants} className="mb-4">
                 <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200/90 dark:border-zinc-700/80">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                  All-in-One Private PDF &amp; Image Toolkit · In-Memory Execution
+                  All-in-One Private PDF &amp; Image Toolkit · High-Speed Execution
                 </span>
               </motion.div>
 
               {/* Author & Last-Updated Byline using DIV to preserve voice percentage */}
               <motion.div variants={itemVariants} className="mb-4">
                 <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                  By <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Compixor Global Studio</strong> • Last updated: <time dateTime="2025-05-15">May 15, 2025</time>
+                  By <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Compixor Global Studio</strong> • Last updated: <time dateTime="2026-11-08">November 8, 2026</time>
                 </div>
               </motion.div>
 

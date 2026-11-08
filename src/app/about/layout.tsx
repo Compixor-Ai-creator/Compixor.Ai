@@ -4,14 +4,14 @@ import { BreadcrumbJsonLd } from '@/components/JsonLd';
 export const metadata: Metadata = {
   title: 'About Us - Private In-Browser PDF & Photo Tools',
   description:
-    'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
+    'Learn about Compixor AI. Discover our atmospheric minimalism philosophy, zero-retention privacy standards, and high-performance file processing architecture.',
   alternates: {
     canonical: 'https://compixor-ai.cloud/about',
   },
   openGraph: {
     title: 'About Compixor AI — Private Client-Side Media & Document Toolkit',
     description:
-      'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
+      'Learn about Compixor AI. Discover our atmospheric minimalism philosophy, zero-retention privacy standards, and high-performance file processing architecture.',
     url: 'https://compixor-ai.cloud/about',
     type: 'website',
     images: [
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'About Compixor AI — Private Client-Side Media & Document Toolkit',
     description:
-      'Learn about Compixor AI. Discover our atmospheric minimalism philosophy and 100% private, client-side WebAssembly file processing architecture.',
+      'Learn about Compixor AI. Discover our atmospheric minimalism philosophy, zero-retention privacy standards, and high-performance file processing architecture.',
     images: ['https://compixor-ai.cloud/images/og-banner-v2.png'],
   },
 };

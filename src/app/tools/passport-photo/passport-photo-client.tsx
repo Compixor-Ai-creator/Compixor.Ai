@@ -2039,7 +2039,7 @@ export default function PassportPhotoPage() {
             'US Visa 2x2"',
             'AI Background Removal',
             '300 DPI Print Sheet',
-            'In-Memory Processing',
+            'Secure Encrypted Processing',
             'Photo Not Stored',
           ].map((tag) => (
             <span
