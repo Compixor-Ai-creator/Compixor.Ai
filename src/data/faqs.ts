@@ -3,7 +3,7 @@ import { FaqItem } from '@/components/JsonLd';
 export const homeFaqs: FaqItem[] = [
   {
     q: 'How does Compixor process files privately?',
-    a: '10 of our tools process files locally on your device (9 run entirely in browser RAM with zero uploads, and Passport Photo runs on-device using WebAssembly). Our 2 document conversion tools process files securely over HTTPS with zero permanent file storage.',
+    a: '9 of our tools process files locally inside your browser memory with zero uploads. Our 3 specialized utilities (PDF to Word, Image to Word, and Passport Photo background removal) process files securely over encrypted HTTPS with zero permanent storage.',
   },
   {
     q: 'Is there a limit on how many files I can process?',
@@ -11,7 +11,7 @@ export const homeFaqs: FaqItem[] = [
   },
   {
     q: 'Can I use this on corporate or sensitive business files?',
-    a: 'Yes. For our 10 on-device tools, files never leave your device. For document conversion tools, files are transmitted over secure HTTPS, processed in memory, and deleted immediately without permanent retention.',
+    a: 'Yes. For our 9 client-side tools, files never leave your device. For server-assisted utilities, files are transmitted over secure HTTPS, processed in memory, and never stored permanently.',
   },
   {
     q: 'Are printable passport photos formatted correctly for retail printing?',
@@ -117,7 +117,7 @@ export const passportPhotoFaqs: FaqItem[] = [
   },
   {
     q: 'Do I need to pay or create an account to download my passport photo?',
-    a: 'No. Compixor AI is 100% free, includes an on-device Private Mode option, and requires no registration or payment gateways.',
+    a: 'No. Compixor AI is 100% free and requires no registration or payment gateways.',
   },
   {
     q: 'How does the biometric alignment guide work?',
@@ -125,7 +125,7 @@ export const passportPhotoFaqs: FaqItem[] = [
   },
   {
     q: 'How does the Compixor AI background removal work?',
-    a: 'We use high-precision portrait neural matting running securely on our own private server with an automatic on-device fallback option. It features an alpha boundary choke (to eliminate outer fringing), Gaussian edge feathering (for smooth contours along hair and shoulders), and color de-spill to neutralize residual wall color halos.',
+    a: 'We use high-precision portrait neural matting running securely on our server. Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page. It features an alpha boundary choke (to eliminate outer fringing), Gaussian edge feathering (for smooth contours along hair and shoulders), and color de-spill to neutralize residual wall color halos.',
   },
   {
     q: 'Can I download just the transparent PNG cutout without any background?',
@@ -137,7 +137,7 @@ export const passportPhotoFaqs: FaqItem[] = [
   },
   {
     q: 'Is my portrait uploaded or saved to remote servers?',
-    a: 'AI background removal sends your photo over HTTPS to our own secure server, processes it in memory and does not store it. You can choose "Process on my device only" instead for 100% local processing.',
+    a: 'Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page.',
   },
 ];
 

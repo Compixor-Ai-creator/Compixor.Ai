@@ -31,7 +31,7 @@ const trustSignals = [
   {
     icon: Lock,
     title: 'Privacy-First Architecture',
-    description: '10 tools run locally on your device using browser memory and WebAssembly. Heavy conversion tools process over HTTPS with zero permanent file storage.',
+    description: '9 tools run locally on your device using browser memory with zero uploads. Specialized utilities process over HTTPS with zero permanent file storage.',
   },
   {
     icon: Zap,
@@ -281,7 +281,7 @@ export default function HomePage() {
                 id="hero-summary"
                 className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 max-w-xl mb-6 leading-relaxed"
               >
-                Compixor is a private web toolkit to compress, merge, protect, watermark, and convert documents directly in your browser. 10 tools run locally on your device with zero photo or document uploads. Heavy document conversion tools (PDF & Image to Word) process securely over HTTPS with zero permanent file storage.
+                Compixor is a private web toolkit to compress, merge, protect, watermark, and convert documents directly in your browser. 9 tools run locally on your device with zero photo or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport Photo) process securely over HTTPS with zero permanent file storage.
               </p>
 
               {/* Primary CTA */}
@@ -361,7 +361,7 @@ export default function HomePage() {
                             ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
                             : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
                         }`}>
-                          {tool.id === 'passport-photo' ? 'On-Device Wasm' : tool.processing === 'local' ? 'Local RAM' : 'Secure HTTPS'}
+                          {tool.processing === 'local' ? 'Local RAM' : 'Secure HTTPS'}
                         </span>
                       </div>
                       <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors">

@@ -50,13 +50,12 @@ import RelatedTools from '@/components/RelatedTools';
 import BeforeAfterSlider, { DEFAULT_BG_PRESETS } from '@/components/BeforeAfterSlider';
 import {
   removeBackground,
-  removeBackgroundISNet,
   refineCutoutCanvas,
   sampleOriginalBgColor,
   computeImageSha256,
   cutoutCache,
   prepareUploadBlob,
-  MattingProgress,
+  formatEngineBadge,
 } from '@/utils/backgroundMatting';
 import {
   computeStudioLayout,
@@ -410,7 +409,6 @@ export default function PassportPhotoPage() {
   const [enableDecontamination, setEnableDecontamination] = useState(false); // Neutralizes original backdrop color bleed (default unchecked)
   const [isSegmenting, setIsSegmenting] = useState(false);
   const [segmentationStatus, setSegmentationStatus] = useState<string | null>(null);
-  const [mattingProgress, setMattingProgress] = useState<MattingProgress | null>(null);
   const [uploadPercent, setUploadPercent] = useState<number>(0);
   const [mattingState, setMattingState] = useState<'idle' | 'uploading' | 'processing' | 'error'>('idle');
   const [lastApiError, setLastApiError] = useState<string | null>(null);
@@ -421,8 +419,7 @@ export default function PassportPhotoPage() {
   const [processingStep, setProcessingStep] = useState<ProcessingStep>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // Device-only mode toggle & explicit retry
-  const [forceOnDevice, setForceOnDevice] = useState(true);
+  const [engineBadgeText, setEngineBadgeText] = useState<string>('Engine: Server');
   const currentPhotoHashRef = useRef<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const activeRequestIdRef = useRef<number>(0);
@@ -500,7 +497,6 @@ export default function PassportPhotoPage() {
     setIsCompareMode(false);
     setCompareBeforeUrl(null);
     setCompareAfterUrl(null);
-    setMattingProgress(null);
     setPreviewTab('background');
   }, []);
 
@@ -930,7 +926,6 @@ export default function PassportPhotoPage() {
       rawCutoutCanvasRef.current = sourceCanvas;
       cachedCutoutCanvasRef.current = sourceCanvas;
       setSegmentationStatus(null);
-      setMattingProgress(null);
       setProcessingStep('done');
       setIsSegmenting(false);
       setMattingState('idle');
@@ -969,7 +964,6 @@ export default function PassportPhotoPage() {
       cachedCutoutCanvasRef.current = refinedCanvas;
       setSegmentationStatus('Cutout retrieved from cache');
       setIsSegmenting(false);
-      setMattingProgress(null);
       setProcessingStep('done');
       setDebugStats((prev) => ({
         ...prev,
@@ -993,10 +987,10 @@ export default function PassportPhotoPage() {
 
     setIsSegmenting(true);
     setProcessingStep('removing-bg');
-    setMattingState('processing');
+    setMattingState('uploading');
     setUploadPercent(0);
     setLastApiError(null);
-    setSegmentationStatus('Initializing on-device AI matting (WebAssembly)...');
+    setSegmentationStatus('Uploading photo to secure server...');
 
     const startTime = performance.now();
     const uploadKb = Math.round(preparedBlob.size / 1024);
@@ -1004,7 +998,6 @@ export default function PassportPhotoPage() {
     try {
       const result = await removeBackground(preparedBlob, {
         signal: abortController.signal,
-        forceOnDevice,
         onUploadProgress: (pct) => {
           if (currentRequestId !== activeRequestIdRef.current) return;
           setUploadPercent(pct);
@@ -1017,17 +1010,15 @@ export default function PassportPhotoPage() {
           if (currentRequestId !== activeRequestIdRef.current) return;
           setSegmentationStatus(statusText);
         },
-        onFallback: () => {
-          if (currentRequestId !== activeRequestIdRef.current) return;
-          toast.info('Using on-device mode (Compixor IS-Net)...');
-        },
       });
 
       if (currentRequestId !== activeRequestIdRef.current) return;
 
       const durationMs = Math.round(performance.now() - startTime);
+      const badge = formatEngineBadge(result.engineHeader);
+      setEngineBadgeText(badge);
 
-      console.log(`[passport] On-device matting completed in ${durationMs}ms`);
+      console.log(`[passport] Server matting completed in ${durationMs}ms (${badge})`);
 
       const cutoutImg = new Image();
       const blobUrl = URL.createObjectURL(result.blob);
@@ -1085,24 +1076,27 @@ export default function PassportPhotoPage() {
     } catch (err: any) {
       if (currentRequestId !== activeRequestIdRef.current || err?.name === 'AbortError') return;
       console.error('[PassportStudio] Matting error:', err);
+      const friendlyMessage =
+        err?.userMessage ||
+        (err?.message && !err.message.includes('HTTP') && !err.message.includes('fetch') && !err.message.includes('Network')
+          ? err.message
+          : 'Our server is busy, please try again in a few seconds.');
       setMattingState('error');
-      setLastApiError(err?.message || 'Background removal failed');
+      setLastApiError(friendlyMessage);
       setDebugStats((prev) => ({ ...prev, lastResult: 'error' }));
       rawCutoutCanvasRef.current = sourceCanvas;
       cachedCutoutCanvasRef.current = sourceCanvas;
-      setSegmentationStatus('Cutout fallback active');
-      toast.error(err?.message || 'Processing failed. You can retry or switch to on-device mode.');
+      setSegmentationStatus('Background removal failed');
+      toast.error(friendlyMessage);
     } finally {
       if (currentRequestId === activeRequestIdRef.current) {
         setIsSegmenting(false);
-        setMattingProgress(null);
         setProcessingStep('done');
         compositeFinalCanvas();
       }
     }
   }, [
     enableBgRemoval,
-    forceOnDevice,
     bgFeather,
     bgChoke,
     enableDecontamination,
@@ -1133,12 +1127,12 @@ export default function PassportPhotoPage() {
 
   // Re-run Step 1 ONLY when raw image or background removal toggle changes (NEVER on transform sliders)
   useEffect(() => {
-    const key = `${imageSrc}_${enableBgRemoval}_${forceOnDevice}`;
+    const key = `${imageSrc}_${enableBgRemoval}`;
     if (imageElementRef.current && imageElementRef.current.complete && lastProcessedKeyRef.current !== key) {
       lastProcessedKeyRef.current = key;
       processSubjectCutout(false, activeRequestIdRef.current);
     }
-  }, [imageSrc, enableBgRemoval, forceOnDevice, processSubjectCutout]);
+  }, [imageSrc, enableBgRemoval, processSubjectCutout]);
 
   // Render Printable Tiled Sheet Canvas
   const renderPrintSheetCanvas = useCallback(() => {
@@ -1511,7 +1505,6 @@ export default function PassportPhotoPage() {
     hasAutoAlignedRef.current = false;
     setFaceDetected(null);
     setIsSegmenting(false);
-    setMattingProgress(null);
     setUploadErrorMessage(null);
     clearTransformState();
     setCurrentStep('edit');
@@ -1785,7 +1778,7 @@ export default function PassportPhotoPage() {
 
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
           {currentStep === 'edit'
-            ? 'AI background removal runs in memory on our secure HTTPS server (nothing stored), with an on-device option available. Create official Pakistan NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
+            ? 'Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page. Create official Pakistan NADRA, US Visa, and biometric ID photos with instant background matting and printable sheets.'
             : 'Your biometric photo is processed and print-ready. Download a single image for online portal submissions or a high-res tiled print sheet with cutting guides.'}
         </p>
 
@@ -1797,7 +1790,7 @@ export default function PassportPhotoPage() {
             'AI Background Removal',
             '300 DPI Print Sheet',
             'In-Memory Processing',
-            'On-Device Option',
+            'Photo Not Stored',
           ].map((tag) => (
             <span
                 key={tag}
@@ -1946,7 +1939,11 @@ export default function PassportPhotoPage() {
                   resetSignal={resetSignal}
                   title="Upload portrait or selfie"
                   subtitle="JPG, PNG, or WebP up to 15MB. Front-facing with neutral lighting."
+                  buttonText="Upload Photo"
                 />
+                <p className="text-xs text-center text-zinc-500 dark:text-zinc-400 font-medium">
+                  Face the camera, plain background, no hands, hair or objects near your face, good light.
+                </p>
                 {uploadErrorMessage && (
                   <div
                     data-testid="dropzone-error-banner"
@@ -2397,10 +2394,10 @@ export default function PassportPhotoPage() {
                             <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                             <div className="flex flex-col">
                               <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
-                                100% On-Device Processing
+                                Secure Processing
                               </span>
                               <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                                Photo stays in your browser (AI model assets cached on first use).
+                                Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page.
                               </span>
                             </div>
                           </div>
@@ -2677,6 +2674,16 @@ export default function PassportPhotoPage() {
                       </div>
                     )}
                   </div>
+                </div>
+              )}
+
+              {/* Engine Badge */}
+              {imageSrc && enableBgRemoval && (
+                <div className="flex items-center justify-center pt-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-zinc-100 dark:bg-zinc-800/90 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700/60 shadow-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    {engineBadgeText}
+                  </span>
                 </div>
               )}
 

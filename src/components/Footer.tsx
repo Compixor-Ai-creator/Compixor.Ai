@@ -174,7 +174,7 @@ export default function Footer() {
                 Privacy-First Architecture
               </div>
               <div className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
-                10 tools run locally on your device with zero uploads. Document conversion tools process over HTTPS with zero permanent file storage.
+                9 tools run locally on your device with zero uploads. Specialized utilities process over HTTPS with zero permanent file storage.
               </div>
             </div>
 

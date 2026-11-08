@@ -85,10 +85,10 @@ export const TOOLS_PRIVACY_CONFIG: Record<string, ToolPrivacyConfig> = {
   'passport-photo': {
     slug: 'passport-photo',
     name: 'Passport Photo Maker',
-    processingType: 'local',
-    badgeLabel: 'On-Device Processing',
-    privacyClaim: '100% On-Device • Zero Photo Upload',
-    detailDescription: 'Portraits are processed entirely inside your browser using WebAssembly. Your photo never leaves your device (AI model assets are cached on first use).',
+    processingType: 'server',
+    badgeLabel: 'Secure Processing',
+    privacyClaim: 'Photo not stored on our servers',
+    detailDescription: 'Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page.',
   },
   'pdf-to-word': {
     slug: 'pdf-to-word',

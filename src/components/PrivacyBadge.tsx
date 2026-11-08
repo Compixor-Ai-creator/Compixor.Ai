@@ -13,7 +13,9 @@ export default function PrivacyBadge({ toolSlug, className = '' }: PrivacyBadgeP
   const privacy = getToolPrivacy(toolSlug);
   const isServer = privacy.processingType === 'server';
 
-  const message = isServer
+  const message = toolSlug === 'passport-photo'
+    ? 'Photo not stored on our servers. Processed securely over HTTPS only to remove background.'
+    : isServer
     ? 'Processed over encrypted HTTPS in temporary memory and immediately deleted. Zero permanent storage.'
     : 'Zero Server Uploads: Runs 100% locally in your browser RAM. Your files never leave your device.';
 

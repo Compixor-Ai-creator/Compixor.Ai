@@ -193,7 +193,7 @@ export default function PrivacyPage() {
                   <Link href="/tools/passport-photo" className="font-semibold text-zinc-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2">
                     Biometric Passport Photo Maker
                   </Link>
-                  : When AI cloud background removal is selected, the image is transmitted securely to our backend server for background matting. Users may also select the client-side Private Mode option to keep processing local.
+                  : Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page.
                 </li>
                 <li>
                   <Link href="/tools/img-to-word" className="font-semibold text-zinc-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2">

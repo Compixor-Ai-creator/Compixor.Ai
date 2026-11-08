@@ -18,7 +18,7 @@ export default function WebMcpRegister() {
       { slug: 'protect-pdf', name: 'Protect PDF (AES-256)', url: '/tools/protect-pdf', type: 'client-side' },
       { slug: 'unlock-pdf', name: 'Unlock PDF', url: '/tools/unlock-pdf', type: 'client-side' },
       { slug: 'word-compressor', name: 'Word Compressor', url: '/tools/word-compressor', type: 'client-side' },
-      { slug: 'passport-photo', name: 'Biometric Passport Photo Maker', url: '/tools/passport-photo', type: 'hybrid' },
+      { slug: 'passport-photo', name: 'Biometric Passport Photo Maker', url: '/tools/passport-photo', type: 'server' },
       { slug: 'full-dp-maker', name: 'WhatsApp Full DP Maker', url: '/tools/full-dp-maker', type: 'client-side' },
       { slug: 'qr-generator', name: 'Vector QR Code Generator', url: '/tools/qr-generator', type: 'client-side' },
       { slug: 'pdf-to-word', name: 'PDF to Word OCR Converter', url: '/tools/pdf-to-word', type: 'server-assisted' },
@@ -32,7 +32,7 @@ export default function WebMcpRegister() {
       },
       {
         question: 'Are my files uploaded to Compixor servers?',
-        answer: 'No. Compixor runs 9 of its core tools completely client-side in your local browser sandbox. Your files never leave your device. Our server-assisted OCR and passport tools process streams over encrypted HTTPS and purge data immediately.',
+        answer: 'No. Compixor runs 9 of its core tools completely client-side in your local browser sandbox. Your files never leave your device. Our server-assisted utilities (PDF to Word, Image to Word, and Passport Photo) process streams over encrypted HTTPS with zero permanent file storage.',
       },
       {
         question: 'How does Compixor compress and edit files for free?',

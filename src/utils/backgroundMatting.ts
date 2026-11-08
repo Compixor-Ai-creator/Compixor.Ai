@@ -1,6 +1,6 @@
 /**
  * High-Precision Background Removal & Passport Photo Compositing Pipeline
- * Powered by Compixor Cloud AI Backend (rembg) with On-Device Fallback (IS-Net FP16)
+ * Powered by Compixor Cloud AI Backend (rembg)
  *
  * Secure memory-only HTTPS processing & zero photo retention
  */
@@ -70,17 +70,8 @@ export function sampleOriginalBgColor(
  * Compixor AI — High-Precision Passport Photo Matting Pipeline
  *
  * Connects directly to our VPS backend (POST /remove-bg?bg=transparent or /api/remove-bg)
- * with automatic graceful fallback to client-side IS-Net neural matting when offline/busy.
+ * with secure in-memory server processing.
  */
-
-export interface MattingProgress {
-  stage: string;
-  current: number;
-  total: number;
-  percent: number;
-}
-
-export type MattingProgressCallback = (progress: MattingProgress) => void;
 
 export interface EdgeRefinementOptions {
   featherRadius?: number; // 0.8px to 2.5px (recommended: 1.2px)
@@ -192,7 +183,7 @@ export async function prepareUploadBlob(
 
 /**
  * Universal Background Removal via Compixor VPS Backend API.
- * Uses XMLHttpRequest for genuine upload progress tracking, AbortController for cancellation,
+ * Uses XMLHttpRequest for upload progress tracking, AbortController for cancellation,
  * and automatic single-retry on network/5xx failures.
  */
 export async function removeBackgroundViaAPI(
@@ -202,7 +193,7 @@ export async function removeBackgroundViaAPI(
     onUploadProgress?: (percent: number) => void;
     onStatusChange?: (statusText: string) => void;
   } = {}
-): Promise<Blob> {
+): Promise<{ blob: Blob; engineHeader?: string }> {
   const baseUrl = getBgApiUrl();
   const endpoints = [
     `${baseUrl}/api/remove-bg`,
@@ -212,6 +203,7 @@ export async function removeBackgroundViaAPI(
   ];
 
   let lastError: Error | null = null;
+  let hasHandledRateLimitRetry = false;
 
   for (let attempt = 0; attempt < 2; attempt++) {
     if (options.signal?.aborted) {
@@ -224,8 +216,12 @@ export async function removeBackgroundViaAPI(
     }
 
     for (const url of endpoints) {
+      if (options.signal?.aborted) {
+        throw new DOMException('Upload aborted by user', 'AbortError');
+      }
+
       try {
-        const resultBlob = await new Promise<Blob>((resolve, reject) => {
+        const result = await new Promise<{ blob: Blob; engineHeader?: string }>((resolve, reject) => {
           const xhr = new XMLHttpRequest();
           xhr.open('POST', url, true);
           xhr.responseType = 'blob';
@@ -247,31 +243,54 @@ export async function removeBackgroundViaAPI(
 
           xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
-              resolve(xhr.response);
+              const engineHeader =
+                xhr.getResponseHeader('X-Engine') ||
+                xhr.getResponseHeader('x-engine') ||
+                undefined;
+              resolve({ blob: xhr.response, engineHeader });
             } else {
-              let errMsg = `Server returned HTTP ${xhr.status}`;
-              if (xhr.response instanceof Blob) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                  try {
-                    const parsed = JSON.parse(reader.result as string);
-                    if (parsed.error) errMsg = parsed.error;
-                    else if (parsed.detail) errMsg = typeof parsed.detail === 'string' ? parsed.detail : JSON.stringify(parsed.detail);
-                  } catch {}
-                  reject(new Error(errMsg));
-                };
-                reader.readAsText(xhr.response);
-              } else {
-                reject(new Error(errMsg));
+              const status = xhr.status;
+              if (status === 413) {
+                console.error('[passport] Server failed (HTTP 413: Photo too large)');
+                const err = new Error('Photo is too large. Please use a smaller photo.');
+                (err as any).statusCode = 413;
+                (err as any).userMessage = 'Photo is too large. Please use a smaller photo.';
+                reject(err);
+                return;
               }
+
+              if (status === 429 || status === 503) {
+                console.warn(`[passport] Server failed (HTTP ${status}: busy/rate-limited)`);
+                const err = new Error('Our server is busy, please try again in a few seconds.');
+                (err as any).statusCode = status;
+                (err as any).userMessage = 'Our server is busy, please try again in a few seconds.';
+                reject(err);
+                return;
+              }
+
+              console.error(`[passport] Server failed (HTTP ${status})`);
+              const err = new Error('Our server is busy, please try again in a few seconds.');
+              (err as any).statusCode = status;
+              (err as any).userMessage = 'Our server is busy, please try again in a few seconds.';
+              reject(err);
             }
           };
 
-          xhr.onerror = () => reject(new Error('Network connection error to backend'));
-          xhr.ontimeout = () => reject(new Error('Request timed out (60s limit)'));
+          xhr.onerror = () => {
+            console.error('[passport] Server failed (Network error / CORS blocked)');
+            const err = new Error('Our server is busy, please try again in a few seconds.');
+            (err as any).userMessage = 'Our server is busy, please try again in a few seconds.';
+            reject(err);
+          };
+
+          xhr.ontimeout = () => {
+            console.error('[passport] Server failed (Timeout after 60s)');
+            const err = new Error('Our server is busy, please try again in a few seconds.');
+            (err as any).userMessage = 'Our server is busy, please try again in a few seconds.';
+            reject(err);
+          };
 
           const fd = new FormData();
-          // Supply both field names so any backend routing works flawlessly
           fd.append('file', blob, 'portrait.jpg');
           fd.append('image', blob, 'portrait.jpg');
 
@@ -279,63 +298,33 @@ export async function removeBackgroundViaAPI(
           xhr.send(fd);
         });
 
-        return resultBlob;
+        return result;
       } catch (err: any) {
         if (err?.name === 'AbortError') throw err;
         lastError = err;
+
+        if (err?.statusCode === 413) {
+          throw err;
+        }
+
+        if (!hasHandledRateLimitRetry && (err?.statusCode === 429 || err?.statusCode === 503)) {
+          hasHandledRateLimitRetry = true;
+          options.onStatusChange?.('Many users right now, retrying...');
+          await new Promise((r) => setTimeout(r, 3000));
+        }
       }
     }
   }
 
-  throw lastError || new Error('Backend background removal failed after retry');
-}
-
-/**
- * Executes high-precision client-side background removal using @imgly/background-removal (IS-Net FP16)
- * Used as automatic fallback when backend returns 429/503 or network is completely offline.
- */
-export async function removeBackgroundISNet(
-  imageSource: ImageData | HTMLCanvasElement | Blob | string,
-  onProgress?: MattingProgressCallback
-): Promise<Blob> {
-  const imgly = await import('@imgly/background-removal');
-  const removeMattingFn: (image: any, config?: any) => Promise<Blob> =
-    (imgly as any).removeBackground || (imgly as any).default || (imgly as any);
-
-  const resultBlob = await removeMattingFn(imageSource, {
-    model: 'isnet_fp16',
-    output: {
-      format: 'image/png',
-      quality: 1.0,
-    },
-    progress: (key: string, current: number, total: number) => {
-      let stage = 'Refining portrait matting on device...';
-      if (key.includes('fetch') || key.includes('download')) {
-        stage = 'Downloading on-device AI model...';
-      } else if (key.includes('onnx') || key.includes('init')) {
-        stage = 'Initializing WebAssembly engine...';
-      } else if (key.includes('compute') || key.includes('inference')) {
-        stage = 'Processing alpha mask locally...';
-      } else if (key.includes('encode')) {
-        stage = 'Generating PNG cutout...';
-      }
-
-      const percent = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
-      onProgress?.({
-        stage,
-        current,
-        total,
-        percent,
-      });
-    },
-  });
-
-  return resultBlob;
+  throw (
+    lastError ||
+    new Error('Our server is busy, please try again in a few seconds.')
+  );
 }
 
 /**
  * Universal Background Removal entry point:
- * Uses Compixor VPS Backend API first with automatic on-device fallback if offline or overloaded.
+ * Runs 100% on Compixor VPS Backend API with zero on-device fallback.
  */
 export async function removeBackground(
   imageSource: ImageData | HTMLCanvasElement | Blob | string,
@@ -343,26 +332,33 @@ export async function removeBackground(
     signal?: AbortSignal;
     onUploadProgress?: (percent: number) => void;
     onStatusChange?: (statusText: string) => void;
-    forceOnDevice?: boolean;
-    onFallback?: () => void;
   } = {}
-): Promise<{ blob: Blob; mode: 'on-device' }> {
-  options.onStatusChange?.('Processing portrait locally on your device...');
-  try {
-    const blob = await removeBackgroundISNet(imageSource, (p) => {
-      options.onStatusChange?.(p.stage);
-    });
-    return { blob, mode: 'on-device' };
-  } catch (err: any) {
-    if (err?.name === 'AbortError') throw err;
-    console.error('[passport] On-device background removal failed:', err);
-    // Explicitly do NOT silently fall back to server upload.
-    throw new Error(
-      'On-device portrait matting encountered an issue. Your photo was not sent to any server. You can retry or use your photo without background removal.'
-    );
-  }
+): Promise<{ blob: Blob; mode: 'server'; engineHeader?: string }> {
+  options.onStatusChange?.('Uploading photo to secure server...');
+  const preparedBlob = await prepareUploadBlob(imageSource);
+  const result = await removeBackgroundViaAPI(preparedBlob, {
+    signal: options.signal,
+    onUploadProgress: options.onUploadProgress,
+    onStatusChange: options.onStatusChange,
+  });
+  return { blob: result.blob, mode: 'server', engineHeader: result.engineHeader };
 }
 
+/**
+ * Formats engine badge string from X-Engine response header (e.g. compixor-ai-v2.8.4 -> Engine: Server v2.8.4).
+ * If missing, falls back to "Engine: Server".
+ */
+export function formatEngineBadge(header?: string | null): string {
+  if (!header || typeof header !== 'string') return 'Engine: Server';
+  const trimmed = header.trim();
+  if (!trimmed) return 'Engine: Server';
+
+  const match = trimmed.match(/(?:compixor-ai-)?v?(\d+\.\d+\.\d+)/i);
+  if (match && match[1]) {
+    return `Engine: Server v${match[1]}`;
+  }
+  return 'Engine: Server';
+}
 /**
  * Intermediate Canvas Processing Step:
  * 1. Alpha erosion (choke) to nip edge halos

@@ -29,7 +29,7 @@ export default function PassportPhotoPage() {
             </span>
           </div>
           <p className="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">
-            Make a passport size photo online in under a minute. Upload a portrait and our on-device AI removes the background directly in your browser using WebAssembly. Your photo is processed locally and is never sent to any server (model assets may be downloaded on first use). Choose your country&apos;s passport photo size, including Pakistan NADRA 35 × 45 mm, then pick a background colour such as white, off-white, light blue or sky blue. Use the positioning controls and biometric overlay guides to get the head size and eye line right. Download a single JPEG for online portals, or a print-ready sheet (A4, 3 per A4, A6 or A5) with cut marks.
+            Make a passport size photo online in under a minute. Upload a portrait and our AI removes the background securely on our server. Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page. Choose your country&apos;s passport photo size, including Pakistan NADRA 35 × 45 mm, then pick a background colour such as white, off-white, light blue or sky blue. Use the positioning controls and biometric overlay guides to get the head size and eye line right. Download a single JPEG for online portals, or a print-ready sheet (A4, 3 per A4, A6 or A5) with cut marks.
           </p>
           <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
             Our biometric passport photo size maker ensures compliance with official passport authority and visa guidelines. Whether you are submitting a digital application or printing at home, this passport size photo online maker gives you precision control over cropping, head height, and background specifications.
@@ -305,7 +305,7 @@ export default function PassportPhotoPage() {
             </li>
             <li className="flex items-center gap-2 p-2.5 rounded-xl bg-zinc-50/80 dark:bg-zinc-800/40 border border-zinc-200/50 dark:border-zinc-700/40 col-span-1 sm:col-span-2">
               <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-              <span>100% on-device processing (zero photo uploads)</span>
+              <span>Secure background removal (photo not stored on our servers)</span>
             </li>
           </ul>
         </div>
@@ -409,8 +409,8 @@ export default function PassportPhotoPage() {
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
                 <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40">
-                  <td className="py-3.5 px-4 font-semibold">100% In-Browser Privacy</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Yes (On-Device Wasm)</td>
+                  <td className="py-3.5 px-4 font-semibold">Privacy Architecture</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">Photo Not Stored (Secure Server)</td>
                   <td className="py-3.5 px-4 text-rose-500">No (Cloud Server)</td>
                   <td className="py-3.5 px-4 text-rose-500">No (Server Upload)</td>
                   <td className="py-3.5 px-4 text-rose-500">No (Server Stored)</td>
@@ -478,7 +478,7 @@ export default function PassportPhotoPage() {
 
           <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
             <strong className="text-zinc-900 dark:text-white font-semibold block mb-1">Our Editorial Take:</strong>
-            Commercial tools like PhotoAiD charge substantial fees ($10 to $15) for single photo downloads and require cloud uploads of sensitive biometric face portraits. Free web alternatives such as 123PassportPhoto or idphoto4you are heavily cluttered with third-party advertising, enforce watermarks, and lack critical Pakistani portal compliance features such as under-50KB file compression and NADRA-approved light blue background presets. Compixor gives you the best of all worlds: zero signups, zero watermarks, 100% in-browser Private Mode security, official 35×45 mm biometric alignment, and ready-to-print 300 DPI multi-photo sheets.
+            Commercial tools like PhotoAiD charge substantial fees ($10 to $15) for single photo downloads and require cloud uploads of sensitive biometric face portraits. Free web alternatives such as 123PassportPhoto or idphoto4you are heavily cluttered with third-party advertising, enforce watermarks, and lack critical Pakistani portal compliance features such as under-50KB file compression and NADRA-approved light blue background presets. Compixor gives you the best of all worlds: zero signups, zero watermarks, photo not stored on our servers privacy, official 35×45 mm biometric alignment, and ready-to-print 300 DPI multi-photo sheets.
           </div>
         </div>
 

@@ -92,7 +92,7 @@ export default function PassportBeforeAfter() {
                 Strict Privacy Architecture — Zero Photo Retention
               </p>
               <p className="text-[11px] sm:text-xs text-zinc-600 dark:text-zinc-400">
-                AI background removal runs in volatile memory over HTTPS and is never stored on disk. You can also select private on-device processing.
+                Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page.
               </p>
             </div>
           </div>

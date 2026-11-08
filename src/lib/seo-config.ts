@@ -108,11 +108,11 @@ export const homepageSeoData: HomepageSeoData = {
   ],
   h1: 'Free Online PDF Tools — No Upload',
   introParagraph:
-    'Welcome to Compixor AI, your trusted suite of free online PDF and media tools. Designed for professionals, students, lawyers, and creators worldwide, Compixor offers privacy-first document tools where 10 tools run locally in your web browser. Compress PDFs, merge and split pages, convert PDF to Word, add or remove watermarks, password protect documents, convert biometric passport photos, and generate vector QR codes. Free, no signup required, with zero permanent file storage and instant processing.',
+    'Welcome to Compixor AI, your trusted suite of free online PDF and media tools. Designed for professionals, students, lawyers, and creators worldwide, Compixor offers privacy-first document tools where 9 tools run locally in your web browser. Compress PDFs, merge and split pages, convert PDF to Word, add or remove watermarks, password protect documents, convert biometric passport photos, and generate vector QR codes. Free, no signup required, with zero permanent file storage and instant processing.',
   faqs: [
     {
       q: 'How does Compixor AI process files privately?',
-      a: '10 of our tools execute locally inside your browser memory using WebAssembly and HTML5 Canvas with zero uploads. Our 2 document conversion tools process files securely over HTTPS with zero permanent file storage.',
+      a: '9 of our tools execute locally inside your browser memory using WebAssembly and HTML5 Canvas with zero uploads. Our 3 specialized utilities (PDF to Word, Image to Word, and Passport Photo background matting) process files securely over HTTPS with zero permanent file storage.',
     },
     {
       q: 'Are all Compixor AI tools completely free with no signup?',
@@ -1028,11 +1028,11 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     ],
     h1: 'Pakistani Passport Size Photo Maker Online Free (NADRA & DGIP 35×45 mm)',
     introParagraph:
-      'Create official biometric passport and ID photos online with Compixor\'s free passport photo maker. Specifically calibrated for Pakistan DGIP passport requirements (35×45 mm), NADRA CNIC and NICOP identity cards, and the PAK-ID mobile portal, our studio also supports US 2×2 inch, UK, and European Schengen specifications. AI removes your background instantly in local memory—switch effortlessly to official white, off-white, light blue, or sky blue. Export single JPEG portraits with our under-50KB portal limiter, or generate 300 DPI studio print sheets (A4, A5 with 6 photos, A6 with 2 photos) with calibrated crop marks ready for home or lab printing with zero signups and zero watermarks.',
+      'Create official biometric passport and ID photos online with Compixor\'s free passport photo maker. Specifically calibrated for Pakistan DGIP passport requirements (35×45 mm), NADRA CNIC and NICOP identity cards, and the PAK-ID mobile portal, our studio also supports US 2×2 inch, UK, and European Schengen specifications. AI removes your background securely on our server—switch effortlessly to official white, off-white, light blue, or sky blue. Export single JPEG portraits with our under-50KB portal limiter, or generate 300 DPI studio print sheets (A4, A5 with 6 photos, A6 with 2 photos) with calibrated crop marks ready for home or lab printing with zero signups and zero watermarks.',
     howToSteps: [
       {
         name: 'Upload Your Portrait Photo',
-        text: 'Upload any front-facing smartphone portrait taken in natural daylight. In Private Mode, processing runs 100% locally on your device without leaving your browser.',
+        text: 'Upload any front-facing smartphone portrait taken in natural daylight. Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page.',
       },
       {
         name: 'Select Country Biometric Preset',
@@ -1085,8 +1085,8 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
         a: 'Enabling "Fit to page" or "Shrink to fit" forces printer software to scale the entire layout down to accommodate printer hardware margins, shrinking your 35×45 mm photos to 31×40 mm and causing immediate consular rejection. Always select "Actual size" or set page scaling to exactly 100%.',
       },
       {
-        q: 'Does Compixor upload my biometric face photos to any external server?',
-        a: 'No. Compixor is built privacy-first. When you enable Private Mode, background segmentation, cropping, and 300 DPI rendering occur 100% locally in your device RAM using WebAssembly and HTML5 Canvas. Your biometric photos never touch a remote cloud server or external database.',
+        q: 'Does Compixor store my biometric face photos on any server?',
+        a: 'Your photo is sent securely to our server only to remove the background. We do not store it. Your edited photo stays in your browser until you download it or close the page.',
       },
       {
         q: 'Can I wear eyeglasses or a hijab/headscarf in a Pakistani passport photo?',
@@ -1124,7 +1124,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
       '300 DPI studio print sheets: A4, A5 (6 photos), A6 (2 photos)',
       'Government online portal file-size limiter (under 50 KB / 20 KB)',
       'Biometric head height overlay guides (70%–80% ratio)',
-      '100% in-browser Private Mode execution with zero server uploads',
+      'Photo not stored on our servers: sent securely over HTTPS only to remove background',
       'Free forever with zero watermarks and no account registration',
     ],
   },
