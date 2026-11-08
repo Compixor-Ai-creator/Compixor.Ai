@@ -496,6 +496,7 @@ export default function PassportPhotoPage() {
 
   // Atomic state reset helper (never shows toast automatically)
   const clearTransformState = useCallback(() => {
+    userInteractedTransformRef.current = false;
     setZoom(1);
     setBaselineZoom(1);
     setRotation(0);
@@ -553,22 +554,16 @@ export default function PassportPhotoPage() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [imageSrc]);
 
-  // Idle-time landmark asset prefetching (before upload):
-  // Active only if connection is 4G and saveData is false (otherwise keeps lazy load)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (imageSrc) return;
-
+  // Landmark asset prefetch trigger:
+  // Starts when user clicks/taps "Choose photo" or drags over dropzone (only if 4G + saveData is false)
+  const triggerLandmarkPrefetchOnInteraction = useCallback(() => {
     if (shouldPrefetchLandmarks()) {
-      const idleCallback = (window as any).requestIdleCallback || ((cb: Function) => setTimeout(cb, 1500));
-      const handle = idleCallback(() => {
-        prefetchFaceLandmarks();
-      });
-      return () => {
-        if ((window as any).cancelIdleCallback) (window as any).cancelIdleCallback(handle);
-      };
+      prefetchFaceLandmarks();
     }
-  }, [imageSrc]);
+  }, []);
+
+  // Track whether user has manually adjusted zoom or pan for the active photo
+  const userInteractedTransformRef = useRef<boolean>(false);
 
   // Biometric Landmark source: 'landmarks' (MediaPipe Landmark 152 + Iris) or 'approximate' (detector box / fallback)
   const [biometricSource, setBiometricSource] = useState<'landmarks' | 'approximate'>('approximate');
@@ -1072,29 +1067,41 @@ export default function PassportPhotoPage() {
 
     const tooClose = calculatedZoom + 0.01 < requestedZoom;
     setIsTooCloseWarning(tooClose);
-    setBaselineZoom(calculatedZoom);
-    setZoom(calculatedZoom);
 
-    // Exact Pan: places crown precisely at targetTopMarginPx on canvas and face horizontally centered
-    const drawScale = calculatedZoom * fitScale;
-    const scaleY = activePreset.heightPx / previewDimensions.height;
-    const scaleX = activePreset.widthPx / previewDimensions.width;
+    // Only update zoom and pan if:
+    // 1. Initial photo fit ('new-photo')
+    // 2. User explicitly clicks "Auto Align" / "Center Face" ('button')
+    // 3. User clicks "Reset Position" ('reset-button')
+    // 4. Preset change or cutout ready ONLY IF user has not manually adjusted the transform!
+    // Late landmark arrival must NEVER touch zoom or pan.
+    const isExplicitUserReset = cause === 'button' || cause === 'reset-button' || cause === 'new-photo';
+    const canUpdateTransform = (isExplicitUserReset || !userInteractedTransformRef.current) && cause !== 'landmarks-ready';
 
-    const scaledPanY = targetTopMarginPx - (activePreset.heightPx / 2 + (crownY - srcH / 2) * drawScale);
-    const calculatedPanY = Math.round(scaledPanY / scaleY);
-    setPanY(calculatedPanY);
+    if (canUpdateTransform) {
+      setBaselineZoom(calculatedZoom);
+      setZoom(calculatedZoom);
 
-    const faceCenterX = face.x + face.width / 2;
-    const scaledPanX = -(faceCenterX - srcW / 2) * drawScale;
-    const calculatedPanX = Math.round(scaledPanX / scaleX);
-    setPanX(calculatedPanX);
+      // Exact Pan: places crown precisely at targetTopMarginPx on canvas and face horizontally centered
+      const drawScale = calculatedZoom * fitScale;
+      const scaleY = activePreset.heightPx / previewDimensions.height;
+      const scaleX = activePreset.widthPx / previewDimensions.width;
 
-    const headPercent = Math.round((headHeight * drawScale / activePreset.heightPx) * 1000) / 10;
-    const crownPercent = Math.round((targetTopMarginPx / activePreset.heightPx) * 1000) / 10;
-    const eyePercent = Math.round(((targetTopMarginPx + (eyeY - crownY) * drawScale) / activePreset.heightPx) * 1000) / 10;
-    const chinPercent = Math.round(((targetTopMarginPx + headHeight * drawScale) / activePreset.heightPx) * 1000) / 10;
-    setMeasuredBiometrics({ headPercent, crownPercent, eyePercent, chinPercent });
-    setDebugStats((prev) => ({ ...prev, lastAlignCause: cause, zoomDisplay: `100% (${calculatedZoom.toFixed(2)}x)` }));
+      const scaledPanY = targetTopMarginPx - (activePreset.heightPx / 2 + (crownY - srcH / 2) * drawScale);
+      const calculatedPanY = Math.round(scaledPanY / scaleY);
+      setPanY(calculatedPanY);
+
+      const faceCenterX = face.x + face.width / 2;
+      const scaledPanX = -(faceCenterX - srcW / 2) * drawScale;
+      const calculatedPanX = Math.round(scaledPanX / scaleX);
+      setPanX(calculatedPanX);
+
+      const headPercent = Math.round((headHeight * drawScale / activePreset.heightPx) * 1000) / 10;
+      const crownPercent = Math.round((targetTopMarginPx / activePreset.heightPx) * 1000) / 10;
+      const eyePercent = Math.round(((targetTopMarginPx + (eyeY - crownY) * drawScale) / activePreset.heightPx) * 1000) / 10;
+      const chinPercent = Math.round(((targetTopMarginPx + headHeight * drawScale) / activePreset.heightPx) * 1000) / 10;
+      setMeasuredBiometrics({ headPercent, crownPercent, eyePercent, chinPercent });
+      setDebugStats((prev) => ({ ...prev, lastAlignCause: cause, zoomDisplay: `100% (${calculatedZoom.toFixed(2)}x)` }));
+    }
 
     if (cause === 'new-photo') toast.success('Photo fitted automatically. Tap Adjust to fine-tune.');
     else if (cause === 'button') toast.success('Biometric auto-alignment applied.');
@@ -1500,6 +1507,7 @@ export default function PassportPhotoPage() {
     lastProcessedKeyRef.current = null;
     hasAutoAlignedRef.current = false;
     clearTransformState();
+    userInteractedTransformRef.current = false;
     setIsSegmenting(true);
     setMattingState('uploading');
     setUploadPercent(0);
@@ -1597,20 +1605,27 @@ export default function PassportPhotoPage() {
         compositeFinalCanvas();
 
         // Option A: Lazy-load MediaPipe Face Landmarker in Web Worker on downscaled copy (or use pre-warmed instance)
-        // If > 12s timeout occurs, background download continues unabated and triggers the late upgrade callback once ready
-        detectFaceLandmarks(img, working.dataUrl, async (lateLms) => {
+        // Late upgrade: ONLY updates measurements and badge; NEVER moves zoom or pan!
+        detectFaceLandmarks(img, working.dataUrl, (lateLms) => {
           if (requestId !== activeRequestIdRef.current) return;
           if (lateLms && lateLms.landmarksAvailable) {
+            if (detectedFaceRef.current) {
+              detectedFaceRef.current.chinY = lateLms.chinY;
+              detectedFaceRef.current.eyeY = lateLms.eyeY;
+            }
             setBiometricSource('landmarks');
-            await autoFitBiometric('landmarks-ready', requestId);
-            compositeFinalCanvas();
+            // Note: Does NOT call autoFitBiometric, does NOT setZoom, does NOT setPanX/Y.
+            // liveBiometrics automatically recalculates using user's CURRENT zoom/pan.
           }
-        }).then(async (lms) => {
+        }).then((lms) => {
           if (requestId !== activeRequestIdRef.current) return;
           if (lms && lms.landmarksAvailable) {
+            if (detectedFaceRef.current) {
+              detectedFaceRef.current.chinY = lms.chinY;
+              detectedFaceRef.current.eyeY = lms.eyeY;
+            }
             setBiometricSource('landmarks');
-            await autoFitBiometric('landmarks-ready', requestId);
-            compositeFinalCanvas();
+            // Landmark arrival ONLY updates measurements and badge; NEVER moves user's zoom or pan
           } else {
             setBiometricSource('approximate');
           }
@@ -1655,6 +1670,7 @@ export default function PassportPhotoPage() {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !isAdjustMode) return;
+    userInteractedTransformRef.current = true;
     setPanX(e.clientX - dragStart.x);
     setPanY(e.clientY - dragStart.y);
   };
@@ -1669,6 +1685,7 @@ export default function PassportPhotoPage() {
     const handleWheel = (e: WheelEvent) => {
       if (!imageSrc || !isAdjustMode) return;
       e.preventDefault();
+      userInteractedTransformRef.current = true;
       const delta = e.deltaY > 0 ? -0.05 : 0.05;
       setZoom((z) => Math.min(Math.max(0.4, z + delta), 3.0));
     };
@@ -1701,6 +1718,7 @@ export default function PassportPhotoPage() {
       setPanY(e.touches[0].clientY - dragStart.y);
     } else if (e.touches.length === 2 && pinchStartDistRef.current !== null) {
       e.preventDefault();
+      userInteractedTransformRef.current = true;
       const dist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
@@ -2163,10 +2181,17 @@ export default function PassportPhotoPage() {
 
             {/* Upload Drop Zone */}
             {!imageSrc ? (
-              <div className="glass-card p-6 rounded-2xl space-y-4">
+              <div
+                className="glass-card p-6 rounded-2xl space-y-4"
+                onClick={triggerLandmarkPrefetchOnInteraction}
+                onPointerDown={triggerLandmarkPrefetchOnInteraction}
+                onDragOver={triggerLandmarkPrefetchOnInteraction}
+                onDragEnter={triggerLandmarkPrefetchOnInteraction}
+              >
                 <FileDropZone
                   accept="image/jpeg,image/png,image/webp,image/gif"
                   onFileDrop={handleFileDrop}
+                  onInteraction={triggerLandmarkPrefetchOnInteraction}
                   maxSizeMB={15}
                   resetSignal={resetSignal}
                   title="Upload portrait or selfie"
@@ -2297,7 +2322,10 @@ export default function PassportPhotoPage() {
                     max="2.5"
                     step="0.02"
                     value={zoom}
-                    onChange={(e) => setZoom(parseFloat(e.target.value))}
+                    onChange={(e) => {
+                      userInteractedTransformRef.current = true;
+                      setZoom(parseFloat(e.target.value));
+                    }}
                     className="w-full slider-blur cursor-pointer"
                   />
                 </div>

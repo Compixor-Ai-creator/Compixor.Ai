@@ -14,6 +14,7 @@ interface FileDropZoneProps {
   buttonText?: string;
   className?: string;
   resetSignal?: number;
+  onInteraction?: () => void;
 }
 
 export default function FileDropZone({
@@ -27,6 +28,7 @@ export default function FileDropZone({
   buttonText,
   className = '',
   resetSignal,
+  onInteraction,
 }: FileDropZoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -58,20 +60,22 @@ export default function FileDropZone({
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    onInteraction?.();
     dragCounterRef.current += 1;
     if (e.dataTransfer?.types && Array.from(e.dataTransfer.types).includes('Files')) {
       setIsDragOver(true);
     }
-  }, []);
+  }, [onInteraction]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    onInteraction?.();
     if (e.dataTransfer) {
       e.dataTransfer.dropEffect = 'copy';
     }
     setIsDragOver(true);
-  }, []);
+  }, [onInteraction]);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -116,7 +120,10 @@ export default function FileDropZone({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      onClick={() => inputRef.current?.click()}
+      onClick={() => {
+        onInteraction?.();
+        inputRef.current?.click();
+      }}
     >
       <input
         ref={inputRef}
