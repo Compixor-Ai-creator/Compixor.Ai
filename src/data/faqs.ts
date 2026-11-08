@@ -11,7 +11,7 @@ export const homeFaqs: FaqItem[] = [
   },
   {
     q: 'Can I use this on corporate or sensitive business files?',
-    a: 'Yes. For our 9 client-side tools, files never leave your device. For server-assisted utilities, files are transmitted over secure HTTPS, processed in memory, and never stored permanently.',
+    a: 'Yes. For our 9 client-side tools, files never leave your device. For server-assisted utilities, files are processed over encrypted HTTPS and not stored; deleted right after processing.',
   },
   {
     q: 'Are printable passport photos formatted correctly for retail printing?',

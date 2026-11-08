@@ -1895,7 +1895,7 @@ export const blogsData: BlogItem[] = [
         },
         {
           heading: "Confidentiality: Keeping Personal Scans & Receipts Safe",
-          body: "Photographed passports, driver's licenses, tax forms, and medical invoices are intensely private. Compixor transmits your images over secure HTTPS solely for OCR processing, keeps them only in volatile memory, and immediately deletes them upon conversion with zero permanent disk storage."
+          body: "Photographed passports, driver's licenses, tax forms, and medical invoices are intensely private. Compixor transmits your images over secure HTTPS solely for OCR processing; they are processed over encrypted HTTPS and not stored; deleted right after processing."
         }
       ],
       steps: [

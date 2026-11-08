@@ -209,7 +209,7 @@ export default function PrivacyPage() {
                 </li>
               </ul>
               <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 bg-brand-500/5 dark:bg-brand-500/10 p-3 rounded-xl border border-brand-500/10">
-                <strong>Ephemaral In-Memory Lifecycle:</strong> For these three server-assisted utilities, files are handled strictly in transient memory buffers or temporary working directories that are deleted immediately once conversion finishes and the file is returned. Files are never retained on our servers.
+                <strong>Secure Ephemeral Lifecycle:</strong> For these three server-assisted utilities, data is processed over encrypted HTTPS and not stored; deleted right after processing once conversion finishes and the file is returned. Files are never retained on our servers.
               </p>
             </div>
           </div>

@@ -153,7 +153,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            {getToolPrivacy(toolSlug).processingType === 'server' ? 'Converted In Memory, Then Dropped' : 'Runs in Browser Memory'}
+            {getToolPrivacy(toolSlug).processingType === 'server' ? 'Encrypted HTTPS (Not Stored)' : 'Runs in Browser Memory'}
           </span>
         </div>
 

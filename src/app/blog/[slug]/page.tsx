@@ -1109,7 +1109,7 @@ export default function BlogPostPage({ params }: PageProps) {
                     100% Free &amp; Unlimited
                   </span>
                   <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
-                    {privacyConfig.processingType === 'server' ? 'In-Memory Only' : '100% In-Browser Privacy'}
+                    {privacyConfig.processingType === 'server' ? 'Processed Over HTTPS (Not Stored)' : '100% In-Browser Privacy'}
                   </span>
                 </div>
               </div>

@@ -70,7 +70,7 @@ export function sampleOriginalBgColor(
  * Compixor AI — High-Precision Passport Photo Matting Pipeline
  *
  * Connects directly to our VPS backend (POST /remove-bg?bg=transparent or /api/remove-bg)
- * with secure in-memory server processing.
+ * processed over encrypted HTTPS and not stored; deleted right after processing.
  */
 
 export interface EdgeRefinementOptions {

@@ -29,6 +29,18 @@ async function getLandmarker(): Promise<FaceLandmarker> {
 
 self.onmessage = async (e: MessageEvent) => {
   const { type, id, imageBitmap, imageData, width, height } = e.data || {};
+
+  // Idle-time pre-warmup: fetches WASM & model in background during browser idle
+  if (type === 'WARMUP') {
+    try {
+      await getLandmarker();
+      self.postMessage({ type: 'WARMUP_READY' });
+    } catch (warmErr) {
+      // Warmup failed silently; subsequent DETECT calls will retry or fall back to Option C
+    }
+    return;
+  }
+
   if (type === 'DETECT') {
     const startTime = performance.now();
     try {

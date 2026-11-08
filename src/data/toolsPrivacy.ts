@@ -94,17 +94,17 @@ export const TOOLS_PRIVACY_CONFIG: Record<string, ToolPrivacyConfig> = {
     slug: 'pdf-to-word',
     name: 'PDF to Word Converter',
     processingType: 'server',
-    badgeLabel: 'RAM-Only Server Processing',
-    privacyClaim: 'Encrypted In-Memory Processing • Immediate Deletion',
-    detailDescription: 'Documents are sent over secure HTTPS to our OCR engine, converted entirely in volatile memory, and immediately deleted without persistent storage.',
+    badgeLabel: 'Secure HTTPS Processing',
+    privacyClaim: 'Encrypted HTTPS • Not Stored',
+    detailDescription: 'Documents are processed over encrypted HTTPS and not stored; deleted right after processing.',
   },
   'img-to-word': {
     slug: 'img-to-word',
     name: 'Image to Word Converter',
     processingType: 'server',
-    badgeLabel: 'RAM-Only Server Processing',
-    privacyClaim: 'Encrypted In-Memory Processing • Immediate Deletion',
-    detailDescription: 'Images are sent over encrypted HTTPS to our OCR engine, converted in memory, and immediately purged with no logs or storage.',
+    badgeLabel: 'Secure HTTPS Processing',
+    privacyClaim: 'Encrypted HTTPS • Not Stored',
+    detailDescription: 'Images are processed over encrypted HTTPS and not stored; deleted right after processing.',
   },
 };
 

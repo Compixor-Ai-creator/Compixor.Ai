@@ -134,7 +134,7 @@ const homeFaqs = [
   {
     id: 'are-files-safe-faq',
     q: 'Are my PDF and Word files safe from data leaks?',
-    a: 'Yes, your files stay safe and private. For our 9 client-side tools, files never leave your device and execute locally in browser RAM. For our 3 server-assisted utilities (PDF to Word, Image to Word, and Passport Photo), data is sent over encrypted HTTPS, processed purely in memory, and never stored on disk.',
+    a: 'Yes, your files stay safe and private. For our 9 client-side tools, files never leave your device and execute locally in browser RAM. For our 3 server-assisted utilities (PDF to Word, Image to Word, and Passport Photo), data is processed over encrypted HTTPS and not stored; deleted right after processing.',
   },
   {
     id: 'what-tools-are-free-faq',

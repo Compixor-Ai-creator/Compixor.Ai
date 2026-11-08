@@ -120,7 +120,7 @@ export const homepageSeoData: HomepageSeoData = {
     },
     {
       q: 'Can I safely use Compixor AI for confidential corporate documents?',
-      a: 'Yes. For our 9 client-side tools, files never leave your browser. For server-assisted tools, files are transmitted over encrypted HTTPS, processed in memory, and deleted immediately without permanent retention.',
+      a: 'Yes. For our 9 client-side tools, files never leave your browser. For server-assisted utilities, files are processed over encrypted HTTPS and not stored; deleted right after processing.',
     },
     {
       q: 'Does Compixor AI work on mobile devices?',
@@ -1998,7 +1998,7 @@ export function getHomepageSchemas(): Record<string, any>[] {
         name: 'Are my PDF and Word files safe from data leaks?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes, your files stay safe and private. For our 9 client-side tools, files never leave your device and execute locally in browser RAM. For our 3 server-assisted utilities (PDF to Word, Image to Word, and Passport Photo), data is sent over encrypted HTTPS, processed purely in memory, and never stored on disk.',
+          text: 'Yes, your files stay safe and private. For our 9 client-side tools, files never leave your device and execute locally in browser RAM. For our 3 server-assisted utilities (PDF to Word, Image to Word, and Passport Photo), data is processed over encrypted HTTPS and not stored; deleted right after processing.',
         },
       },
       {
