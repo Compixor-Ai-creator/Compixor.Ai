@@ -129,12 +129,12 @@ const homeFaqs = [
   {
     id: 'what-is-compixor-faq',
     q: 'What is Compixor and how does it work?',
-    a: 'Compixor is a free web toolkit that lets you fix, merge, shrink, and change PDF, Word, and photo files right in your browser. All tools run on your own phone or PC instead of a cloud server. Your files stay fast, safe, and free to use at all times.',
+    a: 'Compixor is a free web toolkit that lets you fix, merge, shrink, and change PDF, Word, and photo files right in your browser. 9 core tools run directly on your own device with zero uploads, while specialized utilities process securely over HTTPS with zero permanent file storage.',
   },
   {
     id: 'are-files-safe-faq',
     q: 'Are my PDF and Word files safe from data leaks?',
-    a: 'Yes, your files stay safe because they never leave your own device at any point. Compixor runs all code inside your web browser tab with zero server uploads and zero cloud storage. No person, bot, or third party can ever see, read, or copy your private work.',
+    a: 'Yes, your files stay safe and private. For our 9 client-side tools, files never leave your device and execute locally in browser RAM. For our 3 server-assisted utilities (PDF to Word, Image to Word, and Passport Photo), data is sent over encrypted HTTPS, processed purely in memory, and never stored on disk.',
   },
   {
     id: 'what-tools-are-free-faq',
@@ -159,7 +159,7 @@ const homeFaqs = [
   {
     id: 'can-i-work-offline-faq',
     q: 'Can I edit my PDF and photo files without web access?',
-    a: 'Yes, once the page loads in your web browser, the tools can run right on your device even if your web link drops. Because no cloud server does the work, you can merge, split, or shrink your files smoothly on a plane, train, or slow mobile link.',
+    a: 'Yes, once the page loads in your web browser, our 9 client-side tools (including PDF merge, split, compress, watermark, and DP maker) run locally on your device without internet access. Our 3 specialized utilities (PDF to Word, Image to Word, and Passport Photo) require a quick secure connection to process without storing anything.',
   },
   {
     id: 'is-account-needed-faq',
@@ -300,7 +300,7 @@ export default function HomePage() {
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  Zero Server Uploads
+                  Zero File Storage
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />

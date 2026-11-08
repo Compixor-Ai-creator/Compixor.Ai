@@ -178,7 +178,7 @@ export function OrganizationJsonLd() {
       height: 512,
     },
     description:
-      'Compixor AI provides 100% private, client-side web utilities for documents and media with zero cloud uploads.',
+      'Compixor AI provides private, client-side and secure web utilities for documents and media with zero permanent file storage.',
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer support',

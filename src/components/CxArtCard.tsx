@@ -79,7 +79,7 @@ export default function CxArtCard() {
     <aside
       ref={cardRef}
       className="cxg-card"
-      aria-label="Your files never leave your device"
+      aria-label="Your files stay secure & private"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -170,7 +170,7 @@ export default function CxArtCard() {
       {/* ================= CENTER ================= */}
       <div className="cxg-mid">
         <div className="cxg-art">
-          <svg className="cxg-art-svg" viewBox="0 0 240 250" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Your files stay on your device">
+          <svg className="cxg-art-svg" viewBox="0 0 240 250" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Your files stay secure & private">
             <defs>
               <linearGradient id="cxgShieldG" x1="52" y1="18" x2="176" y2="196" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#ddd6fe" /><stop offset=".3" stopColor="#a78bfa" />

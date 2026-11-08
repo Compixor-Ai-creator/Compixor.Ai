@@ -23,7 +23,7 @@ export default function CxArtCard() {
   }, []);
 
   return (
-    <div ref={cardRef} className="cx-art-card" aria-label="Your files never leave your device">
+    <div ref={cardRef} className="cx-art-card" aria-label="Your files stay secure & private">
       <svg viewBox="0 0 480 348" xmlns="http://www.w3.org/2000/svg" role="img"
              aria-label="PDF, Word, image and QR files stay on your device — compress, watermark and protect PDFs privately">
           <defs>

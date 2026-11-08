@@ -122,7 +122,7 @@ export default function HeroRightCard() {
   }, []);
 
   return (
-    <aside ref={cardRef} className="cxg-card" aria-label="Your files never leave your device">
+    <aside ref={cardRef} className="cxg-card" aria-label="Your files stay secure & private">
       
         {/* ---------- background: one lavender gradient + 2 soft waves ---------- */}
         <svg className="cxg-bg" viewBox="0 0 560 420" preserveAspectRatio="none" aria-hidden="true" focusable="false">

@@ -196,13 +196,12 @@ export async function removeBackgroundViaAPI(
 ): Promise<{ blob: Blob; engineHeader?: string }> {
   const baseUrl = getBgApiUrl();
   const endpoints = [
-    `${baseUrl}/api/remove-bg`,
-    `${baseUrl}/api/remove-bg?bg=transparent`,
     `${baseUrl}/remove-bg?bg=transparent`,
     `${baseUrl}/remove-bg`,
   ];
 
   let lastError: Error | null = null;
+  let lastFailureReason: string = '';
   let hasHandledRateLimitRetry = false;
 
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -251,41 +250,41 @@ export async function removeBackgroundViaAPI(
             } else {
               const status = xhr.status;
               if (status === 413) {
-                console.error('[passport] Server failed (HTTP 413: Photo too large)');
                 const err = new Error('Photo is too large. Please use a smaller photo.');
                 (err as any).statusCode = 413;
+                (err as any).failureReason = 'HTTP 413: Photo too large';
                 (err as any).userMessage = 'Photo is too large. Please use a smaller photo.';
                 reject(err);
                 return;
               }
 
               if (status === 429 || status === 503) {
-                console.warn(`[passport] Server failed (HTTP ${status}: busy/rate-limited)`);
                 const err = new Error('Our server is busy, please try again in a few seconds.');
                 (err as any).statusCode = status;
+                (err as any).failureReason = `HTTP ${status}: busy/rate-limited`;
                 (err as any).userMessage = 'Our server is busy, please try again in a few seconds.';
                 reject(err);
                 return;
               }
 
-              console.error(`[passport] Server failed (HTTP ${status})`);
               const err = new Error('Our server is busy, please try again in a few seconds.');
               (err as any).statusCode = status;
+              (err as any).failureReason = `HTTP ${status}`;
               (err as any).userMessage = 'Our server is busy, please try again in a few seconds.';
               reject(err);
             }
           };
 
           xhr.onerror = () => {
-            console.error('[passport] Server failed (Network error / CORS blocked)');
             const err = new Error('Our server is busy, please try again in a few seconds.');
+            (err as any).failureReason = 'Network error / CORS blocked';
             (err as any).userMessage = 'Our server is busy, please try again in a few seconds.';
             reject(err);
           };
 
           xhr.ontimeout = () => {
-            console.error('[passport] Server failed (Timeout after 60s)');
             const err = new Error('Our server is busy, please try again in a few seconds.');
+            (err as any).failureReason = 'Timeout after 60s';
             (err as any).userMessage = 'Our server is busy, please try again in a few seconds.';
             reject(err);
           };
@@ -298,12 +297,15 @@ export async function removeBackgroundViaAPI(
           xhr.send(fd);
         });
 
+        // Succeeded! Return result without logging any error
         return result;
       } catch (err: any) {
         if (err?.name === 'AbortError') throw err;
         lastError = err;
+        lastFailureReason = err?.failureReason || err?.message || 'Unknown error';
 
         if (err?.statusCode === 413) {
+          console.error(`[passport] Server failed (${lastFailureReason})`);
           throw err;
         }
 
@@ -316,6 +318,8 @@ export async function removeBackgroundViaAPI(
     }
   }
 
+  // Only logged if ALL candidates and retries failed
+  console.error(`[passport] Server failed (${lastFailureReason})`);
   throw (
     lastError ||
     new Error('Our server is busy, please try again in a few seconds.')

@@ -296,7 +296,7 @@ export default function BlogPostPage({ params }: PageProps) {
           'Biometric passport and visa photo maker',
           '300 DPI high-resolution export',
           'Automatic AI background removal',
-          '100% in-browser client-side privacy',
+          'Photo not stored on our servers',
         ],
       };
     }
@@ -570,7 +570,10 @@ export default function BlogPostPage({ params }: PageProps) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 shrink-0" /> 100% In-Browser • Zero File Uploads
+                    <ShieldCheck className="w-3.5 h-3.5 shrink-0" />{' '}
+                    {privacyConfig.processingType === 'server'
+                      ? 'Secure Server • Zero File Storage'
+                      : '100% In-Browser • Zero File Uploads'}
                   </p>
                   <p className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white m-0 truncate">
                     Try the {blog.toolName || 'Free Tool'}
@@ -1012,13 +1015,15 @@ export default function BlogPostPage({ params }: PageProps) {
               <div className="max-w-xl mx-auto">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mb-3 border border-emerald-500/20">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  100% In-Browser Privacy
+                  {privacyConfig.processingType === 'server' ? 'Secure Processing' : '100% In-Browser Privacy'}
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 dark:text-white mb-3">
                   Experience {blog.toolName || blog.title}
                 </h3>
                 <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
-                  Zero file uploads, no watermarks, and no sign-up required. Your files remain completely secure in device RAM.
+                  {privacyConfig.processingType === 'server'
+                    ? 'Encrypted HTTPS transmission with zero permanent file storage, no watermarks, and no sign-up required.'
+                    : 'Zero file uploads, no watermarks, and no sign-up required. Your files remain completely secure in device RAM.'}
                 </p>
                 <Link
                   href={blog.toolPath}
@@ -1053,7 +1058,9 @@ export default function BlogPostPage({ params }: PageProps) {
                   Ready to test it yourself?
                 </p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 mb-0">
-                  Process your files locally in your browser with zero limits, zero watermarks, and complete privacy.
+                  {privacyConfig.processingType === 'server'
+                    ? 'Process your files securely with zero limits, zero permanent storage, and complete privacy.'
+                    : 'Process your files locally in your browser with zero limits, zero watermarks, and complete privacy.'}
                 </p>
               </div>
               <Link

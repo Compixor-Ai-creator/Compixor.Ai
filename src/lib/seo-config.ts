@@ -1559,11 +1559,11 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: ScanText,
     title: 'Image to Word Converter Online Free',
     description:
-      'Convert JPG, PNG, or WEBP images to editable Word DOCX free online. Private in-browser OCR for 10+ languages with instant download.',
+      'Convert JPG, PNG, or WEBP images to editable Word DOCX free online. High-accuracy neural OCR for 10+ languages with instant download.',
     canonicalUrl: `${BASE_URL}/tools/img-to-word`,
     primaryKeyword: 'image to word converter online free',
     searchIntent:
-      'Users who have scanned documents, screenshots, or photos of text and need to convert them into editable Microsoft Word documents without uploading to external servers.',
+      'Users who have scanned documents, screenshots, or photos of text and need to convert them into editable Microsoft Word documents with zero permanent file storage.',
     secondaryKeywords: [
       'image to word converter online free',
       'jpg to word converter',
@@ -1788,7 +1788,9 @@ export function getToolSchemas(slug: ToolSlug): Record<string, any>[] {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
     name: `How to use ${tool.name} Online`,
-    description: `Step-by-step instructions to use ${tool.name} online for free with zero uploads.`,
+    description: ['pdf-to-word', 'img-to-word', 'passport-photo'].includes(tool.slug)
+      ? `Step-by-step instructions to use ${tool.name} online for free with zero permanent file storage.`
+      : `Step-by-step instructions to use ${tool.name} online for free with zero uploads.`,
     totalTime: 'PT1M',
     step: tool.howToSteps.map((step, idx) => ({
       '@type': 'HowToStep',
@@ -1988,7 +1990,7 @@ export function getHomepageSchemas(): Record<string, any>[] {
         name: 'What is Compixor and how does it work?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Compixor is a free web toolkit that lets you fix, merge, shrink, and change PDF, Word, and photo files right in your browser. All tools run on your own phone or PC instead of a cloud server. Your files stay fast, safe, and free to use at all times.',
+          text: 'Compixor is a free web toolkit that lets you fix, merge, shrink, and change PDF, Word, and photo files right in your browser. 9 core tools run directly on your own device with zero uploads, while specialized utilities process securely over HTTPS with zero permanent file storage.',
         },
       },
       {
@@ -1996,7 +1998,7 @@ export function getHomepageSchemas(): Record<string, any>[] {
         name: 'Are my PDF and Word files safe from data leaks?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes, your files stay safe because they never leave your own device at any point. Compixor runs all code inside your web browser tab with zero server uploads and zero cloud storage. No person, bot, or third party can ever see, read, or copy your private work.',
+          text: 'Yes, your files stay safe and private. For our 9 client-side tools, files never leave your device and execute locally in browser RAM. For our 3 server-assisted utilities (PDF to Word, Image to Word, and Passport Photo), data is sent over encrypted HTTPS, processed purely in memory, and never stored on disk.',
         },
       },
       {
@@ -2036,7 +2038,7 @@ export function getHomepageSchemas(): Record<string, any>[] {
         name: 'Can I edit my PDF and photo files without web access?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes, once the page loads in your web browser, the tools can run right on your device even if your web link drops. Because no cloud server does the work, you can merge, split, or shrink your files smoothly on a plane, train, or slow mobile link.',
+          text: 'Yes, once the page loads in your web browser, our 9 client-side tools (including PDF merge, split, compress, watermark, and DP maker) run locally on your device without internet access. Our 3 specialized utilities (PDF to Word, Image to Word, and Passport Photo) require a quick secure connection to process without storing anything.',
         },
       },
       {

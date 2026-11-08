@@ -770,7 +770,7 @@ export default function Navbar() {
               </button>
             </div>
             <div className="text-center text-xs text-zinc-400">
-              100% Client-Side In-Browser Processing
+              Privacy-First Processing • Zero File Storage
             </div>
           </div>
         </div>

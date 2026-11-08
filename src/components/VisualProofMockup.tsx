@@ -297,7 +297,7 @@ export function ImgToWordPreviewMockup() {
               From Flat Pixels to 100% Editable DOCX
             </h3>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Extract typography, paragraphs, and lists into real Microsoft Word documents directly in your browser.
+              Extract typography, paragraphs, and lists into real Microsoft Word documents with instant download.
             </p>
           </div>
           <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 shrink-0">
@@ -336,7 +336,7 @@ export function ImgToWordPreviewMockup() {
               <FileText className="w-6 h-6 text-violet-600 dark:text-violet-400" />
             </div>
             <div>
-              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Ready in Browser (Zero Uploads)</p>
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Ready for Download</p>
               <p className="text-sm font-bold text-zinc-800 dark:text-zinc-200">receipt_document.docx</p>
               <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">100% Editable Text &amp; Fonts</p>
             </div>
@@ -351,7 +351,7 @@ export function ImgToWordPreviewMockup() {
           </span>
           <span className="flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Zero cloud uploads · 100% private</span>
+            <span>Zero permanent storage · 100% private</span>
           </span>
         </div>
       </div>
