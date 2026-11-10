@@ -267,6 +267,20 @@ export default function Footer() {
           </svg>
         </div>
       </div>
+
+      {/* Dang.ai Verified Badge */}
+      <div
+        className="relative z-20 flex justify-center items-center pb-8 px-4"
+        dangerouslySetInnerHTML={{
+          __html: `<a href="https://dang.ai" target="_blank" rel="dofollow noopener" style="display:inline-block;text-decoration:none;">
+<img src="https://assets.dang.ai/badges/dang-verified-dark.png" 
+alt="Verified on DANG!" 
+width="260" 
+height="94" 
+style="display:block;width:260px;max-width:100%;height:auto;border:0;outline:none;text-decoration:none;" />
+</a>`,
+        }}
+      />
     </footer>
   );
 }
