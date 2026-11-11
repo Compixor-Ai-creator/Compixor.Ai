@@ -155,3 +155,57 @@ That is a **different worktree** (branch `master`, HEAD `47aa0992`, 70 dirty fil
 | P1b value | ⚠️ no-op (dead data) |
 | Production env completeness | ❌ 11 of 12 keys missing → feedback data loss |
 | P2 readiness | ⏸ blocked on §7 steps 1–5 |
+
+---
+
+## 10. Incident found in Vercel build history (the original bug, proven)
+
+`list_deployments` returned an **ERROR** production deployment that nobody had noticed:
+
+| Deployment | Commit | State | Error |
+|---|---|---|---|
+| `dpl_BPnRhrQTRqJ8Z8NDxjQSrJsaYCjN` | `c8ea1405` — *feat(ui): install @headlessui/react…* | **ERROR** | `type_error` · `Command "npm run build" exited with 1` |
+
+Build log (`get_deployment_events`), final lines:
+
+```
+src/app/layout.tsx
+An error occurred in `next/font`.
+TypeError: Cannot read properties of null (reading '1')
+    at node_modules/next/dist/compiled/@next/font/dist/google/loader.js:112:78
+    at async nextFontGoogleFontLoader (…/google/loader.js:94:33)
+> Build failed because of webpack errors
+Error: [BUILD_UTILS_SPAWN_1] Command "npm run build" exited with 1
+```
+
+### What this means
+
+1. `c8ea1405` **never deployed**. Production stayed on `7f39d3ee` (the Dang.ai badge commit) from ≈10 Nov 16:22Z until P1e shipped at 11 Nov 06:27Z — roughly **14 hours of "pushed but not live"**.
+2. The failure is **not** in application code. It is the `next/font/google` loader crashing while fetching `Inter`, `Outfit`, `Playfair Display` **at build time**. The same failure reproduces in any network-restricted environment (this sandbox fails identically at the same file).
+3. It is **intermittent**: the P1 builds (`4ab21919`, `cf8875b9`) and `468ea08e` succeeded with the same fonts. So this is Google Fonts availability/rate-limiting — a random deploy failure waiting to happen again.
+4. `next` is declared `^14.2.15` while the lockfile resolves `14.2.35`; Vercel logged "Detected Next.js version: 14.2.35". The caret range means the effective version can drift between machines.
+
+### Verdict for P4
+
+| Priority | Fix |
+|---|---|
+| **Highest** | Self-host the three fonts (`next/font/local` + woff2 in `public/fonts`, or a variable-font subset). Builds must not touch the network. This is the single change that removes the class of failure that started this audit. |
+| High | Pin `next` to an exact version (drop the caret) so local and Vercel run the same compiler. |
+| High | Build-stamp + deploy watcher: `/api/health` returning `commit`, and a check that fails loudly when `main` has an ERROR deployment. Nobody noticed a red production build for 14 hours. |
+| Medium | Keep `verify-deploy.sh` asserting live SHA == `origin/main` (needs the stamp). |
+
+---
+
+## 11. P1.5 status (verified 11 Nov, 07:05Z)
+
+| Task | Claim | Verified state |
+|---|---|---|
+| 1 — set 11 env vars in Vercel | "reminder" | ❌ **NOT DONE** — `list_env_vars` still returns only `ADMIN_PASSWORD` |
+| 2 — fail loudly on missing Supabase | done | ✅ deployed: `dpl_2dMmHVVkyiwQswaHWrKzhsDqxsuy`, commit `468ea08e`, READY/PROMOTED, ready 07:00:20Z |
+| 3 — cross-page a11y | 94 / 94, "baseline preserved" | ⚠️ measured, but **no pre-P1 baseline exists** for those pages (P0 only audited `/`, `/tools/qr-generator`) → "no regression" is unsupported. Counts to carry: pdf-compressor 20 contrast nodes + 1 heading-order; add-watermark 5 + 1 |
+| 4 — verifier in correct worktree | 13 PASS / 3 WARN / 0 FAIL | ✅ ran on `main` at `cf8875b9`, clean tree, remote match. Markers pass but are generic (`text-zinc-600` = 2 can pre-exist); the stronger proof is the page byte delta 269,727 → 269,940 (+213 B) between the two runs |
+| 5 — faqs.ts decision | delete in P2 cleanup | ✅ correct |
+
+### Consequence of Task 1 being undone
+
+`468ea08e` is live, so `/api/feedback` now returns **503 for every visitor** — honest instead of silently dropping data, but the feedback feature is **down in production** until the Supabase env vars exist. Either set them, or roll back `468ea08e` until they are set.
