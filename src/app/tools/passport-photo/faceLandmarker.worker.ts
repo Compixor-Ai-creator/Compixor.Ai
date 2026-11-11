@@ -98,6 +98,25 @@ self.onmessage = async (e: MessageEvent) => {
         }
       }
 
+      // Compute normalized face bounding box across all landmarks
+      let minX = 1;
+      let maxX = 0;
+      let minY = 1;
+      let maxY = 0;
+      for (let i = 0; i < landmarks.length; i++) {
+        const p = landmarks[i];
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+      }
+      const faceBoxNorm = {
+        x: Math.max(0, minX),
+        y: Math.max(0, minY),
+        width: Math.max(0, maxX - minX),
+        height: Math.max(0, maxY - minY),
+      };
+
       self.postMessage({
         type: 'DETECT_RESULT',
         id,
@@ -109,6 +128,7 @@ self.onmessage = async (e: MessageEvent) => {
         leftIrisNorm,
         rightIrisNorm,
         foreheadNorm: landmarks[10] ? { x: landmarks[10].x, y: landmarks[10].y } : null,
+        faceBoxNorm,
       });
     } catch (err: any) {
       if (imageBitmap && typeof imageBitmap.close === 'function') {

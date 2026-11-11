@@ -5,6 +5,7 @@ import { Star, MessageSquareHeart, X, Send, Loader2, AlertCircle } from 'lucide-
 import { motion } from 'framer-motion';
 import CompixorModal from '@/components/CompixorModal';
 import { toast } from 'sonner';
+import CxSelect from '@/components/ui/CxSelect';
 
 interface ApprovedFeedback {
   id: string;
@@ -451,19 +452,17 @@ export default function WhatUsersSay() {
                   >
                     Tool used <span className="text-zinc-400 font-normal">(optional)</span>
                   </label>
-                  <select
+                  <CxSelect
                     id="feedback-tool-select"
+                    ariaLabel="Tool used (optional)"
                     value={selectedTool}
-                    onChange={(e) => setSelectedTool(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
-                  >
-                    <option value="">General / Entire Compixor Suite</option>
-                    {TOOL_OPTIONS.map((tool) => (
-                      <option key={tool} value={tool}>
-                        {tool}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setSelectedTool}
+                    placeholder="General / Entire Compixor Suite"
+                    options={[
+                      { value: '', label: 'General / Entire Compixor Suite' },
+                      ...TOOL_OPTIONS.map((tool) => ({ value: tool, label: tool })),
+                    ]}
+                  />
                 </div>
 
                 {/* Name - Optional */}

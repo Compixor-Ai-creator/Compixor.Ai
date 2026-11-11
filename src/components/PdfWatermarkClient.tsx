@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import CxSelect from '@/components/ui/CxSelect';
 import { incrementFilesDone } from '@/lib/feedbackCounter';
 import {
   FileText,
@@ -1400,20 +1401,24 @@ export default function PdfWatermarkClient({
                       <ZoomOut className="w-3.5 h-3.5" />
                     </button>
 
-                    <select
-                      value={zoomMode}
-                      onChange={(e) => setZoomMode(e.target.value)}
-                      className="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 font-medium text-slate-700 dark:text-slate-200"
-                    >
-                      <option value="fit-page">Fit Page (Full)</option>
-                      <option value="fit-width">Fit Width</option>
-                      <option value="50">50%</option>
-                      <option value="75">75%</option>
-                      <option value="100">100%</option>
-                      <option value="125">125%</option>
-                      <option value="150">150%</option>
-                      <option value="200">200%</option>
-                    </select>
+                    <div className="w-36">
+                      <CxSelect
+                        size="sm"
+                        ariaLabel="Zoom mode"
+                        value={zoomMode}
+                        onChange={(val) => setZoomMode(val)}
+                        options={[
+                          { value: 'fit-page', label: 'Fit Page (Full)' },
+                          { value: 'fit-width', label: 'Fit Width' },
+                          { value: '50', label: '50%' },
+                          { value: '75', label: '75%' },
+                          { value: '100', label: '100%' },
+                          { value: '125', label: '125%' },
+                          { value: '150', label: '150%' },
+                          { value: '200', label: '200%' },
+                        ]}
+                      />
+                    </div>
 
                     <button
                       onClick={handleZoomIn}
@@ -1437,17 +1442,21 @@ export default function PdfWatermarkClient({
                   </div>
 
                   {/* Quality Selector */}
-                  <div className="flex items-center gap-1 text-xs">
-                    <span className="text-slate-400 text-[11px]">DPI:</span>
-                    <select
-                      value={settings.quality}
-                      onChange={(e) => updateSettings({ quality: e.target.value as RenderQuality })}
-                      className="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 font-medium text-slate-700 dark:text-slate-200"
-                    >
-                      <option value="draft">Draft (72 DPI)</option>
-                      <option value="good">Good (150 DPI)</option>
-                      <option value="best">Best (300 DPI)</option>
-                    </select>
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-slate-400 text-[11px] font-semibold">DPI:</span>
+                    <div className="w-32">
+                      <CxSelect
+                        size="sm"
+                        ariaLabel="Render quality DPI"
+                        value={settings.quality}
+                        onChange={(val) => updateSettings({ quality: val as RenderQuality })}
+                        options={[
+                          { value: 'draft', label: 'Draft (72 DPI)' },
+                          { value: 'good', label: 'Good (150 DPI)' },
+                          { value: 'best', label: 'Best (300 DPI)' },
+                        ]}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1594,34 +1603,38 @@ export default function PdfWatermarkClient({
                           <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">
                             Font Family
                           </label>
-                          <select
+                          <CxSelect
+                            size="sm"
+                            ariaLabel="Font family"
                             value={settings.fontFamily}
-                            onChange={(e) =>
-                              updateSettings({ fontFamily: e.target.value as WatermarkFontFamily })
+                            onChange={(val) =>
+                              updateSettings({ fontFamily: val as WatermarkFontFamily })
                             }
-                            className="w-full text-xs font-medium bg-slate-50/90 dark:bg-slate-850/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-2xs"
-                          >
-                            <option value="Helvetica">Helvetica (Sans)</option>
-                            <option value="TimesRoman">Times Roman (Serif)</option>
-                            <option value="Courier">Courier (Mono)</option>
-                          </select>
+                            options={[
+                              { value: 'Helvetica', label: 'Helvetica (Sans)' },
+                              { value: 'TimesRoman', label: 'Times Roman (Serif)' },
+                              { value: 'Courier', label: 'Courier (Mono)' },
+                            ]}
+                          />
                         </div>
                         <div>
                           <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 block">
                             Style
                           </label>
-                          <select
+                          <CxSelect
+                            size="sm"
+                            ariaLabel="Font style"
                             value={settings.fontStyle}
-                            onChange={(e) =>
-                              updateSettings({ fontStyle: e.target.value as WatermarkFontStyle })
+                            onChange={(val) =>
+                              updateSettings({ fontStyle: val as WatermarkFontStyle })
                             }
-                            className="w-full text-xs font-medium bg-slate-50/90 dark:bg-slate-850/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-2xs"
-                          >
-                            <option value="regular">Regular</option>
-                            <option value="bold">Bold</option>
-                            <option value="italic">Italic</option>
-                            <option value="bold-italic">Bold Italic</option>
-                          </select>
+                            options={[
+                              { value: 'regular', label: 'Regular' },
+                              { value: 'bold', label: 'Bold' },
+                              { value: 'italic', label: 'Italic' },
+                              { value: 'bold-italic', label: 'Bold Italic' },
+                            ]}
+                          />
                         </div>
                       </div>
 

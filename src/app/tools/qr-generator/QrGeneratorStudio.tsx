@@ -1,6 +1,7 @@
 'use client';
 
 import ToolSeoSection from "@/components/ToolSeoSection";
+import CxSelect from '@/components/ui/CxSelect';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1422,15 +1423,15 @@ export default function QrGeneratorStudio() {
                     <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
                       Encryption
                     </label>
-                    <select
+                    <CxSelect
                       value={wifiEncryption}
-                      onChange={(e: any) => setWifiEncryption(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 text-zinc-900 dark:text-white focus:ring-2 focus:ring-brand-500 focus:outline-none text-sm transition"
-                    >
-                      <option value="WPA">WPA / WPA2 / WPA3</option>
-                      <option value="WEP">WEP</option>
-                      <option value="nopass">None (Open Network)</option>
-                    </select>
+                      onChange={(val) => setWifiEncryption(val)}
+                      options={[
+                        { value: 'WPA', label: 'WPA / WPA2 / WPA3' },
+                        { value: 'WEP', label: 'WEP' },
+                        { value: 'nopass', label: 'None (Open Network)' },
+                      ]}
+                    />
                   </div>
                 </div>
                 <p className="text-xs text-amber-700 dark:text-amber-300" role="note">

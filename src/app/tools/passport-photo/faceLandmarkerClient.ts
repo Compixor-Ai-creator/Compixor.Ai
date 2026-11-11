@@ -16,6 +16,13 @@ export interface LandmarkResult {
   chinX: number; // In source image pixels
   eyeY: number;  // In source image pixels
   eyeX: number;  // In source image pixels
+  leftIrisNorm?: { x: number; y: number } | null;
+  rightIrisNorm?: { x: number; y: number } | null;
+  foreheadNorm?: { x: number; y: number } | null;
+  faceBoxNorm?: { x: number; y: number; width: number; height: number } | null;
+  rollDegrees?: number;
+  sourceW?: number;
+  sourceH?: number;
   durationMs?: number;
   error?: string;
 }
@@ -85,6 +92,10 @@ function getWorker(): Worker | null {
               chinX: data.chinX || 0,
               eyeY: data.eyeY || 0,
               eyeX: data.eyeX || 0,
+              leftIrisNorm: data.leftIrisNorm || null,
+              rightIrisNorm: data.rightIrisNorm || null,
+              foreheadNorm: data.foreheadNorm || null,
+              faceBoxNorm: data.faceBoxNorm || null,
               durationMs: data.durationMs,
             };
             lateListener(lateResult);
@@ -209,6 +220,13 @@ export async function detectFaceLandmarks(
             lateRes.chinX = Math.round(lateRes.chinX * srcW);
             lateRes.eyeY = Math.round(lateRes.eyeY * srcH);
             lateRes.eyeX = Math.round(lateRes.eyeX * srcW);
+            lateRes.sourceW = srcW;
+            lateRes.sourceH = srcH;
+            if (lateRes.leftIrisNorm && lateRes.rightIrisNorm) {
+              const dx = (lateRes.leftIrisNorm.x - lateRes.rightIrisNorm.x) * srcW;
+              const dy = (lateRes.leftIrisNorm.y - lateRes.rightIrisNorm.y) * srcH;
+              lateRes.rollDegrees = Math.round(((Math.atan2(dy, dx) * 180) / Math.PI) * 10) / 10;
+            }
             landmarkCache.set(cacheKey, lateRes);
             onBackgroundUpgrade(lateRes);
           });
@@ -242,6 +260,14 @@ export async function detectFaceLandmarks(
 
   const durationMs = rawRes.durationMs || 0;
 
+  // Compute roll in degrees
+  let rollDegrees = 0;
+  if (rawRes.leftIrisNorm && rawRes.rightIrisNorm) {
+    const dx = (rawRes.leftIrisNorm.x - rawRes.rightIrisNorm.x) * srcW;
+    const dy = (rawRes.leftIrisNorm.y - rawRes.rightIrisNorm.y) * srcH;
+    rollDegrees = Math.round(((Math.atan2(dy, dx) * 180) / Math.PI) * 10) / 10;
+  }
+
   // Anonymous GA event: landmarks ready with duration bucket
   sendAnonymousGaEvent('passport_landmarks_ready', {
     duration_bucket: getDurationBucket(durationMs),
@@ -254,6 +280,13 @@ export async function detectFaceLandmarks(
     chinX: Math.round(rawRes.chinNorm.x * srcW),
     eyeY: Math.round(rawRes.eyeNorm.y * srcH),
     eyeX: Math.round(rawRes.eyeNorm.x * srcW),
+    leftIrisNorm: rawRes.leftIrisNorm || null,
+    rightIrisNorm: rawRes.rightIrisNorm || null,
+    foreheadNorm: rawRes.foreheadNorm || null,
+    faceBoxNorm: rawRes.faceBoxNorm || null,
+    rollDegrees,
+    sourceW: srcW,
+    sourceH: srcH,
     durationMs,
   };
 

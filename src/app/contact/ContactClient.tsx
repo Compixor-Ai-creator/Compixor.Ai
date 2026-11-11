@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Mail, Send, Loader2, CheckCircle2, ShieldCheck, ArrowRight, MessageSquare, AlertCircle, Clock, LifeBuoy, HelpCircle, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import CxSelect from '@/components/ui/CxSelect';
 
 export default function ContactClient() {
   const [name, setName] = useState('');
@@ -209,16 +210,16 @@ export default function ContactClient() {
                   <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                     Topic / Subject
                   </label>
-                  <select
+                  <CxSelect
                     value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    className="w-full px-3.5 py-3 rounded-xl text-base bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 min-h-[44px]"
-                  >
-                    <option value="General Inquiry">General Inquiry</option>
-                    <option value="Bug / Technical Issue">Bug / Technical Issue</option>
-                    <option value="Tool Feature Request">Tool Feature Request</option>
-                    <option value="Privacy Question">Privacy Question</option>
-                  </select>
+                    onChange={setSubject}
+                    options={[
+                      { value: 'General Inquiry', label: 'General Inquiry' },
+                      { value: 'Bug / Technical Issue', label: 'Bug / Technical Issue' },
+                      { value: 'Tool Feature Request', label: 'Tool Feature Request' },
+                      { value: 'Privacy Question', label: 'Privacy Question' },
+                    ]}
+                  />
                 </div>
 
                 <div>

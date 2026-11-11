@@ -1,6 +1,7 @@
 'use client';
 
 import ToolSeoSection from "@/components/ToolSeoSection";
+import CxSelect from '@/components/ui/CxSelect';
 
 import Link from 'next/link';
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
@@ -1348,17 +1349,14 @@ export default function FullDpMakerPage() {
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5">
                     Output Resolution
                   </label>
-                  <select
+                  <CxSelect
                     value={selectedSizePreset}
-                    onChange={(e) => setSelectedSizePreset(e.target.value)}
-                    className="w-full text-xs font-semibold px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white"
-                  >
-                    {sizePresets.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label} ({p.description})
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setSelectedSizePreset}
+                    options={sizePresets.map((p) => ({
+                      value: p.id,
+                      label: `${p.label} (${p.description})`,
+                    }))}
+                  />
                 </div>
 
                 {/* Custom numeric dimension input */}

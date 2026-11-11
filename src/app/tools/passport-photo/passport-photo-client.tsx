@@ -4,6 +4,7 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ToolFeedback from '@/components/ToolFeedback';
+import CxSelect from '@/components/ui/CxSelect';
 import { incrementFilesDone } from '@/lib/feedbackCounter';
 import {
   Camera,
@@ -78,7 +79,7 @@ import {
   BIOMETRIC_TOLERANCES,
   type CountryBiometricTolerance,
 } from './presets';
-import { detectFaceLandmarks, shouldPrefetchLandmarks, prefetchFaceLandmarks } from './faceLandmarkerClient';
+import { detectFaceLandmarks, shouldPrefetchLandmarks, prefetchFaceLandmarks, type LandmarkResult } from './faceLandmarkerClient';
 
 
 type SheetPresetOption = 'a4' | '3-per-a4' | 'a6-2' | 'a5-6' | 'custom';
@@ -317,6 +318,7 @@ export default function PassportPhotoPage() {
 
   // Sync background color when preset changes
   const handlePresetSelect = (preset: Preset) => {
+    userInteractedTransformRef.current = false;
     setSelectedPreset(preset);
     setBgColor(preset.defaultBgColor);
     setPreviewTab('background');
@@ -469,6 +471,25 @@ export default function PassportPhotoPage() {
   const [isTooCloseWarning, setIsTooCloseWarning] = useState(false);
   const [uploadErrorMessage, setUploadErrorMessage] = useState<string | null>(null);
   const [resetSignal, setResetSignal] = useState(0);
+
+  // Biometric Quality Gate State
+  const [latestLandmarks, setLatestLandmarks] = useState<LandmarkResult | null>(null);
+  const latestLandmarksRef = useRef<LandmarkResult | null>(null);
+  const [cutoutCrownTouchesTop, setCutoutCrownTouchesTop] = useState<boolean>(false);
+  const [headCannotFitWithMargin, setHeadCannotFitWithMargin] = useState<boolean>(false);
+
+  // Quality Gate: Head roll tilt > 7 degrees
+  const isHeadTilted = useMemo(() => {
+    if (!latestLandmarks || typeof latestLandmarks.rollDegrees !== 'number') return false;
+    return Math.abs(latestLandmarks.rollDegrees) > 7;
+  }, [latestLandmarks]);
+
+  // Quality Gate: Photo is too close (wider than ~60% or taller than ~50% of photo in original upload)
+  const isPhotoTooClose = useMemo(() => {
+    if (!latestLandmarks?.faceBoxNorm) return false;
+    return latestLandmarks.faceBoxNorm.width > 0.60 || latestLandmarks.faceBoxNorm.height > 0.50;
+  }, [latestLandmarks]);
+
   // Hero Demo Showcase & Live Before/After Comparison Slider state
   const heroFileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -505,6 +526,10 @@ export default function PassportPhotoPage() {
     setFlipH(false);
     setIsAdjustMode(false);
     setIsTooCloseWarning(false);
+    setLatestLandmarks(null);
+    latestLandmarksRef.current = null;
+    setCutoutCrownTouchesTop(false);
+    setHeadCannotFitWithMargin(false);
     setBrightness(100);
     setContrast(100);
     setSaturation(100);
@@ -660,6 +685,24 @@ export default function PassportPhotoPage() {
       biometricSource,
     };
   }, [panX, panY, zoom, activePreset.widthPx, activePreset.heightPx, previewDimensions.width, previewDimensions.height, faceDetected, biometricSource]);
+
+  const hasActiveQualityIssues = useMemo(() => {
+    return Boolean(
+      isHeadTilted ||
+      isPhotoTooClose ||
+      cutoutCrownTouchesTop ||
+      headCannotFitWithMargin ||
+      liveBiometrics.isCrownCropped ||
+      liveBiometrics.isChinCropped
+    );
+  }, [
+    isHeadTilted,
+    isPhotoTooClose,
+    cutoutCrownTouchesTop,
+    headCannotFitWithMargin,
+    liveBiometrics.isCrownCropped,
+    liveBiometrics.isChinCropped,
+  ]);
 
   // MediaPipe client model removed: Background removal is now 100% processed via FastAPI backend API
 
@@ -977,18 +1020,50 @@ export default function PassportPhotoPage() {
 
   const autoFitBiometric = useCallback(async (
     cause: 'cutout-ready' | 'preset-change' | 'button' | 'new-photo' | 'reset-button' | 'landmarks-ready' = 'button',
-    targetRequestId?: number
+    targetRequestId?: number,
+    providedLandmarks?: LandmarkResult
   ) => {
     if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) return;
 
     const source = cachedCutoutCanvasRef.current || imageElementRef.current;
     if (!source) return;
-    const face = await detectFaceBounds(source);
-    if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) return;
 
     const srcW = 'naturalWidth' in source ? (source.naturalWidth || source.width) : source.width;
     const srcH = 'naturalHeight' in source ? (source.naturalHeight || source.height) : source.height;
-    if (!face || srcW <= 0 || srcH <= 0) {
+    if (srcW <= 0 || srcH <= 0) return;
+
+    // 1. Resolve landmarks first (from argument, cached ref, or by querying worker)
+    let lms: LandmarkResult | null = providedLandmarks || latestLandmarksRef.current;
+    if (!lms && imageSrc) {
+      try {
+        lms = await detectFaceLandmarks(source, imageSrc);
+      } catch (err) {
+        console.warn('[passport] Landmark detection error, using Option C fallback:', err);
+      }
+    }
+
+    if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) return;
+
+    if (lms && lms.landmarksAvailable && lms.chinY > 0) {
+      setBiometricSource('landmarks');
+      setLatestLandmarks(lms);
+      latestLandmarksRef.current = lms;
+    } else {
+      setBiometricSource('approximate');
+    }
+
+    // 2. Resolve face bounding box: try detectFaceBounds, or reconstruct from landmarks faceBoxNorm
+    let face = await detectFaceBounds(source);
+    if (!face && lms && lms.landmarksAvailable && lms.faceBoxNorm) {
+      face = {
+        x: Math.round(lms.faceBoxNorm.x * srcW),
+        y: Math.round(lms.faceBoxNorm.y * srcH),
+        width: Math.round(lms.faceBoxNorm.width * srcW),
+        height: Math.round(lms.faceBoxNorm.height * srcH),
+      };
+    }
+
+    if (!face) {
       setFaceDetected(false);
       detectedFaceRef.current = null;
       setMeasuredBiometrics({ headPercent: null, crownPercent: null, eyePercent: null, chinPercent: null });
@@ -998,9 +1073,22 @@ export default function PassportPhotoPage() {
     }
 
     setFaceDetected(true);
-    // 1. Crown: measure from cutout alpha if available (robust cluster threshold, ignore single stray pixels)
+
+    // 3. Compute chinY and eyeY:
+    let chinY = Math.min(srcH, Math.round(face.y + face.height));
+    let eyeY = face.y + face.height * 0.48;
+
+    if (lms && lms.landmarksAvailable && lms.chinY > 0) {
+      chinY = lms.chinY;
+      eyeY = lms.eyeY;
+    }
+
+    // 4. Compute crownY:
+    // If server cutout is ready, findCutoutCrownY scans the physical hair boundary row by row.
     let crownY = Math.max(0, face.y - face.height * 0.35);
     const cutoutCanvas = cachedCutoutCanvasRef.current;
+    let isCrownTouchingTop = false;
+
     if (cutoutCanvas) {
       const realCutoutCrown = findCutoutCrownY(
         cutoutCanvas,
@@ -1009,30 +1097,20 @@ export default function PassportPhotoPage() {
       );
       if (realCutoutCrown !== null) {
         crownY = realCutoutCrown;
-      }
-    }
-
-    // Default to detector box / fallback (Option C)
-    let chinY = Math.min(srcH, Math.round(face.y + face.height));
-    let eyeY = face.y + face.height * 0.48;
-
-    // Option A: MediaPipe Face Landmarker (Landmark 152 for chin, iris centers for eyes)
-    if (imageSrc && cause !== 'new-photo') {
-      try {
-        const lms = await detectFaceLandmarks(source, imageSrc);
-        if (targetRequestId !== undefined && targetRequestId !== activeRequestIdRef.current) return;
-        if (lms && lms.landmarksAvailable && lms.chinY > 0) {
-          chinY = lms.chinY;
-          eyeY = lms.eyeY;
-          setBiometricSource('landmarks');
-        } else {
-          setBiometricSource('approximate');
+        if (realCutoutCrown <= 3) {
+          isCrownTouchingTop = true;
         }
-      } catch (err) {
-        console.warn('[passport] Landmark detection error, using Option C fallback:', err);
-        setBiometricSource('approximate');
+      }
+    } else if (lms && lms.landmarksAvailable) {
+      // From landmarks: landmark 10 (forehead)
+      const foreheadY = lms.foreheadNorm ? lms.foreheadNorm.y * srcH : face.y;
+      const eyeToChin = Math.max(10, chinY - eyeY);
+      crownY = Math.max(0, foreheadY - eyeToChin * 0.35);
+      if (crownY <= 3 || (lms.faceBoxNorm && lms.faceBoxNorm.y <= 0.02)) {
+        isCrownTouchingTop = true;
       }
     }
+    setCutoutCrownTouchesTop(isCrownTouchingTop);
 
     const headHeight = Math.max(1, chinY - crownY);
 
@@ -1061,32 +1139,46 @@ export default function PassportPhotoPage() {
     const baseHeadPx = headHeight * fitScale;
     const requestedZoom = targetHeadPx / Math.max(1, baseHeadPx);
 
-    // Safety clamp: ensure chin never gets cropped past the bottom margin (leave at least 7% bottom margin)
-    const maxZoomNoChinCrop = (activePreset.heightPx * 0.93 - targetTopMarginPx) / Math.max(1, baseHeadPx);
-    const calculatedZoom = Math.round(Math.max(0.4, Math.min(requestedZoom, maxZoomNoChinCrop, 2.0)) * 100) / 100;
+    // Rule 1: Auto-fit must never let the crown or chin leave the frame.
+    // If crown is placed at targetTopMarginPx, chin is at targetTopMarginPx + baseHeadPx * zoom.
+    // To ensure chin never leaves bottom (leaving at least 4% bottom margin):
+    const maxZoomNoChinCrop = (activePreset.heightPx * 0.96 - targetTopMarginPx) / Math.max(1, baseHeadPx);
+    // Also ensure head itself does not exceed 92% of the canvas height
+    const maxZoomNoFrameOverflow = (activePreset.heightPx * 0.92) / Math.max(1, baseHeadPx);
 
-    const tooClose = calculatedZoom + 0.01 < requestedZoom;
-    setIsTooCloseWarning(tooClose);
+    let calculatedZoom = requestedZoom;
+    let cannotFitWithMargin = false;
 
-    // Only update zoom and pan if:
-    // 1. Initial photo fit ('new-photo')
-    // 2. User explicitly clicks "Auto Align" / "Center Face" ('button')
-    // 3. User clicks "Reset Position" ('reset-button')
-    // 4. Preset change or cutout ready ONLY IF user has not manually adjusted the transform!
-    // Late landmark arrival must NEVER touch zoom or pan.
-    const isExplicitUserReset = cause === 'button' || cause === 'reset-button' || cause === 'new-photo';
-    const canUpdateTransform = (isExplicitUserReset || !userInteractedTransformRef.current) && cause !== 'landmarks-ready';
+    if (calculatedZoom > maxZoomNoChinCrop || calculatedZoom > maxZoomNoFrameOverflow) {
+      calculatedZoom = Math.min(maxZoomNoChinCrop, maxZoomNoFrameOverflow);
+      cannotFitWithMargin = true;
+    }
+
+    calculatedZoom = Math.round(Math.max(0.25, Math.min(calculatedZoom, 2.0)) * 100) / 100;
+    setHeadCannotFitWithMargin(cannotFitWithMargin);
+    setIsTooCloseWarning(cannotFitWithMargin);
+
+    const isExplicitUserReset = cause === 'button' || cause === 'reset-button' || cause === 'new-photo' || cause === 'landmarks-ready';
+    const canUpdateTransform = isExplicitUserReset || !userInteractedTransformRef.current;
 
     if (canUpdateTransform) {
       setBaselineZoom(calculatedZoom);
       setZoom(calculatedZoom);
 
-      // Exact Pan: places crown precisely at targetTopMarginPx on canvas and face horizontally centered
       const drawScale = calculatedZoom * fitScale;
       const scaleY = activePreset.heightPx / previewDimensions.height;
       const scaleX = activePreset.widthPx / previewDimensions.width;
 
-      const scaledPanY = targetTopMarginPx - (activePreset.heightPx / 2 + (crownY - srcH / 2) * drawScale);
+      // Ideal Pan places crown at targetTopMarginPx
+      let scaledPanY = targetTopMarginPx - (activePreset.heightPx / 2 + (crownY - srcH / 2) * drawScale);
+
+      // Clamp scaledPanY so crown NEVER leaves top (canvasCrownY >= 0) and chin NEVER leaves bottom (canvasChinY <= height)
+      const minScaledPanY = -(activePreset.heightPx / 2 + (crownY - srcH / 2) * drawScale);
+      const maxScaledPanY = activePreset.heightPx - (activePreset.heightPx / 2 + (chinY - srcH / 2) * drawScale);
+
+      if (scaledPanY < minScaledPanY) scaledPanY = minScaledPanY;
+      if (scaledPanY > maxScaledPanY) scaledPanY = maxScaledPanY;
+
       const calculatedPanY = Math.round(scaledPanY / scaleY);
       setPanY(calculatedPanY);
 
@@ -1095,17 +1187,22 @@ export default function PassportPhotoPage() {
       const calculatedPanX = Math.round(scaledPanX / scaleX);
       setPanX(calculatedPanX);
 
-      const headPercent = Math.round((headHeight * drawScale / activePreset.heightPx) * 1000) / 10;
-      const crownPercent = Math.round((targetTopMarginPx / activePreset.heightPx) * 1000) / 10;
-      const eyePercent = Math.round(((targetTopMarginPx + (eyeY - crownY) * drawScale) / activePreset.heightPx) * 1000) / 10;
-      const chinPercent = Math.round(((targetTopMarginPx + headHeight * drawScale) / activePreset.heightPx) * 1000) / 10;
+      // Actual final canvas coordinates
+      const finalCanvasCrownY = activePreset.heightPx / 2 + scaledPanY + (crownY - srcH / 2) * drawScale;
+      const finalCanvasChinY = activePreset.heightPx / 2 + scaledPanY + (chinY - srcH / 2) * drawScale;
+      const finalHeadPx = finalCanvasChinY - finalCanvasCrownY;
+
+      const headPercent = Math.round((finalHeadPx / activePreset.heightPx) * 1000) / 10;
+      const crownPercent = Math.round((finalCanvasCrownY / activePreset.heightPx) * 1000) / 10;
+      const eyePercent = Math.round(((finalCanvasCrownY + (eyeY - crownY) * drawScale) / activePreset.heightPx) * 1000) / 10;
+      const chinPercent = Math.round((finalCanvasChinY / activePreset.heightPx) * 1000) / 10;
       setMeasuredBiometrics({ headPercent, crownPercent, eyePercent, chinPercent });
       setDebugStats((prev) => ({ ...prev, lastAlignCause: cause, zoomDisplay: `100% (${calculatedZoom.toFixed(2)}x)` }));
     }
 
     if (cause === 'new-photo') toast.success('Photo fitted automatically. Tap Adjust to fine-tune.');
     else if (cause === 'button') toast.success('Biometric auto-alignment applied.');
-  }, [activePreset, previewDimensions, currentTolerance]);
+  }, [activePreset, previewDimensions, currentTolerance, imageSrc]);
 
   // STEP 1 — Background Removal & Subject Separation ON FULL ORIGINAL PHOTO
   // Runs ONCE per unique photo hash (never on color or transform changes)
@@ -1144,7 +1241,7 @@ export default function PassportPhotoPage() {
       setProcessingStep('done');
       setIsSegmenting(false);
       setMattingState('idle');
-      await autoFitBiometric('cutout-ready', currentRequestId);
+      await autoFitBiometric('cutout-ready', currentRequestId, latestLandmarksRef.current || undefined);
       compositeFinalCanvas();
       return;
     }
@@ -1187,7 +1284,7 @@ export default function PassportPhotoPage() {
         lastResult: 'ok',
       }));
 
-      await autoFitBiometric('cutout-ready', currentRequestId);
+      await autoFitBiometric('cutout-ready', currentRequestId, latestLandmarksRef.current || undefined);
       compositeFinalCanvas();
       return;
     }
@@ -1288,7 +1385,7 @@ export default function PassportPhotoPage() {
       }));
 
       // Refit against the final cutout so the alpha bounds use the same biometric baseline.
-      await autoFitBiometric('cutout-ready', currentRequestId);
+      await autoFitBiometric('cutout-ready', currentRequestId, latestLandmarksRef.current || undefined);
     } catch (err: any) {
       if (currentRequestId !== activeRequestIdRef.current || err?.name === 'AbortError') return;
       console.error('[PassportStudio] Matting error:', err);
@@ -1605,27 +1702,27 @@ export default function PassportPhotoPage() {
         compositeFinalCanvas();
 
         // Option A: Lazy-load MediaPipe Face Landmarker in Web Worker on downscaled copy (or use pre-warmed instance)
-        // Late upgrade: ONLY updates measurements and badge; NEVER moves zoom or pan!
         detectFaceLandmarks(img, working.dataUrl, (lateLms) => {
           if (requestId !== activeRequestIdRef.current) return;
           if (lateLms && lateLms.landmarksAvailable) {
-            if (detectedFaceRef.current) {
-              detectedFaceRef.current.chinY = lateLms.chinY;
-              detectedFaceRef.current.eyeY = lateLms.eyeY;
-            }
+            setLatestLandmarks(lateLms);
+            latestLandmarksRef.current = lateLms;
             setBiometricSource('landmarks');
-            // Note: Does NOT call autoFitBiometric, does NOT setZoom, does NOT setPanX/Y.
-            // liveBiometrics automatically recalculates using user's CURRENT zoom/pan.
+            if (!userInteractedTransformRef.current) {
+              autoFitBiometric('landmarks-ready', requestId, lateLms);
+              compositeFinalCanvas();
+            }
           }
         }).then((lms) => {
           if (requestId !== activeRequestIdRef.current) return;
           if (lms && lms.landmarksAvailable) {
-            if (detectedFaceRef.current) {
-              detectedFaceRef.current.chinY = lms.chinY;
-              detectedFaceRef.current.eyeY = lms.eyeY;
-            }
+            setLatestLandmarks(lms);
+            latestLandmarksRef.current = lms;
             setBiometricSource('landmarks');
-            // Landmark arrival ONLY updates measurements and badge; NEVER moves user's zoom or pan
+            if (!userInteractedTransformRef.current) {
+              autoFitBiometric('landmarks-ready', requestId, lms);
+              compositeFinalCanvas();
+            }
           } else {
             setBiometricSource('approximate');
           }
@@ -1737,7 +1834,7 @@ export default function PassportPhotoPage() {
   // Deterministic user-initiated Reset
   const handleReset = useCallback(async () => {
     clearTransformState();
-    await autoFitBiometric('reset-button', activeRequestIdRef.current);
+    await autoFitBiometric('reset-button', activeRequestIdRef.current, latestLandmarksRef.current || undefined);
     toast.info('Scale settings reset to default.');
   }, [clearTransformState, autoFitBiometric]);
 
@@ -2114,16 +2211,18 @@ export default function PassportPhotoPage() {
                       <label className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1">
                         Unit
                       </label>
-                      <select
+                      <CxSelect
+                        size="sm"
+                        ariaLabel="Custom unit"
                         value={customUnit}
-                        onChange={(e) => setCustomUnit(e.target.value as any)}
-                        className="w-full text-xs font-semibold px-2.5 py-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white"
-                      >
-                        <option value="mm">mm (Millimeters)</option>
-                        <option value="cm">cm (Centimeters)</option>
-                        <option value="inch">in (Inches)</option>
-                        <option value="px">px (Pixels)</option>
-                      </select>
+                        onChange={(val) => setCustomUnit(val as any)}
+                        options={[
+                          { value: 'mm', label: 'mm (Millimeters)' },
+                          { value: 'cm', label: 'cm (Centimeters)' },
+                          { value: 'inch', label: 'in (Inches)' },
+                          { value: 'px', label: 'px (Pixels)' },
+                        ]}
+                      />
                     </div>
                     <div>
                       <label className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1">
@@ -2155,15 +2254,17 @@ export default function PassportPhotoPage() {
                       <label className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1">
                         Print DPI
                       </label>
-                      <select
+                      <CxSelect
+                        size="sm"
+                        ariaLabel="Print DPI"
                         value={customDpi}
-                        onChange={(e) => setCustomDpi(parseInt(e.target.value))}
-                        className="w-full text-xs font-semibold px-2.5 py-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white"
-                      >
-                        <option value="300">300 DPI (Standard)</option>
-                        <option value="600">600 DPI (Ultra High)</option>
-                        <option value="150">150 DPI (Web ID)</option>
-                      </select>
+                        onChange={(val) => setCustomDpi(Number(val))}
+                        options={[
+                          { value: 300, label: '300 DPI (Standard)' },
+                          { value: 600, label: '600 DPI (Ultra High)' },
+                          { value: 150, label: '150 DPI (Web ID)' },
+                        ]}
+                      />
                     </div>
                   </div>
 
@@ -2964,17 +3065,38 @@ export default function PassportPhotoPage() {
                 </div>
               )}
 
-              {/* Warning note if head was too close to fit without clipping */}
-              {isTooCloseWarning && (
-                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2 text-left animate-in fade-in">
+              {/* Quality Gate Warnings next to Biometric Check box */}
+              {isHeadTilted && (
+                <div data-testid="warning-head-tilted" className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2 text-left animate-in fade-in">
                   <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
-                  <span>Photo is too close; use a photo with more space around the head.</span>
+                  <span>Head is tilted. Please face the camera straight.</span>
+                </div>
+              )}
+
+              {isPhotoTooClose && (
+                <div data-testid="warning-photo-too-close" className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2 text-left animate-in fade-in">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
+                  <span>Photo is too close. Use a photo with more space around the head.</span>
+                </div>
+              )}
+
+              {cutoutCrownTouchesTop && (
+                <div data-testid="warning-no-space-above-head" className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 text-xs flex items-center gap-2 text-left animate-in fade-in">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
+                  <span>No space above the head in your photo. Use a photo that shows the full head and some background above it.</span>
+                </div>
+              )}
+
+              {headCannotFitWithMargin && (
+                <div data-testid="warning-head-cannot-fit" className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 text-xs flex items-center gap-2 text-left animate-in fade-in">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
+                  <span>Head does not fit with the required margin. Zoomed out to keep head in frame.</span>
                 </div>
               )}
 
               {/* Small Biometric Live Checklist */}
               {imageSrc && (
-                <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 text-left text-xs space-y-2">
+                <div data-testid="biometric-check-box" className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 text-left text-xs space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="font-bold text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
@@ -3004,6 +3126,13 @@ export default function PassportPhotoPage() {
                         <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
                         <span className="text-red-600 dark:text-red-400 font-medium">
                           Head size: No face detected
+                        </span>
+                      </>
+                    ) : hasActiveQualityIssues ? (
+                      <>
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                        <span className="text-amber-700 dark:text-amber-300 font-medium">
+                          Head size: {liveBiometrics.headPercent}% (Locked — photo quality issue active)
                         </span>
                       </>
                     ) : liveBiometrics.isCrownCropped || liveBiometrics.isChinCropped ? (
@@ -3064,6 +3193,13 @@ export default function PassportPhotoPage() {
                         <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
                         <span className="text-red-600 dark:text-red-400 font-medium">
                           Eye line: No face detected
+                        </span>
+                      </>
+                    ) : hasActiveQualityIssues ? (
+                      <>
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                        <span className="text-amber-700 dark:text-amber-300 font-medium">
+                          Eye line: ~{liveBiometrics.eyePercent}% height (Locked — photo quality issue active)
                         </span>
                       </>
                     ) : !currentTolerance || !currentTolerance.isVerified || currentTolerance.minEyePercent === null || currentTolerance.maxEyePercent === null || liveBiometrics.eyePercent === null ? (
@@ -3295,17 +3431,15 @@ export default function PassportPhotoPage() {
                 <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                   Target File Size Limiter (Government Portal Uploads)
                 </label>
-                <select
+                <CxSelect
+                  ariaLabel="Target file size limiter"
                   value={selectedSizeLimit}
-                  onChange={(e) => setSelectedSizeLimit(e.target.value)}
-                  className="w-full text-xs font-semibold px-3.5 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white"
-                >
-                  {sizeLimitOptions.map((opt) => (
-                    <option key={opt.id} value={opt.id}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setSelectedSizeLimit}
+                  options={sizeLimitOptions.map((opt) => ({
+                    value: opt.id,
+                    label: opt.label,
+                  }))}
+                />
               </div>
 
               {/* Left Panel Download Button */}
