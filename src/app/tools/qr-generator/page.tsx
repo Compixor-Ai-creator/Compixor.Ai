@@ -36,7 +36,7 @@ export default function QrGeneratorPage() {
             {/* Left: Plain Boring Link (Problem) */}
             <div className="flex flex-col items-center space-y-1">
               <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 border-2 border-dashed border-zinc-300 dark:border-zinc-700 relative flex flex-col items-center justify-center p-2">
-                <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 truncate max-w-[70px]">https://...</span>
+                <span className="text-[10px] font-mono text-zinc-600 dark:text-zinc-400 truncate max-w-[70px]">https://...</span>
                 <div className="w-12 h-1 bg-zinc-300 dark:bg-zinc-600 rounded mt-2" />
                 <div className="w-8 h-1 bg-zinc-200 dark:bg-zinc-700 rounded mt-1" />
               </div>
@@ -257,10 +257,10 @@ export default function QrGeneratorPage() {
                         <LinkIcon className="w-3 h-3 text-emerald-600" /> URL
                       </div>
                       <div className="block pl-4">
-                        <span className="inline-block px-2.5 py-1 rounded-lg bg-white/70 dark:bg-zinc-800/70 text-[10px] text-zinc-400 border border-zinc-200/60">PDF</span>
+                        <span className="inline-block px-2.5 py-1 rounded-lg bg-white/70 dark:bg-zinc-800/70 text-[10px] text-zinc-600 dark:text-zinc-400 border border-zinc-200/60">PDF</span>
                       </div>
                       <div className="block pl-8">
-                        <span className="inline-block px-2.5 py-1 rounded-lg bg-white/50 dark:bg-zinc-800/50 text-[10px] text-zinc-400 border border-zinc-200/40">Multi-URL</span>
+                        <span className="inline-block px-2.5 py-1 rounded-lg bg-white/50 dark:bg-zinc-800/50 text-[10px] text-zinc-600 dark:text-zinc-400 border border-zinc-200/40">Multi-URL</span>
                       </div>
                     </div>
                   </div>

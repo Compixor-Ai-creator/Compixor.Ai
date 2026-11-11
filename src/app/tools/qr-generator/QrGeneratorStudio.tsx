@@ -1725,11 +1725,13 @@ export default function QrGeneratorStudio() {
             {/* Colors (4 columns: Pattern, Outer Corner Eye, Inner Eye Pupil, Background) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
+                <label htmlFor="qr-color-pattern" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
                   Pattern Color
                 </label>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <input
+                    id="qr-color-pattern"
+                    aria-label="Pattern Color"
                     type="color"
                     value={fgColor}
                     onChange={(e) => {
@@ -1743,11 +1745,13 @@ export default function QrGeneratorStudio() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Outer Corner Eye Ring">
+                <label htmlFor="qr-color-corner" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Outer Corner Eye Ring">
                   Corner Ring
                 </label>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <input
+                    id="qr-color-corner"
+                    aria-label="Corner Ring Color"
                     type="color"
                     value={cornerColor}
                     onChange={(e) => {
@@ -1761,11 +1765,13 @@ export default function QrGeneratorStudio() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Inner Corner Eye Pupil">
+                <label htmlFor="qr-color-pupil" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Inner Corner Eye Pupil">
                   Eye Pupil
                 </label>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <input
+                    id="qr-color-pupil"
+                    aria-label="Eye Pupil Color"
                     type="color"
                     value={cornerDotColor}
                     onChange={(e) => {
@@ -1779,11 +1785,13 @@ export default function QrGeneratorStudio() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
+                <label htmlFor="qr-color-bg" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
                   Background
                 </label>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <input
+                    id="qr-color-bg"
+                    aria-label="Background Color"
                     type="color"
                     value={bgColor}
                     onChange={(e) => setBgColor(e.target.value)}
@@ -1925,11 +1933,13 @@ export default function QrGeneratorStudio() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+                    <label htmlFor="qr-color-frame" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
                       Frame Color
                     </label>
                     <div className="flex items-center gap-3">
                       <input
+                        id="qr-color-frame"
+                        aria-label="Frame Color"
                         type="color"
                         value={frameColor}
                         onChange={(e) => setFrameColor(e.target.value)}
@@ -1941,11 +1951,13 @@ export default function QrGeneratorStudio() {
 
                   {frameStyle !== 'polaroid' && (
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+                      <label htmlFor="qr-color-frame-text" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
                         Text Color
                       </label>
                       <div className="flex items-center gap-3">
                         <input
+                          id="qr-color-frame-text"
+                          aria-label="Frame Text Color"
                           type="color"
                           value={frameTextColor}
                           onChange={(e) => setFrameTextColor(e.target.value)}
