@@ -121,6 +121,9 @@ npx tsx docs/audit/checks/faq-home-disclosure.dom.mts   # 11 assertions
 | SSR markup, `/` | 8× `<h3 class="m-0"><button … aria-expanded>`, first `true`, 8 `faq-answer-*` ids |
 | SSR markup, blog post | 5× h3>button, 5 static panels, 5 `data-[open]:max-h-[32rem]` |
 | git status | clean after commit; tag `p2a-disclosure` |
+| Vercel preview `dpl_6S6GJFh9r1Wps98FuaiCEvr5UteZ` ← `f579775` | **READY** in 72.9 s, `preview`/`STAGED`, branch alias assigned |
+
+The preview build is the deploy proof that matters: `f579775` builds through the same pipeline that ERRORed on `c8ea1405` (Google Fonts).
 
 ## 5. Cost (measured, not estimated)
 
