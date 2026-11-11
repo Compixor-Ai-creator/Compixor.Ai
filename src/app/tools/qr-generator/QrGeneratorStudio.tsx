@@ -1133,10 +1133,10 @@ export default function QrGeneratorStudio() {
 
           {/* Content Inputs */}
           <div className="glass-card p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
               <Sliders className="w-4 h-4 text-brand-500" />
               Content Parameters
-            </h3>
+            </h2>
 
             {activeTab === 'url' && (
               <div>
@@ -1577,7 +1577,7 @@ export default function QrGeneratorStudio() {
 
           {/* Logo & Branding */}
           <div className="glass-card p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
+            <h2 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-emerald-500" />
                 Center Logo &amp; Icon
@@ -1595,7 +1595,7 @@ export default function QrGeneratorStudio() {
                   <X className="w-3.5 h-3.5" /> Remove Logo
                 </button>
               )}
-            </h3>
+            </h2>
 
             {/* Quick Brand Badges Selector */}
             <div className="space-y-2">
@@ -1717,10 +1717,10 @@ export default function QrGeneratorStudio() {
 
           {/* Design Customization */}
           <div className="glass-card p-6 rounded-2xl space-y-6">
-            <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
               <Palette className="w-4 h-4 text-cyan-500" />
               Colors &amp; Matrix Patterns
-            </h3>
+            </h2>
 
             {/* Colors (4 columns: Pattern, Outer Corner Eye, Inner Eye Pupil, Background) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
@@ -1850,7 +1850,7 @@ export default function QrGeneratorStudio() {
 
           {/* CTA Frame & Badges ("SCAN ME") */}
           <div className="glass-card p-6 rounded-2xl space-y-5">
-            <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
+            <h2 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <LayoutTemplate className="w-4 h-4 text-purple-500" />
                 Call-to-Action Frame (&quot;SCAN ME&quot;)
@@ -1864,7 +1864,7 @@ export default function QrGeneratorStudio() {
                   <X className="w-3.5 h-3.5" /> Remove Frame
                 </button>
               )}
-            </h3>
+            </h2>
 
             {/* Frame Styles Selector */}
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
