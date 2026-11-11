@@ -13,6 +13,10 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       service: 'compixor-ai',
       environment: process.env.NODE_ENV || 'production',
+      // Build identity: lets scripts/verify-deploy.sh prove which commit is
+      // actually serving traffic, instead of guessing from cache headers.
+      commit: process.env.NEXT_PUBLIC_BUILD_SHA || 'dev',
+      buildTime: process.env.NEXT_PUBLIC_BUILD_TIME || null,
     },
     {
       status: 200,

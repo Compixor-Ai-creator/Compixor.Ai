@@ -18,6 +18,8 @@
 | A5 | VPS par: `sha256sum /var/www/.../main.py` vs repo ka `sha256sum hostinger-backend/main.py` | match | ☐ |
 
 > A2 sabse important hai. Agar live `commit` aap ke local HEAD se match nahi karta, to baaki kuch test karne ka faida nahi — deploy hi nahi hua.
+>
+> A1/A2 ka exact command aur preview-vs-production ka farq: `docs/audit/08-DEPLOY-IDENTITY.md` section 4.
 
 ---
 

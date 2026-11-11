@@ -1,6 +1,6 @@
 import Script from 'next/script';
 import type { Metadata, Viewport } from 'next';
-import { Inter, Outfit, Playfair_Display } from 'next/font/google';
+import localFont from 'next/font/local';
 import dynamic from 'next/dynamic';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -18,26 +18,35 @@ const FeedbackWidget = dynamic(() => import('@/components/FeedbackWidget'), {
   ssr: false,
 });
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+// Fonts are vendored locally (SIL OFL 1.1, via @fontsource-variable) so that
+// `next build` never depends on fonts.googleapis.com. A failed Google Fonts
+// fetch has already broken a production deploy once: the build errored with
+// "TypeError: Cannot read properties of null (reading '1')" inside
+// @next/font/dist/google/loader.js and production stayed on an older commit
+// for ~14 hours. Local files make the build deterministic and offline-safe.
+const inter = localFont({
+  src: './fonts/inter-latin-wght-normal.woff2',
+  weight: '100 900',
+  style: 'normal',
   variable: '--font-inter',
   display: 'swap',
   preload: true,
 });
 
-const outfit = Outfit({
-  subsets: ['latin'],
-  weight: ['500', '600', '700', '800'],
+const outfit = localFont({
+  src: './fonts/outfit-latin-wght-normal.woff2',
+  weight: '100 900',
+  style: 'normal',
   variable: '--font-outfit',
   display: 'swap',
   preload: true,
 });
 
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  style: ['normal', 'italic'],
+const playfair = localFont({
+  src: [
+    { path: './fonts/playfair-latin-wght-normal.woff2', weight: '400 900', style: 'normal' },
+    { path: './fonts/playfair-latin-wght-italic.woff2', weight: '400 900', style: 'italic' },
+  ],
   variable: '--font-playfair',
   display: 'swap',
   preload: true,
@@ -62,6 +71,7 @@ export const metadata: Metadata = {
   },
   other: {
     'mobile-web-app-capable': 'yes',
+    'compixor-build': process.env.NEXT_PUBLIC_BUILD_SHA || 'dev',
   },
   formatDetection: {
     telephone: false,
