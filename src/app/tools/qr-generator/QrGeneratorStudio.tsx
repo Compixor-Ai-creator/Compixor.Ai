@@ -1026,7 +1026,7 @@ export default function QrGeneratorStudio() {
           ref={presetsScrollRef}
           className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
         >
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
+          <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
             <Wand2 className="w-3.5 h-3.5 text-brand-500" /> Presets:
           </span>
           <div className="flex items-center gap-2 shrink-0">
@@ -1051,7 +1051,7 @@ export default function QrGeneratorStudio() {
           ref={gradientScrollRef}
           className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
         >
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
+          <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
             <Sparkles className="w-3.5 h-3.5 text-brand-500" /> GRADIENT PRESETS:
           </span>
           <div className="flex items-center gap-2 shrink-0">
@@ -1133,10 +1133,10 @@ export default function QrGeneratorStudio() {
 
           {/* Content Inputs */}
           <div className="glass-card p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
               <Sliders className="w-4 h-4 text-brand-500" />
               Content Parameters
-            </h3>
+            </h2>
 
             {activeTab === 'url' && (
               <div>
@@ -1577,7 +1577,7 @@ export default function QrGeneratorStudio() {
 
           {/* Logo & Branding */}
           <div className="glass-card p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
+            <h2 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-emerald-500" />
                 Center Logo &amp; Icon
@@ -1595,7 +1595,7 @@ export default function QrGeneratorStudio() {
                   <X className="w-3.5 h-3.5" /> Remove Logo
                 </button>
               )}
-            </h3>
+            </h2>
 
             {/* Quick Brand Badges Selector */}
             <div className="space-y-2">
@@ -1637,7 +1637,7 @@ export default function QrGeneratorStudio() {
               <div className="space-y-3 pt-1">
                 <div className="relative flex py-1 items-center">
                   <div className="flex-grow border-t border-zinc-200 dark:border-zinc-700"></div>
-                  <span className="shrink-0 px-2 text-[11px] text-zinc-400 uppercase font-semibold">Or upload custom</span>
+                  <span className="shrink-0 px-2 text-[11px] text-zinc-600 dark:text-zinc-400 uppercase font-semibold">Or upload custom</span>
                   <div className="flex-grow border-t border-zinc-200 dark:border-zinc-700"></div>
                 </div>
                 <input
@@ -1656,7 +1656,7 @@ export default function QrGeneratorStudio() {
                   <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                     Upload PNG / SVG Logo
                   </span>
-                  <span className="text-[11px] text-zinc-400">
+                  <span className="text-[11px] text-zinc-600 dark:text-zinc-400">
                     Auto-centered with high error correction
                   </span>
                 </label>
@@ -1717,19 +1717,21 @@ export default function QrGeneratorStudio() {
 
           {/* Design Customization */}
           <div className="glass-card p-6 rounded-2xl space-y-6">
-            <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center gap-2">
               <Palette className="w-4 h-4 text-cyan-500" />
               Colors &amp; Matrix Patterns
-            </h3>
+            </h2>
 
             {/* Colors (4 columns: Pattern, Outer Corner Eye, Inner Eye Pupil, Background) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
+                <label htmlFor="qr-color-pattern" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
                   Pattern Color
                 </label>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <input
+                    id="qr-color-pattern"
+                    aria-label="Pattern Color"
                     type="color"
                     value={fgColor}
                     onChange={(e) => {
@@ -1743,11 +1745,13 @@ export default function QrGeneratorStudio() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Outer Corner Eye Ring">
+                <label htmlFor="qr-color-corner" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Outer Corner Eye Ring">
                   Corner Ring
                 </label>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <input
+                    id="qr-color-corner"
+                    aria-label="Corner Ring Color"
                     type="color"
                     value={cornerColor}
                     onChange={(e) => {
@@ -1761,11 +1765,13 @@ export default function QrGeneratorStudio() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Inner Corner Eye Pupil">
+                <label htmlFor="qr-color-pupil" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate" title="Inner Corner Eye Pupil">
                   Eye Pupil
                 </label>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <input
+                    id="qr-color-pupil"
+                    aria-label="Eye Pupil Color"
                     type="color"
                     value={cornerDotColor}
                     onChange={(e) => {
@@ -1779,11 +1785,13 @@ export default function QrGeneratorStudio() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
+                <label htmlFor="qr-color-bg" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 truncate">
                   Background
                 </label>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <input
+                    id="qr-color-bg"
+                    aria-label="Background Color"
                     type="color"
                     value={bgColor}
                     onChange={(e) => setBgColor(e.target.value)}
@@ -1842,7 +1850,7 @@ export default function QrGeneratorStudio() {
 
           {/* CTA Frame & Badges ("SCAN ME") */}
           <div className="glass-card p-6 rounded-2xl space-y-5">
-            <h3 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
+            <h2 className="text-sm font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <LayoutTemplate className="w-4 h-4 text-purple-500" />
                 Call-to-Action Frame (&quot;SCAN ME&quot;)
@@ -1856,7 +1864,7 @@ export default function QrGeneratorStudio() {
                   <X className="w-3.5 h-3.5" /> Remove Frame
                 </button>
               )}
-            </h3>
+            </h2>
 
             {/* Frame Styles Selector */}
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
@@ -1925,11 +1933,13 @@ export default function QrGeneratorStudio() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+                    <label htmlFor="qr-color-frame" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
                       Frame Color
                     </label>
                     <div className="flex items-center gap-3">
                       <input
+                        id="qr-color-frame"
+                        aria-label="Frame Color"
                         type="color"
                         value={frameColor}
                         onChange={(e) => setFrameColor(e.target.value)}
@@ -1941,11 +1951,13 @@ export default function QrGeneratorStudio() {
 
                   {frameStyle !== 'polaroid' && (
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+                      <label htmlFor="qr-color-frame-text" className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
                         Text Color
                       </label>
                       <div className="flex items-center gap-3">
                         <input
+                          id="qr-color-frame-text"
+                          aria-label="Frame Text Color"
                           type="color"
                           value={frameTextColor}
                           onChange={(e) => setFrameTextColor(e.target.value)}

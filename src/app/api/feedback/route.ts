@@ -53,8 +53,16 @@ function getClientIp(request: Request): string {
   return '127.0.0.1';
 }
 
-function hashIp(ip: string): string {
-  const salt = process.env.FEEDBACK_SALT || process.env.IP_HASH_SALT || 'compixor-client-side-privacy-salt';
+function hashIp(ip: string): string | null {
+  const salt = process.env.FEEDBACK_SALT || process.env.IP_HASH_SALT;
+  if (!salt) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[API Feedback] Missing FEEDBACK_SALT or IP_HASH_SALT in production environment.');
+      return null;
+    }
+    // Dev fallback salt only in non-production
+    return crypto.createHash('sha256').update(`${ip}:compixor-dev-salt`).digest('hex');
+  }
   return crypto.createHash('sha256').update(`${ip}:${salt}`).digest('hex');
 }
 
@@ -165,6 +173,24 @@ export async function POST(request: Request) {
   const clientIp = getClientIp(request);
   const ipHash = hashIp(clientIp);
 
+  if (!ipHash && process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { error: 'Feedback service unavailable' },
+      { status: 503 }
+    );
+  }
+
+  const supabase = getSupabase();
+
+  // Fail loudly in production if Supabase is unavailable/unconfigured
+  if (!supabase && process.env.NODE_ENV === 'production') {
+    console.error('[API Feedback] Supabase is unconfigured or unavailable in production.');
+    return NextResponse.json(
+      { error: 'Feedback service unavailable' },
+      { status: 503 }
+    );
+  }
+
   const newFeedbackItem: FeedbackItem = {
     id: crypto.randomUUID ? crypto.randomUUID() : `fb-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
     tool_name: matchedToolName,
@@ -175,8 +201,6 @@ export async function POST(request: Request) {
     created_at: new Date().toISOString(),
   };
 
-  const supabase = getSupabase();
-
   if (supabase) {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
@@ -185,7 +209,7 @@ export async function POST(request: Request) {
       const { count: ipDailyCount } = await supabase
         .from('feedback')
         .select('*', { count: 'exact', head: true })
-        .eq('ip_hash', ipHash)
+        .eq('ip_hash', ipHash || 'dev-unhashed')
         .gte('created_at', oneDayAgo);
 
       if (typeof ipDailyCount === 'number' && ipDailyCount >= 5) {
@@ -217,7 +241,7 @@ export async function POST(request: Request) {
         first_name: firstName,
         message: cleanedMessage,
         status: 'pending',
-        ip_hash: ipHash,
+        ip_hash: ipHash || 'dev-unhashed',
       });
 
       if (!insertError) {
@@ -229,12 +253,24 @@ export async function POST(request: Request) {
         });
       }
       console.warn('[API Feedback Supabase Insert fallback]', insertError);
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json(
+          { error: 'Feedback service unavailable' },
+          { status: 503 }
+        );
+      }
     } catch (err) {
       console.error('[API Feedback Supabase Exception]', err);
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json(
+          { error: 'Feedback service unavailable' },
+          { status: 503 }
+        );
+      }
     }
   }
 
-  // Graceful fallback to persistent in-memory store
+  // Graceful fallback to persistent in-memory store in development / test only
   fallbackStore.unshift(newFeedbackItem);
 
   return NextResponse.json({
