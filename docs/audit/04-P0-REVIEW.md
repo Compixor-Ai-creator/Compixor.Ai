@@ -63,7 +63,9 @@ So: nothing suppresses focus without replacement, and the browser's default `:fo
 `Footer.tsx:38-41` uses `text-emerald-800 dark:text-emerald-300` on `bg-emerald-500/15` — the exact classes the old audit recommended. The agent's own Lighthouse runs report **home a11y 100, 0 failing audits**. A failing contrast node would have appeared there.
 
 **Corrected:** `A11Y-P1-01 → ALREADY-FIXED (Footer.tsx:38-41, confirmed by home Lighthouse a11y 100).`
-The only genuine contrast failure is the qr-generator `span.text-[10px]` badge (`QrGeneratorStudio.tsx:1914`).
+The only genuine contrast failure is in **`src/app/tools/qr-generator/page.tsx`** — `span.text-[10px] text-zinc-400` sitting on a translucent light surface, at lines ~39 and ~260 (and the same pattern at ~263). The Lighthouse node path `div.p-3 > div.flex > div.w-20 > span.text-[10px]` maps to `page.tsx:37-39` exactly (`div.p-3 sm:p-4` → `div.flex` → `div.w-20` → span).
+
+> **Correction to my own first pass:** I pointed at `QrGeneratorStudio.tsx:1914`. That is wrong — the agent's `page.tsx:39,43,260` is the correct location and matches the Lighthouse selector chain. Fix belongs in `page.tsx`.
 
 ### C3 — SLOP-18 wrong file:line
 
@@ -129,7 +131,9 @@ So "4 → 1 consolidate" is wrong work. Correct: **delete 2 dead files in P1**, 
 | Copy & IA | 15% | 5.0 | 5.0 | verified accurate |
 | Components | 15% | 4.0 | 3.5 | +2 dead FAQ files |
 | A11y semantics | 15% | 7.0 | **8.5** | no evidence of missing focus; a11y 100 |
-| **Total** | | **5.45** | **≈ 5.72** | |
+| **Total** | | **5.45** | **5.575** | |
+
+> Arithmetic check: 0.600 + 0.825 + 0.600 + 0.675 + 0.325 + 0.750 + 0.525 + 1.275 = **5.575**. My earlier "≈ 5.72" in this document was a rounding slip; 5.575 is correct.
 
 ---
 
@@ -141,7 +145,7 @@ P1 is now **3 small commits**, not a sweep:
 |---|---|---|---|
 | **P1a — dead code** | 13 deletions, 0 additions | 8 components (`Navbar`, `CxArtCard`, `RelatedPdfTools`, `CustomerTestimonials`, `HeroArtCard`, `container-text-flip-demo`, `HomeFaqAccordion`, `FaqSection`) + 5 root artifacts (`cx-art-card.*`, `cx-premium-card.html`, `hero-mobile-minimal.css`) | Low — all 0 importers proven |
 | **P1b — copy accuracy** | 1 | `faqs.ts:59` and `:101` → 9 local / 3 HTTPS wording (use `page.tsx:284` wording as the master template) | Low |
-| **P1c — measured a11y** | 2 | `QrGeneratorStudio.tsx:1737` label for color input; `:1914` `text-[10px]` contrast to ≥4.5:1 | Low |
+| **P1c — measured a11y** | 2 | `QrGeneratorStudio.tsx` `type="color"` inputs (6 exist: 1733, 1751, 1769, 1787, 1933, 1949) need names; `qr-generator/page.tsx` `text-[10px]` contrast (39, 260, 263) | Low |
 
 **Explicitly NOT in P1:** focus-ring sweep (→P3 token), FAQ merge (→P2 primitive), related-tools merge (→dropped), any CSS refactor, any redesign.
 

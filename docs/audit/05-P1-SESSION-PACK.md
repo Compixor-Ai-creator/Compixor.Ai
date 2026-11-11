@@ -97,15 +97,20 @@ COMMIT P1b — copy accuracy (1 file)
 
 COMMIT P1c — two measured a11y fixes (2 files, one file touched)
   src/app/tools/qr-generator/QrGeneratorStudio.tsx
-    a) ~line 1737: input[type=color] has no accessible name. Add
-       aria-label="Foreground colour" (and the analogous one for the
-       background colour input if it shares the pattern).
+    a) type="color" inputs have no accessible name: six exist (1733, 1751,
+       1769, 1787, 1933, 1949); the sibling <label> has no htmlFor and the
+       input has no id/aria-label. Fix by PATTERN, not by line: give each
+       input an id + <label htmlFor>, or an aria-label matching its visible
+       label text ("Pattern Color", "Outer Corner Eye Color", "Inner Eye
+       Pupil Color", "Background Color", ...).
        Evidence to cite: Lighthouse audit "label", failing node input.w-9.
-    b) ~line 1914: span.text-[10px] badge fails color-contrast. Raise the
-       text colour token to >= 4.5:1 against its actual background in both
-       light and dark. Do not change font size, padding, or layout.
-       Evidence to cite: Lighthouse audit "color-contrast", node
-       div.p-3 > div.flex > div.w-20 > span.text-[10px].
+       Verify: re-run -> label audit must be 0 failing nodes for ALL of them.
+    b) File 2 is src/app/tools/qr-generator/page.tsx (NOT QrGeneratorStudio):
+       the failing node div.p-3 > div.flex > div.w-20 > span.text-[10px]
+       maps to page.tsx:37-39, with the same text-zinc-400-on-translucent-
+       light pattern at ~260 and ~263. Raise those to >= 4.5:1 in BOTH
+       light and dark variants. Do not touch text-zinc-500 nodes unless
+       the re-run still fails. Do not change font size, padding or layout.
   Re-run Lighthouse on /tools/qr-generator (mobile) after the fix and
   report accessibility score before/after. Save JSON to test-results/p1/.
   Commit message: fix(a11y): label qr colour input and fix badge contrast
