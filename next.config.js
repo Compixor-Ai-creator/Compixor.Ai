@@ -1,5 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Build identity, inlined at build time. Vercel exposes the commit SHA to
+  // the build; fall back to a local marker so dev builds are identifiable.
+  // /api/health and <meta name="compixor-build"> both read these, which is how
+  // "pushed but not deployed" becomes detectable instead of invisible.
+  env: {
+    NEXT_PUBLIC_BUILD_SHA: (
+      process.env.VERCEL_GIT_COMMIT_SHA ||
+      process.env.NEXT_PUBLIC_BUILD_SHA ||
+      'dev'
+    ).slice(0, 12),
+    NEXT_PUBLIC_BUILD_TIME: new Date().toISOString(),
+  },
+
   // Enable gzip compression
   compress: true,
   poweredByHeader: false,

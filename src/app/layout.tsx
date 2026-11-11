@@ -71,6 +71,7 @@ export const metadata: Metadata = {
   },
   other: {
     'mobile-web-app-capable': 'yes',
+    'compixor-build': process.env.NEXT_PUBLIC_BUILD_SHA || 'dev',
   },
   formatDetection: {
     telephone: false,
