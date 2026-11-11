@@ -70,7 +70,7 @@ Brauzer mein bhi check kar lein (login Vercel account se, kyunki preview protect
 
 ### 4b. Production (`compixor-ai.cloud`)
 
-Production sirf `main` par deploy hota hai. Is branch ke changes live karne ke liye PR #6 merge karna padega, uske baad:
+Production sirf `main` par deploy hota hai. PR #6 **merge ho gaya** (11 Nov, merge commit `ae0f5ec`) aur production usi par chal raha hai — details `10-PRODUCTION-RELEASE.md` mein. Verification:
 
 ```bash
 EXPECTED_SHA=$(git rev-parse main) bash scripts/verify-deploy.sh
