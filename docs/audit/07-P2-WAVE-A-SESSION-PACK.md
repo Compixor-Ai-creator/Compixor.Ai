@@ -12,6 +12,10 @@ task wastes a phase — 5 families can ship now.
 
 Start Wave A with **one family per session, one primitive per commit**. Do not batch.
 
+> **Status:** commit 1 (FAQ `Disclosure`) is **done** — see `09-P2-WAVE-A-COMMIT-1.md`. It contains one
+> correction to this pack: `unmount={false}` renders the closed panel with `display:none`, so the panel
+> must be `static` and the collapse driven by the `data-open` attribute instead. Next up: commit 2, `Menu`.
+
 ---
 
 ## Contract digest
