@@ -13,7 +13,12 @@
 ```text
 =====================================================================
 MASTER PROMPT — COMPIXOR AI · HALLMARK × HEADLESS UI AUDIT
-Version: 1.0 · Phase-locked · Evidence-only
+Version: 1.1 · Phase-locked · Evidence-only
+(1.1 supersedes 1.0 after the P0 review in docs/audit/04-P0-REVIEW.md:
+ P1 and P3 missions were corrected against measured evidence, and
+ Appendix A now carries the verified numbers. If a SESSION SCOPE block is
+ provided with this prompt, the scope block wins over the default missions
+ in section 4 — see rule R13.)
 =====================================================================
 
 ## 0. ROLE
@@ -104,6 +109,12 @@ R12 STOP AND ASK on: deleting anything with runtime side effects, adding
     a dependency, changing a public route, changing copy semantics, or
     any decision that needs product taste (font choice, section removal).
 
+R13 SCOPE PRECEDENCE. A "SESSION SCOPE" block supplied with the phase
+    line is authoritative and overrides the default mission text in
+    section 4. If the scope block and the mission disagree, follow the
+    scope block and say so in the report ("SCOPE_OVERRIDE: <which item>").
+    Never widen a scope to match a template. Never shrink it silently.
+
 ## 2. PHASE LOCK
 
 Phases, in order. You may only enter a phase when the previous phase's
@@ -182,23 +193,36 @@ G) PRIOR-REPORT RECONCILIATION — read docs/website-audit.md and mark each
 P0 EXIT GATE: all four artifacts present, every row carries E1 evidence,
 `git status --short` empty, zero files modified.
 
-### P1 — A11Y + SLOP FIX PACK
-Scope = only what P0 marked P0/P1, and only these kinds:
-  - delete provably dead files (P0 section F)
-  - collapse duplicate implementations into one (FAQ: 4 -> 1; related
-    tools: 3 -> 1) WITHOUT Headless UI (that is P2)
-  - focus-visible rings on every interactive element
-  - contrast to >= 4.5:1 for body text, >= 3:1 for large text
-  - accessible names for icon-only controls
-  - copy accuracy corrections (E in P0)
-  - remove root-level stray artifacts ONLY if P0 proved them unimported
-Do NOT: redesign, restyle, add Headless UI, touch CSS architecture,
-touch tool logic, change section order, change wording semantics beyond
-factual correction.
+### P1 — A11Y + SLOP FIX PACK (corrected in v1.1 against measured evidence)
 
-P1 EXIT GATE: tsc/lint/test green (counts reported), home + at least 3
-tool routes respond 200 on dev server (or BLOCKED with reason), diff
-within budget, `git diff --stat` reported, phase tagged.
+P1 is DELETION + EVIDENCE-BACKED PATCHES ONLY. Nothing else.
+  - delete files with a proven zero-importer check (grep for the import,
+    not just the name). Never delete a file that a route or dynamic
+    import depends on.
+  - delete root-level stray artifacts only after proving no build
+    reference (webpack/postcss/tsconfig/route).
+  - accurate copy corrections: only where the UI claims something the
+    code does not do, and only to the wording already approved elsewhere
+    in the app (reuse the authoritative sentence, do not invent new
+    marketing copy).
+  - a11y fixes limited to nodes with a MEASURED, named failure
+    (Lighthouse audit name + failing node selector, or a WCAG rule with
+    the exact contrast ratio). One fix per measured failure.
+
+Explicitly OUT of P1 (deferred to the phase shown):
+  - focus-ring sweeps over many buttons (P3 — one shared token)
+  - merging duplicate implementations whose live behaviour differs
+    (P2 — unify the primitive, never the data/logic)
+  - CSS architecture, token migration, dark-mode rework (P3)
+  - any redesign, restyle, section removal, copy meaning change (P3, R12)
+  - Headless UI of any kind (P2)
+  - tool processing logic, workers, WASM pipelines (R8)
+
+P1 EXIT GATE: tsc 0 errors / lint 0 errors and no NEW warnings /
+`npm test` all pass (report the count) / build green; the touched routes
+plus home return 200 on dev server (or BLOCKED with reason); every
+deletion proven with a grep that returns nothing; `git diff --stat`
+reported; diff within budget; phase tagged.
 
 ### P2 — HEADLESS UI MIGRATION
 Migrate exactly the families in the P0 inventory, in this risk order:
@@ -207,6 +231,13 @@ Switch/RadioGroup (toggles, theme, rating) -> Dialog (CompixorModal,
 FeedbackWidget) -> Tabs (only where a real tab UI exists) -> mobile nav.
 Rules per widget:
   - One primitive per commit. Never two families in one commit.
+  - Migrate LIVE widgets only. If a widget has two live implementations
+    with different behaviour (e.g. the homepage FAQ is searchable and
+    multi-open, the blog FAQ is single-open), share the primitive and the
+    styling, but keep each call site's data and state logic untouched.
+    Never merge behaviour to make the diff smaller.
+  - If deleting dead duplicates in P1 left only one live implementation,
+    migrate that one and stop.
   - Preserve existing classNames; replace structure only. Visual output
     must be pixel-comparable to before (screenshot both states).
   - Keep the existing public prop API so call sites do not change.
@@ -236,7 +267,12 @@ Fix only pattern families confirmed in P0 section B, in this priority:
   4. token drift: hardcoded hex -> tokens; inline styles -> classes
   5. copy & IA: collapse repeated trust/privacy sections into one
      authoritative block (ask before deleting a whole section, R12)
-  6. dark-mode parity for everything you touched
+  6. focus consistency: ONE focus-visible token (ring colour + offset +
+     width) applied through shared classes/primitives. Do not hand-edit
+     hundreds of individual buttons; the failure mode is inconsistency,
+     not absence (the UA default ring is still intact — verify, do not
+     assume).
+  7. dark-mode parity for everything you touched
 Rules: no new fonts without asking; no new dependency; no animation that
 ignores prefers-reduced-motion; no change to information meaning.
 P3 EXIT GATE: rubric re-scored with the same 8 dimensions and counts,
@@ -324,21 +360,41 @@ Measured on that commit:
     globals.css at line 1720 with its banner comment intact)
   - 472 hardcoded hex colors in .tsx, 92 inline style objects,
     43 `: any`, 2 console.log
-  - gradient text: 15 occurrences / 13 files; the same
-    from-purple-500 via-pink-500 to-amber-400 h1 appears on 12 tool pages
+  - gradient text: 19 occurrences total = 15 in .tsx across 14 files
+    (verified: 12 tool pages + ErrorStage + PdfWatermarkClient x2) plus 4
+    in globals.css (background-clip:text at lines 601, 885, 892, 1804;
+    lines 519, 898, 1032 are plain gradient backgrounds, not text).
+    The same from-purple-500 via-pink-500 to-amber-400 h1 appears on 12
+    tool pages.
+  - focus reality: 224 <button> nodes; 222 carry no focus: utility inside
+    the tag; 53 focus:outline-none usages of which 0 lack a ring
+    replacement; 10 CSS :focus-visible rules in globals.css; 5 bare
+    outline:none in CSS are all paired with a focus rule; UA default ring
+    is NOT suppressed. Lighthouse a11y on home = 100. => the defect is
+    inconsistency, not absence. Do not claim "focus disappears".
   - blur orbs remain in 6 components (ErrorStage 3, PasswordComparisonVisual 2,
     PdfSecurityIllustration 2, CompixorModal 1, PdfWatermarkClient 1,
     ToolFeedback 1); the homepage hero orbs are already gone
-  - dead (zero static importers): components/Navbar.tsx (~37KB, duplicate
-    of CompixorNavbar.jsx), components/CxArtCard.tsx (~16KB),
-    components/RelatedPdfTools.tsx (~8.6KB),
-    components/CustomerTestimonials.tsx, components/HeroArtCard.tsx
-    (43-byte re-export shim), components/container-text-flip-demo.tsx,
-    ui/container-text-flip.tsx is used only by page.tsx + that demo
-  - stray repo artifacts: cx-art-card.css/.html/.jsx, cx-premium-card.html,
-    hero-mobile-minimal.css, apply_v10_4_argon.sh at repo root
-  - duplicate implementations: FAQ accordion x4 (app/page.tsx,
-    HomeFaqAccordion, FaqSection, BlogFaqAccordion), related-tools x3
+  - dead (zero static importers, verified 2026-11-11): components/Navbar.tsx
+    (780 lines, duplicate of CompixorNavbar.jsx), components/CxArtCard.tsx
+    (379 lines), components/RelatedPdfTools.tsx (239 lines),
+    components/CustomerTestimonials.tsx (241 bytes),
+    components/HeroArtCard.tsx (43-byte re-export shim),
+    components/container-text-flip-demo.tsx (234 bytes),
+    components/HomeFaqAccordion.tsx (0 importers),
+    components/FaqSection.tsx (0 importers).
+    ui/container-text-flip.tsx is LIVE (imported by page.tsx) — keep it.
+  - stray repo artifacts (no build reference): cx-art-card.css/.html/.jsx,
+    cx-premium-card.html, hero-mobile-minimal.css. NOT artifacts — do not
+    delete: apply_v10_4_argon.sh and update_vps.sh (deploy helpers).
+  - duplicate implementations: FAQ accordion x4, of which only 2 are live
+    (app/page.tsx inline, BlogFaqAccordion used by blog/[slug]) and 2 are
+    dead (HomeFaqAccordion, FaqSection). Related-tools x3: RelatedTools
+    live (4 importers), RelatedToolsGrid live (blog only), RelatedPdfTools
+    dead. Do not merge the two live related-tools components.
+  - file sizes: report in wc -l, not bytes. A Windows checkout with CRLF
+    inflates bytes by one per line and makes cross-machine numbers look
+    like drift.
   - hand-rolled widgets: CompixorModal (manual Tab trap + scroll lock
     counter + portal, lines 98-129 and 188-220), ShareToolButton dropdown
     (lines 27-107), 12 native <select>, 10 checkbox toggles, 0 role="tab"
@@ -349,6 +405,15 @@ Measured on that commit:
       FAQ h3>button pattern   -> fixed, HomeFaqAccordion.tsx:37-44,
                                  page.tsx:646-653, FaqSection.tsx:68
       hero link aria-labels   -> fixed, HeroRightCard.jsx (7 labels)
+      footer/badge contrast   -> fixed, Footer.tsx:38-41 uses
+                                 text-emerald-800 dark:text-emerald-300
+                                 (do not re-report as open; home
+                                 Lighthouse a11y is 100)
+  - live-identity proxy (c8ea1405): the only network-visible markers
+    (hero aria-label, dang.ai badge, tool h1 text) PREDATE c8ea1405, which
+    changed no rendered output. Live can therefore only be proven as
+    ">= 7f39d3ee". Do not claim "live == HEAD" until the P4 build stamp
+    exists.
   - deploy: scripts in repo root - update_vps.sh curls ONLY
     raw.githubusercontent.com/<repo>/main/hostinger-backend/main.py,
     so pipeline/, bg_api_single.py, bg_remove.py, requirements.txt never
@@ -391,8 +456,28 @@ RUN PHASE: P1
 RUN PHASE: P2
 RUN PHASE: P3
 RUN PHASE: P4
+
+Optionally follow the phase line with a SESSION SCOPE block. Per rule
+R13 it overrides the default mission in section 4 for this session only:
+
+BEGIN SESSION SCOPE
+  <exact files, exact commits, exact exit gate — nothing else>
+END SESSION SCOPE
 =====================================================================
 ```
+
+### v1.1 changelog (why this file changed)
+
+| Section | 1.0 | 1.1 |
+|---|---|---|
+| R13 | — | SESSION SCOPE overrides default mission; no silent widening/shrinking |
+| P1 mission | dead code + 4→1 FAQ merge + 3→1 tools merge + focus rings on every element | deletion + copy + one-fix-per-measured-failure; focus sweep → P3, merges → P2 (primitive only) |
+| P2 mission | migrate 8 families | added: migrate LIVE widgets only, never merge behaviour |
+| P3 mission | 6 items | + focus-visible token (single token, not per-button edits) |
+| Appendix A | 13 gradient files, 15 occurrences | 14 files / 19 occurrences; focus reality; 2 extra dead FAQ files; footer contrast fixed; weak live proxy; wc -l rule |
+
+**Reference:** `docs/audit/04-P0-REVIEW.md` holds the evidence for every
+change above.
 
 ---
 
