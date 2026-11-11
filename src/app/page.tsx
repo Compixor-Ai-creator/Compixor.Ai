@@ -18,6 +18,7 @@ import {
   BookOpen,
   ChevronDown,
 } from 'lucide-react';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { FaqJsonLd } from '@/components/JsonLd';
 import WhyTrustCompixor from '@/components/WhyTrustCompixor';
 import WhatUsersSay from '@/components/WhatUsersSay';
@@ -185,29 +186,13 @@ const itemVariants = {
 };
 
 export default function HomePage() {
-  // FAQ interactive state
+  // FAQ filter. Which questions are *open* is owned by each <Disclosure>
+  // (Headless UI v2 has no controlled `open` prop); search only decides what is
+  // rendered, and every rendered match mounts open.
   const [faqSearch, setFaqSearch] = useState('');
-  const [openFaqIndices, setOpenFaqIndices] = useState<number[]>([0]);
-
-  const toggleFaq = (idx: number) => {
-    setOpenFaqIndices((prev) =>
-      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
-    );
-  };
 
   const handleFaqSearch = (query: string) => {
     setFaqSearch(query);
-    if (query.trim()) {
-      const q = query.toLowerCase().trim();
-      const matching = homeFaqs
-        .map((faq, i) =>
-          faq.q.toLowerCase().includes(q) || faq.a.toLowerCase().includes(q) ? i : -1
-        )
-        .filter((i) => i !== -1);
-      setOpenFaqIndices(matching);
-    } else {
-      setOpenFaqIndices([0]);
-    }
   };
 
   const filteredFaqs = faqSearch.trim()
@@ -216,6 +201,8 @@ export default function HomePage() {
         return faq.q.toLowerCase().includes(q) || faq.a.toLowerCase().includes(q);
       })
     : homeFaqs;
+
+  const faqSearchActive = faqSearch.trim().length > 0;
 
   return (
     <div className="relative overflow-x-clip">
@@ -636,44 +623,56 @@ export default function HomePage() {
           {filteredFaqs.length > 0 ? (
             filteredFaqs.map((faq) => {
               const originalIndex = homeFaqs.findIndex((item) => item.id === faq.id);
-              const isOpen = openFaqIndices.includes(originalIndex) || faqSearch.trim().length > 0;
+              // Remounting on a filter change is intentional: Headless UI's
+              // Disclosure is uncontrolled, so a fresh mount is how "every
+              // match opens while filtering, and the first one is open again
+              // after Clear filter" is expressed. Keys are stable across
+              // keystrokes, so a question the reader collapsed by hand stays
+              // collapsed while the query is refined.
+              const disclosureKey = `${faq.id}-${faqSearchActive ? 'filtered' : 'default'}`;
 
               return (
-                <div
-                  key={faq.id}
+                <Disclosure
+                  as="div"
+                  key={disclosureKey}
+                  defaultOpen={faqSearchActive || originalIndex === 0}
                   className="glass-card rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden transition-all duration-300 hover:border-brand-500/30"
                 >
-                  <h3 className="m-0">
-                    <button
-                      type="button"
-                      id={faq.id}
-                      aria-expanded={isOpen}
-                      aria-controls={`faq-answer-${faq.id}`}
-                      onClick={() => toggleFaq(originalIndex)}
-                      className="w-full p-4 sm:p-5 text-left text-base sm:text-lg font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between gap-3 select-none hover:bg-zinc-500/5 transition-colors"
-                    >
-                      <span className="flex items-center gap-2.5">
-                        <HelpCircle className="w-5 h-5 text-brand-600 dark:text-brand-400 shrink-0" />
-                        <span>{faq.q}</span>
-                      </span>
-                      <ChevronDown
-                        className={`w-5 h-5 text-zinc-400 transition-transform duration-300 shrink-0 ${
-                          isOpen ? 'rotate-180 text-brand-500' : ''
-                        }`}
-                      />
-                    </button>
-                  </h3>
-                  <p
-                    id={`faq-answer-${faq.id}`}
-                    className={`px-4 sm:px-5 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed transition-all duration-300 ${
-                      isOpen
-                        ? 'max-h-96 opacity-100 pb-4 sm:pb-5 pt-1 border-t border-zinc-100 dark:border-zinc-800/60'
-                        : 'max-h-0 opacity-0 pb-0 pt-0 m-0 overflow-hidden border-transparent'
-                    }`}
-                  >
-                    {faq.a}
-                  </p>
-                </div>
+                  {({ open }) => (
+                    <>
+                      <h3 className="m-0">
+                        <DisclosureButton
+                          type="button"
+                          id={faq.id}
+                          className="w-full p-4 sm:p-5 text-left text-base sm:text-lg font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between gap-3 select-none hover:bg-zinc-500/5 transition-colors"
+                        >
+                          <span className="flex items-center gap-2.5">
+                            <HelpCircle className="w-5 h-5 text-brand-600 dark:text-brand-400 shrink-0" />
+                            <span>{faq.q}</span>
+                          </span>
+                          <ChevronDown
+                            className={`w-5 h-5 text-zinc-400 transition-transform duration-300 shrink-0 ${
+                              open ? 'rotate-180 text-brand-500' : ''
+                            }`}
+                          />
+                        </DisclosureButton>
+                      </h3>
+                      {/*
+                        `static` keeps the answer mounted in both states: Headless
+                        UI would otherwise render it with display:none when closed,
+                        and a display:none element cannot animate. Collapse is pure
+                        CSS on the `data-open` attribute, so there is no pixel jump.
+                      */}
+                      <DisclosurePanel
+                        static
+                        id={`faq-answer-${faq.id}`}
+                        className="px-4 sm:px-5 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed overflow-hidden border-transparent max-h-0 opacity-0 pb-0 pt-0 m-0 transition-all duration-300 ease-out data-[open]:max-h-96 data-[open]:opacity-100 data-[open]:pb-4 data-[open]:pt-1 data-[open]:border-t data-[open]:border-zinc-100 dark:data-[open]:border-zinc-800/60 sm:data-[open]:pb-5"
+                      >
+                        <p className="m-0">{faq.a}</p>
+                      </DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
               );
             })
           ) : (
