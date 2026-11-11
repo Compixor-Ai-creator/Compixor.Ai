@@ -56,7 +56,7 @@ export const wordCompressorFaqs: FaqItem[] = [
 export const addWatermarkFaqs: FaqItem[] = [
   {
     q: 'Does this tool upload my documents to any server?',
-    a: 'No. Compixor runs 100% locally inside your web browser using WebAssembly and client-side JavaScript. Your files and watermarks never leave your computer or touch an external server.',
+    a: 'No. 9 tools run locally on your device with zero photo or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport Photo) process securely over HTTPS with zero permanent file storage.',
   },
   {
     q: 'Will adding a watermark flatten or rasterize my PDF text?',
@@ -98,7 +98,7 @@ export const pdfOrganizerFaqs: FaqItem[] = [
   },
   {
     q: 'Are my confidential documents uploaded to any server?',
-    a: 'Never. Unlike traditional online PDF tools that upload your files to remote cloud servers, Compixor executes 100% locally in your browser memory. Zero file data, metadata, or document contents ever leave your device.',
+    a: 'Never. 9 tools run locally on your device with zero photo or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport Photo) process securely over HTTPS with zero permanent file storage.',
   },
   {
     q: 'How does the range input syntax work for splitting?',
