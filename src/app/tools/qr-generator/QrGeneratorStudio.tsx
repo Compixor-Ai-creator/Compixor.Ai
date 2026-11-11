@@ -1026,7 +1026,7 @@ export default function QrGeneratorStudio() {
           ref={presetsScrollRef}
           className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
         >
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
+          <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
             <Wand2 className="w-3.5 h-3.5 text-brand-500" /> Presets:
           </span>
           <div className="flex items-center gap-2 shrink-0">
@@ -1051,7 +1051,7 @@ export default function QrGeneratorStudio() {
           ref={gradientScrollRef}
           className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
         >
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
+          <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
             <Sparkles className="w-3.5 h-3.5 text-brand-500" /> GRADIENT PRESETS:
           </span>
           <div className="flex items-center gap-2 shrink-0">
@@ -1637,7 +1637,7 @@ export default function QrGeneratorStudio() {
               <div className="space-y-3 pt-1">
                 <div className="relative flex py-1 items-center">
                   <div className="flex-grow border-t border-zinc-200 dark:border-zinc-700"></div>
-                  <span className="shrink-0 px-2 text-[11px] text-zinc-400 uppercase font-semibold">Or upload custom</span>
+                  <span className="shrink-0 px-2 text-[11px] text-zinc-600 dark:text-zinc-400 uppercase font-semibold">Or upload custom</span>
                   <div className="flex-grow border-t border-zinc-200 dark:border-zinc-700"></div>
                 </div>
                 <input
@@ -1656,7 +1656,7 @@ export default function QrGeneratorStudio() {
                   <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                     Upload PNG / SVG Logo
                   </span>
-                  <span className="text-[11px] text-zinc-400">
+                  <span className="text-[11px] text-zinc-600 dark:text-zinc-400">
                     Auto-centered with high error correction
                   </span>
                 </label>

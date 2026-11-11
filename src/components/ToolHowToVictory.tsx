@@ -396,23 +396,23 @@ export default function ToolHowToVictory({ toolSlug }: ToolHowToVictoryProps) {
       return (
         <VictoryCard
           badgeText="Vector QR Transformation Preview"
-          badgeColor="from-teal-500/15 to-emerald-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30"
+          badgeColor="from-teal-500/15 to-emerald-500/15 text-teal-800 dark:text-teal-300 border-teal-500/30"
           engineTitle="Reed-Solomon Matrix & SVG Generator"
           engineSub="Permanent Static Codes · Logo Embedding"
           beforeTitle="Raw URL / Text Link"
           beforeBadge="Plain Text"
-          beforeBadgeColor="bg-indigo-500 text-white"
+          beforeBadgeColor="bg-indigo-600 text-white"
           beforeContent={
             <div className="w-20 h-22 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 flex flex-col items-center justify-center p-2 shadow-xs">
-              <span className="text-[6.5px] font-mono text-indigo-600 dark:text-indigo-400 break-all text-center leading-tight">
+              <span className="text-[6.5px] font-mono text-indigo-700 dark:text-indigo-400 break-all text-center leading-tight">
                 https://compixor.ai/tool?id=83921
               </span>
-              <span className="text-[6.5px] font-semibold text-zinc-400 mt-2">Unformatted</span>
+              <span className="text-[6.5px] font-semibold text-zinc-600 dark:text-zinc-400 mt-2">Unformatted</span>
             </div>
           }
           afterTitle="High-Res Vector QR Code"
           afterBadge="Scan Ready"
-          afterBadgeColor="bg-emerald-500 text-white"
+          afterBadgeColor="bg-emerald-700 text-white"
           afterContent={
             <div className="w-20 h-20 rounded-2xl bg-zinc-900 text-white border-2 border-emerald-500 p-2 flex flex-col items-center justify-center shadow-md relative">
               <div className="w-12 h-12 bg-white rounded-md p-1 grid grid-cols-3 gap-0.5">
@@ -528,7 +528,7 @@ function VictoryCard({
           </div>
           <span className="text-[11px] font-extrabold text-zinc-900 dark:text-white leading-tight">{engineTitle}</span>
           <span className="text-[9.5px] text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-[200px]">{engineSub}</span>
-          <div className="inline-flex items-center gap-1 mt-1 text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+          <div className="inline-flex items-center gap-1 mt-1 text-[9px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-full">
             <CheckCircle2 className="w-3 h-3" />
             <span>Under 2 Seconds</span>
           </div>
@@ -537,13 +537,13 @@ function VictoryCard({
         {/* Right: Victory Output Mockup */}
         <div className="flex-1 w-full flex flex-col items-center text-center">
           <div className="flex items-center gap-1.5 mb-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Step 4: Victory</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Step 4: Victory</span>
             <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${afterBadgeColor}`}>{afterBadge}</span>
           </div>
           <div className="p-2 rounded-2xl bg-zinc-50/70 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60 min-h-[104px] flex items-center justify-center">
             {afterContent}
           </div>
-          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-2">{afterTitle}</span>
+          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 mt-2">{afterTitle}</span>
         </div>
       </div>
     </div>

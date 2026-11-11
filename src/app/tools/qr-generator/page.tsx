@@ -130,22 +130,22 @@ export default function QrGeneratorPage() {
 
         {/* Content Type Icons Row (6 items) */}
         <div className="flex flex-wrap items-center justify-center gap-2 max-w-xl mx-auto">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-700 dark:text-blue-300 font-medium">
             <LinkIcon className="w-3.5 h-3.5" /> Website URL
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-700 dark:text-blue-300 font-medium">
             <Type className="w-3.5 h-3.5" /> Plain Text
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-700 dark:text-blue-300 font-medium">
             <Wifi className="w-3.5 h-3.5" /> Wi-Fi Access
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-700 dark:text-blue-300 font-medium">
             <User className="w-3.5 h-3.5" /> vCard Contact
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-700 dark:text-blue-300 font-medium">
             <Mail className="w-3.5 h-3.5" /> Email
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-300 font-medium">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-700 dark:text-blue-300 font-medium">
             <Phone className="w-3.5 h-3.5" /> Phone Call
           </div>
         </div>
@@ -408,17 +408,17 @@ export default function QrGeneratorPage() {
               {/* Left Visual Card 3: Download formats */}
               <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-50/60 to-zinc-50 dark:from-zinc-900/90 dark:to-zinc-950 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
                 <div className="bg-white dark:bg-zinc-800/90 rounded-2xl p-5 shadow-sm border border-zinc-200/70 dark:border-zinc-700/60 text-center space-y-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
                     <ShieldCheck className="w-4 h-4" /> 100% Static & Permanent
                   </div>
                   <div className="grid grid-cols-2 gap-2 pt-1">
                     <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40">
                       <p className="font-bold text-xs text-blue-900 dark:text-blue-200">SVG Vector</p>
-                      <p className="text-[10px] text-blue-600/80 mt-0.5">Infinite Scale for Print</p>
+                      <p className="text-[10px] text-blue-700 dark:text-blue-300 mt-0.5 font-medium">Infinite Scale for Print</p>
                     </div>
                     <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40">
                       <p className="font-bold text-xs text-emerald-900 dark:text-emerald-200">PNG Format</p>
-                      <p className="text-[10px] text-emerald-600/80 mt-0.5">High-Res for Screens</p>
+                      <p className="text-[10px] text-emerald-700 dark:text-emerald-300 mt-0.5 font-medium">High-Res for Screens</p>
                     </div>
                   </div>
                 </div>
