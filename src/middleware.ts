@@ -4,11 +4,11 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const host = (request.headers.get('host') || '').toLowerCase();
 
-  // Redirect old Vercel deployment domain or www variants to the canonical domain
+  // Redirect old Vercel deployment domain to the canonical domain
+  // (www <-> apex canonical redirect is handled in Vercel Domains settings to prevent loops)
   if (
     host === 'compixor-ai.vercel.app' ||
-    host.endsWith('.compixor-ai.vercel.app') ||
-    host === 'www.compixor-ai.cloud'
+    host.endsWith('.compixor-ai.vercel.app')
   ) {
     const url = request.nextUrl.clone();
     url.protocol = 'https';
