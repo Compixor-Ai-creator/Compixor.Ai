@@ -100,18 +100,8 @@ const nextConfig = {
         destination: 'https://compixor-ai.cloud/:path*',
         permanent: true,
       },
-      // 301 Permanent Canonical Domain Redirect: www to apex domain
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'www.compixor-ai.cloud',
-          },
-        ],
-        destination: 'https://compixor-ai.cloud/:path*',
-        permanent: true,
-      },
+      // Note: www <-> apex canonical redirect is managed in Vercel Domains dashboard
+      // to avoid a 308 redirect loop when Vercel's primary domain differs.
       {
         source: '/blog/how-to-make-passport-photo-online',
         destination: '/blog/passport-size-photo-maker-online-free',
