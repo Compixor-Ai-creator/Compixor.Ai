@@ -77,7 +77,7 @@ export default function CxSelect<T extends string | number = string>({
             <ListboxButton
               id={id}
               aria-label={ariaLabel}
-              className={`w-full flex items-center justify-between gap-2 text-left bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white font-medium shadow-2xs hover:border-brand-500/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses} ${buttonClassName}`}
+              className={`w-full flex items-center justify-between gap-2 text-left bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white font-medium shadow-sm hover:border-brand-500/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses} ${buttonClassName}`}
             >
               <span className="block truncate">{displayLabel}</span>
               <ChevronDown
@@ -90,7 +90,8 @@ export default function CxSelect<T extends string | number = string>({
 
             <ListboxOptions
               transition
-              className={`absolute left-0 mt-1.5 w-full max-h-60 overflow-auto rounded-xl p-1.5 dropdown-glass z-50 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl focus:outline-none transition duration-150 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 ${optionsClassName}`}
+              anchor={{ to: 'bottom start', gap: 6, padding: 12 }}
+              className={`min-w-[var(--button-width)] w-max max-w-[calc(100vw-2rem)] max-h-60 overflow-auto rounded-xl p-1.5 dropdown-glass z-[10060] border border-zinc-200/90 dark:border-zinc-700/80 shadow-xl focus:outline-none transition duration-150 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 ${optionsClassName}`}
             >
               {normalizedOptions.map((opt) => (
                 <ListboxOption

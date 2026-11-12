@@ -84,13 +84,14 @@ export default function ShareToolButton({
 
           <MenuItems
             transition
-            className="absolute right-0 sm:left-0 sm:right-auto mt-2 w-64 p-3 rounded-2xl dropdown-glass z-50 border border-zinc-200/70 dark:border-zinc-800/80 shadow-xl focus:outline-none transition duration-150 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
+            anchor={{ to: 'bottom end', gap: 8, padding: 12 }}
+            className="w-72 max-w-[calc(100vw-1.5rem)] p-3 rounded-2xl dropdown-glass z-[10060] border border-zinc-200/80 dark:border-zinc-700/80 shadow-xl focus:outline-none transition duration-150 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
           >
             <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2 px-1">
               Share {toolName}
             </p>
 
-            <div className="grid grid-cols-4 gap-1.5 mb-2.5 overflow-visible">
+            <div className="grid grid-cols-4 gap-2 mb-2.5 overflow-visible">
               <MenuItem>
                 {({ focus }) => (
                   <a
@@ -98,7 +99,7 @@ export default function ShareToolButton({
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label={`Share ${toolName} on LinkedIn`}
-                    className={`social-btn !w-full !h-9 ${focus ? 'ring-2 ring-brand-500' : ''}`}
+                    className={`social-btn !min-w-0 !w-full !h-9 ${focus ? 'ring-2 ring-brand-500' : ''}`}
                     style={{ '--glow': '#0A66C2' } as React.CSSProperties}
                   >
                     <LinkedInIcon className="w-[18px] h-[18px]" />
@@ -112,7 +113,7 @@ export default function ShareToolButton({
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label={`Share ${toolName} on X`}
-                    className={`social-btn social-btn-x !w-full !h-9 ${focus ? 'ring-2 ring-brand-500' : ''}`}
+                    className={`social-btn social-btn-x !min-w-0 !w-full !h-9 ${focus ? 'ring-2 ring-brand-500' : ''}`}
                   >
                     <TwitterXIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -125,7 +126,7 @@ export default function ShareToolButton({
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label={`Share ${toolName} on WhatsApp`}
-                    className={`social-btn !w-full !h-9 ${focus ? 'ring-2 ring-brand-500' : ''}`}
+                    className={`social-btn !min-w-0 !w-full !h-9 ${focus ? 'ring-2 ring-brand-500' : ''}`}
                     style={{ '--glow': '#25D366' } as React.CSSProperties}
                   >
                     <WhatsAppIcon className="w-[18px] h-[18px]" />
@@ -139,7 +140,7 @@ export default function ShareToolButton({
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label={`Share ${toolName} on Facebook`}
-                    className={`social-btn !w-full !h-9 ${focus ? 'ring-2 ring-brand-500' : ''}`}
+                    className={`social-btn !min-w-0 !w-full !h-9 ${focus ? 'ring-2 ring-brand-500' : ''}`}
                     style={{ '--glow': '#1877F2' } as React.CSSProperties}
                   >
                     <FacebookIcon className="w-[18px] h-[18px]" />
