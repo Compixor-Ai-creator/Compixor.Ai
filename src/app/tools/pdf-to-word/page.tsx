@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import WordIcon from '@/components/WordIcon';
 import Link from 'next/link';
+import { CONTACT_EMAIL } from '@/lib/config';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
 import DropAnywhere from '@/components/DropAnywhere';
@@ -693,7 +694,7 @@ export default function PdfToWordPage() {
             <span>Send Feedback / Request</span>
           </button>
           <a
-            href="mailto:support@compixor-ai.online?subject=PDF%20to%20Word%20Assistance%20Request"
+            href={`mailto:${CONTACT_EMAIL}?subject=PDF%20to%20Word%20Assistance%20Request`}
             className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 text-xs sm:text-sm font-semibold transition"
           >
             <Mail className="w-4 h-4 text-zinc-500" />

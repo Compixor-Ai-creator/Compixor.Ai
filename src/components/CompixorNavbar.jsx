@@ -25,6 +25,7 @@ import {
   X,
 } from "lucide-react";
 import { NAV_GROUPS, NAV_LINKS } from "./nav-data";
+import { useTheme } from "@/components/ThemeProvider";
 
 const ICONS = {
   Files,
@@ -50,7 +51,8 @@ function NavIcon({ name, size = 18 }) {
 }
 
 export default function CompixorNavbar() {
-  const [dark, setDark] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const dark = theme === "dark";
   const [mounted, setMounted] = useState(false);
 
   // Desktop dropdown state
@@ -104,28 +106,10 @@ export default function CompixorNavbar() {
     };
   }, []);
 
-  // Theme: saved choice -> else system preference
+  // Mark mounted for hydration-safe theme icon rendering
   useEffect(() => {
-    let isDark = false;
-    try {
-      const saved = localStorage.getItem("compixor-theme");
-      isDark = saved
-        ? saved === "dark"
-        : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    } catch (e) {}
-    document.documentElement.classList.toggle("dark", isDark);
-    setDark(isDark);
     setMounted(true);
   }, []);
-
-  const toggleTheme = () => {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    try {
-      localStorage.setItem("compixor-theme", next ? "dark" : "light");
-    } catch (e) {}
-  };
 
   return (
     <>
@@ -561,10 +545,10 @@ export default function CompixorNavbar() {
               aria-expanded={mobileOpen}
               aria-controls="cnav-mobile"
               className="
-                cnav-theme-btn lg:hidden flex h-9 w-9 items-center justify-center rounded-xl
+                lg:hidden flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl
                 hover:bg-white/50 dark:hover:bg-white/10
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
-                transition-all
+                transition-colors duration-200
               "
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

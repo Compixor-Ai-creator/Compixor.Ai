@@ -304,7 +304,7 @@ export default function ContactClient() {
               <Clock className="w-5 h-5" />
             </div>
             <h3 className="font-bold text-base text-zinc-900 dark:text-white">
-              24?48 Hour Response Window
+              24–48 Hour Response Window
             </h3>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
               Every message sent through our form or sent to <strong className="text-zinc-900 dark:text-zinc-200 font-semibold">support@compixor-ai.cloud</strong> is reviewed by engineering within 24 to 48 business hours.
@@ -324,7 +324,7 @@ export default function ContactClient() {
             Frequently Asked Questions Before Contacting Support
           </h2>
           <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-            Check our most common support questions below?you might find your answer immediately.
+            Check our most common support questions below—you might find your answer immediately.
           </p>
         </div>
 

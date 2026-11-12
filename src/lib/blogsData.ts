@@ -1644,7 +1644,7 @@ export const blogsData: BlogItem[] = [
       ]
     },
     content: {
-      intro: "Watermarks like 'DRAFT' or 'SAMPLE' can distract readers and look unprofessional in meetings. Common amateur fixes?like turning pages into pictures and painting over them?blur your text and bloat file sizes. They also destroy your ability to search or copy text. Compixor uses a cleaner method. Our tool inspects the internal PDF code stream to delete the watermark layer directly. The result is a clean document with crisp vector text, sharp fonts, and original page layouts.",
+      intro: "Watermarks like 'DRAFT' or 'SAMPLE' can distract readers and look unprofessional in meetings. Common amateur fixes—like turning pages into pictures and painting over them—blur your text and bloat file sizes. They also destroy your ability to search or copy text. Compixor uses a cleaner method. Our tool inspects the internal PDF code stream to delete the watermark layer directly. The result is a clean document with crisp vector text, sharp fonts, and original page layouts.",
       sections: [
         {
           heading: "How PDF Watermarks Are Structured in Document Syntax",

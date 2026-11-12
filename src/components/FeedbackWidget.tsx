@@ -20,6 +20,7 @@ import {
   Star,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { CONTACT_EMAIL } from '@/lib/config';
 
 type Category = 'request' | 'bug' | 'feedback';
 
@@ -139,17 +140,17 @@ export default function FeedbackWidget() {
 
   const getGmailComposeUrl = useCallback(() => {
     const { subject, body } = getEmailContent();
-    return `https://mail.google.com/mail/?view=cm&fs=1&to=support@compixor-ai.online&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }, [getEmailContent]);
 
   const getOutlookComposeUrl = useCallback(() => {
     const { subject, body } = getEmailContent();
-    return `https://outlook.live.com/mail/0/deeplink/compose?to=support@compixor-ai.online&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `https://outlook.live.com/mail/0/deeplink/compose?to=${CONTACT_EMAIL}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }, [getEmailContent]);
 
   const getMailtoUrl = useCallback(() => {
     const { subject, body } = getEmailContent();
-    return `mailto:support@compixor-ai.online?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }, [getEmailContent]);
 
   const saveFeedbackLocally = useCallback(() => {

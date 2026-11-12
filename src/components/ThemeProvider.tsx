@@ -20,37 +20,48 @@ export function useTheme() {
   return useContext(ThemeContext);
 }
 
+function applyThemeToDocument(targetTheme: Theme) {
+  const isDark = targetTheme === 'dark';
+  const root = document.documentElement;
+  root.classList.toggle('dark', isDark);
+  root.classList.toggle('light', !isDark);
+  root.setAttribute('data-theme', targetTheme);
+  root.style.colorScheme = targetTheme;
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>('light');
-  const [mounted, setMounted] = useState(false);
 
-  // Synchronize with active DOM class on mount and listen to system preference
+  // Synchronize with active DOM class on mount and follow OS preference when unset
   useEffect(() => {
-    setMounted(true);
-
-    const saved = localStorage.getItem('compixor-theme') as Theme | null;
-    if (saved === 'light' || saved === 'dark') {
-      setThemeState(saved);
-      if (saved === 'dark') {
-        document.documentElement.classList.add('dark');
+    let resolved: Theme = 'light';
+    try {
+      const saved =
+        localStorage.getItem('compixor-theme') || localStorage.getItem('theme');
+      if (saved === 'dark' || saved === 'true') {
+        resolved = 'dark';
+      } else if (saved === 'light' || saved === 'false') {
+        resolved = 'light';
       } else {
-        document.documentElement.classList.remove('dark');
+        resolved = window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light';
       }
-    } else {
-      // Default to light mode for new browsers/users without saved preferences
-      setThemeState('light');
-      document.documentElement.classList.remove('dark');
+    } catch {
+      resolved = 'light';
     }
+    setThemeState(resolved);
+    applyThemeToDocument(resolved);
   }, []);
 
   const setTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem('compixor-theme', newTheme);
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    try {
+      localStorage.setItem('compixor-theme', newTheme);
+    } catch {
+      // Ignore storage errors in restricted contexts
     }
+    applyThemeToDocument(newTheme);
   }, []);
 
   const toggleTheme = useCallback(() => {
