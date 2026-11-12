@@ -665,10 +665,10 @@ export default function PdfToWordPage() {
             <span>
               Direct Email:{' '}
               <a
-                href="mailto:support@compixor-ai.online"
+                href={`mailto:${CONTACT_EMAIL}`}
                 className="text-brand-600 dark:text-brand-400 font-semibold underline underline-offset-2"
               >
-                support@compixor-ai.online
+                {CONTACT_EMAIL}
               </a>
             </span>
             <span>•</span>

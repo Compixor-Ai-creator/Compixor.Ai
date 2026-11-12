@@ -558,10 +558,10 @@ export default function FeedbackWidget() {
                       <p className="text-[11px] text-zinc-500 dark:text-zinc-400 text-center sm:text-left pt-1 border-t border-zinc-200/60 dark:border-zinc-800/60">
                         Direct email address:{' '}
                         <a
-                          href="mailto:support@compixor-ai.online"
+                          href={`mailto:${CONTACT_EMAIL}`}
                           className="text-brand-600 dark:text-brand-400 font-mono hover:underline font-semibold"
                         >
-                          support@compixor-ai.online
+                          {CONTACT_EMAIL}
                         </a>
                       </p>
                     </div>
