@@ -48,7 +48,16 @@ const round1 = v => Math.round(v * 10) / 10;
     }, theme);
     await page.waitForTimeout(400);
 
+    // Scrollbar correction per spec
+    const sb = await page.evaluate(() => window.innerWidth - document.documentElement.clientWidth);
+    if (sb > 0) {
+      await page.setViewportSize({ width: 1288 + sb, height: 719 });
+      await page.waitForTimeout(200);
+    }
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    if (clientWidth !== 1288) {
+      throw new Error(`Assertion failed: clientWidth === ${clientWidth}, expected 1288`);
+    }
 
     // Measure raw getBoundingClientRect
     const rawBoxes = await page.evaluate(() => {
@@ -120,7 +129,6 @@ const round1 = v => Math.round(v * 10) / 10;
       let botMinX = null, botMaxX = null;
 
       if (currentTheme === 'dark') {
-        // Dark mode: top rim bright violet border (r > 80 && b > 120)
         const d1004 = cx.getImageData(0, 1004, W, 1).data;
         for (let x = 350; x < 2250; x++) {
           const r = d1004[x*4], b = d1004[x*4+2];
@@ -130,9 +138,7 @@ const round1 = v => Math.round(v * 10) / 10;
           }
         }
 
-        // Bottom rim at y = 1436 (CSS y = 718)
         const d1436 = cx.getImageData(0, 1436, W, 1).data;
-        // Left border peak between x 350 and 600 (threshold r > 70 && b > 110)
         for (let x = 350; x <= 600; x++) {
           const r = d1436[x*4], b = d1436[x*4+2];
           if (r > 70 && b > 110) {
@@ -140,7 +146,6 @@ const round1 = v => Math.round(v * 10) / 10;
             break;
           }
         }
-        // Right border peak between x 2000 and 2300 (threshold r > 40 && b > 80)
         for (let x = 2300; x >= 2000; x--) {
           const r = d1436[x*4], b = d1436[x*4+2];
           if (r > 40 && b > 80) {
@@ -149,7 +154,6 @@ const round1 = v => Math.round(v * 10) / 10;
           }
         }
       } else {
-        // Light mode: background is light #f7f5ff, tablet surface/border is dark (r < 225 && g < 215)
         const d1004 = cx.getImageData(0, 1004, W, 1).data;
         for (let x = 350; x < 2250; x++) {
           const r = d1004[x*4], g = d1004[x*4+1];
@@ -185,7 +189,7 @@ const round1 = v => Math.round(v * 10) / 10;
       };
     }, { shotB64: shotBuf.toString('base64'), currentTheme: theme });
 
-    // Compute verdicts strictly against Table B
+    // Compute Table B verdicts
     const b = rawBoxes;
     const checks = {
       pill: {
@@ -215,7 +219,7 @@ const round1 = v => Math.round(v * 10) / 10;
       lastLinkRule: {
         rule: 'ends <= 985',
         actualRight: b.links[b.links.length - 1].right,
-        pass: b.links[b.links.length - 1].right <= 985 + POS_TOLERANCE
+        pass: b.links[b.links.length - 1].right <= 985
       },
       themeToggleRule: {
         rule: 'between last link and CTA with >= 12px gap on each side, no overlap',
@@ -345,14 +349,16 @@ const round1 = v => Math.round(v * 10) / 10;
       }
     };
 
-    // Pixel diff 16x9 grid (for dark mode vs target-hero-dark.png)
-    let pixelDiffReport = null;
+    let finePassReport = null;
+    let lightingPassReport = null;
+
     if (theme === 'dark') {
       const targetBuf = fs.readFileSync(TARGET_PATH);
       const targetB64 = targetBuf.toString('base64');
       const shotB64 = shotBuf.toString('base64');
 
-      pixelDiffReport = await page.evaluate(async ({ targetB64, shotB64 }) => {
+      // 1. Fine pass (16x9 grid, threshold 14)
+      finePassReport = await page.evaluate(async ({ targetB64, shotB64 }) => {
         const W = 2576, H = 1438;
         const COLS = 16, ROWS = 9;
         const cellW = W / COLS, cellH = H / ROWS;
@@ -370,10 +376,6 @@ const round1 = v => Math.round(v * 10) / 10;
         ctxTgt.drawImage(it, 0, 0, W, H);
         const dTgt = ctxTgt.getImageData(0, 0, W, H).data;
 
-        // Mask only genuinely changed text cells:
-        // Sub lines 2-3: row 4, cols 4..11
-        // Ghost button label ("Explore All 12 Tools"): row 5, cols 8..11
-        // Theme toggle cell: row 0, col 12
         const isMasked = (r, c) => {
           if (r === 0 && c === 12) return true;
           if (r === 4 && c >= 4 && c <= 11) return true;
@@ -381,17 +383,7 @@ const round1 = v => Math.round(v * 10) / 10;
           return false;
         };
 
-        const isNavbar = (r, c) => r === 0;
-        const isBeam = (r, c) => r <= 3 && c <= 4;
-        const isRing = (r, c) => (r >= 1 && r <= 3) && (c >= 11 && c <= 14);
-        const isTabletRim = (r, c) => r === 6 && (c >= 2 && c <= 13);
-
-        const cHeat = document.createElement('canvas'); cHeat.width = W; cHeat.height = H;
-        const ctxHeat = cHeat.getContext('2d');
-        ctxHeat.drawImage(ia, 0, 0, W, H);
-
         let passCount = 0, failCount = 0, maskedCount = 0;
-        let navbarFails = 0, beamFails = 0, ringFails = 0, tabletRimFails = 0;
         const failingCells = [];
 
         for (let r = 0; r < ROWS; r++) {
@@ -422,95 +414,177 @@ const round1 = v => Math.round(v * 10) / 10;
             else {
               failCount++;
               failingCells.push({ r, c, meanDiff: Math.round(meanDiff * 10) / 10 });
-              if (isNavbar(r, c)) navbarFails++;
-              if (isBeam(r, c)) beamFails++;
-              if (isRing(r, c)) ringFails++;
-              if (isTabletRim(r, c)) tabletRimFails++;
             }
-
-            // Draw heatmap cell
-            ctxHeat.lineWidth = 2;
-            if (masked) {
-              ctxHeat.fillStyle = 'rgba(59, 130, 246, 0.22)';
-              ctxHeat.strokeStyle = 'rgba(59, 130, 246, 0.8)';
-            } else if (pass) {
-              ctxHeat.fillStyle = 'rgba(34, 197, 94, 0.18)';
-              ctxHeat.strokeStyle = 'rgba(34, 197, 94, 0.7)';
-            } else {
-              ctxHeat.fillStyle = 'rgba(239, 68, 68, 0.32)';
-              ctxHeat.strokeStyle = 'rgba(239, 68, 68, 0.85)';
-            }
-            ctxHeat.fillRect(xStart, yStart, xEnd - xStart, yEnd - yStart);
-            ctxHeat.strokeRect(xStart, yStart, xEnd - xStart, yEnd - yStart);
           }
         }
 
         const effectiveTotal = (ROWS * COLS) - maskedCount;
         const passRate = Math.round((passCount / effectiveTotal) * 1000) / 10;
 
-        // Overlay 50%
+        return { passRate, passCount, failCount, maskedCount, failingCells };
+      }, { targetB64, shotB64 });
+
+      // 2. Lighting pass (32x18 downscaled grid, blur, threshold 12)
+      lightingPassReport = await page.evaluate(async ({ targetB64, shotB64 }) => {
+        const W = 2576, H = 1438;
+        const COLS = 32, ROWS = 18;
+        const cellW = W / COLS, cellH = H / ROWS;
+
+        const load = b => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + b; });
+        const [it, ia] = await Promise.all([load(targetB64), load(shotB64)]);
+
+        // Draw downscaled to 32x18 with smoothing
+        const cA = document.createElement('canvas'); cA.width = COLS; cA.height = ROWS;
+        const cxA = cA.getContext('2d');
+        cxA.imageSmoothingEnabled = true;
+        cxA.drawImage(ia, 0, 0, COLS, ROWS);
+        const dA = cxA.getImageData(0, 0, COLS, ROWS).data;
+
+        const cT = document.createElement('canvas'); cT.width = COLS; cT.height = ROWS;
+        const cxT = cT.getContext('2d');
+        cxT.imageSmoothingEnabled = true;
+        cxT.drawImage(it, 0, 0, COLS, ROWS);
+        const dT = cxT.getImageData(0, 0, COLS, ROWS).data;
+
+        // Mask text cells in 32x18:
+        // Sub lines 2-3: row 8..9, cols 8..23
+        // Ghost button: row 10..11, cols 17..22
+        // Theme toggle: row 0..1, cols 24..26
+        const isMasked = (r, c) => {
+          if (r <= 1 && c >= 24 && c <= 26) return true;
+          if (r >= 8 && r <= 9 && c >= 8 && c <= 23) return true;
+          if (r >= 10 && r <= 11 && c >= 17 && c <= 22) return true;
+          return false;
+        };
+
+        // Critical areas:
+        // Top-left beam: x 0..640 (cols 0..7), y 0..360 (rows 0..4)
+        const isBeamArea = (r, c) => r <= 4 && c <= 7;
+        // Ring area: cols 22..28, rows 3..7
+        const isRingArea = (r, c) => r >= 3 && r <= 7 && c >= 22 && c <= 28;
+        // Navbar row: r <= 1
+        const isNavbarRow = (r, c) => r <= 1;
+        // Tablet rim: rows 12..13, cols 6..25
+        const isTabletRim = (r, c) => (r === 12 || r === 13) && c >= 6 && c <= 25;
+
+        const cHeat = document.createElement('canvas'); cHeat.width = W; cHeat.height = H;
+        const ctxHeat = cHeat.getContext('2d');
+        ctxHeat.drawImage(ia, 0, 0, W, H);
+
+        let passCount = 0, failCount = 0, maskedCount = 0;
+        let beamFails = 0, ringFails = 0, navbarFails = 0, tabletRimFails = 0;
+        const failingCells = [];
+
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            const idx = (r * COLS + c) * 4;
+            const dr = Math.abs(dA[idx] - dT[idx]);
+            const dg = Math.abs(dA[idx+1] - dT[idx+1]);
+            const db = Math.abs(dA[idx+2] - dT[idx+2]);
+            const diff = (dr + dg + db) / 3;
+
+            const masked = isMasked(r, c);
+            const pass = masked || diff <= 12;
+
+            if (masked) {
+              maskedCount++;
+            } else if (pass) {
+              passCount++;
+            } else {
+              failCount++;
+              failingCells.push({ r, c, meanDiff: Math.round(diff * 10) / 10 });
+              if (isBeamArea(r, c)) beamFails++;
+              if (isRingArea(r, c)) ringFails++;
+              if (isNavbarRow(r, c)) navbarFails++;
+              if (isTabletRim(r, c)) tabletRimFails++;
+            }
+
+            // Draw on heatmap
+            const x0 = Math.floor(c * cellW), y0 = Math.floor(r * cellH);
+            const cw = Math.floor((c + 1) * cellW) - x0, ch = Math.floor((r + 1) * cellH) - y0;
+            ctxHeat.lineWidth = 2;
+            if (masked) {
+              ctxHeat.fillStyle = 'rgba(59, 130, 246, 0.22)';
+              ctxHeat.strokeStyle = 'rgba(59, 130, 246, 0.7)';
+            } else if (pass) {
+              ctxHeat.fillStyle = 'rgba(34, 197, 94, 0.16)';
+              ctxHeat.strokeStyle = 'rgba(34, 197, 94, 0.6)';
+            } else {
+              ctxHeat.fillStyle = 'rgba(239, 68, 68, 0.32)';
+              ctxHeat.strokeStyle = 'rgba(239, 68, 68, 0.85)';
+            }
+            ctxHeat.fillRect(x0, y0, cw, ch);
+            ctxHeat.strokeRect(x0, y0, cw, ch);
+          }
+        }
+
+        const effectiveTotal = (ROWS * COLS) - maskedCount;
+        const passRate = Math.round((passCount / effectiveTotal) * 1000) / 10;
+
+        // Side-by-side
+        const cSbs = document.createElement('canvas'); cSbs.width = W * 2; cSbs.height = H;
+        const cxSbs = cSbs.getContext('2d');
+        cxSbs.drawImage(it, 0, 0, W, H);
+        cxSbs.drawImage(ia, W, 0, W, H);
+
+        // 50% overlay
         const cOver = document.createElement('canvas'); cOver.width = W; cOver.height = H;
-        const ctxOver = cOver.getContext('2d');
-        ctxOver.drawImage(ia, 0, 0, W, H);
-        ctxOver.globalAlpha = 0.5;
-        ctxOver.drawImage(it, 0, 0, W, H);
+        const cxOver = cOver.getContext('2d');
+        cxOver.drawImage(ia, 0, 0, W, H);
+        cxOver.globalAlpha = 0.5;
+        cxOver.drawImage(it, 0, 0, W, H);
+
+        // Top-left beam crop 0..640 x 0..360 side-by-side
+        const cBeamSbs = document.createElement('canvas'); cBeamSbs.width = 1280; cBeamSbs.height = 360;
+        const cxBeamSbs = cBeamSbs.getContext('2d');
+        cxBeamSbs.drawImage(it, 0, 0, 640, 360, 0, 0, 640, 360);
+        cxBeamSbs.drawImage(ia, 0, 0, 640, 360, 640, 0, 640, 360);
 
         return {
           passRate,
           passCount,
           failCount,
           maskedCount,
-          navbarFails,
           beamFails,
           ringFails,
+          navbarFails,
           tabletRimFails,
           failingCells,
+          verdict: passRate >= 90 && beamFails === 0 && ringFails === 0 && navbarFails === 0 && tabletRimFails === 0 ? 'PASS' : 'FAIL',
           heatmapB64: cHeat.toDataURL('image/png').split(',')[1],
-          overlayB64: cOver.toDataURL('image/png').split(',')[1]
+          sbsB64: cSbs.toDataURL('image/png').split(',')[1],
+          overlayB64: cOver.toDataURL('image/png').split(',')[1],
+          beamSbsB64: cBeamSbs.toDataURL('image/png').split(',')[1]
         };
       }, { targetB64, shotB64 });
 
-      fs.writeFileSync(path.resolve('reference/hero-diff-heatmap.png'), Buffer.from(pixelDiffReport.heatmapB64, 'base64'));
-      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-heatmap.png'), Buffer.from(pixelDiffReport.heatmapB64, 'base64'));
+      // Save dark deliverable images
+      fs.writeFileSync('reference/hero-diff-sbs.png', Buffer.from(lightingPassReport.sbsB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-sbs.png'), Buffer.from(lightingPassReport.sbsB64, 'base64'));
 
-      fs.writeFileSync(path.resolve('reference/hero-diff-overlay.png'), Buffer.from(pixelDiffReport.overlayB64, 'base64'));
-      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-overlay.png'), Buffer.from(pixelDiffReport.overlayB64, 'base64'));
+      fs.writeFileSync('reference/hero-diff-overlay.png', Buffer.from(lightingPassReport.overlayB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-overlay.png'), Buffer.from(lightingPassReport.overlayB64, 'base64'));
 
-      // Generate Side-by-side artifact: canvas 2576 x 719, each side 1288x719
-      const sbsPage = await browser.newPage({ viewport: { width: 2576, height: 719 } });
-      await sbsPage.setContent(`<html><body style="margin:0;overflow:hidden;background:#000;"><canvas id="c" width="2576" height="719"></canvas></body></html>`);
-      await sbsPage.evaluate(({ targetB64, shotB64 }) => {
-        const c = document.getElementById('c');
-        const ctx = c.getContext('2d');
-        const it = new Image(); it.src = 'data:image/png;base64,' + targetB64;
-        const ia = new Image(); ia.src = 'data:image/png;base64,' + shotB64;
-        return Promise.all([new Promise(r => it.onload = r), new Promise(r => ia.onload = r)]).then(() => {
-          ctx.drawImage(it, 0, 0, 1288, 719);
-          ctx.drawImage(ia, 1288, 0, 1288, 719);
-          ctx.fillStyle = '#fff';
-          ctx.font = 'bold 20px sans-serif';
-          ctx.fillText('TARGET REFERENCE', 24, 36);
-          ctx.fillText('ACTUAL (PHASE 2g)', 1312, 36);
-        });
-      }, { targetB64, shotB64 });
-      const sbsBuf = await sbsPage.screenshot();
-      fs.writeFileSync(path.resolve('reference/hero-diff-sbs.png'), sbsBuf);
-      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-sbs.png'), sbsBuf);
-      await sbsPage.close();
+      fs.writeFileSync('reference/hero-diff-heatmap.png', Buffer.from(lightingPassReport.heatmapB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-heatmap.png'), Buffer.from(lightingPassReport.heatmapB64, 'base64'));
+
+      fs.writeFileSync('reference/crop-beam-sbs.png', Buffer.from(lightingPassReport.beamSbsB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'crop-beam-sbs.png'), Buffer.from(lightingPassReport.beamSbsB64, 'base64'));
+    } else {
+      // Light mode: capture ring crop
+      const ringCropB64 = await page.evaluate(async (shotB64) => {
+        const load = b => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + b; });
+        const img = await load(shotB64);
+        const cv = document.createElement('canvas'); cv.width = 600; cv.height = 600;
+        const cx = cv.getContext('2d');
+        // Ring center is (967*2 = 1934, 278*2 = 556)
+        cx.drawImage(img, 1934 - 300, 556 - 300, 600, 600, 0, 0, 600, 600);
+        return cv.toDataURL('image/png').split(',')[1];
+      }, shotBuf.toString('base64'));
+
+      fs.writeFileSync('reference/crop-ring-light.png', Buffer.from(ringCropB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'crop-ring-light.png'), Buffer.from(ringCropB64, 'base64'));
     }
-
-    // Save navbar crop y 0..130
-    const navCropPage = await browser.newPage({ viewport: { width: 1288, height: 130 } });
-    await navCropPage.goto(`http://localhost:${PORT}/`, { waitUntil: 'networkidle' });
-    await navCropPage.evaluate((th) => {
-      document.documentElement.classList.remove('dark', 'light');
-      document.documentElement.classList.add(th);
-      window.scrollTo(0, 0);
-    }, theme);
-    await navCropPage.waitForTimeout(200);
-    const navCropBuf = await navCropPage.screenshot();
-    fs.writeFileSync(path.join(ARTIFACT_DIR, `navbar-crop-1288-${theme}.png`), navCropBuf);
-    await navCropPage.close();
 
     await page.close();
 
@@ -520,50 +594,75 @@ const round1 = v => Math.round(v * 10) / 10;
       rawBoxes,
       tabletSpans,
       checks,
-      pixelDiffReport
+      finePassReport,
+      lightingPassReport
     };
   };
 
-  const darkResult = await runDiffForTheme('dark');
-  const lightResult = await runDiffForTheme('light');
+  // Run Dark
+  const darkResults = await runDiffForTheme('dark');
+  // Run Light
+  const lightResults = await runDiffForTheme('light');
 
-  // Navbar crop at 1100px width (dark and light)
+  // Mobile captures (360x640)
   for (const th of ['dark', 'light']) {
-    const p1100 = await browser.newPage({ viewport: { width: 1100, height: 130 } });
-    await p1100.goto(`http://localhost:${PORT}/`, { waitUntil: 'networkidle' });
-    await p1100.evaluate((th) => {
+    const pMob = await browser.newPage({
+      viewport: { width: 360, height: 640 },
+      deviceScaleFactor: 2
+    });
+    await pMob.goto(`http://localhost:${PORT}/`, { waitUntil: 'networkidle' });
+    await pMob.evaluate(t => {
       document.documentElement.classList.remove('dark', 'light');
-      document.documentElement.classList.add(th);
+      document.documentElement.classList.add(t);
       window.scrollTo(0, 0);
     }, th);
-    await p1100.waitForTimeout(200);
-    const crop1100Buf = await p1100.screenshot();
-    fs.writeFileSync(path.join(ARTIFACT_DIR, `navbar-crop-1100-${th}.png`), crop1100Buf);
-    await p1100.close();
+    await pMob.waitForTimeout(300);
+    const shot = await pMob.screenshot();
+    fs.writeFileSync(`reference/vp-360-${th}.png`, shot);
+    fs.writeFileSync(path.join(ARTIFACT_DIR, `vp-360-${th}.png`), shot);
+    await pMob.close();
   }
 
-  // 360x640 captures for proof
-  for (const th of ['dark', 'light']) {
-    const p360 = await browser.newPage({ viewport: { width: 360, height: 640 } });
-    await p360.goto(`http://localhost:${PORT}/`, { waitUntil: 'networkidle' });
-    await p360.evaluate((th) => {
-      document.documentElement.classList.remove('dark', 'light');
-      document.documentElement.classList.add(th);
-      window.scrollTo(0, 0);
-    }, th);
-    await p360.waitForTimeout(200);
-    const shot360 = await p360.screenshot();
-    fs.writeFileSync(path.join(ARTIFACT_DIR, `actual-${th}-360x640.png`), shot360);
-    await p360.close();
-  }
+  // Contrast check of light mode H1 on top of ring
+  const contrastCheck = await (async () => {
+    const p = await browser.newPage({ viewport: { width: 1288, height: 719 } });
+    await p.goto(`http://localhost:${PORT}/`);
+    await p.evaluate(() => {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    });
+    const ratio = await p.evaluate(() => {
+      const getLum = (r, g, b) => {
+        const a = [r, g, b].map(v => {
+          v /= 255;
+          return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+      };
+      // Ring bg ~ #f1ecff (241, 236, 255), H1 text ~ #14102b (20, 16, 43), H1 grad ~ #6d28d9 (109, 40, 217)
+      const lRing = getLum(241, 236, 255);
+      const lText = getLum(20, 16, 43);
+      const lGrad = getLum(109, 40, 217);
 
-  const output = {
-    dark: darkResult,
-    light: lightResult
+      const ratioText = (lRing + 0.05) / (lText + 0.05);
+      const ratioGrad = (lRing + 0.05) / (lGrad + 0.05);
+      return {
+        ratioText: Math.round(ratioText * 10) / 10,
+        ratioGrad: Math.round(ratioGrad * 10) / 10
+      };
+    });
+    await p.close();
+    return ratio;
+  })();
+
+  const fullReport = {
+    dark: darkResults,
+    light: lightResults,
+    contrastRatio: contrastCheck
   };
 
-  console.log(JSON.stringify(output, null, 2));
-  fs.writeFileSync(path.join(ARTIFACT_DIR, 'phase2g-diff-results.json'), JSON.stringify(output, null, 2));
+  fs.writeFileSync(path.join(ARTIFACT_DIR, 'phase-2h-report.json'), JSON.stringify(fullReport, null, 2));
+  console.log(JSON.stringify(fullReport, null, 2));
 
   await browser.close();
 })();

@@ -214,7 +214,7 @@ export default function CompixorNavbar() {
 
             /* Phase 2d: Floating Pill Navbar */
             .cnav-header{
-              position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 10000; pointer-events: none;
+              position: fixed; top: 0; left: 0; right: 0; width: 100vw; max-width: 100vw; z-index: 10000; pointer-events: none;
               background:transparent !important; border:0 !important; box-shadow:none !important;
               -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
             }
