@@ -99,9 +99,7 @@ video {
    6. 100vh PROBLEM (address bar ke neeche content katna)
    ---------------------------------------------------------------------------- */
 @supports (height: 100dvh) {
-  .hero,
-  .hero-section,
-  [class*="hero"] {
+  .hero-fullscreen {
     min-height: 100dvh;
   }
 }
@@ -364,4 +362,44 @@ html.dark, [data-theme="dark"] {
   cursor: not-allowed;
   pointer-events: none;
 }
+
+/* ============================================================================
+   PHASE 2d: FLOATING PILL NAVBAR CSS
+   ============================================================================ */
+.cnav-header{
+  position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 10000; pointer-events: none;
+  background:transparent !important; border:0 !important; box-shadow:none !important;
+  -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+}
+.cnav-pill{
+  --n-bg:rgba(255,255,255,.06); --n-line:rgba(255,255,255,.12);
+  --n-link:rgba(244,242,255,.72); --n-link-hover:#fff; --n-brand:#fff;
+  --n-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+  width:min(82.6%,1180px); height:58px; margin:12px auto 0; padding:0 10px 0 8px;
+  border-radius:20px; background:var(--n-bg); border:1px solid var(--n-line);
+  -webkit-backdrop-filter:blur(16px) saturate(140%); backdrop-filter:blur(16px) saturate(140%);
+  box-shadow:var(--n-shadow);
+}
+html.light .cnav-pill{
+  --n-bg:rgba(255,255,255,.72); --n-line:rgba(20,16,43,.12);
+  --n-link:rgba(20,16,43,.72); --n-link-hover:#14102b; --n-brand:#14102b;
+  --n-shadow:0 8px 30px rgba(60,30,140,.10);
+}
+.cnav-brand{ display:flex; align-items:center; gap:6px; color:var(--n-brand); text-decoration:none;
+  font:600 20px/1 var(--font-inter),system-ui,sans-serif; letter-spacing:-.02em; }
+.cnav-brand img{ height:42px; width:auto; }
+.cnav-links{ display:flex; align-items:center; gap:30px; }
+.cnav-link{ color:var(--n-link); text-decoration:none; padding:8px 0;
+  font:400 15px/1 var(--font-inter),system-ui,sans-serif; transition:color .2s; }
+.cnav-link:hover{ color:var(--n-link-hover); }
+.cnav-link:focus-visible,.cnav-theme:focus-visible,.cnav-cta:focus-visible{ outline:2px solid #a78bfa; outline-offset:2px; border-radius:8px; }
+.cnav-theme{ width:36px; height:36px; display:grid; place-items:center; border-radius:50%;
+  color:var(--n-link); background:transparent; border:1px solid var(--n-line); }
+.cnav-cta{ height:39px; padding:0 20px; display:inline-flex; align-items:center; border-radius:999px;
+  color:#fff; text-decoration:none; font:600 15px/1 var(--font-inter),system-ui,sans-serif;
+  background:linear-gradient(135deg,#4c2fb8,#6a46e0); border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 6px 20px rgba(76,47,184,.45); transition:filter .2s; }
+.cnav-cta:hover{ filter:brightness(1.12); }
+@media (max-width:1023px){ .cnav-pill{ width:calc(100% - 24px); height:54px; } }
 

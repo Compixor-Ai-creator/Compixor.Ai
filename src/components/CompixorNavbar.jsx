@@ -212,54 +212,44 @@ export default function CompixorNavbar() {
               }
             }
 
-            /* Phase 2c: Floating Pill Header Structure */
-            .cnav-header {
-              position: fixed;
-              top: 16px;
-              left: 16px;
-              right: 16px;
-              max-width: 1140px;
-              margin: 0 auto;
-              z-index: 10000;
-              border-radius: 20px;
-              -webkit-transform: translateZ(0);
-              transform: translateZ(0);
+            /* Phase 2d: Floating Pill Navbar */
+            .cnav-header{
+              position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 10000; pointer-events: none;
+              background:transparent !important; border:0 !important; box-shadow:none !important;
+              -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
             }
-            @media (max-width: 768px) {
-              .cnav-header {
-                top: 10px;
-                left: 10px;
-                right: 10px;
-                border-radius: 18px;
-              }
+            .cnav-pill{
+              --n-bg:rgba(255,255,255,.06); --n-line:rgba(255,255,255,.12);
+              --n-link:rgba(244,242,255,.72); --n-link-hover:#fff; --n-brand:#fff;
+              --n-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+              display:flex; align-items:center; justify-content:space-between; gap:20px;
+              width:min(82.6%,1180px); height:58px; margin:12px auto 0; padding:0 10px 0 8px;
+              border-radius:20px; background:var(--n-bg); border:1px solid var(--n-line);
+              -webkit-backdrop-filter:blur(16px) saturate(140%); backdrop-filter:blur(16px) saturate(140%);
+              box-shadow:var(--n-shadow);
             }
-            .cnav-glass {
-              position: absolute;
-              inset: 0;
-              border-radius: inherit;
-              z-index: 0;
-              pointer-events: none;
+            html.light .cnav-pill{
+              --n-bg:rgba(255,255,255,.72); --n-line:rgba(20,16,43,.12);
+              --n-link:rgba(20,16,43,.72); --n-link-hover:#14102b; --n-brand:#14102b;
+              --n-shadow:0 8px 30px rgba(60,30,140,.10);
             }
-            .cnav-bar {
-              position: relative;
-              z-index: 1;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              min-height: 58px;
-              padding: 6px 18px;
-              border-radius: inherit;
-              color: #1a1530;
-            }
-            @media (max-width: 768px) {
-              .cnav-bar {
-                min-height: 52px;
-                padding: 4px 12px;
-              }
-            }
-            .dark .cnav-bar {
-              color: #f3f0ff;
-            }
+            .cnav-brand{ display:flex; align-items:center; gap:6px; color:var(--n-brand); text-decoration:none;
+              font:600 20px/1 var(--font-inter),system-ui,sans-serif; letter-spacing:-.02em; }
+            .cnav-brand img{ height:42px; width:auto; }   /* PNG has transparent padding: the visible
+                                                             C glyph must measure ~28w x 36h */
+            .cnav-links{ display:flex; align-items:center; gap:30px; }
+            .cnav-link{ color:var(--n-link); text-decoration:none; padding:8px 0;
+              font:400 15px/1 var(--font-inter),system-ui,sans-serif; transition:color .2s; }
+            .cnav-link:hover{ color:var(--n-link-hover); }
+            .cnav-link:focus-visible,.cnav-theme:focus-visible,.cnav-cta:focus-visible{ outline:2px solid #a78bfa; outline-offset:2px; border-radius:8px; }
+            .cnav-theme{ width:36px; height:36px; display:grid; place-items:center; border-radius:50%;
+              color:var(--n-link); background:transparent; border:1px solid var(--n-line); }
+            .cnav-cta{ height:39px; padding:0 20px; display:inline-flex; align-items:center; border-radius:999px;
+              color:#fff; text-decoration:none; font:600 15px/1 var(--font-inter),system-ui,sans-serif;
+              background:linear-gradient(135deg,#4c2fb8,#6a46e0); border:1px solid rgba(255,255,255,.18);
+              box-shadow:0 6px 20px rgba(76,47,184,.45); transition:filter .2s; }
+            .cnav-cta:hover{ filter:brightness(1.12); }
+            @media (max-width:1023px){ .cnav-pill{ width:calc(100% - 24px); height:54px; } }
 
             /* Phase 3 & Icons CSS (icons must never shrink) */
             .cnav-ico {
@@ -485,46 +475,39 @@ export default function CompixorNavbar() {
         }}
       />
       <header className="cnav-header">
-        <div className="cnav-glass cglass" aria-hidden="true" />
         <nav
           ref={navRef}
           aria-label="Main Navigation"
-          className="cnav-bar"
+          className="cnav-pill"
         >
-          {/* Brand Logo with C Logo and Outfit wordmark */}
+          {/* Brand Logo with C Logo and wordmark */}
           <Link
             href="/"
             aria-label="Compixor AI home"
-            className="flex items-center gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a78bfa] rounded-lg"
+            className="cnav-brand shrink-0"
           >
             <Image
               src="/brand/logo-c.png"
-              alt="Compixor C Logo"
-              width={34}
-              height={34}
-              className="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] object-contain transition-transform duration-200 group-hover:scale-105"
+              alt=""
+              width={42}
+              height={42}
               priority
             />
-            <span
-              className="font-bold text-lg sm:text-xl tracking-tight text-zinc-950 dark:text-white"
-              style={{ fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif', letterSpacing: '-0.02em' }}
-            >
-              Compixor
-            </span>
+            <span>Compixor</span>
           </Link>
 
           {/* Desktop Links (>= 1024px) */}
-          <ul className="hidden lg:flex items-center gap-3 xl:gap-5">
+          <ul className="cnav-links hidden lg:flex items-center">
             {NAV_GROUPS.map((g) => (
               <li
                 key={g.id}
-                className="cnav-group"
+                className="cnav-group relative"
                 onMouseEnter={() => openNow(g.id)}
                 onMouseLeave={closeSoon}
               >
                 <button
                   type="button"
-                  className="cnav-trigger rounded-xl px-2 xl:px-2.5 py-1.5 text-[14.5px] font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
+                  className="cnav-link cnav-trigger bg-transparent border-0 cursor-pointer"
                   aria-haspopup="true"
                   aria-expanded={openGroup === g.id}
                   onClick={() => setOpenGroup(openGroup === g.id ? null : g.id)}
@@ -559,7 +542,7 @@ export default function CompixorNavbar() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="cnav-desktop-link rounded-xl px-2 xl:px-2.5 py-1.5 text-[14.5px] font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
+                  className="cnav-link"
                 >
                   <span>
                     {l.label === "Passport Photo Maker" ? "Passport Photo" : l.label === "Blogs & Guides" ? "Blogs" : l.label}
@@ -575,26 +558,14 @@ export default function CompixorNavbar() {
               type="button"
               onClick={toggleTheme}
               aria-label="Toggle Dark Mode"
-              className="
-                cnav-theme-btn flex h-9 w-9 items-center justify-center rounded-xl
-                hover:bg-white/50 dark:hover:bg-white/10
-                border border-transparent hover:border-white/40
-                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
-                transition-all
-              "
+              className="cnav-theme"
             >
               {mounted && dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
 
             <Link
-              href="/#tools"
-              className="
-                hidden sm:inline-flex items-center justify-center rounded-full
-                bg-gradient-to-r from-[#4c2fb8] to-[#6a46e0]
-                px-5 py-2 text-sm font-semibold text-white
-                shadow-md shadow-purple-900/30
-                hover:brightness-110 active:scale-[0.98] transition-all
-              "
+              href="#tools"
+              className="cnav-cta hidden sm:inline-flex"
             >
               Get Started
             </Link>
@@ -607,12 +578,7 @@ export default function CompixorNavbar() {
               aria-label="Toggle Menu"
               aria-expanded={mobileOpen}
               aria-controls="cnav-mobile"
-              className="
-                lg:hidden flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl
-                hover:bg-white/50 dark:hover:bg-white/10
-                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
-                transition-colors duration-200
-              "
+              className="cnav-theme lg:hidden flex items-center justify-center"
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
