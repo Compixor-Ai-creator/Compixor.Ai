@@ -190,21 +190,46 @@ a {
    ============================================================================ */
 
 /* ============================================================================
-   COMPIXOR LANDING V2 DESIGN TOKENS & UTILITIES
+   COMPIXOR LANDING V2/V2C DESIGN TOKENS & UTILITIES
    Additive & namespaced with prefix --cx- and .cx-
    ============================================================================ */
 :root {
-  --cx-bg: #07060f;
+  --cx-bg: #08070f;
   --cx-surface: #0f0d1c;
   --cx-surface-2: #171428;
-  --cx-line: rgba(255, 255, 255, 0.08);
+  --cx-line: rgba(255, 255, 255, 0.12);
   --cx-text: #f4f2ff;
-  --cx-muted: #a29fbd;
+  --cx-muted: #9b97b5;
   --cx-accent: #8b5cf6;
+  --cx-accent-text: #a78bfa;
   --cx-accent-soft: #a78bfa;
   --cx-radius-s: 10px;
   --cx-radius-l: 20px;
   --cx-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+html.light, [data-theme="light"] {
+  --cx-bg: #f7f5ff;
+  --cx-surface: #ffffff;
+  --cx-surface-2: #ede9fe;
+  --cx-line: rgba(20, 16, 43, 0.14);
+  --cx-text: #14102b;
+  --cx-muted: #5b5675;
+  --cx-accent: #7c3aed;
+  --cx-accent-text: #6d28d9;
+  --cx-accent-soft: #8b5cf6;
+}
+
+html.dark, [data-theme="dark"] {
+  --cx-bg: #08070f;
+  --cx-surface: #0f0d1c;
+  --cx-surface-2: #171428;
+  --cx-line: rgba(255, 255, 255, 0.12);
+  --cx-text: #f4f2ff;
+  --cx-muted: #9b97b5;
+  --cx-accent: #8b5cf6;
+  --cx-accent-text: #a78bfa;
+  --cx-accent-soft: #a78bfa;
 }
 
 /* Typography bindings using layout.tsx variables without editing layout.tsx */

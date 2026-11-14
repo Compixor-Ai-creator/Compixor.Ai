@@ -19,7 +19,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
-import { FaqJsonLd } from '@/components/JsonLd';
+import { FaqJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
 import Hero from '@/components/landing/Hero';
 import WhyTrustCompixor from '@/components/WhyTrustCompixor';
 import WhatUsersSay from '@/components/WhatUsersSay';
@@ -190,25 +190,13 @@ export default function HomePage() {
     <div className="relative overflow-x-clip">
       <FaqJsonLd faqs={homeFaqs} />
 
-      {/* ============ BREADCRUMB NAVIGATION WITH MICRODATA ============ */}
-      <nav aria-label="Breadcrumb" className="breadcrumb max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
-        <ol itemScope itemType="https://schema.org/BreadcrumbList" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 list-none p-0 m-0">
-          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" className="inline-flex items-center">
-            <Link itemProp="item" href="https://compixor-ai.cloud" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
-              <span itemProp="name">Home</span>
-            </Link>
-            <meta itemProp="position" content="1" />
-          </li>
-          <li aria-hidden="true" className="text-zinc-400 dark:text-zinc-600">
-            /
-          </li>
-          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" aria-current="page" className="text-zinc-800 dark:text-zinc-200 font-medium inline-flex items-center">
-            <span itemProp="name">All PDF, Word and Photo Tools</span>
-            <meta itemProp="item" content="https://compixor-ai.cloud/#tools" />
-            <meta itemProp="position" content="2" />
-          </li>
-        </ol>
-      </nav>
+      {/* Breadcrumb JSON-LD schema (visual breadcrumb omitted on home to match target design) */}
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', url: 'https://compixor-ai.cloud' },
+          { name: 'All PDF, Word and Photo Tools', url: 'https://compixor-ai.cloud/#tools' },
+        ]}
+      />
 
       {/* ============ HERO SECTION ============ */}
       <Hero />

@@ -175,22 +175,21 @@ export default function CompixorNavbar() {
               }
             }
 
-            /* Dark mode: clean calmer style with --cx-bg ~85% + blur and 1px border */
+            /* Phase 2c: Floating Pill Glass System */
             .dark .cnav-glass {
-              background-color: rgba(7, 6, 15, 0.85) !important;
+              background-color: rgba(255, 255, 255, 0.06) !important;
               backdrop-filter: blur(16px);
               -webkit-backdrop-filter: blur(16px);
               background-image: none !important;
-              border: 1px solid var(--cx-line, rgba(255, 255, 255, 0.08)) !important;
-              border-bottom: 1px solid var(--cx-line, rgba(255, 255, 255, 0.08)) !important;
-              box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+              border: 1px solid rgba(255, 255, 255, 0.12) !important;
+              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
             }
             .cnav-glass {
-              background-color: rgba(255, 255, 255, 0.85);
+              background-color: rgba(255, 255, 255, 0.72) !important;
               backdrop-filter: blur(16px);
               -webkit-backdrop-filter: blur(16px);
-              border: 1px solid rgba(15, 23, 42, 0.08);
-              box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+              border: 1px solid rgba(20, 16, 43, 0.12) !important;
+              box-shadow: 0 10px 30px rgba(88, 60, 200, 0.08);
             }
             .dark .cglass::after { display: none !important; }
             .dark .cnav-bar {
@@ -213,25 +212,25 @@ export default function CompixorNavbar() {
               }
             }
 
-            /* Phase 2: Dedicated Header Structure */
+            /* Phase 2c: Floating Pill Header Structure */
             .cnav-header {
               position: fixed;
-              top: 12px;
-              left: 12px;
-              right: 12px;
-              max-width: 1280px;
+              top: 16px;
+              left: 16px;
+              right: 16px;
+              max-width: 1140px;
               margin: 0 auto;
               z-index: 10000;
-              border-radius: 22px;
+              border-radius: 20px;
               -webkit-transform: translateZ(0);
               transform: translateZ(0);
             }
             @media (max-width: 768px) {
               .cnav-header {
-                top: 8px;
-                left: 8px;
-                right: 8px;
-                border-radius: 16px;
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                border-radius: 18px;
               }
             }
             .cnav-glass {
@@ -247,13 +246,15 @@ export default function CompixorNavbar() {
               display: flex;
               align-items: center;
               justify-content: space-between;
-              padding: 10px 18px;
+              min-height: 58px;
+              padding: 6px 18px;
               border-radius: inherit;
               color: #1a1530;
             }
             @media (max-width: 768px) {
               .cnav-bar {
-                padding: 6px 12px;
+                min-height: 52px;
+                padding: 4px 12px;
               }
             }
             .dark .cnav-bar {
@@ -287,20 +288,20 @@ export default function CompixorNavbar() {
             .cnav-desktop-link, .cnav-link, .cnav-trigger {
               display: inline-flex;
               align-items: center;
-              gap: 8px;
+              gap: 4px;
               white-space: nowrap;
-              color: #475569;
+              color: var(--cx-muted, #5b5675);
               transition: color .15s ease, background-color .15s ease;
             }
             .dark .cnav-desktop-link, .dark .cnav-link, .dark .cnav-trigger {
-              color: var(--cx-muted, #a29fbd);
+              color: var(--cx-muted, #9b97b5);
             }
             .cnav-desktop-link:hover, .cnav-trigger:hover {
-              color: #0f172a;
-              background-color: rgba(15, 23, 42, 0.05);
+              color: var(--cx-text, #14102b);
+              background-color: rgba(20, 16, 43, 0.05);
             }
             .dark .cnav-desktop-link:hover, .dark .cnav-trigger:hover {
-              color: var(--cx-text, #f4f2ff);
+              color: #ffffff;
               background-color: rgba(255, 255, 255, 0.06);
             }
             .cnav-desktop-link:active, .cnav-trigger:active {
@@ -505,15 +506,15 @@ export default function CompixorNavbar() {
               priority
             />
             <span
-              className="font-semibold text-lg sm:text-xl tracking-tight text-zinc-900 dark:text-[#f4f2ff]"
-              style={{ fontFamily: 'var(--font-outfit), sans-serif', letterSpacing: '-0.02em' }}
+              className="font-bold text-lg sm:text-xl tracking-tight text-zinc-950 dark:text-white"
+              style={{ fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif', letterSpacing: '-0.02em' }}
             >
               Compixor
             </span>
           </Link>
 
           {/* Desktop Links (>= 1024px) */}
-          <ul className="hidden lg:flex items-center gap-1">
+          <ul className="hidden lg:flex items-center gap-3 xl:gap-5">
             {NAV_GROUPS.map((g) => (
               <li
                 key={g.id}
@@ -523,14 +524,12 @@ export default function CompixorNavbar() {
               >
                 <button
                   type="button"
-                  className="cnav-trigger rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
+                  className="cnav-trigger rounded-xl px-2 xl:px-2.5 py-1.5 text-[14.5px] font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
                   aria-haspopup="true"
                   aria-expanded={openGroup === g.id}
                   onClick={() => setOpenGroup(openGroup === g.id ? null : g.id)}
                 >
-                  <NavIcon name={g.icon} size={18} />
                   <span>{g.label}</span>
-                  <ChevronDown className="cnav-chev" size={16} />
                 </button>
 
                 <div
@@ -560,17 +559,18 @@ export default function CompixorNavbar() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="cnav-desktop-link rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
+                  className="cnav-desktop-link rounded-xl px-2 xl:px-2.5 py-1.5 text-[14.5px] font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
                 >
-                  <NavIcon name={l.icon} size={18} />
-                  <span>{l.label}</span>
+                  <span>
+                    {l.label === "Passport Photo Maker" ? "Passport Photo" : l.label === "Blogs & Guides" ? "Blogs" : l.label}
+                  </span>
                 </Link>
               </li>
             ))}
           </ul>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             <button
               type="button"
               onClick={toggleTheme}
@@ -589,11 +589,11 @@ export default function CompixorNavbar() {
             <Link
               href="/#tools"
               className="
-                hidden sm:inline-block rounded-xl bg-gradient-to-r from-[#6d28d9] to-[#7c3aed]
-                px-4 py-2 text-sm font-semibold text-white
-                shadow-md shadow-purple-600/25
-                hover:brightness-110 hover:shadow-lg hover:shadow-purple-600/35
-                active:scale-[0.98] transition-all
+                hidden sm:inline-flex items-center justify-center rounded-full
+                bg-gradient-to-r from-[#4c2fb8] to-[#6a46e0]
+                px-5 py-2 text-sm font-semibold text-white
+                shadow-md shadow-purple-900/30
+                hover:brightness-110 active:scale-[0.98] transition-all
               "
             >
               Get Started
