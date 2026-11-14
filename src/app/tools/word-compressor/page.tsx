@@ -229,7 +229,7 @@ export default function WordCompressorPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 md:pt-8 pb-10 sm:pb-16">
       {/* Fullscreen Drop Anywhere Drag & Drop Overlay */}
       <DropAnywhere
         onFileDrop={handleFileDrop}

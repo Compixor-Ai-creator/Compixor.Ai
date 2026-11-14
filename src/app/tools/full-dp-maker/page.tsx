@@ -664,7 +664,7 @@ export default function FullDpMakerPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 md:py-16">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6 md:pt-8 pb-10 sm:pb-16">
       {/* Fullscreen Drop Anywhere Drag & Drop Overlay */}
       <DropAnywhere
         onFileDrop={handleFileLoad}

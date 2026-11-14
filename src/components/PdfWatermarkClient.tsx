@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import CxSelect from '@/components/ui/CxSelect';
 import { incrementFilesDone } from '@/lib/feedbackCounter';
@@ -126,8 +127,15 @@ export default function PdfWatermarkClient({
   initialMode?: 'add' | 'remove';
   hideHeader?: boolean;
 }) {
+  const router = useRouter();
+
   // Mode: Add Watermark vs Remove Watermark
   const [activeMode, setActiveMode] = useState<'add' | 'remove'>(initialMode);
+
+  // Keep active mode in sync with route prop
+  useEffect(() => {
+    setActiveMode(initialMode);
+  }, [initialMode]);
 
   // PDF Document State
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -1095,9 +1103,7 @@ export default function PdfWatermarkClient({
           <button
             onClick={() => {
               setActiveMode('add');
-              if (typeof window !== 'undefined' && window.location.pathname.includes('watermark')) {
-                window.history.replaceState(null, '', '/tools/add-watermark');
-              }
+              router.push('/tools/add-watermark', { scroll: false });
             }}
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
               activeMode === 'add'
@@ -1114,9 +1120,7 @@ export default function PdfWatermarkClient({
           <button
             onClick={() => {
               setActiveMode('remove');
-              if (typeof window !== 'undefined' && window.location.pathname.includes('watermark')) {
-                window.history.replaceState(null, '', '/tools/remove-watermark');
-              }
+              router.push('/tools/remove-watermark', { scroll: false });
             }}
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
               activeMode === 'remove'
