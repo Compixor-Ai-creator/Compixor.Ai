@@ -227,6 +227,7 @@ export default function CompixorNavbar() {
               border-radius:20px; background:var(--n-bg); border:1px solid var(--n-line);
               -webkit-backdrop-filter:blur(16px) saturate(140%); backdrop-filter:blur(16px) saturate(140%);
               box-shadow:var(--n-shadow);
+              pointer-events:auto;
             }
             html.light .cnav-pill{
               --n-bg:rgba(255,255,255,.72); --n-line:rgba(20,16,43,.12);
@@ -243,7 +244,12 @@ export default function CompixorNavbar() {
             .cnav-link:hover{ color:var(--n-link-hover); }
             .cnav-link:focus-visible,.cnav-theme:focus-visible,.cnav-cta:focus-visible{ outline:2px solid #a78bfa; outline-offset:2px; border-radius:8px; }
             .cnav-theme{ width:36px; height:36px; display:grid; place-items:center; border-radius:50%;
-              color:var(--n-link); background:transparent; border:1px solid var(--n-line); }
+              color:var(--n-link); background:transparent; border:1px solid var(--n-line); cursor:pointer; }
+            .cnav-hamburger{ display:none !important; }
+            @media (max-width:1023px){
+              .cnav-hamburger{ width:36px; height:36px; display:grid !important; place-items:center; border-radius:50%;
+                color:var(--n-link); background:transparent; border:1px solid var(--n-line); cursor:pointer; }
+            }
             .cnav-cta{ height:39px; padding:0 20px; display:inline-flex; align-items:center; border-radius:999px;
               color:#fff; text-decoration:none; font:600 15px/1 var(--font-inter),system-ui,sans-serif;
               background:linear-gradient(135deg,#4c2fb8,#6a46e0); border:1px solid rgba(255,255,255,.18);
@@ -578,7 +584,7 @@ export default function CompixorNavbar() {
               aria-label="Toggle Menu"
               aria-expanded={mobileOpen}
               aria-controls="cnav-mobile"
-              className="cnav-theme lg:hidden flex items-center justify-center"
+              className="cnav-hamburger"
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
