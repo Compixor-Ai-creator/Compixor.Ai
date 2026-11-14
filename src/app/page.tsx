@@ -20,12 +20,10 @@ import {
 } from 'lucide-react';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { FaqJsonLd } from '@/components/JsonLd';
+import Hero from '@/components/landing/Hero';
 import WhyTrustCompixor from '@/components/WhyTrustCompixor';
 import WhatUsersSay from '@/components/WhatUsersSay';
-import HeroCTA from '@/components/HeroCTA';
 import ClientSideGuideSection from '@/components/ClientSideGuideSection';
-import HeroRightCard from '@/components/HeroRightCard';
-import { ContainerTextFlip } from '@/components/ui/container-text-flip';
 import { tools } from '@/data/tools';
 
 const trustSignals = [
@@ -169,22 +167,6 @@ const homeFaqs = [
   },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.05 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
 export default function HomePage() {
   // FAQ filter. Which questions are *open* is owned by each <Disclosure>
   // (Headless UI v2 has no controlled `open` prop); search only decides what is
@@ -208,110 +190,28 @@ export default function HomePage() {
     <div className="relative overflow-x-clip">
       <FaqJsonLd faqs={homeFaqs} />
 
-      {/* ============ HERO SECTION (Seamless Breadcrumb Merge) ============ */}
-      <section id="hero-section" className="cx-hero relative isolate overflow-x-clip pt-4 sm:pt-6">
-        {/* ============ BREADCRUMB NAVIGATION WITH MICRODATA ============ */}
-        <nav aria-label="Breadcrumb" className="breadcrumb max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
-          <ol itemScope itemType="https://schema.org/BreadcrumbList" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 list-none p-0 m-0">
-            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" className="inline-flex items-center">
-              <Link itemProp="item" href="https://compixor-ai.cloud" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
-                <span itemProp="name">Home</span>
-              </Link>
-              <meta itemProp="position" content="1" />
-            </li>
-            <li aria-hidden="true" className="text-zinc-400 dark:text-zinc-600">
-              /
-            </li>
-            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" aria-current="page" className="text-zinc-800 dark:text-zinc-200 font-medium inline-flex items-center">
-              <span itemProp="name">All PDF, Word and Photo Tools</span>
-              <meta itemProp="item" content="https://compixor-ai.cloud/#tools" />
-              <meta itemProp="position" content="2" />
-            </li>
-          </ol>
-        </nav>
+      {/* ============ BREADCRUMB NAVIGATION WITH MICRODATA ============ */}
+      <nav aria-label="Breadcrumb" className="breadcrumb max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
+        <ol itemScope itemType="https://schema.org/BreadcrumbList" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 list-none p-0 m-0">
+          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" className="inline-flex items-center">
+            <Link itemProp="item" href="https://compixor-ai.cloud" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
+              <span itemProp="name">Home</span>
+            </Link>
+            <meta itemProp="position" content="1" />
+          </li>
+          <li aria-hidden="true" className="text-zinc-400 dark:text-zinc-600">
+            /
+          </li>
+          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem" aria-current="page" className="text-zinc-800 dark:text-zinc-200 font-medium inline-flex items-center">
+            <span itemProp="name">All PDF, Word and Photo Tools</span>
+            <meta itemProp="item" content="https://compixor-ai.cloud/#tools" />
+            <meta itemProp="position" content="2" />
+          </li>
+        </ol>
+      </nav>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 md:pt-8 pb-10 sm:pb-14">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            {/* Left Column: Hero Copy & CTA */}
-            <motion.div
-              className="lg:col-span-7 text-left"
-              initial="hidden"
-              animate="visible"
-              variants={containerVariants}
-            >
-              {/* Architecture Badge */}
-              <motion.div variants={itemVariants} className="mb-4">
-                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200/90 dark:border-zinc-700/80">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                  All-in-One Private PDF &amp; Image Toolkit · High-Speed Execution
-                </span>
-              </motion.div>
-
-              {/* Author & Last-Updated Byline using DIV to preserve voice percentage */}
-              <motion.div variants={itemVariants} className="mb-4">
-                <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                  By <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Compixor Global Studio</strong> • Last updated: <time dateTime="2026-11-08">November 8, 2026</time>
-                </div>
-              </motion.div>
-
-              {/* Clean, Visible High-Contrast H1 Heading */}
-              <motion.h1
-                variants={itemVariants}
-                id="hero-heading"
-                className="text-3xl sm:text-5xl lg:text-[3.25rem] font-bold font-display tracking-tight text-zinc-950 dark:text-white mb-6 leading-[1.14]"
-              >
-                Free Private PDF, Word &amp; Photo Tools That Run in Your Browser
-              </motion.h1>
-
-              {/* Accurate & Grounded Product Summary */}
-              <p
-                id="hero-summary"
-                className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 max-w-xl mb-6 leading-relaxed"
-              >
-                Compixor is a private web toolkit to compress, merge, protect, watermark, and convert documents directly in your browser. 9 tools run locally on your device with zero photo or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport Photo) process securely over HTTPS with zero permanent file storage.
-              </p>
-
-              {/* Primary CTA */}
-              <motion.div variants={itemVariants} className="mb-6">
-                <HeroCTA />
-              </motion.div>
-
-              {/* Badges using spans */}
-              <motion.div
-                variants={itemVariants}
-                className="cx-chips flex flex-wrap items-center gap-x-3 gap-y-2.5 pt-2"
-              >
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs whitespace-nowrap">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  100% Free
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs whitespace-nowrap">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  Zero File Storage
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs whitespace-nowrap">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  No Account Needed
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/90 dark:border-zinc-700/80 backdrop-blur-md text-zinc-800 dark:text-zinc-200 shadow-xs whitespace-nowrap">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  No Watermarks
-                </span>
-              </motion.div>
-            </motion.div>
-
-            {/* Right Column: Hero SVG Art Card (Privacy & Tools Visualization) */}
-            <motion.div
-              className="lg:col-span-5 flex items-center justify-center lg:justify-end"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <HeroRightCard />
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      {/* ============ HERO SECTION ============ */}
+      <Hero />
 
       {/* ============ ALL TOOLS CATALOG ============ */}
       <section id="tools" className="relative py-10 sm:py-16 scroll-mt-20">
@@ -414,7 +314,8 @@ export default function HomePage() {
       </article>
 
       {/* ============ STRUCTURED COMPARISON TABLE ============ */}
-      <section id="privacy-comparison" className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="privacy" className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div id="privacy-comparison" className="sr-only" />
         <div className="text-center max-w-3xl mx-auto mb-8">
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 mb-3">
             <Shield className="w-3.5 h-3.5 text-emerald-500" />
@@ -725,7 +626,7 @@ export default function HomePage() {
               href="#tools"
               className="btn-primary inline-flex items-center justify-center gap-2 text-sm sm:text-base px-6 sm:px-8 py-3.5 font-bold cursor-pointer w-full sm:w-auto min-h-[44px]"
             >
-              <span>Start Now — Make Your Life Easy</span>
+              <span>Choose a Tool</span>
               <ArrowRight className="w-5 h-5 shrink-0" />
             </a>
           </motion.div>

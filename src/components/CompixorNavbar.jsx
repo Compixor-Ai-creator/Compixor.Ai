@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Files,
   FileText,
@@ -71,6 +72,16 @@ export default function CompixorNavbar() {
   // Mobile menu & accordion state
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobGroup, setMobGroup] = useState(null);
+  const hamburgerBtnRef = useRef(null);
+  const prevMobileOpen = useRef(mobileOpen);
+
+  // Return focus to hamburger button when mobile menu closes
+  useEffect(() => {
+    if (prevMobileOpen.current && !mobileOpen) {
+      hamburgerBtnRef.current?.focus();
+    }
+    prevMobileOpen.current = mobileOpen;
+  }, [mobileOpen]);
 
   // Body scroll lock & responsive dismiss for mobile menu
   useEffect(() => {
@@ -164,27 +175,39 @@ export default function CompixorNavbar() {
               }
             }
 
-            /* Dark mode: clean solid header + panel, no glass/noise overlay on any screen */
+            /* Dark mode: clean calmer style with --cx-bg ~85% + blur and 1px border */
             .dark .cnav-glass {
-              background-color: #0f172a !important;
+              background-color: rgba(7, 6, 15, 0.85) !important;
+              backdrop-filter: blur(16px);
+              -webkit-backdrop-filter: blur(16px);
               background-image: none !important;
-              border-color: rgba(255, 255, 255, 0.08) !important;
+              border: 1px solid var(--cx-line, rgba(255, 255, 255, 0.08)) !important;
+              border-bottom: 1px solid var(--cx-line, rgba(255, 255, 255, 0.08)) !important;
+              box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+            }
+            .cnav-glass {
+              background-color: rgba(255, 255, 255, 0.85);
+              backdrop-filter: blur(16px);
+              -webkit-backdrop-filter: blur(16px);
+              border: 1px solid rgba(15, 23, 42, 0.08);
+              box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
             }
             .dark .cglass::after { display: none !important; }
             .dark .cnav-bar {
-              background: rgba(15, 23, 42, 0.92);
-              border: 1px solid rgba(255, 255, 255, 0.06);
+              background: transparent !important;
+              border: none !important;
+              color: var(--cx-text, #f4f2ff);
             }
 
             @media (max-width: 1023px) {
               .dark .cnav-panel {
-                background: #0f172a !important;
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                background: rgba(15, 13, 28, 0.98) !important;
+                border: 1px solid var(--cx-line, rgba(255, 255, 255, 0.08));
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
               }
               .dark .cnav-panel::after { display: none !important; }
               .dark .cnav-backdrop {
-                background: rgba(0, 0, 0, 0.45);
+                background: rgba(0, 0, 0, 0.55);
                 backdrop-filter: blur(8px);
                 -webkit-backdrop-filter: blur(8px);
               }
@@ -266,13 +289,33 @@ export default function CompixorNavbar() {
               align-items: center;
               gap: 8px;
               white-space: nowrap;
-              color: #1a1530;
+              color: #475569;
+              transition: color .15s ease, background-color .15s ease;
             }
             .dark .cnav-desktop-link, .dark .cnav-link, .dark .cnav-trigger {
-              color: #f3f0ff;
+              color: var(--cx-muted, #a29fbd);
             }
-            .cnav-theme-btn { color: #1a1530; }
-            .dark .cnav-theme-btn { color: #f3f0ff; }
+            .cnav-desktop-link:hover, .cnav-trigger:hover {
+              color: #0f172a;
+              background-color: rgba(15, 23, 42, 0.05);
+            }
+            .dark .cnav-desktop-link:hover, .dark .cnav-trigger:hover {
+              color: var(--cx-text, #f4f2ff);
+              background-color: rgba(255, 255, 255, 0.06);
+            }
+            .cnav-desktop-link:active, .cnav-trigger:active {
+              background-color: rgba(15, 23, 42, 0.08);
+            }
+            .dark .cnav-desktop-link:active, .dark .cnav-trigger:active {
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+            .cnav-trigger:focus-visible, .cnav-desktop-link:focus-visible, .cnav-theme-btn:focus-visible {
+              outline: 2px solid var(--cx-accent-soft, #a78bfa) !important;
+              outline-offset: 2px !important;
+            }
+            .cnav-theme-btn { color: #475569; transition: color .15s ease; }
+            .dark .cnav-theme-btn { color: var(--cx-muted, #a29fbd); }
+            .dark .cnav-theme-btn:hover { color: var(--cx-text, #f4f2ff); }
 
             /* Desktop Dropdowns (>= 1024px) */
             .cnav-group { position: relative; }
@@ -447,20 +490,26 @@ export default function CompixorNavbar() {
           aria-label="Main Navigation"
           className="cnav-bar"
         >
-          {/* Brand Logo */}
+          {/* Brand Logo with C Logo and Outfit wordmark */}
           <Link
             href="/"
             aria-label="Compixor AI home"
-            className="flex items-center shrink-0 group"
+            className="flex items-center gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a78bfa] rounded-lg"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo.webp"
-              alt="Compixor AI logo"
-              width="44"
-              height="44"
-              className="h-[38px] lg:h-[44px] w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            <Image
+              src="/brand/logo-c.png"
+              alt="Compixor C Logo"
+              width={34}
+              height={34}
+              className="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] object-contain transition-transform duration-200 group-hover:scale-105"
+              priority
             />
+            <span
+              className="font-semibold text-lg sm:text-xl tracking-tight text-zinc-900 dark:text-[#f4f2ff]"
+              style={{ fontFamily: 'var(--font-outfit), sans-serif', letterSpacing: '-0.02em' }}
+            >
+              Compixor
+            </span>
           </Link>
 
           {/* Desktop Links (>= 1024px) */}
@@ -552,6 +601,7 @@ export default function CompixorNavbar() {
 
             {/* Hamburger / X button (< 1024px) */}
             <button
+              ref={hamburgerBtnRef}
               type="button"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label="Toggle Menu"

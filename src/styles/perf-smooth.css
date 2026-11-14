@@ -188,3 +188,155 @@ a {
    5. Sticky header abhi bhi sticky hai (overflow-x: clip ki wajah se)
    6. iPhone par input focus → page zoom NAHI
    ============================================================================ */
+
+/* ============================================================================
+   COMPIXOR LANDING V2 DESIGN TOKENS & UTILITIES
+   Additive & namespaced with prefix --cx- and .cx-
+   ============================================================================ */
+:root {
+  --cx-bg: #07060f;
+  --cx-surface: #0f0d1c;
+  --cx-surface-2: #171428;
+  --cx-line: rgba(255, 255, 255, 0.08);
+  --cx-text: #f4f2ff;
+  --cx-muted: #a29fbd;
+  --cx-accent: #8b5cf6;
+  --cx-accent-soft: #a78bfa;
+  --cx-radius-s: 10px;
+  --cx-radius-l: 20px;
+  --cx-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Typography bindings using layout.tsx variables without editing layout.tsx */
+.cx-heading {
+  font-family: var(--font-outfit), sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.cx-body {
+  font-family: var(--font-inter), sans-serif;
+}
+
+.cx-mono {
+  font-family: var(--cx-font-mono);
+}
+
+.cx-serif-italic {
+  font-family: var(--font-playfair), serif;
+  font-style: italic;
+}
+
+/* Namespaced utility classes for landing page only */
+.cx-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .cx-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cx-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.cx-card {
+  background: var(--cx-surface);
+  border: 1px solid var(--cx-line);
+  border-radius: var(--cx-radius-l);
+  color: var(--cx-text);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.cx-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.625rem 1.5rem;
+  background-color: var(--cx-accent);
+  color: #ffffff;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: var(--cx-radius-s);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+}
+
+.cx-btn-primary:hover:not(:disabled) {
+  background-color: #7c3aed;
+  transform: translateY(-1px);
+}
+
+.cx-btn-primary:active:not(:disabled) {
+  background-color: #6d28d9;
+  transform: translateY(0);
+}
+
+.cx-btn-primary:focus-visible {
+  outline: 2px solid var(--cx-accent-soft);
+  outline-offset: 2px;
+}
+
+.cx-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.cx-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.625rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.04);
+  color: var(--cx-text);
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-radius: var(--cx-radius-s);
+  border: 1px solid var(--cx-line);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.cx-btn-secondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+.cx-btn-secondary:active:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateY(0);
+}
+
+.cx-btn-secondary:focus-visible {
+  outline: 2px solid var(--cx-accent-soft);
+  outline-offset: 2px;
+}
+
+.cx-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
