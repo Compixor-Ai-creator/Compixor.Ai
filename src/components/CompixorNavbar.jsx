@@ -222,12 +222,15 @@ export default function CompixorNavbar() {
               --n-bg:rgba(255,255,255,.06); --n-line:rgba(255,255,255,.12);
               --n-link:rgba(244,242,255,.72); --n-link-hover:#fff; --n-brand:#fff;
               --n-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
-              display:flex; align-items:center; justify-content:space-between; gap:20px;
-              width:min(82.6%,1180px); height:58px; margin:12px auto 0; padding:0 10px 0 8px;
+              display:flex; align-items:center; justify-content:space-between;
+              width:min(82.6%,1180px); height:58px; margin:12px auto 0; padding:0 11px 0 10px;
               border-radius:20px; background:var(--n-bg); border:1px solid var(--n-line);
               -webkit-backdrop-filter:blur(16px) saturate(140%); backdrop-filter:blur(16px) saturate(140%);
               box-shadow:var(--n-shadow);
               pointer-events:auto;
+            }
+            @media (min-width: 1280px) and (max-width: 1300px) {
+              .cnav-pill { width: 1064px; }
             }
             html.light .cnav-pill{
               --n-bg:rgba(255,255,255,.72); --n-line:rgba(20,16,43,.12);
@@ -235,27 +238,32 @@ export default function CompixorNavbar() {
               --n-shadow:0 8px 30px rgba(60,30,140,.10);
             }
             .cnav-brand{ display:flex; align-items:center; gap:6px; color:var(--n-brand); text-decoration:none;
-              font:600 20px/1 var(--font-inter),system-ui,sans-serif; letter-spacing:-.02em; }
+              font:600 20px/1 var(--font-inter),system-ui,sans-serif; letter-spacing:-.02em; flex:none; width:145px; }
             .cnav-brand img{ height:42px; width:auto; }   /* PNG has transparent padding: the visible
                                                              C glyph must measure ~28w x 36h */
-            .cnav-links{ display:flex; align-items:center; gap:30px; }
+            .cnav-links{ display:flex; align-items:center; gap:clamp(14px, 1.5vw, 18px); list-style:none; margin:0 0 0 70px; padding:0; white-space:nowrap; flex:none; }
+            @media (max-width: 1199px) {
+              .cnav-links { gap: 14px; margin-left: 20px; }
+            }
             .cnav-link{ color:var(--n-link); text-decoration:none; padding:8px 0;
-              font:400 15px/1 var(--font-inter),system-ui,sans-serif; transition:color .2s; }
+              font:400 14px/1 var(--font-inter),system-ui,sans-serif; transition:color .2s; white-space:nowrap; }
             .cnav-link:hover{ color:var(--n-link-hover); }
             .cnav-link:focus-visible,.cnav-theme:focus-visible,.cnav-cta:focus-visible{ outline:2px solid #a78bfa; outline-offset:2px; border-radius:8px; }
-            .cnav-theme{ width:36px; height:36px; display:grid; place-items:center; border-radius:50%;
-              color:var(--n-link); background:transparent; border:1px solid var(--n-line); cursor:pointer; }
+            .cnav-right{ display:flex; align-items:center; gap:16px; flex:none; }
+            .cnav-theme{ width:32px; height:32px; min-width:32px; min-height:32px; display:grid; place-items:center; border-radius:50%;
+              color:var(--n-link); background:transparent; border:1px solid var(--n-line); cursor:pointer; flex:none; padding:0; }
             .cnav-hamburger{ display:none !important; }
-            @media (max-width:1023px){
+            @media (max-width:1079px){
+              .cnav-links{ display:none !important; }
               .cnav-hamburger{ width:36px; height:36px; display:grid !important; place-items:center; border-radius:50%;
-                color:var(--n-link); background:transparent; border:1px solid var(--n-line); cursor:pointer; }
+                color:var(--n-link); background:transparent; border:1px solid var(--n-line); cursor:pointer; flex:none; }
             }
-            .cnav-cta{ height:39px; padding:0 20px; display:inline-flex; align-items:center; border-radius:999px;
-              color:#fff; text-decoration:none; font:600 15px/1 var(--font-inter),system-ui,sans-serif;
+            .cnav-cta{ width:115px; height:38px; min-height:38px; padding:0; display:inline-flex; align-items:center; justify-content:center; border-radius:999px;
+              color:#fff; text-decoration:none; font:600 14px/1 var(--font-inter),system-ui,sans-serif;
               background:linear-gradient(135deg,#4c2fb8,#6a46e0); border:1px solid rgba(255,255,255,.18);
-              box-shadow:0 6px 20px rgba(76,47,184,.45); transition:filter .2s; }
+              box-shadow:0 6px 20px rgba(76,47,184,.45); transition:filter .2s; flex:none; }
             .cnav-cta:hover{ filter:brightness(1.12); }
-            @media (max-width:1023px){ .cnav-pill{ width:calc(100% - 24px); height:54px; } }
+            @media (max-width:1079px){ .cnav-pill{ width:calc(100% - 24px); height:54px; } }
 
             /* Phase 3 & Icons CSS (icons must never shrink) */
             .cnav-ico {
@@ -502,8 +510,8 @@ export default function CompixorNavbar() {
             <span>Compixor</span>
           </Link>
 
-          {/* Desktop Links (>= 1024px) */}
-          <ul className="cnav-links hidden lg:flex items-center">
+          {/* Desktop Links (>= 1080px) */}
+          <ul className="cnav-links items-center">
             {NAV_GROUPS.map((g) => (
               <li
                 key={g.id}
@@ -559,7 +567,7 @@ export default function CompixorNavbar() {
           </ul>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          <div className="cnav-right flex items-center shrink-0">
             <button
               type="button"
               onClick={toggleTheme}
@@ -571,12 +579,12 @@ export default function CompixorNavbar() {
 
             <Link
               href="#tools"
-              className="cnav-cta hidden sm:inline-flex"
+              className="cnav-cta"
             >
               Get Started
             </Link>
 
-            {/* Hamburger / X button (< 1024px) */}
+            {/* Hamburger / X button (< 1080px) */}
             <button
               ref={hamburgerBtnRef}
               type="button"

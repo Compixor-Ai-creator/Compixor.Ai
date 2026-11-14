@@ -106,10 +106,10 @@ html.light .cx-hero{
   max-width:624px; margin:12px auto 0; color:var(--h-muted);
   font:400 17.5px/1.34 var(--font-inter),system-ui,sans-serif;
 }
-.cx-ctas{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top:14px; }
+.cx-ctas{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top:25px; }
 .cx-hbtn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  min-height:42px; height:42px; padding:0 12px; border-radius:999px; text-decoration:none;
+  min-height:41px; height:41px; border-radius:999px; text-decoration:none;
   font:500 14px/1 var(--font-inter),system-ui,sans-serif; cursor:pointer;
   transition:filter .2s, background .2s, transform .2s;
 }
@@ -127,18 +127,18 @@ html.light .cx-hero{
 
 /* ---------- tablet showcase: tilted, bleeds off the bottom, icons pop above the rim ---------- */
 .cx-stage-crop{
-  position:relative; z-index:1; margin-top:54px; pointer-events:none;
+  position:relative; z-index:1; margin-top:43px; pointer-events:none;
   height:clamp(220px,22vw,320px);
   clip-path:inset(-140px -200px 0 -200px);           /* crops ONLY the bottom edge */
 }
-.cx-stage{ perspective:1200px; perspective-origin:50% 0; }
+.cx-stage{ perspective:780px; perspective-origin:50% 0; }
 .cx-tablet{
-  position:relative; width:63.8%; max-width:822px; margin:0 auto; padding:0 10px;
+  position:relative; width:58.4%; max-width:752px; margin:0 auto; padding:0 10px;
   border:2px solid transparent; border-bottom:0; border-radius:28px 28px 0 0;
   background:
     linear-gradient(#05040c,#05040c) padding-box,
     linear-gradient(180deg, rgba(216, 180, 254, 0.95) 0%, rgba(147, 51, 234, 0.8) 35%, rgba(106, 70, 224, 0.25) 100%) border-box;
-  transform:rotateX(20deg); transform-origin:50% 0;
+  transform:rotateX(26deg); transform-origin:50% 0;
   box-shadow:
     0 -10px 40px rgba(168, 85, 247, 0.45),
     0 -2px 14px rgba(216, 180, 254, 0.60),
@@ -166,7 +166,7 @@ html.light .cx-tablet{
   .cx-h1 span{ display:inline; }
   .cx-sub{ font-size:14px; margin:6px auto 0; line-height:1.3; }
   .cx-ctas{ flex-direction:column; align-items:center; gap:8px; margin-top:10px; }
-  .cx-hbtn{ width:100%; max-width:290px; min-height:38px; height:38px; font-size:13px; }
+  .cx-hbtn{ width:100%; max-width:290px; min-height:44px; height:44px; font-size:14px; }
   .cx-hero__ring{ left:50%; width:180px; height:180px; top:50px; opacity:.85; }
   .cx-stage-crop{ height:180px; margin-top:16px; }
   .cx-tablet{ width:94%; padding:0 8px; border-radius:22px 22px 0 0; transform:rotateX(10deg); }
