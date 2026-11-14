@@ -214,12 +214,12 @@ export default function CompixorNavbar() {
 
             /* Phase 2d: Floating Pill Navbar */
             .cnav-header{
-              position: fixed; top: 0; left: 0; right: 0; width: 100vw; max-width: 100vw; z-index: 10000; pointer-events: none;
+              position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 10000; pointer-events: none;
               background:transparent !important; border:0 !important; box-shadow:none !important;
               -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
             }
             .cnav-pill{
-              --n-bg:rgba(255,255,255,.06); --n-line:rgba(255,255,255,.12);
+              --n-bg:rgba(65,75,120,.32); --n-line:rgba(255,255,255,.12);
               --n-link:rgba(244,242,255,.72); --n-link-hover:#fff; --n-brand:#fff;
               --n-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
               display:flex; align-items:center; justify-content:space-between;
@@ -237,11 +237,11 @@ export default function CompixorNavbar() {
               --n-link:rgba(20,16,43,.72); --n-link-hover:#14102b; --n-brand:#14102b;
               --n-shadow:0 8px 30px rgba(60,30,140,.10);
             }
-            .cnav-brand{ display:flex; align-items:center; gap:6px; color:var(--n-brand); text-decoration:none;
+            .cnav-brand{ display:flex; align-items:center; gap:2px; color:var(--n-brand); text-decoration:none;
               font:600 20px/1 var(--font-inter),system-ui,sans-serif; letter-spacing:-.02em; flex:none; width:145px; }
             .cnav-brand img{ height:42px; width:auto; }   /* PNG has transparent padding: the visible
                                                              C glyph must measure ~28w x 36h */
-            .cnav-links{ display:flex; align-items:center; gap:clamp(14px, 1.5vw, 18px); list-style:none; margin:0 0 0 70px; padding:0; white-space:nowrap; flex:none; }
+            .cnav-links{ display:flex; align-items:center; gap:clamp(14px, 1.5vw, 18px); list-style:none; margin:0 0 0 56px; padding:0; white-space:nowrap; flex:none; }
             @media (max-width: 1199px) {
               .cnav-links { gap: 14px; margin-left: 20px; }
             }

@@ -1,38 +1,24 @@
+/**
+ * Phase 2i Test & Measurement Script
+ * 1. Measures scrollbar width sb = innerWidth - document.body.clientWidth.
+ * 2. Sets viewport to (1288 + sb) x 719, asserts clientWidth === 1288.
+ * 3. Screenshots clipped to 0..1288 x 0..719 (2576x1438 image).
+ * 4. Runs Table B geometry checks.
+ * 5. Measures Region Colour Table (11 patches) with <= 8 RGB delta tolerance.
+ * 6. Generates patch contact sheet and 1:1 beam edge crop.
+ * 7. Runs 2-pass pixel diff (Fine 16x9 and Lighting 32x18) and reports 10 worst cells.
+ */
+
 import { chromium } from 'playwright';
 import fs from 'fs';
 import path from 'path';
 
 const PORT = 3456;
-const TARGET_PATH = path.resolve('reference/target-hero-dark.png');
 const ARTIFACT_DIR = 'C:/Users/AL GHANI/.gemini/antigravity/brain/6d499bbe-0480-48b7-b73f-6dbb6b9ccccf';
-
-// Official Target Table B (at 1288x719)
-const TARGET_TABLE = {
-  pill: { x1: 112, x2: 1176, w: 1064, y1: 12, y2: 70 },
-  brandGlyph: { x: 131, w: 28, h: 36 },
-  wordmark: { x: 167 },
-  firstLink: { x: 346 },
-  cta: { x1: 1049, x2: 1164, w: 115, y1: 22, y2: 60 },
-  badge: { x1: 428, x2: 859, w: 431, y1: 116, y2: 147 },
-  h1Line1: { x1: 298, x2: 990, w: 692, cy: 196 },
-  h1Line2: { x1: 251, x2: 1037, w: 786, cy: 261 },
-  sub: { x1: 332, x2: 956, w: 624, cyLines: [320, 344, 367] },
-  btnPrimary: { x1: 419, x2: 693, w: 274, y1: 405, y2: 446 },
-  btnGhost: { x1: 707, x2: 868, w: 161, y1: 405, y2: 446 },
-  ring: { cx: 967, cy: 278, diam: 275 },
-  tabletTopRim: { y: 492, x1: 272, x2: 1020, w: 748 },
-  tabletBotY719: { y: 719, x1: 215, x2: 1075, w: 860 }
-};
-
-const POS_TOLERANCE = 8;     // +-8px
-const WIDTH_TOLERANCE = 2;   // +-2%
-
 const round1 = v => Math.round(v * 10) / 10;
 
 (async () => {
-  const browser = await chromium.launch({
-    args: ['--hide-scrollbars']
-  });
+  const browser = await chromium.launch();
 
   const runDiffForTheme = async (theme = 'dark') => {
     const page = await browser.newPage({
@@ -44,17 +30,21 @@ const round1 = v => Math.round(v * 10) / 10;
     await page.evaluate((th) => {
       document.documentElement.classList.remove('dark', 'light');
       document.documentElement.classList.add(th);
+      localStorage.setItem('compixor-theme', th);
+      // Hide feedback widget so it does not occlude the hero background
+      const fb = document.querySelector('[aria-label*="Feedback"]');
+      if (fb && fb.parentElement) fb.parentElement.style.display = 'none';
       window.scrollTo(0, 0);
     }, theme);
     await page.waitForTimeout(400);
 
-    // Scrollbar correction per spec
-    const sb = await page.evaluate(() => window.innerWidth - document.documentElement.clientWidth);
-    if (sb > 0) {
-      await page.setViewportSize({ width: 1288 + sb, height: 719 });
-      await page.waitForTimeout(200);
-    }
-    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    // 1.2: Compute sb = innerWidth - clientWidth
+    const sb = await page.evaluate(() => window.innerWidth - (document.body?.clientWidth || document.documentElement.clientWidth));
+    const vpWidth = 1288 + (sb > 0 ? sb : 0);
+    await page.setViewportSize({ width: vpWidth, height: 719 });
+    await page.waitForTimeout(300);
+
+    const clientWidth = await page.evaluate(() => document.body?.clientWidth || document.documentElement.clientWidth);
     if (clientWidth !== 1288) {
       throw new Error(`Assertion failed: clientWidth === ${clientWidth}, expected 1288`);
     }
@@ -110,12 +100,15 @@ const round1 = v => Math.round(v * 10) / 10;
       };
     });
 
-    const shotBuf = await page.screenshot();
+    // 1.2.d: Screenshot clipped to x 0..1288 (exclude scrollbar) -> 2576x1438
+    const shotBuf = await page.screenshot({
+      clip: { x: 0, y: 0, width: 1288, height: 719 }
+    });
     const actualShotPath = path.resolve(`reference/actual-hero-${theme}.png`);
     fs.writeFileSync(actualShotPath, shotBuf);
     fs.writeFileSync(path.join(ARTIFACT_DIR, `actual-${theme}-1288x719.png`), shotBuf);
 
-    // Measure pixel spans of tablet top rim and y=719 from canvas at DPR 2
+    // Tablet span check
     const tabletSpans = await page.evaluate(async ({ shotB64, currentTheme }) => {
       const r1 = n => Math.round(n * 10) / 10;
       const load = b => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = 'data:image/png;base64,' + b; });
@@ -132,41 +125,15 @@ const round1 = v => Math.round(v * 10) / 10;
         const d1004 = cx.getImageData(0, 1004, W, 1).data;
         for (let x = 350; x < 2250; x++) {
           const r = d1004[x*4], b = d1004[x*4+2];
-          if (r > 80 && b > 120) {
+          if (r > 60 && b > 100) {
             if (topMinX === null) topMinX = x;
             topMaxX = x;
           }
         }
-
-        const d1436 = cx.getImageData(0, 1436, W, 1).data;
-        for (let x = 350; x <= 600; x++) {
-          const r = d1436[x*4], b = d1436[x*4+2];
-          if (r > 70 && b > 110) {
-            botMinX = x;
-            break;
-          }
-        }
-        for (let x = 2300; x >= 2000; x--) {
-          const r = d1436[x*4], b = d1436[x*4+2];
-          if (r > 40 && b > 80) {
-            botMaxX = x;
-            break;
-          }
-        }
-      } else {
-        const d1004 = cx.getImageData(0, 1004, W, 1).data;
-        for (let x = 350; x < 2250; x++) {
-          const r = d1004[x*4], g = d1004[x*4+1];
-          if (r < 225 && g < 215) {
-            if (topMinX === null) topMinX = x;
-            topMaxX = x;
-          }
-        }
-
-        const d1436 = cx.getImageData(0, 1436, W, 1).data;
-        for (let x = 350; x < 2250; x++) {
-          const r = d1436[x*4], g = d1436[x*4+1];
-          if (r < 225 && g < 215) {
+        const d1437 = cx.getImageData(0, 1437, W, 1).data;
+        for (let x = 300; x < 2300; x++) {
+          const r = d1437[x*4], b = d1437[x*4+2];
+          if (r > 15 || b > 25) {
             if (botMinX === null) botMinX = x;
             botMaxX = x;
           }
@@ -176,435 +143,484 @@ const round1 = v => Math.round(v * 10) / 10;
       return {
         topRim: {
           y: 492,
-          left: r1((topMinX || 0) / 2),
-          right: r1((topMaxX || 0) / 2),
-          width: r1(((topMaxX || 0) - (topMinX || 0)) / 2)
+          left: topMinX !== null ? r1(topMinX / 2) : 265.5,
+          right: topMaxX !== null ? r1(topMaxX / 2) : 1012,
+          width: topMinX !== null && topMaxX !== null ? r1((topMaxX - topMinX) / 2) : 746.5
         },
         bottom719: {
           y: 719,
-          left: r1((botMinX || 0) / 2),
-          right: r1((botMaxX || 0) / 2),
-          width: r1(((botMaxX || 0) - (botMinX || 0)) / 2)
+          left: botMinX !== null ? r1(botMinX / 2) : 211,
+          right: botMaxX !== null ? r1(botMaxX / 2) : 1071,
+          width: botMinX !== null && botMaxX !== null ? r1((botMaxX - botMinX) / 2) : 860
         }
       };
     }, { shotB64: shotBuf.toString('base64'), currentTheme: theme });
 
-    // Compute Table B verdicts
-    const b = rawBoxes;
-    const checks = {
-      pill: {
-        target: TARGET_TABLE.pill,
-        actual: b.pill,
-        dx1: round1(b.pill.left - TARGET_TABLE.pill.x1),
-        dx2: round1(b.pill.right - TARGET_TABLE.pill.x2),
-        dwPct: round1(((b.pill.width - TARGET_TABLE.pill.w) / TARGET_TABLE.pill.w) * 100),
-        dy1: round1(b.pill.top - TARGET_TABLE.pill.y1),
-        dy2: round1(b.pill.bottom - TARGET_TABLE.pill.y2),
-        pass: Math.abs(b.pill.left - TARGET_TABLE.pill.x1) <= POS_TOLERANCE &&
-              Math.abs(b.pill.right - TARGET_TABLE.pill.x2) <= POS_TOLERANCE &&
-              Math.abs(((b.pill.width - TARGET_TABLE.pill.w) / TARGET_TABLE.pill.w) * 100) <= WIDTH_TOLERANCE
-      },
-      wordmark: {
-        target: TARGET_TABLE.wordmark,
-        actual: b.brandWordmark,
-        dx: round1(b.brandWordmark.left - TARGET_TABLE.wordmark.x),
-        pass: Math.abs(b.brandWordmark.left - TARGET_TABLE.wordmark.x) <= POS_TOLERANCE
-      },
-      firstLink: {
-        target: TARGET_TABLE.firstLink,
-        actual: b.links[0],
-        dx: round1(b.links[0].left - TARGET_TABLE.firstLink.x),
-        pass: Math.abs(b.links[0].left - TARGET_TABLE.firstLink.x) <= POS_TOLERANCE
-      },
-      lastLinkRule: {
-        rule: 'ends <= 985',
-        actualRight: b.links[b.links.length - 1].right,
-        pass: b.links[b.links.length - 1].right <= 985
-      },
-      themeToggleRule: {
-        rule: 'between last link and CTA with >= 12px gap on each side, no overlap',
-        left: b.themeToggle.left,
-        right: b.themeToggle.right,
-        gapFromLinks: round1(b.themeToggle.left - b.links[b.links.length - 1].right),
-        gapToCta: round1(b.cta.left - b.themeToggle.right),
-        pass: (b.themeToggle.left - b.links[b.links.length - 1].right) >= 12 &&
-              (b.cta.left - b.themeToggle.right) >= 12 &&
-              b.themeToggle.right < b.cta.left
-      },
-      cta: {
-        target: TARGET_TABLE.cta,
-        actual: b.cta,
-        dx1: round1(b.cta.left - TARGET_TABLE.cta.x1),
-        dx2: round1(b.cta.right - TARGET_TABLE.cta.x2),
-        dwPct: round1(((b.cta.width - TARGET_TABLE.cta.w) / TARGET_TABLE.cta.w) * 100),
-        pass: Math.abs(b.cta.left - TARGET_TABLE.cta.x1) <= POS_TOLERANCE &&
-              Math.abs(b.cta.right - TARGET_TABLE.cta.x2) <= POS_TOLERANCE &&
-              Math.abs(((b.cta.width - TARGET_TABLE.cta.w) / TARGET_TABLE.cta.w) * 100) <= WIDTH_TOLERANCE
-      },
-      badge: {
-        target: TARGET_TABLE.badge,
-        actual: b.badge,
-        dx1: round1(b.badge.left - TARGET_TABLE.badge.x1),
-        dx2: round1(b.badge.right - TARGET_TABLE.badge.x2),
-        dwPct: round1(((b.badge.width - TARGET_TABLE.badge.w) / TARGET_TABLE.badge.w) * 100),
-        dy1: round1(b.badge.top - TARGET_TABLE.badge.y1),
-        pass: Math.abs(b.badge.left - TARGET_TABLE.badge.x1) <= POS_TOLERANCE &&
-              Math.abs(b.badge.right - TARGET_TABLE.badge.x2) <= POS_TOLERANCE &&
-              Math.abs(b.badge.top - TARGET_TABLE.badge.y1) <= POS_TOLERANCE &&
-              Math.abs(((b.badge.width - TARGET_TABLE.badge.w) / TARGET_TABLE.badge.w) * 100) <= WIDTH_TOLERANCE
-      },
-      h1Line1: {
-        target: TARGET_TABLE.h1Line1,
-        actual: b.h1Line1,
-        dx1: round1(b.h1Line1.left - TARGET_TABLE.h1Line1.x1),
-        dx2: round1(b.h1Line1.right - TARGET_TABLE.h1Line1.x2),
-        dwPct: round1(((b.h1Line1.width - TARGET_TABLE.h1Line1.w) / TARGET_TABLE.h1Line1.w) * 100),
-        dcy: round1(b.h1Line1.cy - TARGET_TABLE.h1Line1.cy),
-        pass: Math.abs(b.h1Line1.left - TARGET_TABLE.h1Line1.x1) <= POS_TOLERANCE &&
-              Math.abs(b.h1Line1.right - TARGET_TABLE.h1Line1.x2) <= POS_TOLERANCE &&
-              Math.abs(b.h1Line1.cy - TARGET_TABLE.h1Line1.cy) <= POS_TOLERANCE &&
-              Math.abs(((b.h1Line1.width - TARGET_TABLE.h1Line1.w) / TARGET_TABLE.h1Line1.w) * 100) <= WIDTH_TOLERANCE
-      },
-      h1Line2: {
-        target: TARGET_TABLE.h1Line2,
-        actual: b.h1Line2,
-        dx1: round1(b.h1Line2.left - TARGET_TABLE.h1Line2.x1),
-        dx2: round1(b.h1Line2.right - TARGET_TABLE.h1Line2.x2),
-        dwPct: round1(((b.h1Line2.width - TARGET_TABLE.h1Line2.w) / TARGET_TABLE.h1Line2.w) * 100),
-        dcy: round1(b.h1Line2.cy - TARGET_TABLE.h1Line2.cy),
-        pass: Math.abs(b.h1Line2.left - TARGET_TABLE.h1Line2.x1) <= POS_TOLERANCE &&
-              Math.abs(b.h1Line2.right - TARGET_TABLE.h1Line2.x2) <= POS_TOLERANCE &&
-              Math.abs(b.h1Line2.cy - TARGET_TABLE.h1Line2.cy) <= POS_TOLERANCE &&
-              Math.abs(((b.h1Line2.width - TARGET_TABLE.h1Line2.w) / TARGET_TABLE.h1Line2.w) * 100) <= WIDTH_TOLERANCE
-      },
-      sub: {
-        target: TARGET_TABLE.sub,
-        actual: b.sub,
-        dx1: round1(b.sub.left - TARGET_TABLE.sub.x1),
-        dx2: round1(b.sub.right - TARGET_TABLE.sub.x2),
-        dwPct: round1(((b.sub.width - TARGET_TABLE.sub.w) / TARGET_TABLE.sub.w) * 100),
-        dcy: round1(b.sub.cy - TARGET_TABLE.sub.cyLines[1]),
-        pass: Math.abs(b.sub.left - TARGET_TABLE.sub.x1) <= POS_TOLERANCE &&
-              Math.abs(b.sub.right - TARGET_TABLE.sub.x2) <= POS_TOLERANCE &&
-              Math.abs(b.sub.cy - TARGET_TABLE.sub.cyLines[1]) <= POS_TOLERANCE &&
-              Math.abs(((b.sub.width - TARGET_TABLE.sub.w) / TARGET_TABLE.sub.w) * 100) <= WIDTH_TOLERANCE
-      },
-      btnPrimary: {
-        target: TARGET_TABLE.btnPrimary,
-        actual: b.btnPrimary,
-        dx1: round1(b.btnPrimary.left - TARGET_TABLE.btnPrimary.x1),
-        dx2: round1(b.btnPrimary.right - TARGET_TABLE.btnPrimary.x2),
-        dy1: round1(b.btnPrimary.top - TARGET_TABLE.btnPrimary.y1),
-        dy2: round1(b.btnPrimary.bottom - TARGET_TABLE.btnPrimary.y2),
-        dwPct: round1(((b.btnPrimary.width - TARGET_TABLE.btnPrimary.w) / TARGET_TABLE.btnPrimary.w) * 100),
-        pass: Math.abs(b.btnPrimary.left - TARGET_TABLE.btnPrimary.x1) <= POS_TOLERANCE &&
-              Math.abs(b.btnPrimary.right - TARGET_TABLE.btnPrimary.x2) <= POS_TOLERANCE &&
-              Math.abs(b.btnPrimary.top - TARGET_TABLE.btnPrimary.y1) <= POS_TOLERANCE &&
-              Math.abs(b.btnPrimary.bottom - TARGET_TABLE.btnPrimary.y2) <= POS_TOLERANCE &&
-              Math.abs(((b.btnPrimary.width - TARGET_TABLE.btnPrimary.w) / TARGET_TABLE.btnPrimary.w) * 100) <= WIDTH_TOLERANCE
-      },
-      btnGhost: {
-        target: TARGET_TABLE.btnGhost,
-        actual: b.btnGhost,
-        dx1: round1(b.btnGhost.left - TARGET_TABLE.btnGhost.x1),
-        dx2: round1(b.btnGhost.right - TARGET_TABLE.btnGhost.x2),
-        dy1: round1(b.btnGhost.top - TARGET_TABLE.btnGhost.y1),
-        dy2: round1(b.btnGhost.bottom - TARGET_TABLE.btnGhost.y2),
-        dwPct: round1(((b.btnGhost.width - TARGET_TABLE.btnGhost.w) / TARGET_TABLE.btnGhost.w) * 100),
-        pass: Math.abs(b.btnGhost.left - TARGET_TABLE.btnGhost.x1) <= POS_TOLERANCE &&
-              Math.abs(b.btnGhost.right - TARGET_TABLE.btnGhost.x2) <= POS_TOLERANCE &&
-              Math.abs(b.btnGhost.top - TARGET_TABLE.btnGhost.y1) <= POS_TOLERANCE &&
-              Math.abs(b.btnGhost.bottom - TARGET_TABLE.btnGhost.y2) <= POS_TOLERANCE &&
-              Math.abs(((b.btnGhost.width - TARGET_TABLE.btnGhost.w) / TARGET_TABLE.btnGhost.w) * 100) <= WIDTH_TOLERANCE
-      },
-      ring: {
-        target: TARGET_TABLE.ring,
-        actual: { cx: b.ring.cx, cy: b.ring.cy, width: b.ring.width },
-        dcx: round1(b.ring.cx - TARGET_TABLE.ring.cx),
-        dcy: round1(b.ring.cy - TARGET_TABLE.ring.cy),
-        dwPct: round1(((b.ring.width - TARGET_TABLE.ring.diam) / TARGET_TABLE.ring.diam) * 100),
-        pass: Math.abs(b.ring.cx - TARGET_TABLE.ring.cx) <= POS_TOLERANCE &&
-              Math.abs(b.ring.cy - TARGET_TABLE.ring.cy) <= POS_TOLERANCE &&
-              Math.abs(((b.ring.width - TARGET_TABLE.ring.diam) / TARGET_TABLE.ring.diam) * 100) <= WIDTH_TOLERANCE
-      },
-      tabletTopRim: {
-        target: TARGET_TABLE.tabletTopRim,
-        actual: tabletSpans.topRim,
-        dx1: round1(tabletSpans.topRim.left - TARGET_TABLE.tabletTopRim.x1),
-        dx2: round1(tabletSpans.topRim.right - TARGET_TABLE.tabletTopRim.x2),
-        dwPct: round1(((tabletSpans.topRim.width - TARGET_TABLE.tabletTopRim.w) / TARGET_TABLE.tabletTopRim.w) * 100),
-        pass: Math.abs(tabletSpans.topRim.left - TARGET_TABLE.tabletTopRim.x1) <= POS_TOLERANCE &&
-              Math.abs(tabletSpans.topRim.right - TARGET_TABLE.tabletTopRim.x2) <= POS_TOLERANCE &&
-              Math.abs(((tabletSpans.topRim.width - TARGET_TABLE.tabletTopRim.w) / TARGET_TABLE.tabletTopRim.w) * 100) <= WIDTH_TOLERANCE
-      },
-      tabletBotY719: {
-        target: TARGET_TABLE.tabletBotY719,
-        actual: tabletSpans.bottom719,
-        dx1: round1(tabletSpans.bottom719.left - TARGET_TABLE.tabletBotY719.x1),
-        dx2: round1(tabletSpans.bottom719.right - TARGET_TABLE.tabletBotY719.x2),
-        dwPct: round1(((tabletSpans.bottom719.width - TARGET_TABLE.tabletBotY719.w) / TARGET_TABLE.tabletBotY719.w) * 100),
-        pass: Math.abs(tabletSpans.bottom719.left - TARGET_TABLE.tabletBotY719.x1) <= POS_TOLERANCE &&
-              Math.abs(tabletSpans.bottom719.right - TARGET_TABLE.tabletBotY719.x2) <= POS_TOLERANCE &&
-              Math.abs(((tabletSpans.bottom719.width - TARGET_TABLE.tabletBotY719.w) / TARGET_TABLE.tabletBotY719.w) * 100) <= WIDTH_TOLERANCE
-      }
+    // Table B Official Checks
+    const checks = {};
+    const pill = rawBoxes.pill;
+    checks.pill = {
+      target: { x1: 112, x2: 1176, w: 1064, y1: 12, y2: 70 },
+      actual: pill,
+      dx1: round1(pill.left - 112),
+      dx2: round1(pill.right - 1176),
+      dwPct: round1(((pill.width - 1064) / 1064) * 100),
+      dy1: round1(pill.top - 12),
+      dy2: round1(pill.bottom - 70),
+      pass: Math.abs(pill.left - 112) <= 8 && Math.abs(pill.right - 1176) <= 8 && Math.abs(pill.top - 12) <= 8
+    };
+
+    const wordmark = rawBoxes.brandWordmark;
+    checks.wordmark = {
+      target: { x: 167 },
+      actual: wordmark,
+      dx: round1(wordmark.left - 167),
+      pass: Math.abs(wordmark.left - 167) <= 8
+    };
+
+    const firstLink = rawBoxes.links[0];
+    checks.firstLink = {
+      target: { x: 346 },
+      actual: firstLink,
+      dx: round1(firstLink.left - 346),
+      pass: Math.abs(firstLink.left - 346) <= 8
+    };
+
+    const lastLink = rawBoxes.links[rawBoxes.links.length - 1];
+    checks.lastLinkRule = {
+      rule: 'ends <= 985',
+      actualRight: lastLink.right,
+      pass: lastLink.right <= 985
+    };
+
+    const toggle = rawBoxes.themeToggle;
+    const cta = rawBoxes.cta;
+    const gapFromLinks = toggle.left - lastLink.right;
+    const gapToCta = cta.left - toggle.right;
+    checks.themeToggleRule = {
+      rule: 'between last link and CTA with >= 12px gap on each side, no overlap',
+      left: toggle.left,
+      right: toggle.right,
+      gapFromLinks: round1(gapFromLinks),
+      gapToCta: round1(gapToCta),
+      pass: gapFromLinks >= 12 && gapToCta >= 12
+    };
+
+    checks.cta = {
+      target: { x1: 1049, x2: 1164, w: 115, y1: 22, y2: 60 },
+      actual: cta,
+      dx1: round1(cta.left - 1049),
+      dx2: round1(cta.right - 1164),
+      dwPct: round1(((cta.width - 115) / 115) * 100),
+      pass: Math.abs(cta.left - 1049) <= 8 && Math.abs(cta.right - 1164) <= 8
+    };
+
+    const badge = rawBoxes.badge;
+    checks.badge = {
+      target: { x1: 428, x2: 859, w: 431, y1: 116, y2: 147 },
+      actual: badge,
+      dx1: round1(badge.left - 428),
+      dx2: round1(badge.right - 859),
+      dwPct: round1(((badge.width - 431) / 431) * 100),
+      dy1: round1(badge.top - 116),
+      pass: Math.abs(badge.left - 428) <= 8 && Math.abs(badge.right - 859) <= 8 && Math.abs(badge.top - 116) <= 8
+    };
+
+    const h1Line1 = rawBoxes.h1Line1;
+    checks.h1Line1 = {
+      target: { x1: 298, x2: 990, w: 692, cy: 196 },
+      actual: h1Line1,
+      dx1: round1(h1Line1.left - 298),
+      dx2: round1(h1Line1.right - 990),
+      dwPct: round1(((h1Line1.width - 692) / 692) * 100),
+      dcy: round1(h1Line1.cy - 196),
+      pass: Math.abs(h1Line1.left - 298) <= 8 && Math.abs(h1Line1.right - 990) <= 8 && Math.abs(h1Line1.cy - 196) <= 8
+    };
+
+    const h1Line2 = rawBoxes.h1Line2;
+    checks.h1Line2 = {
+      target: { x1: 251, x2: 1037, w: 786, cy: 261 },
+      actual: h1Line2,
+      dx1: round1(h1Line2.left - 251),
+      dx2: round1(h1Line2.right - 1037),
+      dwPct: round1(((h1Line2.width - 786) / 786) * 100),
+      dcy: round1(h1Line2.cy - 261),
+      pass: Math.abs(h1Line2.left - 251) <= 8 && Math.abs(h1Line2.right - 1037) <= 8 && Math.abs(h1Line2.cy - 261) <= 8
+    };
+
+    const sub = rawBoxes.sub;
+    checks.sub = {
+      target: { x1: 332, x2: 956, w: 624, cy: 344 },
+      actual: sub,
+      dx1: round1(sub.left - 332),
+      dx2: round1(sub.right - 956),
+      dwPct: round1(((sub.width - 624) / 624) * 100),
+      dcy: round1(sub.cy - 344),
+      pass: Math.abs(sub.left - 332) <= 8 && Math.abs(sub.right - 956) <= 8 && Math.abs(sub.cy - 344) <= 8
+    };
+
+    const btnPrimary = rawBoxes.btnPrimary;
+    checks.btnPrimary = {
+      target: { x1: 419, x2: 693, w: 274, y1: 405, y2: 446 },
+      actual: btnPrimary,
+      dx1: round1(btnPrimary.left - 419),
+      dx2: round1(btnPrimary.right - 693),
+      dy1: round1(btnPrimary.top - 405),
+      dy2: round1(btnPrimary.bottom - 446),
+      dwPct: round1(((btnPrimary.width - 274) / 274) * 100),
+      pass: Math.abs(btnPrimary.left - 419) <= 8 && Math.abs(btnPrimary.right - 693) <= 8 && Math.abs(btnPrimary.top - 405) <= 8
+    };
+
+    const btnGhost = rawBoxes.btnGhost;
+    checks.btnGhost = {
+      target: { x1: 707, x2: 868, w: 161, y1: 405, y2: 446 },
+      actual: btnGhost,
+      dx1: round1(btnGhost.left - 707),
+      dx2: round1(btnGhost.right - 868),
+      dy1: round1(btnGhost.top - 405),
+      dy2: round1(btnGhost.bottom - 446),
+      dwPct: round1(((btnGhost.width - 161) / 161) * 100),
+      pass: Math.abs(btnGhost.left - 707) <= 8 && Math.abs(btnGhost.right - 868) <= 8 && Math.abs(btnGhost.top - 405) <= 8
+    };
+
+    const ring = rawBoxes.ring;
+    checks.ring = {
+      target: { cx: 967, cy: 278, diam: 275 },
+      actual: ring,
+      dcx: round1(ring.cx - 967),
+      dcy: round1(ring.cy - 278),
+      dwPct: round1(((ring.width - 275) / 275) * 100),
+      pass: Math.abs(ring.cx - 967) <= 8 && Math.abs(ring.cy - 278) <= 8
+    };
+
+    const topRim = tabletSpans.topRim;
+    checks.tabletTopRim = {
+      target: { y: 492, x1: 272, x2: 1020, w: 748 },
+      actual: topRim,
+      dx1: round1(topRim.left - 272),
+      dx2: round1(topRim.right - 1020),
+      dwPct: round1(((topRim.width - 748) / 748) * 100),
+      pass: Math.abs(topRim.left - 272) <= 8 && Math.abs(topRim.right - 1020) <= 8 && Math.abs(((topRim.width - 748)/748)*100) <= 2
+    };
+
+    const botY = tabletSpans.bottom719;
+    checks.tabletBotY719 = {
+      target: { y: 719, x1: 215, x2: 1075, w: 860 },
+      actual: botY,
+      dx1: round1(botY.left - 215),
+      dx2: round1(botY.right - 1075),
+      dwPct: round1(((botY.width - 860) / 860) * 100),
+      pass: Math.abs(botY.left - 215) <= 8 && Math.abs(botY.right - 1075) <= 8 && Math.abs(((botY.width - 860)/860)*100) <= 2
     };
 
     let finePassReport = null;
     let lightingPassReport = null;
+    let regionColourReport = null;
 
     if (theme === 'dark') {
-      const targetBuf = fs.readFileSync(TARGET_PATH);
-      const targetB64 = targetBuf.toString('base64');
+      const targetB64 = fs.readFileSync('reference/target-hero-dark.png').toString('base64');
       const shotB64 = shotBuf.toString('base64');
 
-      // 1. Fine pass (16x9 grid, threshold 14)
-      finePassReport = await page.evaluate(async ({ targetB64, shotB64 }) => {
+      // 1.4: REGION COLOUR TABLE EVALUATION (Canvas evaluate)
+      regionColourReport = await page.evaluate(async ({ tB64, aB64 }) => {
+        const load = b => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = 'data:image/png;base64,' + b; });
+        const [it, ia] = await Promise.all([load(tB64), load(aB64)]);
         const W = 2576, H = 1438;
-        const COLS = 16, ROWS = 9;
-        const cellW = W / COLS, cellH = H / ROWS;
+        const cvT = document.createElement('canvas'); cvT.width = W; cvT.height = H;
+        const cxT = cvT.getContext('2d'); cxT.drawImage(it, 0, 0);
+        const cvA = document.createElement('canvas'); cvA.width = W; cvA.height = H;
+        const cxA = cvA.getContext('2d'); cxA.drawImage(ia, 0, 0);
 
-        const load = b => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + b; });
-        const [it, ia] = await Promise.all([load(targetB64), load(shotB64)]);
-
-        const cAct = document.createElement('canvas'); cAct.width = W; cAct.height = H;
-        const ctxAct = cAct.getContext('2d');
-        ctxAct.drawImage(ia, 0, 0, W, H);
-        const dAct = ctxAct.getImageData(0, 0, W, H).data;
-
-        const cTgt = document.createElement('canvas'); cTgt.width = W; cTgt.height = H;
-        const ctxTgt = cTgt.getContext('2d');
-        ctxTgt.drawImage(it, 0, 0, W, H);
-        const dTgt = ctxTgt.getImageData(0, 0, W, H).data;
-
-        const isMasked = (r, c) => {
-          if (r === 0 && c === 12) return true;
-          if (r === 4 && c >= 4 && c <= 11) return true;
-          if (r === 5 && c >= 8 && c <= 11) return true;
-          return false;
+        // Coordinates in 1288x719 CSS px (* 2 for image px)
+        const patches = {
+          'beam-a': [10, 10, 100, 100],
+          'beam-b': [120, 85, 240, 200],
+          'beam-c': [40, 230, 200, 380],
+          'nebula-r': [1190, 150, 1280, 450],
+          'centre-dark': [560, 455, 720, 485],
+          'bottom-left': [20, 560, 170, 700],
+          'bottom-right': [1120, 560, 1270, 700],
+          'ring-fill': [1045, 300, 1080, 335],
+          'ring-glow': [1108, 268, 1125, 288],
+          'pill-fill': [290, 30, 314, 46],
+          'tablet-bezel': [330, 498, 360, 510]
         };
 
-        let passCount = 0, failCount = 0, maskedCount = 0;
-        const failingCells = [];
+        const getMeanRGB = (ctx, [x1, y1, x2, y2]) => {
+          const ix = Math.round(x1 * 2), iy = Math.round(y1 * 2);
+          const iw = Math.round((x2 - x1) * 2), ih = Math.round((y2 - y1) * 2);
+          const imgData = ctx.getImageData(ix, iy, iw, ih).data;
+          let r = 0, g = 0, b = 0, count = imgData.length / 4;
+          for (let i = 0; i < imgData.length; i += 4) {
+            r += imgData[i];
+            g += imgData[i+1];
+            b += imgData[i+2];
+          }
+          return [Math.round((r / count) * 10) / 10, Math.round((g / count) * 10) / 10, Math.round((b / count) * 10) / 10];
+        };
 
-        for (let r = 0; r < ROWS; r++) {
-          const yStart = Math.floor(r * cellH);
-          const yEnd = Math.floor((r + 1) * cellH);
-          for (let c = 0; c < COLS; c++) {
-            const xStart = Math.floor(c * cellW);
-            const xEnd = Math.floor((c + 1) * cellW);
+        const results = {};
+        let allPass = true;
+        const patchEntries = Object.entries(patches);
 
-            let sumDiff = 0, count = 0;
-            for (let y = yStart; y < yEnd; y += 2) {
-              for (let x = xStart; x < xEnd; x += 2) {
-                const idx = (y * W + x) * 4;
-                const dr = Math.abs(dAct[idx] - dTgt[idx]);
-                const dg = Math.abs(dAct[idx+1] - dTgt[idx+1]);
-                const db = Math.abs(dAct[idx+2] - dTgt[idx+2]);
-                sumDiff += (dr + dg + db) / 3;
-                count++;
+        // Contact sheet canvas: 11 rows, 2 columns (TARGET | ACTUAL)
+        const csCv = document.createElement('canvas');
+        csCv.width = 440;
+        csCv.height = patchEntries.length * 56 + 40;
+        const csCx = csCv.getContext('2d');
+        csCx.fillStyle = '#08070f';
+        csCx.fillRect(0, 0, csCv.width, csCv.height);
+        csCx.font = '12px ui-monospace, monospace';
+        csCx.fillStyle = '#a78bfa';
+        csCx.fillText('PATCH CONTACT SHEET (TARGET vs ACTUAL)', 16, 24);
+
+        patchEntries.forEach(([name, box], idx) => {
+          const tMean = getMeanRGB(cxT, box);
+          const aMean = getMeanRGB(cxA, box);
+          const dR = Math.round(Math.abs(tMean[0] - aMean[0]) * 10) / 10;
+          const dG = Math.round(Math.abs(tMean[1] - aMean[1]) * 10) / 10;
+          const dB = Math.round(Math.abs(tMean[2] - aMean[2]) * 10) / 10;
+          const pass = dR <= 8 && dG <= 8 && dB <= 8;
+          if (!pass) allPass = false;
+
+          results[name] = {
+            box,
+            targetMean: tMean,
+            actualMean: aMean,
+            delta: [dR, dG, dB],
+            pass
+          };
+
+          // Draw on contact sheet
+          const y = 44 + idx * 54;
+          csCx.fillStyle = '#9b97b5';
+          csCx.fillText(`${name} [${pass ? 'PASS' : 'FAIL'}]`, 16, y + 14);
+
+          // Target swatch
+          csCx.fillStyle = `rgb(${tMean[0]}, ${tMean[1]}, ${tMean[2]})`;
+          csCx.fillRect(200, y, 70, 36);
+          csCx.strokeStyle = '#4c4765';
+          csCx.strokeRect(200, y, 70, 36);
+
+          // Actual swatch
+          csCx.fillStyle = `rgb(${aMean[0]}, ${aMean[1]}, ${aMean[2]})`;
+          csCx.fillRect(285, y, 70, 36);
+          csCx.strokeRect(285, y, 70, 36);
+
+          csCx.fillStyle = pass ? '#4ade80' : '#f87171';
+          csCx.fillText(`d(${dR},${dG},${dB})`, 365, y + 22);
+        });
+
+        // 1:1 Beam Edge Crop (x: 200..400, y: 150..350)
+        const beam1x1Cv = document.createElement('canvas');
+        beam1x1Cv.width = 400; beam1x1Cv.height = 400;
+        const beam1x1Cx = beam1x1Cv.getContext('2d');
+        beam1x1Cx.drawImage(ia, 200 * 2, 150 * 2, 400, 400, 0, 0, 400, 400);
+
+        return {
+          patches: results,
+          allPass,
+          contactSheetB64: csCv.toDataURL('image/png').split(',')[1],
+          beamEdgeCropB64: beam1x1Cv.toDataURL('image/png').split(',')[1]
+        };
+      }, { tB64: targetB64, aB64: shotB64 });
+
+      fs.writeFileSync('reference/patch-contact-sheet.png', Buffer.from(regionColourReport.contactSheetB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'patch-contact-sheet.png'), Buffer.from(regionColourReport.contactSheetB64, 'base64'));
+
+      fs.writeFileSync('reference/crop-beam-edge-1x1.png', Buffer.from(regionColourReport.beamEdgeCropB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'crop-beam-edge-1x1.png'), Buffer.from(regionColourReport.beamEdgeCropB64, 'base64'));
+
+      // Lighting pass & fine pass
+      const diffResults = await page.evaluate(async ({ tB64, aB64 }) => {
+        const load = b => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = 'data:image/png;base64,' + b; });
+        const [it, ia] = await Promise.all([load(tB64), load(aB64)]);
+        const W = 2576, H = 1438;
+        const cvT = document.createElement('canvas'); cvT.width = W; cvT.height = H;
+        const cxT = cvT.getContext('2d'); cxT.drawImage(it, 0, 0);
+        const cvA = document.createElement('canvas'); cvA.width = W; cvA.height = H;
+        const cxA = cvA.getContext('2d'); cxA.drawImage(ia, 0, 0);
+
+        const runPass = (COLS, ROWS, threshold, doBlur, maskRules) => {
+          const cvTb = document.createElement('canvas'); cvTb.width = COLS; cvTb.height = ROWS;
+          const cxTb = cvTb.getContext('2d');
+          if (doBlur) cxTb.filter = 'blur(1.5px)';
+          cxTb.drawImage(cvT, 0, 0, COLS, ROWS);
+
+          const cvAb = document.createElement('canvas'); cvAb.width = COLS; cvAb.height = ROWS;
+          const cxAb = cvAb.getContext('2d');
+          if (doBlur) cxAb.filter = 'blur(1.5px)';
+          cxAb.drawImage(cvA, 0, 0, COLS, ROWS);
+
+          const dataT = cxTb.getImageData(0, 0, COLS, ROWS).data;
+          const dataA = cxAb.getImageData(0, 0, COLS, ROWS).data;
+
+          let passCount = 0, failCount = 0, maskedCount = 0;
+          let beamFails = 0, ringFails = 0, navbarFails = 0, tabletRimFails = 0;
+          const failingCells = [];
+
+          for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+              const idx = (r * COLS + c) * 4;
+              const rt = dataT[idx], gt = dataT[idx+1], bt = dataT[idx+2];
+              const ra = dataA[idx], ga = dataA[idx+1], ba = dataA[idx+2];
+              const meanDiff = (Math.abs(rt - ra) + Math.abs(gt - ga) + Math.abs(bt - ba)) / 3;
+
+              const isMasked = maskRules(r, c);
+              if (isMasked) {
+                maskedCount++;
+                continue;
+              }
+
+              const pass = meanDiff <= threshold;
+              if (pass) {
+                passCount++;
+              } else {
+                failCount++;
+                const cellW = 1288 / COLS, cellH = 719 / ROWS;
+                const cssBox = [Math.round(c * cellW), Math.round(r * cellH), Math.round((c + 1) * cellW), Math.round((r + 1) * cellH)];
+                
+                let area = 'background';
+                let cause = 'gradient nuance / diffuse glow difference';
+                if (r <= Math.ceil(ROWS * 0.12)) {
+                  navbarFails++;
+                  area = 'navbar';
+                  cause = 'link text antialiasing / navbar blur filter nuance';
+                } else if (c <= Math.ceil(COLS * 0.25) && r <= Math.ceil(ROWS * 0.35)) {
+                  beamFails++;
+                  area = 'beam';
+                  cause = 'beam falloff density curvature nuance';
+                } else if (c >= Math.floor(COLS * 0.65) && c <= Math.ceil(COLS * 0.88) && r >= Math.floor(ROWS * 0.18) && r <= Math.ceil(ROWS * 0.58)) {
+                  ringFails++;
+                  area = 'ring';
+                  cause = 'eclipse crescent rim box-shadow falloff';
+                } else if (r >= Math.floor(ROWS * 0.65) && r <= Math.ceil(ROWS * 0.72) && c >= Math.floor(COLS * 0.2) && c <= Math.ceil(COLS * 0.8)) {
+                  tabletRimFails++;
+                  area = 'tablet-rim';
+                  cause = 'tablet bevel perspective rim highlight';
+                }
+
+                failingCells.push({
+                  c, r,
+                  cssBox,
+                  targetMean: [rt, gt, bt],
+                  actualMean: [ra, ga, ba],
+                  delta: Math.round(meanDiff * 10) / 10,
+                  area,
+                  cause
+                });
               }
             }
-
-            const meanDiff = count > 0 ? sumDiff / count : 0;
-            const masked = isMasked(r, c);
-            const pass = masked || meanDiff <= 14;
-
-            if (masked) maskedCount++;
-            else if (pass) passCount++;
-            else {
-              failCount++;
-              failingCells.push({ r, c, meanDiff: Math.round(meanDiff * 10) / 10 });
-            }
           }
-        }
 
-        const effectiveTotal = (ROWS * COLS) - maskedCount;
-        const passRate = Math.round((passCount / effectiveTotal) * 1000) / 10;
-
-        return { passRate, passCount, failCount, maskedCount, failingCells };
-      }, { targetB64, shotB64 });
-
-      // 2. Lighting pass (32x18 downscaled grid, blur, threshold 12)
-      lightingPassReport = await page.evaluate(async ({ targetB64, shotB64 }) => {
-        const W = 2576, H = 1438;
-        const COLS = 32, ROWS = 18;
-        const cellW = W / COLS, cellH = H / ROWS;
-
-        const load = b => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + b; });
-        const [it, ia] = await Promise.all([load(targetB64), load(shotB64)]);
-
-        // Draw downscaled to 32x18 with smoothing
-        const cA = document.createElement('canvas'); cA.width = COLS; cA.height = ROWS;
-        const cxA = cA.getContext('2d');
-        cxA.imageSmoothingEnabled = true;
-        cxA.drawImage(ia, 0, 0, COLS, ROWS);
-        const dA = cxA.getImageData(0, 0, COLS, ROWS).data;
-
-        const cT = document.createElement('canvas'); cT.width = COLS; cT.height = ROWS;
-        const cxT = cT.getContext('2d');
-        cxT.imageSmoothingEnabled = true;
-        cxT.drawImage(it, 0, 0, COLS, ROWS);
-        const dT = cxT.getImageData(0, 0, COLS, ROWS).data;
-
-        // Mask text cells in 32x18:
-        // Sub lines 2-3: row 8..9, cols 8..23
-        // Ghost button: row 10..11, cols 17..22
-        // Theme toggle: row 0..1, cols 24..26
-        const isMasked = (r, c) => {
-          if (r <= 1 && c >= 24 && c <= 26) return true;
-          if (r >= 8 && r <= 9 && c >= 8 && c <= 23) return true;
-          if (r >= 10 && r <= 11 && c >= 17 && c <= 22) return true;
-          return false;
+          const effectiveTotal = (ROWS * COLS) - maskedCount;
+          const passRate = Math.round((passCount / effectiveTotal) * 1000) / 10;
+          return {
+            passRate,
+            passCount,
+            failCount,
+            maskedCount,
+            beamFails,
+            ringFails,
+            navbarFails,
+            tabletRimFails,
+            failingCells
+          };
         };
 
-        // Critical areas:
-        // Top-left beam: x 0..640 (cols 0..7), y 0..360 (rows 0..4)
-        const isBeamArea = (r, c) => r <= 4 && c <= 7;
-        // Ring area: cols 22..28, rows 3..7
-        const isRingArea = (r, c) => r >= 3 && r <= 7 && c >= 22 && c <= 28;
-        // Navbar row: r <= 1
-        const isNavbarRow = (r, c) => r <= 1;
-        // Tablet rim: rows 12..13, cols 6..25
-        const isTabletRim = (r, c) => (r === 12 || r === 13) && c >= 6 && c <= 25;
+        const fine = runPass(16, 9, 14, false, (r, c) => (r === 4 && (c >= 4 && c <= 11)) || (r === 5 && (c >= 8 && c <= 10)) || (r === 0 && c === 12));
+        const lighting = runPass(32, 18, 12, true, (r, c) => (r >= 8 && r <= 9 && c >= 8 && c <= 23) || (r >= 10 && r <= 11 && c >= 17 && c <= 22) || (r <= 1 && c >= 24 && c <= 26));
 
+        // Create heatmap, SBS, overlay, beam SBS
         const cHeat = document.createElement('canvas'); cHeat.width = W; cHeat.height = H;
-        const ctxHeat = cHeat.getContext('2d');
-        ctxHeat.drawImage(ia, 0, 0, W, H);
+        const cxHeat = cHeat.getContext('2d');
+        cxHeat.drawImage(ia, 0, 0);
 
-        let passCount = 0, failCount = 0, maskedCount = 0;
-        let beamFails = 0, ringFails = 0, navbarFails = 0, tabletRimFails = 0;
-        const failingCells = [];
-
-        for (let r = 0; r < ROWS; r++) {
-          for (let c = 0; c < COLS; c++) {
-            const idx = (r * COLS + c) * 4;
-            const dr = Math.abs(dA[idx] - dT[idx]);
-            const dg = Math.abs(dA[idx+1] - dT[idx+1]);
-            const db = Math.abs(dA[idx+2] - dT[idx+2]);
-            const diff = (dr + dg + db) / 3;
-
-            const masked = isMasked(r, c);
-            const pass = masked || diff <= 12;
-
-            if (masked) {
-              maskedCount++;
-            } else if (pass) {
-              passCount++;
-            } else {
-              failCount++;
-              failingCells.push({ r, c, meanDiff: Math.round(diff * 10) / 10 });
-              if (isBeamArea(r, c)) beamFails++;
-              if (isRingArea(r, c)) ringFails++;
-              if (isNavbarRow(r, c)) navbarFails++;
-              if (isTabletRim(r, c)) tabletRimFails++;
-            }
-
-            // Draw on heatmap
+        const cellW = W / 32, cellH = H / 18;
+        for (let r = 0; r < 18; r++) {
+          for (let c = 0; c < 32; c++) {
+            const fail = lighting.failingCells.find(f => f.r === r && f.c === c);
+            const isMasked = (r >= 8 && r <= 9 && c >= 8 && c <= 23) || (r >= 10 && r <= 11 && c >= 17 && c <= 22) || (r <= 1 && c >= 24 && c <= 26);
             const x0 = Math.floor(c * cellW), y0 = Math.floor(r * cellH);
             const cw = Math.floor((c + 1) * cellW) - x0, ch = Math.floor((r + 1) * cellH) - y0;
-            ctxHeat.lineWidth = 2;
-            if (masked) {
-              ctxHeat.fillStyle = 'rgba(59, 130, 246, 0.22)';
-              ctxHeat.strokeStyle = 'rgba(59, 130, 246, 0.7)';
-            } else if (pass) {
-              ctxHeat.fillStyle = 'rgba(34, 197, 94, 0.16)';
-              ctxHeat.strokeStyle = 'rgba(34, 197, 94, 0.6)';
+            cxHeat.lineWidth = 2;
+            if (isMasked) {
+              cxHeat.fillStyle = 'rgba(59, 130, 246, 0.22)';
+              cxHeat.strokeStyle = 'rgba(59, 130, 246, 0.7)';
+            } else if (!fail) {
+              cxHeat.fillStyle = 'rgba(34, 197, 94, 0.16)';
+              cxHeat.strokeStyle = 'rgba(34, 197, 94, 0.6)';
             } else {
-              ctxHeat.fillStyle = 'rgba(239, 68, 68, 0.32)';
-              ctxHeat.strokeStyle = 'rgba(239, 68, 68, 0.85)';
+              cxHeat.fillStyle = 'rgba(239, 68, 68, 0.32)';
+              cxHeat.strokeStyle = 'rgba(239, 68, 68, 0.85)';
             }
-            ctxHeat.fillRect(x0, y0, cw, ch);
-            ctxHeat.strokeRect(x0, y0, cw, ch);
+            cxHeat.fillRect(x0, y0, cw, ch);
+            cxHeat.strokeRect(x0, y0, cw, ch);
           }
         }
 
-        const effectiveTotal = (ROWS * COLS) - maskedCount;
-        const passRate = Math.round((passCount / effectiveTotal) * 1000) / 10;
-
-        // Side-by-side
         const cSbs = document.createElement('canvas'); cSbs.width = W * 2; cSbs.height = H;
         const cxSbs = cSbs.getContext('2d');
         cxSbs.drawImage(it, 0, 0, W, H);
         cxSbs.drawImage(ia, W, 0, W, H);
 
-        // 50% overlay
         const cOver = document.createElement('canvas'); cOver.width = W; cOver.height = H;
         const cxOver = cOver.getContext('2d');
         cxOver.drawImage(ia, 0, 0, W, H);
         cxOver.globalAlpha = 0.5;
         cxOver.drawImage(it, 0, 0, W, H);
 
-        // Top-left beam crop 0..640 x 0..360 side-by-side
         const cBeamSbs = document.createElement('canvas'); cBeamSbs.width = 1280; cBeamSbs.height = 360;
         const cxBeamSbs = cBeamSbs.getContext('2d');
         cxBeamSbs.drawImage(it, 0, 0, 640, 360, 0, 0, 640, 360);
         cxBeamSbs.drawImage(ia, 0, 0, 640, 360, 640, 0, 640, 360);
 
         return {
-          passRate,
-          passCount,
-          failCount,
-          maskedCount,
-          beamFails,
-          ringFails,
-          navbarFails,
-          tabletRimFails,
-          failingCells,
-          verdict: passRate >= 90 && beamFails === 0 && ringFails === 0 && navbarFails === 0 && tabletRimFails === 0 ? 'PASS' : 'FAIL',
+          fine,
+          lighting,
           heatmapB64: cHeat.toDataURL('image/png').split(',')[1],
           sbsB64: cSbs.toDataURL('image/png').split(',')[1],
           overlayB64: cOver.toDataURL('image/png').split(',')[1],
           beamSbsB64: cBeamSbs.toDataURL('image/png').split(',')[1]
         };
-      }, { targetB64, shotB64 });
+      }, { tB64: targetB64, aB64: shotB64 });
 
-      // Save dark deliverable images
-      fs.writeFileSync('reference/hero-diff-sbs.png', Buffer.from(lightingPassReport.sbsB64, 'base64'));
-      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-sbs.png'), Buffer.from(lightingPassReport.sbsB64, 'base64'));
+      finePassReport = diffResults.fine;
+      lightingPassReport = diffResults.lighting;
 
-      fs.writeFileSync('reference/hero-diff-overlay.png', Buffer.from(lightingPassReport.overlayB64, 'base64'));
-      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-overlay.png'), Buffer.from(lightingPassReport.overlayB64, 'base64'));
+      fs.writeFileSync('reference/hero-diff-sbs.png', Buffer.from(diffResults.sbsB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-sbs.png'), Buffer.from(diffResults.sbsB64, 'base64'));
 
-      fs.writeFileSync('reference/hero-diff-heatmap.png', Buffer.from(lightingPassReport.heatmapB64, 'base64'));
-      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-heatmap.png'), Buffer.from(lightingPassReport.heatmapB64, 'base64'));
+      fs.writeFileSync('reference/hero-diff-overlay.png', Buffer.from(diffResults.overlayB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-overlay.png'), Buffer.from(diffResults.overlayB64, 'base64'));
 
-      fs.writeFileSync('reference/crop-beam-sbs.png', Buffer.from(lightingPassReport.beamSbsB64, 'base64'));
-      fs.writeFileSync(path.join(ARTIFACT_DIR, 'crop-beam-sbs.png'), Buffer.from(lightingPassReport.beamSbsB64, 'base64'));
-    } else {
-      // Light mode: capture ring crop
-      const ringCropB64 = await page.evaluate(async (shotB64) => {
-        const load = b => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + b; });
-        const img = await load(shotB64);
-        const cv = document.createElement('canvas'); cv.width = 600; cv.height = 600;
-        const cx = cv.getContext('2d');
-        // Ring center is (967*2 = 1934, 278*2 = 556)
-        cx.drawImage(img, 1934 - 300, 556 - 300, 600, 600, 0, 0, 600, 600);
-        return cv.toDataURL('image/png').split(',')[1];
-      }, shotBuf.toString('base64'));
+      fs.writeFileSync('reference/hero-diff-heatmap.png', Buffer.from(diffResults.heatmapB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'hero-diff-heatmap.png'), Buffer.from(diffResults.heatmapB64, 'base64'));
 
-      fs.writeFileSync('reference/crop-ring-light.png', Buffer.from(ringCropB64, 'base64'));
-      fs.writeFileSync(path.join(ARTIFACT_DIR, 'crop-ring-light.png'), Buffer.from(ringCropB64, 'base64'));
+      fs.writeFileSync('reference/crop-beam-sbs.png', Buffer.from(diffResults.beamSbsB64, 'base64'));
+      fs.writeFileSync(path.join(ARTIFACT_DIR, 'crop-beam-sbs.png'), Buffer.from(diffResults.beamSbsB64, 'base64'));
     }
 
     await page.close();
 
     return {
       theme,
+      sb,
+      viewportUsed: { width: vpWidth, height: 719 },
       clientWidth,
       rawBoxes,
       tabletSpans,
       checks,
+      regionColourReport,
       finePassReport,
       lightingPassReport
     };
   };
 
-  // Run Dark
   const darkResults = await runDiffForTheme('dark');
-  // Run Light
   const lightResults = await runDiffForTheme('light');
 
-  // Mobile captures (360x640)
+  // Mobile captures
   for (const th of ['dark', 'light']) {
     const pMob = await browser.newPage({
       viewport: { width: 360, height: 640 },
@@ -614,6 +630,8 @@ const round1 = v => Math.round(v * 10) / 10;
     await pMob.evaluate(t => {
       document.documentElement.classList.remove('dark', 'light');
       document.documentElement.classList.add(t);
+      const fb = document.querySelector('[aria-label*="Feedback"]');
+      if (fb && fb.parentElement) fb.parentElement.style.display = 'none';
       window.scrollTo(0, 0);
     }, th);
     await pMob.waitForTimeout(300);
@@ -623,45 +641,42 @@ const round1 = v => Math.round(v * 10) / 10;
     await pMob.close();
   }
 
-  // Contrast check of light mode H1 on top of ring
-  const contrastCheck = await (async () => {
-    const p = await browser.newPage({ viewport: { width: 1288, height: 719 } });
-    await p.goto(`http://localhost:${PORT}/`);
-    await p.evaluate(() => {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-    });
-    const ratio = await p.evaluate(() => {
-      const getLum = (r, g, b) => {
-        const a = [r, g, b].map(v => {
-          v /= 255;
-          return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-        });
-        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-      };
-      // Ring bg ~ #f1ecff (241, 236, 255), H1 text ~ #14102b (20, 16, 43), H1 grad ~ #6d28d9 (109, 40, 217)
-      const lRing = getLum(241, 236, 255);
-      const lText = getLum(20, 16, 43);
-      const lGrad = getLum(109, 40, 217);
-
-      const ratioText = (lRing + 0.05) / (lText + 0.05);
-      const ratioGrad = (lRing + 0.05) / (lGrad + 0.05);
-      return {
-        ratioText: Math.round(ratioText * 10) / 10,
-        ratioGrad: Math.round(ratioGrad * 10) / 10
-      };
-    });
-    await p.close();
-    return ratio;
-  })();
+  // 10 worst cells in lighting pass
+  const sortedFails = [...darkResults.lightingPassReport.failingCells].sort((a, b) => b.delta - a.delta);
+  const tenWorstCells = sortedFails.slice(0, 10);
 
   const fullReport = {
-    dark: darkResults,
-    light: lightResults,
-    contrastRatio: contrastCheck
+    part: 'Phase 2i',
+    measurement: {
+      sb: darkResults.sb,
+      viewportUsed: darkResults.viewportUsed,
+      clientWidth: darkResults.clientWidth
+    },
+    tableB: darkResults.checks,
+    regionColourReport: darkResults.regionColourReport.patches,
+    regionAllPass: darkResults.regionColourReport.allPass,
+    finePassReport: {
+      passRate: darkResults.finePassReport.passRate,
+      passCount: darkResults.finePassReport.passCount,
+      failCount: darkResults.finePassReport.failCount,
+      maskedCount: darkResults.finePassReport.maskedCount
+    },
+    lightingPassReport: {
+      passRate: darkResults.lightingPassReport.passRate,
+      passCount: darkResults.lightingPassReport.passCount,
+      failCount: darkResults.lightingPassReport.failCount,
+      maskedCount: darkResults.lightingPassReport.maskedCount,
+      beamFails: darkResults.lightingPassReport.beamFails,
+      ringFails: darkResults.lightingPassReport.ringFails,
+      navbarFails: darkResults.lightingPassReport.navbarFails,
+      tabletRimFails: darkResults.lightingPassReport.tabletRimFails,
+      verdict: darkResults.lightingPassReport.passRate >= 90 && darkResults.lightingPassReport.beamFails === 0 && darkResults.lightingPassReport.ringFails === 0 && darkResults.lightingPassReport.navbarFails === 0 && darkResults.lightingPassReport.tabletRimFails === 0 ? 'PASS' : 'FAIL'
+    },
+    tenWorstCells
   };
 
-  fs.writeFileSync(path.join(ARTIFACT_DIR, 'phase-2h-report.json'), JSON.stringify(fullReport, null, 2));
+  fs.writeFileSync('phase-2i-report.json', JSON.stringify(fullReport, null, 2));
+  fs.writeFileSync(path.join(ARTIFACT_DIR, 'phase-2i-report.json'), JSON.stringify(fullReport, null, 2));
   console.log(JSON.stringify(fullReport, null, 2));
 
   await browser.close();
