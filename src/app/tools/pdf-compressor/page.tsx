@@ -142,6 +142,7 @@ export default function PdfCompressorPage() {
   const [enableTargetSize, setEnableTargetSize] = useState(false);
   const [targetSizeKB, setTargetSizeKB] = useState<number>(300);
   const [isProcessingAll, setIsProcessingAll] = useState(false);
+  const [inlineError, setInlineError] = useState<string | null>(null);
 
   // Keep track of all created object URLs to prevent memory leaks
   const createdUrlsRef = useRef<Set<string>>(new Set());
@@ -169,9 +170,11 @@ export default function PdfCompressorPage() {
 
   const addFilesToBatch = useCallback((incomingFiles: File[]) => {
     const validPdfFiles: File[] = [];
+    let rejectionReason: string | null = null;
     for (const f of incomingFiles) {
-      const err = validatePdfFile(f, 150); // 150MB max
+      const err = validatePdfFile(f, 100); // 100MB max per UI specification
       if (err) {
+        rejectionReason = `${f.name}: ${err}`;
         toast.error(`${f.name}: ${err}`);
         continue;
       }
@@ -179,9 +182,13 @@ export default function PdfCompressorPage() {
     }
 
     if (validPdfFiles.length === 0) {
-      toast.error('Please select valid PDF documents.');
+      const msg = rejectionReason || 'Please select valid PDF documents (max 100MB each).';
+      setInlineError(msg);
+      toast.error(msg);
       return;
     }
+
+    setInlineError(null);
 
     setBatchItems((prev) => {
       const remainingSlots = 5 - prev.length;
@@ -997,13 +1004,35 @@ export default function PdfCompressorPage() {
       >
         {/* Upload Dropzone (When no files in batch) */}
         {batchItems.length === 0 && (
-          <FileDropZone
-            accept="application/pdf"
-            onFileDrop={handleFileDrop}
-            maxSizeMB={100}
-            title="Drop your PDF(s) here"
-            subtitle="or click to browse from your device (Up to 5 PDFs, max 100MB each)"
-          />
+          <div className="space-y-3">
+            <FileDropZone
+              accept="application/pdf"
+              onFileDrop={handleFileDrop}
+              maxSizeMB={100}
+              title="Drop your PDF(s) here"
+              subtitle="or click to browse from your device (Up to 5 PDFs, max 100MB each)"
+            />
+            {inlineError && (
+              <motion.div
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                role="alert"
+                className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs sm:text-sm font-medium flex items-center justify-between gap-3"
+              >
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                  <span>{inlineError}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setInlineError(null)}
+                  className="text-xs font-semibold hover:underline cursor-pointer"
+                >
+                  Dismiss
+                </button>
+              </motion.div>
+            )}
+          </div>
         )}
 
         {/* When Files Exist in Batch Queue */}

@@ -184,11 +184,13 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
+              function gtag(){try{dataLayer.push(arguments);}catch(e){}}
               gtag('js', new Date());
-              gtag('config', 'G-LKL3K1VKW6', {
-                page_path: window.location.pathname,
-              });
+              try {
+                gtag('config', 'G-LKL3K1VKW6', {
+                  page_path: window.location.pathname,
+                });
+              } catch(e) {}
             `,
           }}
         />
@@ -227,7 +229,7 @@ export default function RootLayout({
 
             <CompixorNavbar />
 
-            <main id="main-content" className="flex-1 pt-24 sm:pt-28 relative z-10">
+            <main id="main-content" className="flex-1 w-full min-w-0 pt-20 sm:pt-24 md:pt-28 relative z-10">
               {children}
             </main>
 

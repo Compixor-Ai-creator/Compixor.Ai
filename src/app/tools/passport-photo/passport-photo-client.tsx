@@ -44,6 +44,7 @@ import {
   Image as ImageIcon,
   Move,
   Crosshair,
+  Search,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FileDropZone from '@/components/FileDropZone';
@@ -275,6 +276,18 @@ export default function PassportPhotoPage() {
 
   const [isCustomMode, setIsCustomMode] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<Preset>(standardPresets[0]);
+  const [presetSearch, setPresetSearch] = useState('');
+
+  const filteredPresets = useMemo(() => {
+    if (!presetSearch.trim()) return standardPresets;
+    const q = presetSearch.toLowerCase().trim();
+    return standardPresets.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.id.toLowerCase().includes(q)
+    );
+  }, [presetSearch]);
 
   // Custom size state
   const [customUnit, setCustomUnit] = useState<'mm' | 'cm' | 'inch' | 'px'>('mm');
@@ -2180,29 +2193,58 @@ export default function PassportPhotoPage() {
               </div>
 
               {!isCustomMode ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {standardPresets.map((preset) => (
-                    <button
-                      key={preset.id}
-                      onClick={() => handlePresetSelect(preset)}
-                      className={`p-3.5 rounded-xl text-left border transition-all ${
-                        selectedPreset.id === preset.id
-                          ? 'border-brand-500 bg-brand-500/10 ring-2 ring-brand-500/20 shadow-xs'
-                          : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-white/40 dark:bg-zinc-900/40'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-sm text-zinc-900 dark:text-white flex items-center gap-1.5">
-                          <span>{preset.flag}</span>
-                          {preset.name}
-                        </span>
-                        {selectedPreset.id === preset.id && (
-                          <CheckCircle2 className="w-4 h-4 text-brand-500 shrink-0" />
-                        )}
-                      </div>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">{preset.description}</p>
-                    </button>
-                  ))}
+                <div className="space-y-3">
+                  {/* Real-time Country / Standard Search Filter */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={presetSearch}
+                      onChange={(e) => setPresetSearch(e.target.value)}
+                      placeholder="Search country or standard (e.g., Pakistan NADRA, US, Schengen, UAE)..."
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-white dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 shadow-xs transition"
+                    />
+                  </div>
+
+                  {filteredPresets.length === 0 ? (
+                    <div className="p-6 text-center rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60">
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                        No matching country or standard found for &quot;{presetSearch}&quot;.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setPresetSearch('')}
+                        className="mt-2 text-xs text-brand-600 dark:text-brand-400 hover:underline font-semibold"
+                      >
+                        Clear search
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-1">
+                      {filteredPresets.map((preset) => (
+                        <button
+                          key={preset.id}
+                          onClick={() => handlePresetSelect(preset)}
+                          className={`p-3.5 rounded-xl text-left border transition-all cursor-pointer ${
+                            selectedPreset.id === preset.id
+                              ? 'border-brand-500 bg-brand-500/10 ring-2 ring-brand-500/20 shadow-xs'
+                              : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-white/40 dark:bg-zinc-900/40'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-bold text-sm text-zinc-900 dark:text-white flex items-center gap-1.5">
+                              <span>{preset.flag}</span>
+                              {preset.name}
+                            </span>
+                            {selectedPreset.id === preset.id && (
+                              <CheckCircle2 className="w-4 h-4 text-brand-500 shrink-0" />
+                            )}
+                          </div>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400">{preset.description}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60 space-y-4">

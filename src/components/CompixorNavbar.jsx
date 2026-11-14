@@ -203,6 +203,14 @@ export default function CompixorNavbar() {
               -webkit-transform: translateZ(0);
               transform: translateZ(0);
             }
+            @media (max-width: 768px) {
+              .cnav-header {
+                top: 8px;
+                left: 8px;
+                right: 8px;
+                border-radius: 16px;
+              }
+            }
             .cnav-glass {
               position: absolute;
               inset: 0;
@@ -219,6 +227,11 @@ export default function CompixorNavbar() {
               padding: 10px 18px;
               border-radius: inherit;
               color: #1a1530;
+            }
+            @media (max-width: 768px) {
+              .cnav-bar {
+                padding: 6px 12px;
+              }
             }
             .dark .cnav-bar {
               color: #f3f0ff;

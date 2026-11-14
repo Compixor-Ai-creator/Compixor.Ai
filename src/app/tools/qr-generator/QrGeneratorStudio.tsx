@@ -433,6 +433,7 @@ export default function QrGeneratorStudio() {
   const [frameTextColor, setFrameTextColor] = useState('#ffffff');
 
   const [copied, setCopied] = useState(false);
+  const [showAllPresets, setShowAllPresets] = useState(false);
 
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCodeInstance = useRef<any>(null);
@@ -1020,90 +1021,136 @@ export default function QrGeneratorStudio() {
 
   return (
     <>
-      {/* Presets Rows Container */}
-      <div className="w-full max-w-7xl mx-auto mb-10 space-y-3">
-        {/* Row 1: Solid Color Presets */}
-        <div
-          ref={presetsScrollRef}
-          className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
-        >
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
-            <Wand2 className="w-3.5 h-3.5 text-brand-500" /> Presets:
-          </span>
-          <div className="flex items-center gap-2 shrink-0">
-            {solidPresets.map((preset) => (
+      {/* Collapsible Color & Theme Presets Accordion */}
+      <div className="w-full max-w-7xl mx-auto mb-8 p-3 sm:p-4 rounded-2xl bg-white/60 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 shadow-xs">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Wand2 className="w-4 h-4 text-brand-500" />
+            <span className="text-xs sm:text-sm font-bold text-zinc-800 dark:text-zinc-200">
+              Style &amp; Brand Themes (30+ Presets)
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300 font-semibold">
+              Instant Styles
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowAllPresets(!showAllPresets)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition cursor-pointer"
+          >
+            <span>{showAllPresets ? 'Hide Themes' : 'Explore All 30+ Themes'}</span>
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showAllPresets ? 'rotate-180' : ''}`} />
+          </button>
+        </div>
+
+        {/* Quick Strip when collapsed (Top 6 popular presets) */}
+        {!showAllPresets && (
+          <div className="flex items-center gap-2 overflow-x-auto pt-3 pb-1">
+            <span className="text-xs text-zinc-400 dark:text-zinc-500 shrink-0 select-none">Quick Styles:</span>
+            {solidPresets.slice(0, 6).map((preset) => (
               <button
                 key={preset.id}
                 onClick={() => applyPreset(preset)}
-                className="text-xs font-semibold px-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 hover:border-brand-500 hover:text-brand-500 dark:hover:text-brand-300 transition shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap"
+                className="text-xs font-semibold px-2.5 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-850 hover:border-brand-500 hover:text-brand-500 dark:hover:text-brand-300 transition shadow-xs flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
               >
                 <span
-                  className="w-2.5 h-2.5 rounded-full shrink-0"
+                  className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: preset.fgColor }}
                 />
                 {preset.name}
               </button>
             ))}
           </div>
-        </div>
+        )}
 
-        {/* Row 2: Gradient Presets */}
-        <div
-          ref={gradientScrollRef}
-          className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
-        >
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
-            <Sparkles className="w-3.5 h-3.5 text-brand-500" /> GRADIENT PRESETS:
-          </span>
-          <div className="flex items-center gap-2 shrink-0">
-            {gradientPresets.map((preset) => (
-              <button
-                key={preset.id}
-                onClick={() => applyPreset(preset)}
-                title={preset.description ? `${preset.name} (${preset.description})` : preset.name}
-                className="text-xs font-semibold px-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 hover:border-brand-500 hover:text-brand-500 dark:hover:text-brand-300 transition shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap"
-              >
-                <span
-                  className="w-2.5 h-2.5 rounded-full shrink-0 ring-[0.5px] ring-black/10 dark:ring-white/20"
-                  style={{ background: preset.gradientCss || preset.fgColor }}
-                />
-                {preset.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Row 3: Artistic Brand Templates */}
-        <div
-          ref={brandScrollRef}
-          className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
-        >
-          <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
-            <Sparkles className="w-3.5 h-3.5 text-purple-500 animate-spin-slow" /> BRAND TEMPLATES:
-          </span>
-          <div className="flex items-center gap-2 shrink-0">
-            {brandPresets.map((preset) => {
-              const brandLogo = brandLogos.find((l) => l.id === preset.logoId);
-              return (
-                <button
-                  key={preset.id}
-                  onClick={() => applyBrandPreset(preset)}
-                  title={preset.description}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-full border border-purple-200/80 dark:border-purple-800/60 bg-gradient-to-r from-purple-50/70 via-pink-50/60 to-amber-50/50 dark:from-purple-950/40 dark:via-pink-950/30 dark:to-amber-950/20 hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-300 transition shadow-sm flex items-center gap-2 shrink-0 whitespace-nowrap group"
-                >
-                  {brandLogo && (
-                    <img
-                      src={brandLogo.svgDataUri}
-                      alt={brandLogo.name}
-                      className="w-4 h-4 object-contain rounded-full shadow-xs shrink-0"
+        {/* Expanded Full Rows */}
+        {showAllPresets && (
+          <div className="pt-4 space-y-3 border-t border-zinc-200/60 dark:border-zinc-800/60 mt-3">
+            {/* Row 1: Solid Color Presets */}
+            <div
+              ref={presetsScrollRef}
+              className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
+            >
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
+                <Wand2 className="w-3.5 h-3.5 text-brand-500" /> Presets:
+              </span>
+              <div className="flex items-center gap-2 shrink-0">
+                {solidPresets.map((preset) => (
+                  <button
+                    key={preset.id}
+                    onClick={() => applyPreset(preset)}
+                    className="text-xs font-semibold px-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 hover:border-brand-500 hover:text-brand-500 dark:hover:text-brand-300 transition shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+                  >
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0"
+                      style={{ backgroundColor: preset.fgColor }}
                     />
-                  )}
-                  <span>{preset.name}</span>
-                </button>
-              );
-            })}
+                    {preset.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Row 2: Gradient Presets */}
+            <div
+              ref={gradientScrollRef}
+              className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
+            >
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
+                <Sparkles className="w-3.5 h-3.5 text-brand-500" /> GRADIENT PRESETS:
+              </span>
+              <div className="flex items-center gap-2 shrink-0">
+                {gradientPresets.map((preset) => (
+                  <button
+                    key={preset.id}
+                    onClick={() => applyPreset(preset)}
+                    title={preset.description ? `${preset.name} (${preset.description})` : preset.name}
+                    className="text-xs font-semibold px-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 hover:border-brand-500 hover:text-brand-500 dark:hover:text-brand-300 transition shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+                  >
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0 ring-[0.5px] ring-black/10 dark:ring-white/20"
+                      style={{ background: preset.gradientCss || preset.fgColor }}
+                    />
+                    {preset.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Row 3: Artistic Brand Templates */}
+            <div
+              ref={brandScrollRef}
+              className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
+            >
+              <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 min-w-[155px] flex items-center gap-1.5 shrink-0 select-none">
+                <Sparkles className="w-3.5 h-3.5 text-purple-500 animate-spin-slow" /> BRAND TEMPLATES:
+              </span>
+              <div className="flex items-center gap-2 shrink-0">
+                {brandPresets.map((preset) => {
+                  const brandLogo = brandLogos.find((l) => l.id === preset.logoId);
+                  return (
+                    <button
+                      key={preset.id}
+                      onClick={() => applyBrandPreset(preset)}
+                      title={preset.description}
+                      className="text-xs font-semibold px-3 py-1.5 rounded-full border border-purple-200/80 dark:border-purple-800/60 bg-gradient-to-r from-purple-50/70 via-pink-50/60 to-amber-50/50 dark:from-purple-950/40 dark:via-pink-950/30 dark:to-amber-950/20 hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-300 transition shadow-sm flex items-center gap-2 shrink-0 whitespace-nowrap group cursor-pointer"
+                    >
+                      {brandLogo && (
+                        <img
+                          src={brandLogo.svgDataUri}
+                          alt={brandLogo.name}
+                          className="w-4 h-4 object-contain rounded-full shadow-xs shrink-0"
+                        />
+                      )}
+                      <span>{preset.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Main Grid */}

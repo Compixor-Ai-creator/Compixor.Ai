@@ -732,7 +732,7 @@ export default function FullDpMakerPage() {
           <Sparkles className="absolute -top-6 right-1 w-4 h-4 text-brand-400/70 animate-spin-slow" />
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white leading-tight">
-            <span className="bg-gradient-to-r from-[#25D366] via-brand-500 to-[#E1306C] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-600 via-brand-600 to-rose-600 dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-300 bg-clip-text text-transparent">
               Free Full DP Maker for WhatsApp:
             </span>{' '}
             Set Full-Size Profile Pictures Without Cropping

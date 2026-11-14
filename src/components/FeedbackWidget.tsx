@@ -237,8 +237,8 @@ export default function FeedbackWidget() {
 
   return (
     <>
-      {/* Discreet Floating Trigger Button */}
-      <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 print:hidden">
+      {/* Discreet Floating Trigger Button (Positioned Bottom-Left to avoid tool collisions) */}
+      <div className="fixed bottom-5 left-5 sm:bottom-6 sm:left-6 z-40 print:hidden">
         <button
           ref={triggerButtonRef}
           type="button"

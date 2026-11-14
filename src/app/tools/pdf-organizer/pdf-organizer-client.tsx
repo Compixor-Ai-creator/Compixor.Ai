@@ -41,6 +41,7 @@ import {
   ChevronRight,
   LayoutGrid,
   ListFilter,
+  GripVertical,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -1599,9 +1600,14 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
                           >
                             {/* Top Card Header: Sequence Number & Rotation Badge */}
                             <div className="w-full flex items-center justify-between mb-2 px-1 text-[11px] font-bold">
-                              <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">
-                                #{index + 1}
-                              </span>
+                              <div className="flex items-center gap-1">
+                                <span title="Drag to reorder" className="cursor-grab active:cursor-grabbing inline-flex items-center">
+                                  <GripVertical className="w-3.5 h-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 shrink-0" />
+                                </span>
+                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">
+                                  #{index + 1}
+                                </span>
+                              </div>
                               {pageItem.rotation > 0 ? (
                                 <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] flex items-center gap-1">
                                   <RotateCw className="w-2.5 h-2.5" />
@@ -1705,7 +1711,10 @@ export default function PdfOrganizerClient({ initialTab = 'merge' }: { initialTa
                           }`}
                         >
                           {/* Left: Thumbnail & Details */}
-                          <div className="flex items-center gap-3.5 min-w-0">
+                          <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+                            <span title="Drag to reorder" className="cursor-grab active:cursor-grabbing inline-flex items-center shrink-0">
+                              <GripVertical className="w-4 h-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200" />
+                            </span>
                             {/* Order index pill */}
                             <span className="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-bold flex items-center justify-center shrink-0">
                               {index + 1}

@@ -55,13 +55,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setTheme = useCallback((newTheme: Theme) => {
+    // Immediate synchronous DOM attribute update to prevent transition lag
+    applyThemeToDocument(newTheme);
     setThemeState(newTheme);
     try {
       localStorage.setItem('compixor-theme', newTheme);
     } catch {
       // Ignore storage errors in restricted contexts
     }
-    applyThemeToDocument(newTheme);
   }, []);
 
   const toggleTheme = useCallback(() => {

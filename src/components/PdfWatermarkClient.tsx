@@ -1093,8 +1093,13 @@ export default function PdfWatermarkClient({
       <div className="flex justify-center mb-8">
         <div className="inline-flex p-1.5 rounded-2xl bg-zinc-100 dark:bg-surface-850 border border-zinc-200/80 dark:border-zinc-800 shadow-sm max-w-md w-full">
           <button
-            onClick={() => setActiveMode('add')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+            onClick={() => {
+              setActiveMode('add');
+              if (typeof window !== 'undefined' && window.location.pathname.includes('watermark')) {
+                window.history.replaceState(null, '', '/tools/add-watermark');
+              }
+            }}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
               activeMode === 'add'
                 ? 'bg-white dark:bg-surface-800 text-brand-600 dark:text-brand-300 shadow-md border border-brand-500/20'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -1107,8 +1112,13 @@ export default function PdfWatermarkClient({
             </span>
           </button>
           <button
-            onClick={() => setActiveMode('remove')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+            onClick={() => {
+              setActiveMode('remove');
+              if (typeof window !== 'undefined' && window.location.pathname.includes('watermark')) {
+                window.history.replaceState(null, '', '/tools/remove-watermark');
+              }
+            }}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
               activeMode === 'remove'
                 ? 'bg-white dark:bg-surface-800 text-brand-600 dark:text-brand-300 shadow-md border border-brand-500/20'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'

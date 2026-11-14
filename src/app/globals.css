@@ -6,6 +6,18 @@
 @tailwind utilities;
 
 @layer base {
+  html, body, #root {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  main {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+  }
+
   html {
     /* Prevent blank background during mobile overscroll rubber-banding */
     background-color: #ffffff;
@@ -59,15 +71,22 @@
 
   :root {
     --topo-color: transparent;
-    --glass-bg: rgba(255, 255, 255, 0.78);
-    --glass-border: rgba(255, 255, 255, 0.75);
-    --glass-shadow: 0 8px 30px rgba(35, 25, 80, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(15, 23, 42, 0.12);
+    --glass-shadow: 0 8px 30px rgba(35, 25, 80, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.9);
     --glow-color: rgba(124, 58, 237, 0.12);
     --surface-primary: #ffffff;
     --surface-secondary: #f4f4f5;
-    --text-primary: #18181b;
-    --text-secondary: #52525b;
-    --text-muted: #a1a1aa;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+  }
+
+  [data-theme="light"] .hero-title-gradient {
+    color: #0f172a;
+    background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 50%, #6d28d9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .dark {
