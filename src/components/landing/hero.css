@@ -51,7 +51,7 @@ html.light .cx-hero{
 /* ---------- decorative background (all aria-hidden, no pointer events) ---------- */
 .cx-hero__bg{
   position:absolute; inset:0; z-index:-1; pointer-events:none;
-  background-image:url('/brand/hero-bg-dark.webp');
+  background-image:url('/brand/hero-bg-dark-v2.webp');
   background-size:100% auto;
   background-position:center top;
   background-repeat:no-repeat;
