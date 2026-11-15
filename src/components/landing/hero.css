@@ -78,16 +78,30 @@ html.light .cx-hero__nebula{
   position:absolute; z-index:0; pointer-events:none;
   left:967px; top:140px; transform:translateX(-50%);
   width:275px; height:275px; aspect-ratio:1; border-radius:50%;
-  background:radial-gradient(circle at 48% 48%, #090e24 0%, #16183a 76%, #362a68 86%, #5d429a 93%, #8860c0 97%, #ae84dc 100%);
+  background:radial-gradient(circle at 48% 48%, #090e24 0%, #090e24 51%, #181b3e 75%, #362a68 86%, #5d429a 93%, #8860c0 97%, #ae84dc 100%);
   box-shadow:
     0 0 0 1px rgba(220, 195, 255, 0.45),
     0 0 24px 2px rgba(185, 140, 245, 0.85),
     0 0 48px 6px rgba(135, 80, 225, 0.50),
     inset 0 0 15px rgba(205, 170, 255, 0.38);
 }
+.cx-hero__ring::after {
+  content: '';
+  position: absolute;
+  left: 278px;
+  top: 128px;
+  width: 17px;
+  height: 20px;
+  background: rgba(215, 175, 240, 0.62);
+  pointer-events: none;
+  filter: blur(1.5px);
+}
 html.light .cx-hero__ring{
   background:radial-gradient(circle at 42% 45%, #f1ecff 0 70%, #e7e0ff 100%);
   box-shadow:0 0 0 1px rgba(124,58,237,.22), 0 0 36px 2px rgba(124,58,237,.12);
+}
+html.light .cx-hero__ring::after {
+  display: none !important;
 }
 
 /* ---------- content ---------- */
