@@ -16,6 +16,11 @@ html { scrollbar-gutter: auto !important; }
   --h-ring-fill:#081022; --h-ring-glow:rgba(195,150,245,.95); --h-ring-rim:rgba(220,200,255,.85);
   --h-top:116px;                       /* badge top edge measured from page top */
   position:relative; isolation:isolate; overflow:hidden;
+  container-type:inline-size;
+  container-name:hero;
+  max-width:2560px;
+  margin-left:auto;
+  margin-right:auto;
   margin-top:calc(var(--cx-nav-clear) * -1);
   padding-top:var(--h-top);
   background:var(--h-bg); color:var(--h-text); text-align:center;
@@ -79,8 +84,8 @@ html.light .cx-hero__nebula{
 /* ---------- eclipse ring: behind the H1, centre at 75% x, 278px y @1288 ---------- */
 .cx-hero__ring{
   position:absolute; z-index:0; pointer-events:none;
-  left:967px; top:140px; transform:translateX(-50%);
-  width:275px; height:275px; aspect-ratio:1; border-radius:50%;
+  left:75.0776cqw; top:10.8696cqw; transform:translateX(-50%);
+  width:21.3509cqw; height:21.3509cqw; aspect-ratio:1; border-radius:50%;
   background:radial-gradient(circle at 48% 48%, #090e24 0%, #090e24 58%, #22184e 72%, #3c2a74 81%, #5d429a 91%, #8860c0 96%, #ae84dc 100%);
   box-shadow:
     0 0 0 1px rgba(220, 195, 255, 0.45),
@@ -91,10 +96,10 @@ html.light .cx-hero__nebula{
 .cx-hero__ring::after {
   content: '';
   position: absolute;
-  left: 278px;
-  top: 128px;
-  width: 17px;
-  height: 20px;
+  left: 101.09%;
+  top: 46.55%;
+  width: 6.18%;
+  height: 7.27%;
   background: rgba(215, 175, 240, 0.62);
   pointer-events: none;
   filter: blur(1.5px);
@@ -157,8 +162,8 @@ html.light .cx-hero .cx-sub{
 
 /* ---------- tablet showcase: tilted, bleeds off the bottom, icons pop above the rim ---------- */
 .cx-stage-crop{
-  position:relative; z-index:1; margin-top:43px; pointer-events:none;
-  height:calc(clamp(220px,22vw,320px) + 140px);
+  position:relative; z-index:1; margin-top:3.3385cqw; pointer-events:none;
+  height:35.7143cqw;
   overflow:visible;
 }
 /* Feedback widget fixed at bottom-left: hide on landing view to avoid obscuring dark cosmic background */
@@ -168,26 +173,30 @@ div:has(> button[aria-haspopup="dialog"]) {
 
 .cx-stage{
   position:relative;
-  perspective:780px; perspective-origin:50% 0;
+  perspective:60.5590cqw; perspective-origin:50% 0;
   -webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 140px), transparent 100%);
   mask-image:linear-gradient(to bottom, #000 calc(100% - 140px), transparent 100%);
 }
-@media (min-width:768px){
+@media (min-width:1024px){
   .cx-stage{
     clip-path: polygon(
-      267px 3px, 271px 1px, 285px 0px,
-      992px 0px, 1006px 1px, 1010px 3px,
-      1092px 100%,
-      197px 100%
+      20.7298cqw 0.2329cqw,
+      21.0404cqw 0.0776cqw,
+      22.1273cqw 0cqw,
+      77.0186cqw 0cqw,
+      78.1056cqw 0.0776cqw,
+      78.4161cqw 0.2329cqw,
+      84.7826cqw 100%,
+      15.2950cqw 100%
     );
   }
   .cx-stage::before{
     content:"";
     position:absolute;
-    top:1.5px;
-    left:266px;
-    width:746px;
-    height:2.5px;
+    top:0.1165cqw;
+    left:20.6522cqw;
+    width:57.9193cqw;
+    height:0.1941cqw;
     z-index:10;
     pointer-events:none;
     background:linear-gradient(90deg, 
@@ -204,8 +213,8 @@ div:has(> button[aria-haspopup="dialog"]) {
   html.light .cx-stage::before{ display:none; }
 }
 .cx-tablet{
-  position:relative; width:58.07%; max-width:748px; margin:0 auto; padding:0;
-  height:520px; overflow:hidden;
+  position:relative; width:58.0697cqw; max-width:none; margin:0 auto; padding:0;
+  height:40.3727cqw; overflow:hidden;
   border:1px solid transparent; border-bottom:0; border-radius:28px 28px 0 0;
   background:
     linear-gradient(#03030d,#03030d) padding-box,
@@ -223,6 +232,25 @@ html.light .cx-tablet{
   display:block; width:100%; height:auto; margin-top:0;
   transform:scale(0.985, 0.695) rotate(0.6deg) translate(7px, -86px);
   transform-origin:50% 0;
+}
+
+@media (max-width:1023px){
+  .cx-hero__ring{ display:none !important; }
+  .cx-stage-crop{ height:auto; margin-top:20px; }
+  .cx-stage{ perspective:none; clip-path:none; -webkit-mask-image:none; mask-image:none; }
+  .cx-stage::before{ display:none !important; }
+  .cx-tablet{
+    width:calc(100% - 32px);
+    max-width:720px;
+    height:auto;
+    transform:none;
+    border-radius:20px 20px 0 0;
+  }
+  .cx-tablet__img{
+    transform:none !important;
+    width:100%;
+    height:auto;
+  }
 }
 
 /* ---------- mobile ---------- */
