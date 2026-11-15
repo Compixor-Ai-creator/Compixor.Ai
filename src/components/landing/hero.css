@@ -111,11 +111,13 @@ html.light .cx-hero__nebula{
   position: absolute;
   left: 101.09%;
   top: 46.55%;
-  width: 6.18%;
-  height: 7.27%;
-  background: rgba(215, 175, 240, 0.62);
+  width: 28px;
+  height: 28px;
+  transform: translate(-30%, -30%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(215, 175, 240, 0.70) 0%, rgba(215, 175, 240, 0.35) 45%, transparent 72%);
   pointer-events: none;
-  filter: blur(1.5px);
+  filter: blur(2px);
 }
 html.light .cx-hero__ring{
   background:radial-gradient(circle at 42% 45%, #f1ecff 0 70%, #e7e0ff 100%);
