@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import TabletFlatten from "./TabletFlatten";
 import "./hero.css";
 
 export default function Hero() {
@@ -44,14 +45,14 @@ export default function Hero() {
 
       <div className="cx-stage-crop">
         <div className="cx-stage">
-          <div className="cx-tablet">
+          <TabletFlatten>
             <Image
               className="cx-tablet__img"
               src="/brand/hero-orbit.png" width={1672} height={941} priority
               sizes="(max-width:768px) 92vw, 720px"
               alt="Compixor tools orbiting a PDF: compress, convert to Word, edit image, QR generator, merge and split, protect PDF"
             />
-          </div>
+          </TabletFlatten>
         </div>
       </div>
     </section>
