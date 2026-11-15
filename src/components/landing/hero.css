@@ -160,15 +160,22 @@ html.light .cx-hero .cx-sub{
 .cx-hbtn--ghost{ color:var(--h-btn2-text); border:1px solid var(--h-btn2-line); background:var(--h-btn2-bg); padding:0 14px; }
 .cx-hbtn--ghost:hover{ background:color-mix(in srgb,var(--h-btn2-bg) 70%,#8b5cf6 12%); }
 
-/* ---------- tablet showcase: tilted, bleeds off the bottom, icons pop above the rim ---------- */
+/* Feedback widget: ensure bottom-right fixed placement and clickable */
+div:has(> button[aria-haspopup="dialog"]) {
+  left: auto !important;
+  right: 16px !important;
+  bottom: 16px !important;
+}
+@media (min-width: 640px) {
+  div:has(> button[aria-haspopup="dialog"]) {
+    right: 24px !important;
+    bottom: 24px !important;
+  }
+}
 .cx-stage-crop{
   position:relative; z-index:1; margin-top:3.3385cqw; pointer-events:none;
   height:35.7143cqw;
   overflow:visible;
-}
-/* Feedback widget fixed at bottom-left: hide on landing view to avoid obscuring dark cosmic background */
-div:has(> button[aria-haspopup="dialog"]) {
-  display: none !important;
 }
 
 .cx-stage{
