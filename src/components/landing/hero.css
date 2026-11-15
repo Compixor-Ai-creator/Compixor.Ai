@@ -16,15 +16,21 @@ html { scrollbar-gutter: auto !important; }
   --h-ring-fill:#081022; --h-ring-glow:rgba(195,150,245,.95); --h-ring-rim:rgba(220,200,255,.85);
   --h-top:116px;                       /* badge top edge measured from page top */
   position:relative; isolation:isolate; overflow:hidden;
-  container-type:inline-size;
-  container-name:hero;
-  max-width:2560px;
-  margin-left:auto;
-  margin-right:auto;
+  width:100%;
   margin-top:calc(var(--cx-nav-clear) * -1);
-  padding-top:var(--h-top);
   background:var(--h-bg); color:var(--h-text); text-align:center;
   font-family:var(--font-inter),system-ui,sans-serif;
+}
+
+.cx-hero__stage{
+  position:relative;
+  container-type:inline-size;
+  container-name:hero;
+  max-width:1288px;
+  margin-inline:auto;
+  padding-top:var(--h-top);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
 }
 
 /* Override globals.css wildcard [class*="hero"] { min-height: 100dvh } without editing globals.css */
@@ -237,6 +243,7 @@ html.light .cx-tablet{
 }
 
 @media (max-width:1023px){
+  .cx-hero__stage{ -webkit-mask-image:none; mask-image:none; }
   .cx-hero__ring{ display:none !important; }
   .cx-stage-crop{ height:auto; margin-top:20px; }
   .cx-stage{ perspective:none; clip-path:none; -webkit-mask-image:none; mask-image:none; }
