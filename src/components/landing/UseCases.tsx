@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Stars from './Stars';
 import { tools } from '@/data/tools';      // ADAPT: keep the current import
 import './sections.css';
 
@@ -16,8 +17,9 @@ const name = (h: string) => (tools as any[]).find(t => t.href === h)?.name ?? h;
 
 export default function UseCases() {
   return (
-    <section className="cx-sec" aria-labelledby="uc-h">
-      <div className="cx-container">
+    <section className="cx-sec" style={{ position: 'relative', overflow: 'hidden' }} aria-labelledby="uc-h">
+      <Stars count={70} />
+      <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
         <header className="cx-sec__head">
           <p className="cx-eyebrow">Use cases</p>
           <h2 id="uc-h" className="cx-h2">Made for <em>everyday paperwork</em></h2>

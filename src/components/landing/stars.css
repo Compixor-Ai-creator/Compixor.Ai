@@ -1,0 +1,6 @@
+.cx-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.cx-stars i{position:absolute;border-radius:50%;background:#fff;opacity:.12;animation:cxTw 4s ease-in-out infinite}
+html.light .cx-stars i{background:#1b1530;animation-name:cxTwL}
+@keyframes cxTw{0%,100%{opacity:.12}50%{opacity:.9}}
+@keyframes cxTwL{0%,100%{opacity:.1}50%{opacity:.6}}
+@media (prefers-reduced-motion:reduce){.cx-stars i{animation:none;opacity:.35}}

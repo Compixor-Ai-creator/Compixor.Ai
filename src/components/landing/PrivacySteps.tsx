@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Stars from './Stars';
 import './sections.css';
 
 const Svg = ({ children }: { children: React.ReactNode }) => (
@@ -10,8 +11,9 @@ const Lock = () => (<Svg><rect x="4" y="11" width="16" height="10" rx="2"/><path
 
 export default function PrivacySteps() {
   return (
-    <section className="cx-sec" aria-labelledby="how-h">
-      <div className="cx-container">
+    <section className="cx-sec" style={{ position: 'relative', overflow: 'hidden' }} aria-labelledby="how-h">
+      <Stars count={70} />
+      <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
         <header className="cx-sec__head">
           <p className="cx-eyebrow">How it works</p>
           <h2 id="how-h" className="cx-h2">What happens to <em>your file</em></h2>

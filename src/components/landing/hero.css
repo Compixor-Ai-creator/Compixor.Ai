@@ -57,8 +57,19 @@ html.light .cx-hero{
   background-repeat:no-repeat;
   background-color:#08070f;
 }
+.cx-hero__stars{
+  display:none;
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    radial-gradient(1px 1px at 30px 40px,   rgba(255,255,255,.90), transparent),
+    radial-gradient(1px 1px at 120px 110px, rgba(255,255,255,.60), transparent),
+    radial-gradient(1.5px 1.5px at 210px 60px, rgba(196,181,253,.80), transparent),
+    radial-gradient(1px 1px at 280px 190px, rgba(255,255,255,.70), transparent),
+    radial-gradient(1px 1px at 70px 220px,  rgba(255,255,255,.75), transparent),
+    radial-gradient(1.2px 1.2px at 310px 90px, rgba(216,180,254,.80), transparent);
+  background-size:320px 260px;
+}
 /* In dark mode, stars, beam and nebula are integrated into the hero-bg-dark image; keep DOM nodes hidden */
-.cx-hero__stars,
 .cx-hero__beam,
 .cx-hero__nebula{
   display:none;
@@ -66,7 +77,19 @@ html.light .cx-hero{
 
 /* Light mode overrides: hide dark bg image, show soft CSS beam, quiet ring */
 html.light .cx-hero__bg{ background:none; }
-html.light .cx-hero__stars{ display:none; }
+html.light .cx-hero__stars{
+  display:block;
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    radial-gradient(1.2px 1.2px at 30px 40px,   #1b1530 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 120px 110px, #1b1530 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 210px 60px,  #1b1530 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 280px 190px, #1b1530 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 70px 220px,   #1b1530 0%, transparent 100%),
+    radial-gradient(1.4px 1.4px at 310px 90px,  #1b1530 0%, transparent 100%);
+  background-size:320px 260px;
+  opacity:0.65;
+}
 html.light .cx-hero__beam{
   display:block; position:absolute; top:-14%; left:-10%; width:44%; height:80%;
   pointer-events:none; filter:blur(36px); opacity:1;
