@@ -170,7 +170,7 @@ html.light .cx-tablet{
 }
 .cx-tablet__img{
   display:block; width:100%; height:auto; margin-top:0;
-  transform:scale(0.97, 0.70) rotate(1deg) translate(0px, -88px);
+  transform:scale(0.985, 0.695) rotate(0.6deg) translate(7px, -86px);
   transform-origin:50% 0;
 }
 
