@@ -43,7 +43,11 @@ html.light .cx-hero{
 /* ---------- decorative background (all aria-hidden, no pointer events) ---------- */
 .cx-hero__bg{
   position:absolute; inset:0; z-index:-1; pointer-events:none;
-  background:url('/brand/hero-bg-dark.webp') center top / cover no-repeat;
+  background-color:#08070f;
+  background-image:url('/brand/hero-bg-dark.webp');
+  background-size:100% auto;
+  background-position:center top;
+  background-repeat:no-repeat;
 }
 /* In dark mode, stars, beam and nebula are integrated into the hero-bg-dark image; keep DOM nodes hidden */
 .cx-hero__stars,
@@ -76,10 +80,12 @@ html.light .cx-hero__nebula{
   width:275px; height:275px; aspect-ratio:1; border-radius:50%;
   background:#090e24;
   box-shadow:
-    0 0 0 1px rgba(215, 190, 255, 0.75),
-    12px 0 28px -3px rgba(185, 140, 245, 0.88),
-    26px 0 60px 6px rgba(135, 80, 225, 0.62),
-    inset -10px 2px 20px -6px rgba(195, 160, 250, 0.45);
+    0 0 0 1px rgba(220, 195, 255, 0.85),
+    12px 0 24px -2px rgba(195, 150, 250, 0.94),
+    26px 0 58px 6px rgba(145, 90, 230, 0.66),
+    38px 0 85px 10px rgba(115, 65, 210, 0.36),
+    inset 0 0 13px 2px rgba(195, 155, 250, 0.44),
+    inset -5px 1px 10px 0px rgba(210, 175, 255, 0.44);
 }
 html.light .cx-hero__ring{
   background:radial-gradient(circle at 42% 45%, #f1ecff 0 70%, #e7e0ff 100%);
@@ -166,7 +172,7 @@ html.light .cx-tablet{
 }
 .cx-tablet__img{
   display:block; width:100%; height:auto; margin-top:0;
-  transform:scale(0.97, 0.70) rotate(1deg) translate(0px, -88px);
+  transform:scale(0.88) rotate(1deg) translate(0px, -88px);
   transform-origin:50% 0;
 }
 
