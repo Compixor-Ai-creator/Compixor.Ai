@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   Files,
   FileText,
@@ -72,16 +71,6 @@ export default function CompixorNavbar() {
   // Mobile menu & accordion state
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobGroup, setMobGroup] = useState(null);
-  const hamburgerBtnRef = useRef(null);
-  const prevMobileOpen = useRef(mobileOpen);
-
-  // Return focus to hamburger button when mobile menu closes
-  useEffect(() => {
-    if (prevMobileOpen.current && !mobileOpen) {
-      hamburgerBtnRef.current?.focus();
-    }
-    prevMobileOpen.current = mobileOpen;
-  }, [mobileOpen]);
 
   // Body scroll lock & responsive dismiss for mobile menu
   useEffect(() => {
@@ -127,24 +116,25 @@ export default function CompixorNavbar() {
       <style
         dangerouslySetInnerHTML={{
           __html: `
-            /* Phase 1: Solid Shared Surface (no blur) */
+            /* Phase 1: One Shared Glass System */
             :root {
-              --cglass-bg: #ffffff;
-              --cglass-border: rgba(20,16,43,0.12);
-              --cglass-blur: none;
-              --cglass-shadow: 0 10px 30px rgba(60,30,140,0.10);
+              --cglass-bg: rgba(255,255,255,0.72);
+              --cglass-border: rgba(255,255,255,0.65);
+              --cglass-blur: blur(28px) saturate(180%);
+              --cglass-shadow: 0 20px 50px rgba(88,60,200,0.18), inset 0 1px 0 rgba(255,255,255,0.7);
+              --cglass-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .7  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
             }
             .dark {
-              --cglass-bg: rgb(52, 57, 70);
+              --cglass-bg: rgba(20,18,35,0.72);
               --cglass-border: rgba(255,255,255,0.10);
-              --cglass-shadow: 0 10px 40px rgba(0,0,0,0.35);
+              --cglass-shadow: 0 20px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
             }
 
             /* shared surface: apply to header glass layer, dropdown, mobile panel */
             .cglass {
               background: var(--cglass-bg);
-              backdrop-filter: none !important;
-              -webkit-backdrop-filter: none !important;
+              backdrop-filter: var(--cglass-blur);
+              -webkit-backdrop-filter: var(--cglass-blur);
               border: 1px solid var(--cglass-border);
               box-shadow: var(--cglass-shadow);
               isolation: isolate;
@@ -158,7 +148,7 @@ export default function CompixorNavbar() {
             .cglass > * { position: relative; z-index: 1; }
 
             @media (max-width: 1023px) {
-              :root { --cglass-blur: none; --cglass-bg: #ffffff; }
+              :root { --cglass-blur: blur(22px) saturate(170%); --cglass-bg: #ffffff; }
               .dark { --cglass-bg: #0f172a; }
             }
             @supports not (backdrop-filter: blur(1px)) { .cglass { background: rgba(255,255,255,0.96); } .dark .cglass { background: rgba(20,18,35,0.96); } }
@@ -174,106 +164,78 @@ export default function CompixorNavbar() {
               }
             }
 
-            /* Phase 2c: Solid Navbar System (no blur) */
+            /* Dark mode: clean solid header + panel, no glass/noise overlay on any screen */
             .dark .cnav-glass {
-              background-color: rgb(52, 57, 70) !important;
-              backdrop-filter: none !important;
-              -webkit-backdrop-filter: none !important;
+              background-color: #0f172a !important;
               background-image: none !important;
-              border: 1px solid rgba(255, 255, 255, 0.12) !important;
-              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-            }
-            .cnav-glass {
-              background-color: #ffffff !important;
-              backdrop-filter: none !important;
-              -webkit-backdrop-filter: none !important;
-              border: 1px solid rgba(20, 16, 43, 0.12) !important;
-              box-shadow: 0 10px 30px rgba(88, 60, 200, 0.08);
+              border-color: rgba(255, 255, 255, 0.08) !important;
             }
             .dark .cglass::after { display: none !important; }
             .dark .cnav-bar {
-              background: transparent !important;
-              border: none !important;
-              color: var(--cx-text, #f4f2ff);
-            }
-
-            .cnav-backdrop {
-              backdrop-filter: none !important;
-              -webkit-backdrop-filter: none !important;
+              background: rgba(15, 23, 42, 0.92);
+              border: 1px solid rgba(255, 255, 255, 0.06);
             }
 
             @media (max-width: 1023px) {
               .dark .cnav-panel {
-                background: rgb(20, 18, 35) !important;
-                border: 1px solid var(--cx-line, rgba(255, 255, 255, 0.08));
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+                background: #0f172a !important;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
               }
               .dark .cnav-panel::after { display: none !important; }
-              .cnav-panel {
-                background: #ffffff !important;
-                border: 1px solid rgba(20, 16, 43, 0.12);
-                box-shadow: 0 20px 50px rgba(60, 30, 140, 0.15);
-              }
               .dark .cnav-backdrop {
-                background: rgba(0, 0, 0, 0.55);
-                backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important;
+                background: rgba(0, 0, 0, 0.45);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
               }
             }
 
-            /* Phase 2d: Solid Pill Navbar */
-            .cnav-header{
-              position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 10000; pointer-events: none;
-              background:transparent !important; border:0 !important; box-shadow:none !important;
-              -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+            /* Phase 2: Dedicated Header Structure */
+            .cnav-header {
+              position: fixed;
+              top: 12px;
+              left: 12px;
+              right: 12px;
+              max-width: 1280px;
+              margin: 0 auto;
+              z-index: 10000;
+              border-radius: 22px;
+              -webkit-transform: translateZ(0);
+              transform: translateZ(0);
             }
-            .cnav-pill{
-              --n-bg:rgb(34,38,50); --n-line:rgba(255,255,255,.12);
-              --n-link:rgba(215,215,230,.70); --n-link-hover:#fff; --n-brand:#fff;
-              --n-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
-              display:flex; align-items:center; justify-content:space-between;
-              width:min(82.6%,1180px); height:58px; margin:12px auto 0; padding:0 11px 0 10px;
-              border-radius:20px; background:var(--n-bg); border:1px solid var(--n-line);
-              -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
-              box-shadow:var(--n-shadow);
-              pointer-events:auto;
+            @media (max-width: 768px) {
+              .cnav-header {
+                top: 8px;
+                left: 8px;
+                right: 8px;
+                border-radius: 16px;
+              }
             }
-            @media (min-width: 1280px) and (max-width: 1300px) {
-              .cnav-pill { width: 1064px; }
+            .cnav-glass {
+              position: absolute;
+              inset: 0;
+              border-radius: inherit;
+              z-index: 0;
+              pointer-events: none;
             }
-            html.light .cnav-pill{
-              --n-bg:#ffffff; --n-line:rgba(20,16,43,.12);
-              --n-link:rgba(20,16,43,.72); --n-link-hover:#14102b; --n-brand:#14102b;
-              --n-shadow:0 8px 30px rgba(60,30,140,.10);
-              -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+            .cnav-bar {
+              position: relative;
+              z-index: 1;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 10px 18px;
+              border-radius: inherit;
+              color: #1a1530;
             }
-            .cnav-brand{ display:flex; align-items:center; gap:2px; color:var(--n-brand); text-decoration:none;
-              font:600 20px/1 var(--font-inter),system-ui,sans-serif; letter-spacing:-.02em; flex:none; width:145px; }
-            .cnav-brand img{ height:42px; width:auto; }   /* PNG has transparent padding: the visible
-                                                             C glyph must measure ~28w x 36h */
-            .cnav-links{ display:flex; align-items:center; gap:clamp(14px, 1.5vw, 18px); list-style:none; margin:0 0 0 56px; padding:0; white-space:nowrap; flex:none; }
-            @media (max-width: 1199px) {
-              .cnav-links { gap: 14px; margin-left: 20px; }
+            @media (max-width: 768px) {
+              .cnav-bar {
+                padding: 6px 12px;
+              }
             }
-            .cnav-link{ color:var(--n-link); text-decoration:none; padding:8px 0;
-              font:400 14px/1 var(--font-inter),system-ui,sans-serif; transition:color .2s; white-space:nowrap; }
-            .cnav-link:hover{ color:var(--n-link-hover); }
-            .cnav-link:focus-visible,.cnav-theme:focus-visible,.cnav-cta:focus-visible{ outline:2px solid #a78bfa; outline-offset:2px; border-radius:8px; }
-            .cnav-right{ display:flex; align-items:center; gap:16px; flex:none; }
-            .cnav-theme{ width:32px; height:32px; min-width:32px; min-height:32px; display:grid; place-items:center; border-radius:50%;
-              color:var(--n-link); background:transparent; border:1px solid var(--n-line); cursor:pointer; flex:none; padding:0; }
-            .cnav-hamburger{ display:none !important; }
-            @media (max-width:1079px){
-              .cnav-links{ display:none !important; }
-              .cnav-hamburger{ width:36px; height:36px; display:grid !important; place-items:center; border-radius:50%;
-                color:var(--n-link); background:transparent; border:1px solid var(--n-line); cursor:pointer; flex:none; }
+            .dark .cnav-bar {
+              color: #f3f0ff;
             }
-            .cnav-cta{ width:115px; height:38px; min-height:38px; padding:0; display:inline-flex; align-items:center; justify-content:center; border-radius:999px;
-              color:#fff; text-decoration:none; font:600 14px/1 var(--font-inter),system-ui,sans-serif;
-              background:linear-gradient(135deg,#4c2fb8,#6a46e0); border:1px solid rgba(255,255,255,.18);
-              box-shadow:0 6px 20px rgba(76,47,184,.45); transition:filter .2s; flex:none; }
-            .cnav-cta:hover{ filter:brightness(1.12); }
-            @media (max-width:1079px){ .cnav-pill{ width:calc(100% - 24px); height:54px; } }
 
             /* Phase 3 & Icons CSS (icons must never shrink) */
             .cnav-ico {
@@ -302,35 +264,15 @@ export default function CompixorNavbar() {
             .cnav-desktop-link, .cnav-link, .cnav-trigger {
               display: inline-flex;
               align-items: center;
-              gap: 4px;
+              gap: 8px;
               white-space: nowrap;
-              color: var(--cx-muted, #5b5675);
-              transition: color .15s ease, background-color .15s ease;
+              color: #1a1530;
             }
             .dark .cnav-desktop-link, .dark .cnav-link, .dark .cnav-trigger {
-              color: var(--cx-muted, #9b97b5);
+              color: #f3f0ff;
             }
-            .cnav-desktop-link:hover, .cnav-trigger:hover {
-              color: var(--cx-text, #14102b);
-              background-color: rgba(20, 16, 43, 0.05);
-            }
-            .dark .cnav-desktop-link:hover, .dark .cnav-trigger:hover {
-              color: #ffffff;
-              background-color: rgba(255, 255, 255, 0.06);
-            }
-            .cnav-desktop-link:active, .cnav-trigger:active {
-              background-color: rgba(15, 23, 42, 0.08);
-            }
-            .dark .cnav-desktop-link:active, .dark .cnav-trigger:active {
-              background-color: rgba(255, 255, 255, 0.1);
-            }
-            .cnav-trigger:focus-visible, .cnav-desktop-link:focus-visible, .cnav-theme-btn:focus-visible {
-              outline: 2px solid var(--cx-accent-soft, #a78bfa) !important;
-              outline-offset: 2px !important;
-            }
-            .cnav-theme-btn { color: #475569; transition: color .15s ease; }
-            .dark .cnav-theme-btn { color: var(--cx-muted, #a29fbd); }
-            .dark .cnav-theme-btn:hover { color: var(--cx-text, #f4f2ff); }
+            .cnav-theme-btn { color: #1a1530; }
+            .dark .cnav-theme-btn { color: #f3f0ff; }
 
             /* Desktop Dropdowns (>= 1024px) */
             .cnav-group { position: relative; }
@@ -388,8 +330,8 @@ export default function CompixorNavbar() {
                 inset: 0;
                 z-index: 9998;
                 background: rgba(20, 10, 50, 0.18);
-                backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important;
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
                 opacity: 0;
                 pointer-events: none;
                 transition: opacity .25s ease;
@@ -499,44 +441,47 @@ export default function CompixorNavbar() {
         }}
       />
       <header className="cnav-header">
+        <div className="cnav-glass cglass" aria-hidden="true" />
         <nav
           ref={navRef}
           aria-label="Main Navigation"
-          className="cnav-pill"
+          className="cnav-bar"
         >
-          {/* Brand Logo with C Logo and wordmark */}
+          {/* Brand Logo */}
           <Link
             href="/"
             aria-label="Compixor AI home"
-            className="cnav-brand shrink-0"
+            className="flex items-center shrink-0 group"
           >
-            <Image
-              src="/brand/logo-c.png"
-              alt=""
-              width={42}
-              height={42}
-              priority
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.webp"
+              alt="Compixor AI logo"
+              width="44"
+              height="44"
+              className="h-[38px] lg:h-[44px] w-auto object-contain transition-transform duration-200 group-hover:scale-105"
             />
-            <span>Compixor</span>
           </Link>
 
-          {/* Desktop Links (>= 1080px) */}
-          <ul className="cnav-links items-center">
+          {/* Desktop Links (>= 1024px) */}
+          <ul className="hidden lg:flex items-center gap-1">
             {NAV_GROUPS.map((g) => (
               <li
                 key={g.id}
-                className="cnav-group relative"
+                className="cnav-group"
                 onMouseEnter={() => openNow(g.id)}
                 onMouseLeave={closeSoon}
               >
                 <button
                   type="button"
-                  className="cnav-link cnav-trigger bg-transparent border-0 cursor-pointer"
+                  className="cnav-trigger rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
                   aria-haspopup="true"
                   aria-expanded={openGroup === g.id}
                   onClick={() => setOpenGroup(openGroup === g.id ? null : g.id)}
                 >
+                  <NavIcon name={g.icon} size={18} />
                   <span>{g.label}</span>
+                  <ChevronDown className="cnav-chev" size={16} />
                 </button>
 
                 <div
@@ -566,43 +511,58 @@ export default function CompixorNavbar() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="cnav-link"
+                  className="cnav-desktop-link rounded-xl px-2.5 xl:px-3 py-2 text-sm font-medium hover:bg-white/50 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors duration-200"
                 >
-                  <span>
-                    {l.label === "Passport Photo Maker" ? "Passport Photo" : l.label === "Blogs & Guides" ? "Blogs" : l.label}
-                  </span>
+                  <NavIcon name={l.icon} size={18} />
+                  <span>{l.label}</span>
                 </Link>
               </li>
             ))}
           </ul>
 
           {/* Right Actions */}
-          <div className="cnav-right flex items-center shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             <button
               type="button"
               onClick={toggleTheme}
               aria-label="Toggle Dark Mode"
-              className="cnav-theme"
+              className="
+                cnav-theme-btn flex h-9 w-9 items-center justify-center rounded-xl
+                hover:bg-white/50 dark:hover:bg-white/10
+                border border-transparent hover:border-white/40
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
+                transition-all
+              "
             >
               {mounted && dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
 
             <Link
-              href="#tools"
-              className="cnav-cta"
+              href="/#tools"
+              className="
+                hidden sm:inline-block rounded-xl bg-gradient-to-r from-[#6d28d9] to-[#7c3aed]
+                px-4 py-2 text-sm font-semibold text-white
+                shadow-md shadow-purple-600/25
+                hover:brightness-110 hover:shadow-lg hover:shadow-purple-600/35
+                active:scale-[0.98] transition-all
+              "
             >
               Get Started
             </Link>
 
-            {/* Hamburger / X button (< 1080px) */}
+            {/* Hamburger / X button (< 1024px) */}
             <button
-              ref={hamburgerBtnRef}
               type="button"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label="Toggle Menu"
               aria-expanded={mobileOpen}
               aria-controls="cnav-mobile"
-              className="cnav-hamburger"
+              className="
+                lg:hidden flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl
+                hover:bg-white/50 dark:hover:bg-white/10
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
+                transition-colors duration-200
+              "
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
