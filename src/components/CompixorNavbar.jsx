@@ -127,25 +127,24 @@ export default function CompixorNavbar() {
       <style
         dangerouslySetInnerHTML={{
           __html: `
-            /* Phase 1: One Shared Glass System */
+            /* Phase 1: Solid Shared Surface (no blur) */
             :root {
-              --cglass-bg: rgba(255,255,255,0.72);
-              --cglass-border: rgba(255,255,255,0.65);
-              --cglass-blur: blur(28px) saturate(180%);
-              --cglass-shadow: 0 20px 50px rgba(88,60,200,0.18), inset 0 1px 0 rgba(255,255,255,0.7);
-              --cglass-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .7  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+              --cglass-bg: #ffffff;
+              --cglass-border: rgba(20,16,43,0.12);
+              --cglass-blur: none;
+              --cglass-shadow: 0 10px 30px rgba(60,30,140,0.10);
             }
             .dark {
-              --cglass-bg: rgba(20,18,35,0.72);
+              --cglass-bg: rgb(52, 57, 70);
               --cglass-border: rgba(255,255,255,0.10);
-              --cglass-shadow: 0 20px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+              --cglass-shadow: 0 10px 40px rgba(0,0,0,0.35);
             }
 
             /* shared surface: apply to header glass layer, dropdown, mobile panel */
             .cglass {
               background: var(--cglass-bg);
-              backdrop-filter: var(--cglass-blur);
-              -webkit-backdrop-filter: var(--cglass-blur);
+              backdrop-filter: none !important;
+              -webkit-backdrop-filter: none !important;
               border: 1px solid var(--cglass-border);
               box-shadow: var(--cglass-shadow);
               isolation: isolate;
@@ -159,7 +158,7 @@ export default function CompixorNavbar() {
             .cglass > * { position: relative; z-index: 1; }
 
             @media (max-width: 1023px) {
-              :root { --cglass-blur: blur(22px) saturate(170%); --cglass-bg: #ffffff; }
+              :root { --cglass-blur: none; --cglass-bg: #ffffff; }
               .dark { --cglass-bg: #0f172a; }
             }
             @supports not (backdrop-filter: blur(1px)) { .cglass { background: rgba(255,255,255,0.96); } .dark .cglass { background: rgba(20,18,35,0.96); } }
@@ -175,19 +174,19 @@ export default function CompixorNavbar() {
               }
             }
 
-            /* Phase 2c: Floating Pill Glass System */
+            /* Phase 2c: Solid Navbar System (no blur) */
             .dark .cnav-glass {
-              background-color: rgba(255, 255, 255, 0.06) !important;
-              backdrop-filter: blur(16px);
-              -webkit-backdrop-filter: blur(16px);
+              background-color: rgb(52, 57, 70) !important;
+              backdrop-filter: none !important;
+              -webkit-backdrop-filter: none !important;
               background-image: none !important;
               border: 1px solid rgba(255, 255, 255, 0.12) !important;
               box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
             }
             .cnav-glass {
-              background-color: rgba(255, 255, 255, 0.72) !important;
-              backdrop-filter: blur(16px);
-              -webkit-backdrop-filter: blur(16px);
+              background-color: #ffffff !important;
+              backdrop-filter: none !important;
+              -webkit-backdrop-filter: none !important;
               border: 1px solid rgba(20, 16, 43, 0.12) !important;
               box-shadow: 0 10px 30px rgba(88, 60, 200, 0.08);
             }
@@ -198,34 +197,44 @@ export default function CompixorNavbar() {
               color: var(--cx-text, #f4f2ff);
             }
 
+            .cnav-backdrop {
+              backdrop-filter: none !important;
+              -webkit-backdrop-filter: none !important;
+            }
+
             @media (max-width: 1023px) {
               .dark .cnav-panel {
-                background: rgba(15, 13, 28, 0.98) !important;
+                background: rgb(20, 18, 35) !important;
                 border: 1px solid var(--cx-line, rgba(255, 255, 255, 0.08));
                 box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
               }
               .dark .cnav-panel::after { display: none !important; }
+              .cnav-panel {
+                background: #ffffff !important;
+                border: 1px solid rgba(20, 16, 43, 0.12);
+                box-shadow: 0 20px 50px rgba(60, 30, 140, 0.15);
+              }
               .dark .cnav-backdrop {
                 background: rgba(0, 0, 0, 0.55);
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
               }
             }
 
-            /* Phase 2d: Floating Pill Navbar */
+            /* Phase 2d: Solid Pill Navbar */
             .cnav-header{
               position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 10000; pointer-events: none;
               background:transparent !important; border:0 !important; box-shadow:none !important;
               -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
             }
             .cnav-pill{
-              --n-bg:rgba(90,90,80,.32); --n-line:rgba(255,255,255,.12);
-              --n-link:rgba(244,242,255,.72); --n-link-hover:#fff; --n-brand:#fff;
+              --n-bg:rgb(34,38,50); --n-line:rgba(255,255,255,.12);
+              --n-link:rgba(215,215,230,.70); --n-link-hover:#fff; --n-brand:#fff;
               --n-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
               display:flex; align-items:center; justify-content:space-between;
               width:min(82.6%,1180px); height:58px; margin:12px auto 0; padding:0 11px 0 10px;
               border-radius:20px; background:var(--n-bg); border:1px solid var(--n-line);
-              -webkit-backdrop-filter:blur(16px) saturate(140%); backdrop-filter:blur(16px) saturate(140%);
+              -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
               box-shadow:var(--n-shadow);
               pointer-events:auto;
             }
@@ -233,9 +242,10 @@ export default function CompixorNavbar() {
               .cnav-pill { width: 1064px; }
             }
             html.light .cnav-pill{
-              --n-bg:rgba(255,255,255,.72); --n-line:rgba(20,16,43,.12);
+              --n-bg:#ffffff; --n-line:rgba(20,16,43,.12);
               --n-link:rgba(20,16,43,.72); --n-link-hover:#14102b; --n-brand:#14102b;
               --n-shadow:0 8px 30px rgba(60,30,140,.10);
+              -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
             }
             .cnav-brand{ display:flex; align-items:center; gap:2px; color:var(--n-brand); text-decoration:none;
               font:600 20px/1 var(--font-inter),system-ui,sans-serif; letter-spacing:-.02em; flex:none; width:145px; }
@@ -378,8 +388,8 @@ export default function CompixorNavbar() {
                 inset: 0;
                 z-index: 9998;
                 background: rgba(20, 10, 50, 0.18);
-                backdrop-filter: blur(4px);
-                -webkit-backdrop-filter: blur(4px);
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
                 opacity: 0;
                 pointer-events: none;
                 transition: opacity .25s ease;
