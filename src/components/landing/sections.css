@@ -1,0 +1,70 @@
+/* Eclipse Night design tokens for landing sections below the hero */
+.cx-eclipse-night {
+  --cx-bg-1: #06050c;
+  --cx-bg-2: #0e0a1f;
+  --cx-bg-3: #161033;
+  --cx-border: rgba(147, 51, 234, 0.22);
+  --cx-border-hover: rgba(168, 85, 247, 0.5);
+  --cx-accent: #a855f7;
+  --cx-accent-bright: #c084fc;
+  --cx-text-high: #f5f3ff;
+  --cx-text-mid: #9490b8;
+  --cx-text-low: #635e85;
+  --cx-font-heading: var(--font-outfit), 'Outfit', system-ui, sans-serif;
+  --cx-font-body: var(--font-inter), system-ui, sans-serif;
+  --cx-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background-color: var(--cx-bg-1);
+  color: var(--cx-text-high);
+  font-family: var(--cx-font-body);
+}
+
+html:not(.dark) .cx-eclipse-night {
+  --cx-bg-1: #faf8ff;
+  --cx-bg-2: #f3effe;
+  --cx-bg-3: #e9e2fb;
+  --cx-border: rgba(124, 58, 237, 0.18);
+  --cx-border-hover: rgba(124, 58, 237, 0.45);
+  --cx-accent: #7c3aed;
+  --cx-accent-bright: #6d28d9;
+  --cx-text-high: #1e1338;
+  --cx-text-mid: #4a4266;
+  --cx-text-low: #7b7496;
+}
+
+.cx-eclipse-night .cx-card {
+  background: var(--cx-bg-2);
+  border: 1px solid var(--cx-border);
+  border-radius: 20px;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.cx-eclipse-night .cx-card:hover {
+  border-color: var(--cx-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(106, 70, 224, 0.18);
+}
+
+.cx-eclipse-night .cx-heading-2 {
+  font-family: var(--cx-font-heading);
+  font-weight: 800;
+  font-size: clamp(28px, 4.2vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--cx-text-high);
+}
+
+.cx-eclipse-night .cx-heading-3 {
+  font-family: var(--cx-font-heading);
+  font-weight: 700;
+  font-size: clamp(18px, 2.2vw, 22px);
+  line-height: 1.25;
+  color: var(--cx-text-high);
+}
+
+.cx-eclipse-night .cx-step-num {
+  font-family: var(--cx-font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--cx-accent-bright);
+}
