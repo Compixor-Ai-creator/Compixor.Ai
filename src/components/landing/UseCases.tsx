@@ -1,62 +1,38 @@
-import React from 'react';
-import { Briefcase, GraduationCap, Scale, Stethoscope } from 'lucide-react';
+import Link from 'next/link';
+import { tools } from '@/data/tools';      // ADAPT: keep the current import
+import './sections.css';
 
-const cases = [
-  {
-    icon: Scale,
-    title: 'Legal & Compliance',
-    desc: 'Redact, sign, and merge sensitive client disclosures. Client files never hit external cloud infrastructure on 9 of our tools.',
-  },
-  {
-    icon: Stethoscope,
-    title: 'Healthcare & HIPAA',
-    desc: 'Compress patient diagnostic scans and sanitize records locally in-memory before sharing with medical providers.',
-  },
-  {
-    icon: Briefcase,
-    title: 'Financial & Banking',
-    desc: 'Audit statements, watermark confidential investor decks, and encrypt tax forms with client-side AES-256.',
-  },
-  {
-    icon: GraduationCap,
-    title: 'Academic & Research',
-    desc: 'Combine dissertations, extract data tables, and generate high-density biometric photo sheets with zero cost.',
-  },
+const CASES = [
+  { title: 'Students', line: 'Shrink assignments and scanned notes to fit upload limits.',
+    tools: ['/tools/pdf-compressor', '/tools/pdf-organizer'] },
+  { title: 'Job applications', line: 'Turn a PDF resume into an editable Word file and make a passport-size photo for the form.',
+    tools: ['/tools/pdf-to-word', '/tools/passport-photo'] },
+  { title: 'Visa & government forms', line: 'Get files under portal size limits and prepare a passport-size photo, without installing software.',
+    tools: ['/tools/pdf-compressor', '/tools/passport-photo'] },
+  { title: 'Office & small business', line: 'Pull text from scanned pages into Word, and password-protect files before you share them.',
+    tools: ['/tools/img-to-word', '/tools/protect-pdf'] },
 ];
+const name = (h: string) => (tools as any[]).find(t => t.href === h)?.name ?? h;
 
 export default function UseCases() {
   return (
-    <section id="use-cases" className="cx-eclipse-night py-16 sm:py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <span className="cx-step-num uppercase">Built for Critical Work</span>
-          <h2 className="cx-heading-2 mt-2">Trusted Across Regulated Industries</h2>
-          <p className="mt-4 text-base sm:text-lg" style={{ color: 'var(--cx-text-mid)' }}>
-            When file privacy is non-negotiable, teams choose Compixor.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {cases.map((c) => {
-            const Icon = c.icon;
-            return (
-              <div key={c.title} className="cx-card p-6 flex flex-col justify-between">
-                <div>
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
-                    style={{ background: 'var(--cx-bg-3)', color: 'var(--cx-accent-bright)' }}
-                  >
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <h3 className="cx-heading-3 mb-2">{c.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--cx-text-mid)' }}>
-                    {c.desc}
-                  </p>
-                </div>
+    <section className="cx-sec" aria-labelledby="uc-h">
+      <div className="cx-container">
+        <header className="cx-sec__head">
+          <p className="cx-eyebrow">Use cases</p>
+          <h2 id="uc-h" className="cx-h2">Made for <em>everyday paperwork</em></h2>
+        </header>
+        <ul className="uc-grid">
+          {CASES.map(c => (
+            <li key={c.title} className="uc">
+              <h3>{c.title}</h3>
+              <p>{c.line}</p>
+              <div className="uc-tools">
+                {c.tools.map(h => <Link key={h} href={h} className="uc-tool">{name(h)}</Link>)}
               </div>
-            );
-          })}
-        </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
