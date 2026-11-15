@@ -7,14 +7,123 @@ import {
   HelpCircle,
   ChevronDown,
   ArrowRight,
+  BookOpen,
+  Shield,
+  Check,
+  X as XIcon,
+  Lock,
+  Zap,
+  MonitorSmartphone,
+  Layers,
 } from 'lucide-react';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { FaqJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
 import Hero from '@/components/landing/Hero';
 import PrivacySteps from '@/components/landing/PrivacySteps';
 import UseCases from '@/components/landing/UseCases';
+import WhyTrustCompixor from '@/components/WhyTrustCompixor';
+import WhatUsersSay from '@/components/WhatUsersSay';
+import ClientSideGuideSection from '@/components/ClientSideGuideSection';
 import { tools } from '@/data/tools';
 import '@/components/landing/sections.css';
+
+const trustSignals = [
+  {
+    icon: Lock,
+    title: 'Privacy-First Architecture',
+    description: '9 tools run locally on your device using browser memory with zero uploads. Specialized utilities process over HTTPS with zero permanent file storage.',
+  },
+  {
+    icon: Zap,
+    title: 'Instant Execution',
+    description: 'No network queue or server waiting times. Transforms complete in milliseconds right on your device.',
+  },
+  {
+    icon: Shield,
+    title: 'Privacy By Architecture',
+    description: 'Maximum privacy across all utilities with zero tracking, zero permanent storage, and zero data leakage.',
+  },
+  {
+    icon: MonitorSmartphone,
+    title: 'Cross-Platform',
+    description: 'Runs flawlessly on desktop browsers, tablets, iOS Safari, Android Chrome, and Linux systems.',
+  },
+];
+
+const howToSteps = [
+  {
+    step: '1',
+    title: 'Pick a Tool',
+    description: 'Choose the free PDF, Word, photo, or QR tool you need from the main list on this page.',
+  },
+  {
+    step: '2',
+    title: 'Drop Your Document',
+    description: 'Drag your document into the box on screen so your web browser can read it right away.',
+  },
+  {
+    step: '3',
+    title: 'Process Quickly',
+    description: 'Click the start button to merge, split, shrink, or convert your document in just seconds.',
+  },
+  {
+    step: '4',
+    title: 'Save to Device',
+    description: 'Download your converted output straight to your phone or PC with zero cloud uploads.',
+  },
+];
+
+const comparisonData = [
+  {
+    feature: 'File Privacy & Uploads',
+    compixor: 'Zero server uploads; runs 100% in local browser RAM',
+    cloud: 'Uploaded to third-party cloud servers overseas',
+    desktop: 'Local disk execution; requires full machine access',
+  },
+  {
+    feature: 'Processing Speed',
+    compixor: 'Instant memory-bus speed (milliseconds execution)',
+    cloud: 'Slow upload/download queues dependent on broadband',
+    desktop: 'Fast local processing speed',
+  },
+  {
+    feature: 'Cost & Paywalls',
+    compixor: '100% Free with zero limits and no watermarks',
+    cloud: '$15–$25 monthly subscriptions or strict hourly caps',
+    desktop: '$100–$300+ expensive perpetual licenses',
+  },
+  {
+    feature: 'Device Compatibility',
+    compixor: 'Works on any device with a modern web browser',
+    cloud: 'Web-based but requires high continuous bandwidth',
+    desktop: 'Locked to specific OS (Windows or macOS only)',
+  },
+  {
+    feature: 'Account Requirements',
+    compixor: 'Zero sign-ups, no logins, and zero email tracking',
+    cloud: 'Mandatory registration, email capture, and logins',
+    desktop: 'License activation and periodic account checks',
+  },
+];
+
+const glossaryTerms = [
+  {
+    term: 'Client-Side Processing',
+    definition: 'Executing data transformations, document rendering, and image filtering directly within the end-user browser memory (RAM) without transmitting raw bytes to any external server.',
+  },
+  {
+    term: 'Zero Data Leak Architecture',
+    definition: 'A privacy-first software paradigm guaranteeing that user documents, personal identifiers, and file metadata are never stored on persistent disks, analytics databases, or remote servers.',
+  },
+  {
+    term: 'Browser WebAssembly Sandbox',
+    definition: 'A high-performance, secure binary execution environment built into modern web browsers that executes near-native assembly code in isolated memory boundaries.',
+  },
+  {
+    term: 'Biometric 300 DPI Standard',
+    definition: 'The official physical print density standard (300 dots per inch) required by international government passport agencies (e.g., US State Department, Schengen, NADRA) for physical photo prints.',
+  },
+];
 
 const homeFaqs = [
   {
@@ -45,7 +154,7 @@ const homeFaqs = [
   {
     id: 'do-files-get-watermarks-faq',
     q: 'Will Compixor add watermarks to my saved PDF files?',
-    a: 'No, Compixor never puts ugly stamps, logos, or watermarks on your saved PDF pages, Word docs, or photos. The file you save to your device stays clean and ready for work, school, or print. You get full quality output for free without paying for a pro plan.',
+    a: 'No, Compixor never puts ugly stamps, logos, or watermarks on your saved PDF pages, Word docs, or photos. You get full quality output for free without paying for a pro plan.',
   },
   {
     id: 'can-i-work-offline-faq',
@@ -60,9 +169,6 @@ const homeFaqs = [
 ];
 
 export default function HomePage() {
-  // FAQ filter. Which questions are *open* is owned by each <Disclosure>
-  // (Headless UI v2 has no controlled `open` prop); search only decides what is
-  // rendered, and every rendered match mounts open.
   const [faqSearch, setFaqSearch] = useState('');
 
   const handleFaqSearch = (query: string) => {
@@ -168,11 +274,194 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ============ HOW-TO ARTICLE (Sole article tag on page) ============ */}
+      <article id="how-to-article" className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="glass-card p-6 sm:p-10 md:p-12 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl">
+          <div className="mb-4">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-brand-500/10 text-brand-700 dark:text-brand-300 border border-brand-500/20">
+              <BookOpen className="w-3.5 h-3.5 text-brand-500" />
+              Step-by-Step Guide
+            </span>
+          </div>
+          {/* Direct H2 followed IMMEDIATELY by OL for Snippet scanner */}
+          <h2 id="how-to-use-compixor" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-6 tracking-tight">
+            How to Edit PDF, Word and Photo Files in Your Browser
+          </h2>
+          <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 list-none p-0 m-0">
+            {howToSteps.map((step) => (
+              <li
+                key={step.step}
+                className="p-5 sm:p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-brand-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-sm shadow-brand-500/30">
+                    {step.step}
+                  </div>
+                  <h3 id={`how-to-step-${step.step}`} className="text-base font-bold font-display text-zinc-900 dark:text-white mb-2">
+                    {step.title}
+                  </h3>
+                  <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    {step.description}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </article>
+
       {/* ============ PHASE 3: WHAT HAPPENS TO YOUR FILE ============ */}
       <PrivacySteps />
 
       {/* ============ PHASE 3: USE CASES ============ */}
       <UseCases />
+
+      {/* ============ STRUCTURED COMPARISON TABLE ============ */}
+      <section id="privacy-comparison" className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-8">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 mb-3">
+            <Shield className="w-3.5 h-3.5 text-emerald-500" />
+            Architecture Comparison
+          </span>
+          <h2 id="tool-architecture-comparison" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
+            Compixor vs. Cloud PDF Tools vs. Desktop Software
+          </h2>
+          <div className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
+            Compare privacy, processing speed, paywalls, and device support across modern document platforms.
+          </div>
+        </div>
+
+        <div className="glass-card rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr className="border-b border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/80 dark:bg-zinc-900/80">
+                <th scope="col" className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-white min-w-[160px]">
+                  Feature / Capability
+                </th>
+                <th scope="col" className="p-4 sm:p-5 font-bold text-brand-700 dark:text-brand-300 bg-brand-500/5 min-w-[200px]">
+                  Compixor (Client-Side)
+                </th>
+                <th scope="col" className="p-4 sm:p-5 font-bold text-zinc-700 dark:text-zinc-300 min-w-[180px]">
+                  Traditional Cloud Tools
+                </th>
+                <th scope="col" className="p-4 sm:p-5 font-bold text-zinc-700 dark:text-zinc-300 min-w-[180px]">
+                  Desktop Software
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-200/60 dark:divide-zinc-800/60">
+              {comparisonData.map((row, idx) => (
+                <tr key={idx} className="hover:bg-white/40 dark:hover:bg-white/[0.02] transition-colors">
+                  <th scope="row" className="p-4 sm:p-5 font-semibold text-zinc-900 dark:text-white">
+                    {row.feature}
+                  </th>
+                  <td className="p-4 sm:p-5 font-medium text-brand-700 dark:text-brand-300 bg-brand-500/5">
+                    <div className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>{row.compixor}</span>
+                    </div>
+                  </td>
+                  <td className="p-4 sm:p-5 text-zinc-600 dark:text-zinc-400">
+                    <div className="flex items-start gap-2">
+                      <XIcon className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                      <span>{row.cloud}</span>
+                    </div>
+                  </td>
+                  <td className="p-4 sm:p-5 text-zinc-600 dark:text-zinc-400">
+                    <div className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                      <span>{row.desktop}</span>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* ============ TRUST ARCHITECTURE ============ */}
+      <section id="trust-architecture" className="relative py-10 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 id="trust-architecture-heading" className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
+              Private Tools That Never Upload Your Files
+            </h2>
+            <div id="what-is-compixor" className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+              Browser tools refers to web apps that use your own device speed instead of slow web uploads. With zero server uploads and zero cloud storage, your private files stay safe and fast at all times.
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {trustSignals.map((signal, i) => {
+              const Icon = signal.icon;
+              const signalId = `trust-signal-${signal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+              return (
+                <div
+                  key={i}
+                  className="glass-card p-5 sm:p-6 text-center rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-brand-500/30 group"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-500 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <h3 id={signalId} className="font-bold font-display text-zinc-900 dark:text-white mb-2 text-base">
+                    {signal.title}
+                  </h3>
+                  <div className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                    {signal.description}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ SEMANTIC GLOSSARY <dl> ============ */}
+      <aside id="terminology-glossary" aria-label="Privacy and Architecture Glossary" className="relative py-10 sm:py-16 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="glass-card p-6 sm:p-10 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl">
+            <div className="text-center max-w-2xl mx-auto mb-8">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 mb-3">
+                <Layers className="w-3.5 h-3.5 text-purple-500" />
+                Key Concepts
+              </span>
+              <h3 id="core-architecture-glossary" className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-2">
+                Client-Side Architecture Glossary
+              </h3>
+              <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                Core definitions powering Compixor zero-upload browser tool suite.
+              </div>
+            </div>
+
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              {glossaryTerms.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60"
+                >
+                  <dt className="text-sm font-bold font-display text-zinc-900 dark:text-white mb-1.5 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-brand-500 inline-block"></span>
+                    {item.term}
+                  </dt>
+                  <dd className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed ml-4">
+                    {item.definition}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </aside>
+
+      {/* ============ WHY TRUST COMPIXOR ============ */}
+      <WhyTrustCompixor />
+
+      {/* ============ WHAT USERS SAY ============ */}
+      <WhatUsersSay />
+
+      {/* ============ CLIENT-SIDE ARCHITECTURE GUIDE ============ */}
+      <ClientSideGuideSection />
 
       {/* ============ FAQ SECTION (Modern Accordion with Live Filter & Direct Sibling Pairs) ============ */}
       <section id="faq-section" className="pt-20 sm:pt-28 pb-10 sm:pb-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
@@ -237,12 +526,6 @@ export default function HomePage() {
           {filteredFaqs.length > 0 ? (
             filteredFaqs.map((faq) => {
               const originalIndex = homeFaqs.findIndex((item) => item.id === faq.id);
-              // Remounting on a filter change is intentional: Headless UI's
-              // Disclosure is uncontrolled, so a fresh mount is how "every
-              // match opens while filtering, and the first one is open again
-              // after Clear filter" is expressed. Keys are stable across
-              // keystrokes, so a question the reader collapsed by hand stays
-              // collapsed while the query is refined.
               const disclosureKey = `${faq.id}-${faqSearchActive ? 'filtered' : 'default'}`;
 
               return (
@@ -271,12 +554,6 @@ export default function HomePage() {
                           />
                         </DisclosureButton>
                       </h3>
-                      {/*
-                        `static` keeps the answer mounted in both states: Headless
-                        UI would otherwise render it with display:none when closed,
-                        and a display:none element cannot animate. Collapse is pure
-                        CSS on the `data-open` attribute, so there is no pixel jump.
-                      */}
                       <DisclosurePanel
                         static
                         id={`faq-answer-${faq.id}`}
@@ -339,7 +616,7 @@ export default function HomePage() {
               href="#tools"
               className="btn-primary inline-flex items-center justify-center gap-2 text-sm sm:text-base px-6 sm:px-8 py-3.5 font-bold cursor-pointer w-full sm:w-auto min-h-[44px]"
             >
-              <span>Choose a Tool</span>
+              <span>Start Now — Make Your Life Easy</span>
               <ArrowRight className="w-5 h-5 shrink-0" />
             </a>
           </motion.div>

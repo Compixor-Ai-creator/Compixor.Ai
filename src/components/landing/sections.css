@@ -25,7 +25,7 @@ html.light .cx-sec{
 }
 .cx-sec::before{ /* the ONE glow of the section */
   content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
-  background:radial-gradient(60% 55% at 50% 100%, var(--s-glow), transparent 70%);
+  background:radial-gradient(60% 55% at 50% 50%, var(--s-glow), transparent 70%);
 }
 .cx-sec__head{ text-align:center; max-width:720px; margin:0 auto 56px; }
 .cx-eyebrow{
