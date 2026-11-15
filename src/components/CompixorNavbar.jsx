@@ -219,7 +219,7 @@ export default function CompixorNavbar() {
               -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
             }
             .cnav-pill{
-              --n-bg:rgba(65,75,120,.32); --n-line:rgba(255,255,255,.12);
+              --n-bg:rgba(90,90,80,.32); --n-line:rgba(255,255,255,.12);
               --n-link:rgba(244,242,255,.72); --n-link-hover:#fff; --n-brand:#fff;
               --n-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
               display:flex; align-items:center; justify-content:space-between;
