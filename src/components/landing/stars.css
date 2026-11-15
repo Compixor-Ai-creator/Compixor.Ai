@@ -1,6 +1,11 @@
-.cx-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.cx-stars i{position:absolute;border-radius:50%;background:#fff;opacity:.12;animation:cxTw 4s ease-in-out infinite}
-html.light .cx-stars i{background:#1b1530;animation-name:cxTwL}
-@keyframes cxTw{0%,100%{opacity:.12}50%{opacity:.9}}
-@keyframes cxTwL{0%,100%{opacity:.1}50%{opacity:.6}}
-@media (prefers-reduced-motion:reduce){.cx-stars i{animation:none;opacity:.35}}
+.cx-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+  -webkit-mask-image:radial-gradient(ellipse 75% 70% at 50% 30%,#000 25%,transparent 85%);
+  mask-image:radial-gradient(ellipse 75% 70% at 50% 30%,#000 25%,transparent 85%)}
+.cx-stars i{position:absolute;border-radius:50%;background:#fff;opacity:.15;animation:cxTw 4s ease-in-out infinite}
+.cx-stars i:nth-child(7n){border-radius:0;width:9px!important;height:9px!important;
+  clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
+html.light .cx-stars i{background:#7c3aed;animation-name:cxTwL}
+html.light .cx-stars i:nth-child(n+31){display:none}
+@keyframes cxTw{0%,100%{opacity:.15}50%{opacity:.9}}
+@keyframes cxTwL{0%,100%{opacity:.06}50%{opacity:.42}}
+@media (prefers-reduced-motion:reduce){.cx-stars i{animation:none;opacity:.3}}
