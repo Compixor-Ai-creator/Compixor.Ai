@@ -286,7 +286,19 @@ html.dark .cx-hero__bg{
 
 /* ----- LIGHT MODE ----- */
 html.light .cx-hero{
-  background:linear-gradient(#ffffff 0%,#fafafc 100%) !important;
+  background:
+    radial-gradient(38% 26% at 50% 24%,rgba(124,58,237,.13),transparent 70%),
+    linear-gradient(to bottom,transparent 68%,#fafafc 100%),
+    linear-gradient(to right,rgba(15,12,40,.045) 1px,transparent 1px) 0 0/56px 56px,
+    linear-gradient(to bottom,rgba(15,12,40,.045) 1px,transparent 1px) 0 0/56px 56px,
+    linear-gradient(#ffffff,#fafafc) !important;
+}
+html.light .cx-hbtn--primary{
+  box-shadow:0 10px 30px -8px rgba(91,33,182,.55),inset 0 1px 0 rgba(255,255,255,.25) !important;
+}
+html.light .cx-badge{
+  background:#fff !important;border:1px solid rgba(15,12,40,.10) !important;
+  box-shadow:0 4px 14px -6px rgba(15,12,40,.18) !important;
 }
 html.light .cx-halo{
   background:radial-gradient(50% 40% at 50% 0%,rgba(124,58,237,.10),transparent 70%) !important;
@@ -306,7 +318,9 @@ html.light .cx-hero .cx-sub{
 }
 html.light .cx-vcard{
   border-color:rgba(15,12,40,.10) !important;
-  box-shadow:0 40px 80px -30px rgba(15,12,40,.28),0 0 0 1px rgba(15,12,40,.06) !important;
+  box-shadow:0 60px 90px -40px rgba(91,33,182,.35),
+             0 30px 60px -30px rgba(15,12,40,.30),
+             0 0 0 1px rgba(15,12,40,.08) !important;
 }
 html.light .cx-stars i:nth-child(n+13){
   display:none !important;

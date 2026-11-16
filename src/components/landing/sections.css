@@ -37,9 +37,28 @@ html.dark .uc p,
 html.dark #blog-preview p,
 html.dark #blog-preview .text-zinc-400,
 html.dark #blog-preview [class*="text-brand-"],
+/* ---------- Footer 5-Column Grid ---------- */
+.cx-foot__grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1.2fr;gap:40px}
+@media(max-width:1024px){.cx-foot__grid{grid-template-columns:repeat(3,1fr)}.cx-foot__brand{grid-column:1/-1}}
+@media(max-width:600px){.cx-foot__grid{grid-template-columns:repeat(2,1fr)}}
+
+html.dark footer a,
+html.dark footer li a,
 html.dark footer .text-zinc-400,
 html.dark footer [class*="text-brand-"]{
   color:rgb(200,203,224) !important;
+}
+html.light footer a,
+html.light footer li a{
+  color:#3b3556 !important;
+}
+html.light footer a:hover,
+html.light footer li a:hover{
+  color:#6d28d9 !important;
+}
+html.dark footer a:hover,
+html.dark footer li a:hover{
+  color:#c4b5fd !important;
 }
 .cx-sec::before{ /* the ONE glow of the section */
   content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;

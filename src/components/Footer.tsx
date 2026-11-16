@@ -2,8 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, ShieldCheck, Heart, ArrowUpRight, MessageSquarePlus } from 'lucide-react';
-import { tools } from '@/data/tools';
+import { Sparkles, ShieldCheck, MessageSquarePlus } from 'lucide-react';
 import { SITE_URL, SITE_SHARE_TEXT, CONTACT_EMAIL, getShareUrls } from '@/lib/config';
 import {
   LinkedInIcon,
@@ -13,15 +12,45 @@ import {
   GitHubIcon,
 } from '@/components/SocialIcons';
 
+const GROUPS = [
+  {
+    title: 'PDF Tools',
+    items: [
+      { label: 'Compress PDF',     href: '/tools/pdf-compressor' },
+      { label: 'Merge & Split',    href: '/tools/pdf-organizer' },
+      { label: 'Add Watermark',    href: '/tools/add-watermark' },
+      { label: 'Remove Watermark', href: '/tools/remove-watermark' },
+      { label: 'Protect PDF',      href: '/tools/protect-pdf' },
+      { label: 'Unlock PDF',       href: '/tools/unlock-pdf' },
+    ],
+  },
+  {
+    title: 'Word Tools',
+    items: [
+      { label: 'PDF to Word',   href: '/tools/pdf-to-word' },
+      { label: 'Image to Word', href: '/tools/img-to-word' },
+      { label: 'Word Compress', href: '/tools/word-compressor' },
+    ],
+  },
+  {
+    title: 'Image Studio',
+    items: [
+      { label: 'Passport Photo', href: '/tools/passport-photo' },
+      { label: 'Full DP Maker',  href: '/tools/full-dp-maker' },
+      { label: 'QR Generator',   href: '/tools/qr-generator' },
+    ],
+  },
+];
+
 export default function Footer() {
   const shareUrls = getShareUrls(SITE_URL, SITE_SHARE_TEXT);
 
   return (
     <footer className="relative mt-24 border-t border-black/[0.06] dark:border-white/[0.06] bg-zinc-50/50 dark:bg-surface-900/40">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10">
-          {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-2 space-y-4">
+        <div className="cx-foot__grid">
+          {/* Brand Column */}
+          <div className="cx-foot__brand space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center shadow-glow">
                 <Sparkles className="w-4 h-4 text-white" />
@@ -48,32 +77,106 @@ export default function Footer() {
                 Updated November 2026 · Zero Server Storage Policy
               </div>
             </div>
+
+            {/* Privacy-First card, Share Compixor, and Open Source shifted to brand column */}
+            <div className="pt-4 space-y-4 max-w-sm">
+              <div className="glass-card p-4 rounded-2xl space-y-2 border-emerald-500/20">
+                <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300">
+                  <ShieldCheck className="w-4 h-4" />
+                  Privacy-First Architecture
+                </div>
+                <div className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
+                  9 tools run locally on your device with zero uploads. Specialized utilities process over HTTPS with zero permanent file storage.
+                </div>
+              </div>
+
+              {/* Share Compixor */}
+              <div className="space-y-2">
+                <div className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Share Compixor</div>
+                <div className="flex items-center gap-2.5 flex-wrap overflow-visible">
+                  <a
+                    href={shareUrls.linkedIn}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    aria-label="Share on LinkedIn"
+                    className="social-btn min-w-[44px] min-h-[44px]"
+                    style={{ '--glow': '#0A66C2' } as React.CSSProperties}
+                  >
+                    <LinkedInIcon className="w-[18px] h-[18px]" />
+                  </a>
+                  <a
+                    href={shareUrls.x}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    aria-label="Share on X"
+                    className="social-btn social-btn-x min-w-[44px] min-h-[44px]"
+                  >
+                    <TwitterXIcon className="w-[18px] h-[18px]" />
+                  </a>
+                  <a
+                    href={shareUrls.whatsApp}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    aria-label="Share on WhatsApp"
+                    className="social-btn min-w-[44px] min-h-[44px]"
+                    style={{ '--glow': '#25D366' } as React.CSSProperties}
+                  >
+                    <WhatsAppIcon className="w-[18px] h-[18px]" />
+                  </a>
+                  <a
+                    href={shareUrls.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    aria-label="Share on Facebook"
+                    className="social-btn min-w-[44px] min-h-[44px]"
+                    style={{ '--glow': '#1877F2' } as React.CSSProperties}
+                  >
+                    <FacebookIcon className="w-[18px] h-[18px]" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Official Open Source Link */}
+              <div className="space-y-2">
+                <div className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Open Source</div>
+                <div className="flex items-center gap-3 overflow-visible">
+                  <a
+                    href="https://github.com/Compixor-Ai-creator"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View source on GitHub"
+                    className="social-btn min-w-[44px] min-h-[44px]"
+                    style={{ '--glow': '#8b5cf6' } as React.CSSProperties}
+                  >
+                    <GitHubIcon className="w-[18px] h-[18px]" />
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Tools */}
-          <div>
-            <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
-              Tools Suite
-            </div>
-            <ul className="space-y-3">
-              {tools.map((tool) => {
-                const Icon = tool.navIcon || tool.icon;
-                return (
-                  <li key={tool.href}>
+          {/* 3 Tool Group Columns */}
+          {GROUPS.map((group) => (
+            <div key={group.title}>
+              <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
+                {group.title}
+              </div>
+              <ul className="space-y-3">
+                {group.items.map((item) => (
+                  <li key={item.href}>
                     <Link
-                      href={tool.href}
-                      className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors flex items-center gap-2 group min-h-[36px]"
+                      href={item.href}
+                      className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
                     >
-                      <Icon className="w-3.5 h-3.5 text-zinc-400 group-hover:text-brand-500 transition-colors shrink-0" aria-hidden="true" />
-                      <span>{tool.name}</span>
+                      {item.label}
                     </Link>
                   </li>
-                );
-              })}
-            </ul>
-          </div>
+                ))}
+              </ul>
+            </div>
+          ))}
 
-          {/* Company & Architecture */}
+          {/* Company Column */}
           <div>
             <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
               Company
@@ -86,6 +189,22 @@ export default function Footer() {
                 >
                   About Us
                 </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
+                >
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
+                >
+                  {CONTACT_EMAIL}
+                </a>
               </li>
               <li>
                 <Link
@@ -110,22 +229,6 @@ export default function Footer() {
                 >
                   Terms of Service
                 </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
-                >
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
-                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
-                >
-                  {CONTACT_EMAIL}
-                </a>
               </li>
               <li>
                 <a
@@ -162,88 +265,9 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* Guarantee & Social */}
-          <div>
-            <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
-              Privacy &amp; Social
-            </div>
-            <div className="glass-card p-4 rounded-2xl space-y-2 border-emerald-500/20 mb-4">
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300">
-                <ShieldCheck className="w-4 h-4" />
-                Privacy-First Architecture
-              </div>
-              <div className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
-                9 tools run locally on your device with zero uploads. Specialized utilities process over HTTPS with zero permanent file storage.
-              </div>
-            </div>
-
-            {/* Share Compixor */}
-            <div className="space-y-2 mb-4">
-              <div className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Share Compixor</div>
-              <div className="flex items-center gap-2.5 flex-wrap overflow-visible">
-                <a
-                  href={shareUrls.linkedIn}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  aria-label="Share on LinkedIn"
-                  className="social-btn min-w-[44px] min-h-[44px]"
-                  style={{ '--glow': '#0A66C2' } as React.CSSProperties}
-                >
-                  <LinkedInIcon className="w-[18px] h-[18px]" />
-                </a>
-                <a
-                  href={shareUrls.x}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  aria-label="Share on X"
-                  className="social-btn social-btn-x min-w-[44px] min-h-[44px]"
-                >
-                  <TwitterXIcon className="w-[18px] h-[18px]" />
-                </a>
-                <a
-                  href={shareUrls.whatsApp}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  aria-label="Share on WhatsApp"
-                  className="social-btn min-w-[44px] min-h-[44px]"
-                  style={{ '--glow': '#25D366' } as React.CSSProperties}
-                >
-                  <WhatsAppIcon className="w-[18px] h-[18px]" />
-                </a>
-                <a
-                  href={shareUrls.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  aria-label="Share on Facebook"
-                  className="social-btn min-w-[44px] min-h-[44px]"
-                  style={{ '--glow': '#1877F2' } as React.CSSProperties}
-                >
-                  <FacebookIcon className="w-[18px] h-[18px]" />
-                </a>
-              </div>
-            </div>
-
-            {/* Official Open Source Link */}
-            <div className="space-y-2">
-              <div className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Open Source</div>
-              <div className="flex items-center gap-3 overflow-visible">
-                <a
-                  href="https://github.com/Compixor-Ai-creator"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="View source on GitHub"
-                  className="social-btn min-w-[44px] min-h-[44px]"
-                  style={{ '--glow': '#8b5cf6' } as React.CSSProperties}
-                >
-                  <GitHubIcon className="w-[18px] h-[18px]" />
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Architectural SVG Watermark (Perfect center, exactly aligned to footer grid container) */}
+        {/* Architectural SVG Watermark */}
         <div className="footer-watermark pt-12 pb-20 pointer-events-none select-none overflow-visible" aria-hidden="true">
           <svg viewBox="0 0 1000 150" preserveAspectRatio="xMidYMid meet" className="block w-full h-auto" xmlns="http://www.w3.org/2000/svg">
             <defs>
