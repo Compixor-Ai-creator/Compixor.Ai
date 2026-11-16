@@ -50,12 +50,12 @@ html { scrollbar-gutter: auto !important; }
 }
 
 html.light .cx-hero{
-  --h-bg:#f7f5ff; --h-text:#14102b; --h-muted:#5b5675;
-  --h-grad-a:#6d28d9; --h-grad-b:#8b5cf6;
+  --h-bg:#ffffff; --h-text:#0d0b1f; --h-muted:#26223d;
+  --h-grad-a:#5b21b6; --h-grad-b:#4338ca;
   --h-badge-bg:#ffffff; --h-badge-line:rgba(20,16,43,.16); --h-badge-text:#14102b;
   --h-btn2-bg:#ffffff; --h-btn2-line:rgba(20,16,43,.30); --h-btn2-text:#14102b;
-  --h-beam:rgba(139,92,246,.18); --h-star-op:0; --h-nebula:rgba(124,58,237,.05);
-  --h-ring-fill:#f1ecff; --h-ring-glow:rgba(124,58,237,.12); --h-ring-rim:rgba(124,58,237,.22);
+  --h-beam:transparent; --h-star-op:0; --h-nebula:transparent;
+  --h-ring-fill:#f1ecff; --h-ring-glow:transparent; --h-ring-rim:transparent;
 }
 
 /* ---------- halo glow (Automark style) ---------- */
@@ -63,17 +63,6 @@ html.light .cx-hero{
   position:absolute;left:50%;top:0;width:min(1400px,100%);height:620px;transform:translateX(-50%);
   pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 50% 100% at 50% 0%,rgba(139,92,246,.55),rgba(109,61,240,.22) 45%,transparent 72%);
-}
-html.light .cx-hero .cx-sub{color:#3b3556}
-html.light .cx-halo{
-  background:radial-gradient(60% 55% at 50% 38%,
-    rgba(124,58,237,.38),rgba(167,139,250,.18) 45%,transparent 72%);
-}
-html.light .cx-vcard{
-  border-color:rgba(124,58,237,.55);
-  box-shadow:0 30px 80px -20px rgba(124,58,237,.5),
-             0 0 0 1px rgba(124,58,237,.3),
-             0 0 60px rgba(167,139,250,.35);
 }
 
 /* ---------- decorative background: plate layer in dark mode ---------- */
@@ -86,23 +75,17 @@ html.light .cx-vcard{
 /* In dark mode, stars, beam and nebula are integrated into the hero-bg-dark image; keep DOM nodes hidden */
 .cx-hero__beam,
 .cx-hero__nebula{
-  display:none;
+  display:none !important;
 }
 
-/* Light mode overrides: hide dark bg image, show soft CSS beam, quiet ring */
-html.light .cx-hero__bg{ background:none; -webkit-mask-image:none; mask-image:none; }
-html.light .cx-hero__beam{
-  display:block; position:absolute; top:-14%; left:-10%; width:44%; height:80%;
-  pointer-events:none; filter:blur(36px); opacity:1;
-}
-html.light .cx-hero__beam::before{
-  content:""; position:absolute; inset:0;
-  background:linear-gradient(142deg, rgba(139,92,246,.18) 0%, rgba(139,92,246,.08) 35%, transparent 70%);
-  clip-path:polygon(0 0, 100% 0, 42% 100%, 0 75%);
-}
+/* Light mode overrides: hide dark bg image, no beam or nebula blobs */
+html.light .cx-hero__bg,
+html.light .cx-hero__beam,
 html.light .cx-hero__nebula{
-  display:block; position:absolute; right:-6%; top:20%; width:36%; height:62%; filter:blur(40px);
-  background:radial-gradient(ellipse at 75% 45%, rgba(124,58,237,.05) 0%, transparent 60%);
+  display:none !important;
+  background:none !important;
+  -webkit-mask-image:none !important;
+  mask-image:none !important;
 }
 
 /* ---------- eclipse ring: completely hidden in both themes ---------- */
@@ -139,13 +122,9 @@ html.light .cx-hero__ring::after {
   padding-bottom:.08em;                              /* no clipped descenders */
 }
 .cx-sub,
-.cx-hero .cx-sub,
-html.dark .cx-hero .cx-sub{
-  max-width:624px; margin:12px auto 0; color:#9b9fb5 !important;
+.cx-hero .cx-sub{
+  max-width:624px; margin:12px auto 0;
   font:400 17.5px/1.34 var(--font-inter),system-ui,sans-serif;
-}
-html.light .cx-hero .cx-sub{
-  color:#5b5675 !important;
 }
 .cx-ctas{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top:25px; }
 .cx-hbtn{
@@ -279,4 +258,59 @@ html.light .cx-tablet:not(.has-video){
   .cx-hero__ring{ display:none !important; }
   .cx-stage-crop{ height:auto; margin-top:16px; }
   .cx-tablet{ width:calc(100% - 24px); max-width:720px; height:auto; transform:none; border-radius:20px 20px 0 0; }
+}
+
+/* ===== THEME STYLING OVERRIDES (STEP 1: DARK & STEP 2: LIGHT) ===== */
+
+/* ----- DARK MODE ----- */
+html.dark .cx-hero{
+  background-color:#05040d !important;
+}
+html.dark .cx-halo{
+  background:radial-gradient(55% 48% at 50% 0%,
+    rgba(139,108,245,.55) 0%,rgba(110,80,220,.22) 45%,transparent 75%) !important;
+}
+html.dark .cx-grad{
+  background:linear-gradient(90deg,#8e6dff 0%,#a58bff 50%,#7f63f5 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;color:transparent !important;
+  opacity:1 !important;filter:none !important;
+}
+html.dark .cx-hero .cx-sub{
+  color:#d3d6ea !important;
+}
+html.dark .cx-hero__bg{
+  opacity:.5 !important;
+  filter:saturate(1.15) brightness(.8) !important;
+}
+
+/* ----- LIGHT MODE ----- */
+html.light .cx-hero{
+  background:linear-gradient(#ffffff 0%,#fafafc 100%) !important;
+}
+html.light .cx-halo{
+  background:radial-gradient(50% 40% at 50% 0%,rgba(124,58,237,.10),transparent 70%) !important;
+}
+html.light .cx-grad{
+  background:linear-gradient(90deg,#5b21b6 0%,#6d28d9 50%,#4338ca 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;color:transparent !important;
+  opacity:1 !important;filter:none !important;
+}
+html.light .cx-hero h1,
+html.light .cx-hero h1 span:first-child{
+  color:#0d0b1f !important;
+}
+html.light .cx-hero .cx-sub{
+  color:#26223d !important;
+}
+html.light .cx-vcard{
+  border-color:rgba(15,12,40,.10) !important;
+  box-shadow:0 40px 80px -30px rgba(15,12,40,.28),0 0 0 1px rgba(15,12,40,.06) !important;
+}
+html.light .cx-stars i:nth-child(n+13){
+  display:none !important;
+}
+html.light .cx-stars i{
+  opacity:.25 !important;
 }

@@ -5,8 +5,8 @@
 .cx-stars.cx-off i{animation-play-state:paused}
 .cx-stars i:nth-child(7n){border-radius:0;width:9px!important;height:9px!important;
   clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
-html.light .cx-stars i{background:#7c3aed;animation-name:cxTwL}
-html.light .cx-stars i:nth-child(n+31){display:none}
+html.light .cx-stars i{background:#7c3aed;animation-name:cxTwL;opacity:.25}
+html.light .cx-stars i:nth-child(n+13){display:none}
 @keyframes cxTw{0%,100%{opacity:.15}50%{opacity:.9}}
 @keyframes cxTwL{0%,100%{opacity:.06}50%{opacity:.42}}
 @media (prefers-reduced-motion:reduce){.cx-stars i{animation:none;opacity:.3}}
