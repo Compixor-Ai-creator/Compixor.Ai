@@ -18,10 +18,28 @@ html.light .cx-sec{
   --s-line:rgba(40,28,90,.13);
   --s-line-hi:rgba(109,40,217,.5);
   --s-glow:rgba(139,92,246,.20);
-  --s-muted:#5b5675;
+  --s-muted:#3b3556;
   --s-ok:#0f766e;   --s-ok-bg:rgba(15,118,110,.08); --s-ok-bd:rgba(15,118,110,.30);
   --s-info:#1d4ed8; --s-info-bg:rgba(29,78,216,.07); --s-info-bd:rgba(29,78,216,.28);
   --s-ico-bg:rgba(124,58,237,.09);
+}
+html.light .st p,
+html.light .st-path p,
+html.light .uc p{
+  color:#3b3556;
+}
+html.dark .cx-sec{
+  --s-muted:rgb(200,203,224);
+}
+html.dark .st p,
+html.dark .st-path p,
+html.dark .uc p,
+html.dark #blog-preview p,
+html.dark #blog-preview .text-zinc-400,
+html.dark #blog-preview [class*="text-brand-"],
+html.dark footer .text-zinc-400,
+html.dark footer [class*="text-brand-"]{
+  color:rgb(200,203,224) !important;
 }
 .cx-sec::before{ /* the ONE glow of the section */
   content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;

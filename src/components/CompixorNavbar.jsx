@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { NAV_GROUPS, NAV_LINKS } from "./nav-data";
 import { useTheme } from "@/components/ThemeProvider";
+import "@/styles/smooth.css";
 
 const ICONS = {
   Files,

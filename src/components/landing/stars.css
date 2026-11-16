@@ -2,6 +2,7 @@
   -webkit-mask-image:radial-gradient(ellipse 75% 70% at 50% 30%,#000 25%,transparent 85%);
   mask-image:radial-gradient(ellipse 75% 70% at 50% 30%,#000 25%,transparent 85%)}
 .cx-stars i{position:absolute;border-radius:50%;background:#fff;opacity:.15;animation:cxTw 4s ease-in-out infinite}
+.cx-stars.cx-off i{animation-play-state:paused}
 .cx-stars i:nth-child(7n){border-radius:0;width:9px!important;height:9px!important;
   clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
 html.light .cx-stars i{background:#7c3aed;animation-name:cxTwL}

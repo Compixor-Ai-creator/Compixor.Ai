@@ -6,7 +6,7 @@
 .cx-vwrap{perspective:1400px}
 .cx-vcard{position:relative;width:100%;border-radius:22px;overflow:hidden;background:#0b0a18;
   border:1px solid rgba(167,139,250,.35);transform-origin:50% 40%;will-change:transform;
-  box-shadow:0 20px 60px rgba(80,40,200,.25)}
+  box-shadow:0 30px 80px -20px rgba(124,58,237,.45),0 0 0 1px rgba(167,139,250,.25)}
 .cx-vcard video{display:block;width:100%;height:100%;object-fit:cover}
 .cx-play{position:absolute;left:16px;bottom:16px;z-index:3;display:flex;align-items:center;gap:10px;
   padding:6px 16px 6px 6px;border:1px solid rgba(167,139,250,.5);border-radius:999px;cursor:pointer;

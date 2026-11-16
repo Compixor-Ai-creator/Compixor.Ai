@@ -8,7 +8,7 @@ html { scrollbar-gutter: auto !important; }
 
 /* ---------- hero shell: starts at page top, sits UNDER the floating navbar ---------- */
 .cx-hero{
-  --h-bg:#08070f; --h-text:#ffffff; --h-muted:#9b97b5;
+  --h-bg:#08070f; --h-text:#ffffff; --h-muted:rgb(200,203,224);
   --h-grad-a:#a78bfa; --h-grad-b:#d3c4ff;
   --h-badge-bg:rgba(255,255,255,.04); --h-badge-line:rgba(255,255,255,.15); --h-badge-text:#e9e5ff;
   --h-btn2-bg:rgba(255,255,255,.06); --h-btn2-line:rgba(255,255,255,.16); --h-btn2-text:#f4f2ff;
@@ -64,8 +64,16 @@ html.light .cx-hero{
   pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 50% 100% at 50% 0%,rgba(139,92,246,.55),rgba(109,61,240,.22) 45%,transparent 72%);
 }
+html.light .cx-hero .cx-sub{color:#3b3556}
 html.light .cx-halo{
-  background:radial-gradient(ellipse 50% 100% at 50% 0%,rgba(139,92,246,.22),rgba(167,139,250,.10) 50%,transparent 72%);
+  background:radial-gradient(60% 55% at 50% 38%,
+    rgba(124,58,237,.38),rgba(167,139,250,.18) 45%,transparent 72%);
+}
+html.light .cx-vcard{
+  border-color:rgba(124,58,237,.55);
+  box-shadow:0 30px 80px -20px rgba(124,58,237,.5),
+             0 0 0 1px rgba(124,58,237,.3),
+             0 0 60px rgba(167,139,250,.35);
 }
 
 /* ---------- decorative background: plate layer in dark mode ---------- */

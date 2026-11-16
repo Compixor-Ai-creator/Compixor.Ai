@@ -1,4 +1,6 @@
+"use client";
 import "./stars.css";
+import { useEffect, useRef } from "react";
 
 function rng(seed: number) {
   let s = seed;
@@ -14,8 +16,16 @@ const DOTS = Array.from({ length: 90 }, () => ({
 }));
 
 export default function Stars({ count = 70 }: { count?: number }) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = rootRef.current; if (!el) return;
+    const io = new IntersectionObserver(([e]) => el.classList.toggle("cx-off", !e.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <div className="cx-stars" aria-hidden="true">
+    <div ref={rootRef} className="cx-stars" aria-hidden="true">
       {DOTS.slice(0, count).map((d, i) => (
         <i key={i} style={{ left: `${d.x}%`, top: `${d.y}%`, width: d.s, height: d.s,
           animationDelay: `${d.d}s`, animationDuration: `${d.t}s` }} />
