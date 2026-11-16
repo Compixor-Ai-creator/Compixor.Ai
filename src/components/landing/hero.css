@@ -165,19 +165,31 @@ html.light .cx-hero .cx-sub{
 .cx-hbtn--ghost:hover{ background:color-mix(in srgb,var(--h-btn2-bg) 70%,#8b5cf6 12%); }
 
 .cx-stage-crop{
-  position:relative; z-index:2; margin-top:3.3385cqw; pointer-events:none;
-  height:35.7143cqw;
+  position:relative; z-index:2; margin-top:28px; pointer-events:auto;
+  height:auto;
   overflow:visible;
 }
 
 .cx-stage{
   position:relative;
-  perspective:60.5590cqw; perspective-origin:50% 0;
-  -webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 140px), transparent 100%);
-  mask-image:linear-gradient(to bottom, #000 calc(100% - 140px), transparent 100%);
+  overflow:visible;
 }
+
+.cx-stage:has(.has-video){
+  perspective:none !important;
+  clip-path:none !important;
+  -webkit-mask-image:none !important;
+  mask-image:none !important;
+}
+.cx-stage:has(.has-video)::before{
+  display:none !important;
+}
+
 @media (min-width:1024px){
-  .cx-stage{
+  .cx-stage:not(:has(.has-video)){
+    perspective:60.5590cqw; perspective-origin:50% 0;
+    -webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 140px), transparent 100%);
+    mask-image:linear-gradient(to bottom, #000 calc(100% - 140px), transparent 100%);
     clip-path: polygon(
       20.7298cqw 0.2329cqw,
       21.0404cqw 0.0776cqw,
@@ -189,7 +201,7 @@ html.light .cx-hero .cx-sub{
       15.2950cqw 100%
     );
   }
-  .cx-stage::before{
+  .cx-stage:not(:has(.has-video))::before{
     content:"";
     position:absolute;
     top:0.1165cqw;
@@ -211,7 +223,8 @@ html.light .cx-hero .cx-sub{
   }
   html.light .cx-stage::before{ display:none !important; }
 }
-.cx-tablet{
+/* Fallback tablet styling when video fails (.cx-tablet:not(.has-video)) */
+.cx-tablet:not(.has-video){
   position:relative; width:58.0697cqw; max-width:none; margin:0 auto; padding:0;
   height:40.3727cqw; overflow:hidden;
   border:1px solid transparent; border-bottom:0; border-radius:28px 28px 0 0;
@@ -221,12 +234,12 @@ html.light .cx-hero .cx-sub{
   transform-origin:50% 0;
   box-shadow:inset 0 1px 1px rgba(255, 255, 255, 0.20);
 }
-html.light .cx-tablet{
+html.light .cx-tablet:not(.has-video){
   border-color:transparent !important;
   box-shadow:none !important;
   background:transparent;
 }
-.cx-tablet__img{
+.cx-tablet:not(.has-video) .cx-tablet__img{
   display:block; width:100%; height:auto; margin-top:0;
   transform:scale(0.985, 0.695) rotate(0.6deg) translate(7px, -86px);
   transform-origin:50% 0;
