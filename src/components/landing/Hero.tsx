@@ -7,7 +7,7 @@ import "./hero.css";
 export default function Hero() {
   return (
     <section className="cx-hero" aria-labelledby="cx-hero-title">
-      <Stars count={60} />
+      <Stars count={90} />
       <div className="cx-halo" aria-hidden="true" />
 
       <div className="cx-hero__stage">

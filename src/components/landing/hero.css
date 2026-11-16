@@ -15,11 +15,18 @@ html { scrollbar-gutter: auto !important; }
   --h-beam:rgba(220,195,255,.48); --h-star-op:1; --h-nebula:rgba(56,189,248,.22);
   --h-ring-fill:#081022; --h-ring-glow:rgba(195,150,245,.95); --h-ring-rim:rgba(220,200,255,.85);
   --h-top:116px;                       /* badge top edge measured from page top */
-  position:relative; isolation:isolate; overflow:hidden;
+  position:relative; isolation:isolate;
+  overflow-x:clip; overflow-y:visible;
   width:100%;
   margin-top:calc(var(--cx-nav-clear) * -1);
   background:var(--h-bg); color:var(--h-text); text-align:center;
   font-family:var(--font-inter),system-ui,sans-serif;
+}
+
+.cx-hero > .cx-stars{
+  z-index:1;
+  bottom:auto;
+  height:600px;
 }
 
 .cx-hero__stage{
@@ -29,8 +36,6 @@ html { scrollbar-gutter: auto !important; }
   max-width:1288px;
   margin-inline:auto;
   padding-top:var(--h-top);
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
-  mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
 }
 
 /* Override globals.css wildcard [class*="hero"] { min-height: 100dvh } without editing globals.css */
@@ -66,11 +71,13 @@ html.light .cx-halo{
 /* ---------- decorative background (all aria-hidden, no pointer events) ---------- */
 .cx-hero__bg{
   position:absolute; inset:0; z-index:-1; pointer-events:none;
-  background-image:url('/brand/hero-bg-dark-v2.webp');
+  background-image:url('/brand/hero-bg-dark-v3.webp');
   background-size:100% auto;
   background-position:center top;
   background-repeat:no-repeat;
   background-color:#08070f;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
 }
 /* In dark mode, stars, beam and nebula are integrated into the hero-bg-dark image; keep DOM nodes hidden */
 .cx-hero__beam,
@@ -96,6 +103,7 @@ html.light .cx-hero__nebula{
 
 /* ---------- eclipse ring: behind the H1, centre at 75% x, 278px y @1288 ---------- */
 .cx-hero__ring{
+  display:none !important;
   position:absolute; z-index:0; pointer-events:none;
   left:75.0776cqw; top:10.8696cqw; transform:translateX(-50%);
   width:21.3509cqw; height:21.3509cqw; aspect-ratio:1; border-radius:50%;
@@ -120,6 +128,7 @@ html.light .cx-hero__nebula{
   filter: blur(2px);
 }
 html.light .cx-hero__ring{
+  display:none !important;
   opacity:0.35;
   background:radial-gradient(circle at 42% 45%, #f1ecff 0 70%, #e7e0ff 100%);
   box-shadow:0 0 0 1px rgba(124,58,237,.22), 0 0 36px 2px rgba(124,58,237,.12);
@@ -129,7 +138,7 @@ html.light .cx-hero__ring::after {
 }
 
 /* ---------- content ---------- */
-.cx-hero__inner{ position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:0 20px; }
+.cx-hero__inner{ position:relative; z-index:2; max-width:1100px; margin:0 auto; padding:0 20px; }
 .cx-badge{
   display:inline-flex; align-items:center; gap:8px; height:31px; padding:0 12px 0 6px;
   border-radius:999px; border:1px solid var(--h-badge-line); background:var(--h-badge-bg);
@@ -177,7 +186,7 @@ html.light .cx-hero .cx-sub{
 .cx-hbtn--ghost:hover{ background:color-mix(in srgb,var(--h-btn2-bg) 70%,#8b5cf6 12%); }
 
 .cx-stage-crop{
-  position:relative; z-index:1; margin-top:3.3385cqw; pointer-events:none;
+  position:relative; z-index:2; margin-top:3.3385cqw; pointer-events:none;
   height:35.7143cqw;
   overflow:visible;
 }
@@ -245,7 +254,7 @@ html.light .cx-tablet{
 }
 
 @media (max-width:1023px){
-  .cx-hero__stage{ -webkit-mask-image:none; mask-image:none; }
+  .cx-hero__bg{ -webkit-mask-image:none; mask-image:none; }
   .cx-hero__ring{ display:none !important; }
   .cx-stage-crop{ height:auto; margin-top:20px; }
   .cx-stage{ perspective:none; clip-path:none; -webkit-mask-image:none; mask-image:none; }

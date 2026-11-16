@@ -6,7 +6,8 @@ import { motion, useScroll, useTransform, useMotionTemplate,
 
 const VIDEO_SRC = "/brand/hero-demo.mp4";
 // tx, ty are % of the tablet box (so they scale at every width). Old px values: tx 7px, ty -86px.
-const FROM = { sx: 0.985, sy: 0.695, rot: 0.6, tx: 0.94, ty: -20.4 };
+// tabletBox at 1288 = 747.94px x 520.00px -> tx% = 7/747.94*100 = 0.94%, ty% = -86/520*100 = -16.54%
+const FROM = { sx: 0.985, sy: 0.695, rot: 0.6, tx: 0.94, ty: -16.54 };
 const TO = { s: 1.5, ty: 16.67 }; // 16.67% = keeps the top edge fixed while growing 1.5x
 const CLIP_FROM = "polygon(-0.41% 0.58%, 0.13% 0.19%, 2.00% 0.00%, 96.53% 0.00%, 98.40% 0.19%, 98.93% 0.58%, 109.90% 100.00%, -9.76% 100.00%)";
 const CLIP_TO = "polygon(0% 0%, 0% 0%, 0% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 100%, 0% 100%)"; // same point count as CLIP_FROM
