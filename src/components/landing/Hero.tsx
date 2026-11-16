@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Stars from "./Stars";
 import TabletFlatten from "./TabletFlatten";
+import HeroFade from "./HeroFade";
 import "./hero.css";
 
 export default function Hero() {
@@ -17,7 +18,7 @@ export default function Hero() {
         </div>
         <div className="cx-hero__ring" aria-hidden="true" />
 
-        <div className="cx-hero__inner">
+        <HeroFade className="cx-hero__inner">
           <div className="cx-badge cx-rise">
             <Image src="/brand/logo-c.png" alt="" width={22} height={21} />
             All-in-One Private PDF &amp; Image Toolkit <i aria-hidden="true" /> Zero File Storage
@@ -45,7 +46,7 @@ export default function Hero() {
             </Link>
             <Link href="#tools" className="cx-hbtn cx-hbtn--ghost">Get Perfect</Link>
           </div>
-        </div>
+        </HeroFade>
 
         <div className="cx-stage-crop">
           <div className="cx-stage">

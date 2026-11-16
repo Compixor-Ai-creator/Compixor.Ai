@@ -1,6 +1,6 @@
 .cx-tablet.has-video{position:relative!important;left:auto!important;right:auto!important;top:auto!important;
   width:min(1100px,calc(100% - 32px))!important;height:auto!important;aspect-ratio:auto!important;
-  margin:28px auto 80px!important;transform:none!important;clip-path:none!important;overflow:visible!important;
+  margin:28px auto 24px!important;transform:none!important;clip-path:none!important;overflow:visible!important;
   background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important}
 .cx-tablet.has-video::before,.cx-tablet.has-video::after{display:none!important}
 .cx-vwrap{perspective:1400px}
@@ -8,7 +8,7 @@
   border:1px solid rgba(167,139,250,.35);transform-origin:50% 40%;will-change:transform;
   box-shadow:0 30px 80px -20px rgba(124,58,237,.45),0 0 0 1px rgba(167,139,250,.25)}
 .cx-vcard video{display:block;width:100%;height:100%;object-fit:cover}
-.cx-play{position:absolute;left:16px;bottom:16px;z-index:3;display:flex;align-items:center;gap:10px;
+.cx-play{position:absolute;left:auto!important;right:18px!important;bottom:18px!important;transform:none;z-index:2;display:flex;align-items:center;gap:10px;
   padding:6px 16px 6px 6px;border:1px solid rgba(167,139,250,.5);border-radius:999px;cursor:pointer;
   background:rgba(10,8,24,.72);backdrop-filter:blur(8px);color:#fff;font:600 13px/1 Inter,system-ui,sans-serif}
 .cx-play i{position:relative;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
@@ -17,3 +17,22 @@
 .cx-play i::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #8b5cf6;animation:cxPing 2s ease-out infinite}
 @keyframes cxPing{from{transform:scale(1);opacity:.8}to{transform:scale(1.9);opacity:0}}
 @media (prefers-reduced-motion:reduce){.cx-play i::before{animation:none}}
+
+.cx-vshade{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(180deg,rgba(5,4,13,.85),rgba(5,4,13,.35))}
+html.light .cx-vshade{background:linear-gradient(180deg,rgba(15,12,40,.55),rgba(15,12,40,.15))}
+html.dark .cx-vcard{
+  box-shadow:0 0 0 1px rgba(255,255,255,.14),0 0 0 7px rgba(255,255,255,.05),
+             0 30px 80px -20px rgba(124,58,237,.45);
+}
+
+div.fixed.bottom-5.left-5,
+div:has(> button[aria-label="Feedback / Request Tool"]) {
+  transition: opacity .25s ease;
+}
+html.cx-card-view div.fixed.bottom-5.left-5,
+html.cx-card-view div:has(> button[aria-label="Feedback / Request Tool"]) {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}

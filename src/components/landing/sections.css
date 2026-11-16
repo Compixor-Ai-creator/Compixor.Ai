@@ -1,4 +1,7 @@
 /* ===== Eclipse Night — only "How it works" and "Use cases" ===== */
+#tools {
+  padding-top: 2rem !important; /* 32px for seamless <= 90px gap below flat hero card */
+}
 .cx-sec{
   --cx-font-display: var(--font-outfit), Outfit, Inter, system-ui, sans-serif; /* ADAPT var name from 2.5 */
   --s-card:rgba(255,255,255,.035);
