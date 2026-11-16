@@ -10,3 +10,8 @@
   .cx-play{width:56px;height:56px;margin:-28px 0 0 -28px;box-shadow:0 0 0 6px rgba(139,92,246,.18)}
   .cx-play span{border-left-width:16px;border-top-width:10px;border-bottom-width:10px;margin-left:4px}
 }
+
+.cx-tablet.has-video .cx-tablet__img{visibility:hidden}
+.cx-tablet__video{object-fit:contain;object-position:center}
+@media (min-width:1024px){.cx-tablet{margin-bottom:17cqw}}
+
