@@ -24,18 +24,18 @@ export default function Hero() {
           </div>
 
           <h1 id="cx-hero-title" className="cx-h1 cx-rise" style={{ animationDelay: "80ms" }}>
-            <span>Free Private PDF, Word &amp;</span>
-            <span className="cx-grad">Photo Tools in Your Browser</span>
+            <span>Free Private PDF, Word &amp;</span>{" "}
+            <span className="cx-grad">Photo Tools That Run in Your Browser</span>
           </h1>
 
           <p className="cx-sub cx-rise" style={{ animationDelay: "160ms" }}>
-            Compixor is a private web toolkit to compress, merge, protect, watermark, and
-            convert documents directly in your browser. 9 of our 12 tools run locally on your
-            device with zero photo or document uploads.
+            Compixor is a private web toolkit to compress, merge, protect, watermark, and convert
+            documents directly in your browser. 9 tools run locally on your device with zero photo
+            or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport
+            Photo) process securely over HTTPS with zero permanent file storage.
           </p>
 
           <div className="cx-ctas cx-rise" style={{ animationDelay: "240ms" }}>
-            {/* use the ORIGINAL hrefs from commit 3f460873 */}
             <Link href="#tools" className="cx-hbtn cx-hbtn--primary">
               Start Now — Make Your Life Easy
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -43,7 +43,7 @@ export default function Hero() {
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </Link>
-            <Link href="#tools" className="cx-hbtn cx-hbtn--ghost">Explore All 12 Tools</Link>
+            <Link href="#tools" className="cx-hbtn cx-hbtn--ghost">Get Perfect</Link>
           </div>
         </div>
 
