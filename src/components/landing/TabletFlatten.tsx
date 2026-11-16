@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useScroll, useTransform, useMotionTemplate,
   useMotionValueEvent, useReducedMotion } from "framer-motion";
 
-// VIDEO: jab video ban jaye, file public/brand/hero-demo.mp4 mein rakhein aur yahan likhein:
-const VIDEO_SRC = ""; // e.g. "/brand/hero-demo.mp4"
+const VIDEO_SRC = "/brand/hero-demo.mp4";
+const POSTER = "/brand/hero-orbit.png";
 
 // p=0 values = CURRENT .cx-tablet values (hero.css se copy karo)
 const FROM = { rx: 26, sx: 1, sy: 1, rot: 0, tx: 0, ty: 0 };
@@ -16,7 +16,9 @@ export default function TabletFlatten({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
   const [small, setSmall] = useState(false);
   const [on, setOn] = useState(false);
+  const [bad, setBad] = useState(false);
   const vid = useRef<HTMLVideoElement>(null);
+
   useEffect(() => {
     const m = window.matchMedia("(max-width:1023px)");
     const f = () => setSmall(m.matches);
@@ -36,6 +38,7 @@ export default function TabletFlatten({ children }: { children: ReactNode }) {
   const clipPath = useTransform(p, [0, 1], [CLIP_FROM, CLIP_TO]);
 
   useMotionValueEvent(p, "change", (v) => {
+    if (reduce) return;
     const el = vid.current;
     if (!el || on) return;
     if (v > 0.9) el.play().catch(() => {}); else el.pause();
@@ -48,13 +51,33 @@ export default function TabletFlatten({ children }: { children: ReactNode }) {
       style={animate ? { transform, clipPath, transformOrigin: "50% 0", borderRadius: undefined } : undefined}
     >
       {children}
-      {VIDEO_SRC && (
+      {VIDEO_SRC && !bad && (
         <>
-          <video ref={vid} className="cx-tablet__video" src={VIDEO_SRC} muted loop playsInline
-            preload="metadata" controls={on} />
+          <video
+            ref={vid}
+            className="cx-tablet__video"
+            src={VIDEO_SRC}
+            poster={POSTER}
+            onError={() => setBad(true)}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            controls={on}
+          />
           {!on && (
-            <button className="cx-play" aria-label="Play video"
-              onClick={() => { const v = vid.current!; v.muted = false; v.currentTime = 0; v.play(); setOn(true); }}>
+            <button
+              className="cx-play"
+              aria-label="Play video"
+              onClick={() => {
+                const v = vid.current;
+                if (!v) return;
+                v.muted = false;
+                v.currentTime = 0;
+                v.play().catch(() => {});
+                setOn(true);
+              }}
+            >
               <span />
             </button>
           )}

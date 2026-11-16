@@ -1,6 +1,12 @@
 .cx-tablet{position:relative;overflow:hidden}
-.cx-tablet__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cx-tablet__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
 .cx-play{position:absolute;left:50%;top:50%;width:86px;height:86px;margin:-43px 0 0 -43px;border-radius:50%;
   border:0;background:#f1f0fa;display:grid;place-items:center;cursor:pointer;z-index:3;
-  box-shadow:0 0 0 10px rgba(139,92,246,.18)}
+  box-shadow:0 0 0 10px rgba(139,92,246,.18);
+  transition:transform .2s,box-shadow .2s}
+.cx-play:hover{transform:scale(1.05);box-shadow:0 0 0 14px rgba(139,92,246,.25)}
 .cx-play span{width:0;height:0;border-left:22px solid #6d3df0;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px}
+@media (max-width:640px){
+  .cx-play{width:56px;height:56px;margin:-28px 0 0 -28px;box-shadow:0 0 0 6px rgba(139,92,246,.18)}
+  .cx-play span{border-left-width:16px;border-top-width:10px;border-bottom-width:10px;margin-left:4px}
+}
