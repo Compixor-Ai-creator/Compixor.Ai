@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Stars from "./Stars";
 import TabletFlatten from "./TabletFlatten";
-import HeroFade from "./HeroFade";
+import HeroTitle from "./HeroTitle";
 import "./hero.css";
 
 export default function Hero() {
@@ -18,16 +18,16 @@ export default function Hero() {
         </div>
         <div className="cx-hero__ring" aria-hidden="true" />
 
-        <HeroFade className="cx-hero__inner">
+        <div className="cx-hero__inner">
           <div className="cx-badge cx-rise">
             <Image src="/brand/logo-c.png" alt="" width={22} height={21} />
             All-in-One Private PDF &amp; Image Toolkit <i aria-hidden="true" /> Zero File Storage
           </div>
 
-          <h1 id="cx-hero-title" className="cx-h1 cx-rise" style={{ animationDelay: "80ms" }}>
+          <HeroTitle className="cx-h1 cx-rise">
             <span>Free Private PDF, Word &amp;</span>{" "}
             <span className="cx-grad">Photo Tools That Run in Your Browser</span>
-          </h1>
+          </HeroTitle>
 
           <p className="cx-sub cx-rise" style={{ animationDelay: "160ms" }}>
             Compixor is a private web toolkit to compress, merge, protect, watermark, and convert
@@ -46,7 +46,7 @@ export default function Hero() {
             </Link>
             <Link href="#tools" className="cx-hbtn cx-hbtn--ghost">Get Perfect</Link>
           </div>
-        </HeroFade>
+        </div>
 
         <div className="cx-stage-crop">
           <div className="cx-stage">
