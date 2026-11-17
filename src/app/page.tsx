@@ -491,6 +491,7 @@ export default function HomePage() {
               id="faq-query-input"
               name="q"
               type="search"
+              suppressHydrationWarning
               value={faqSearch}
               onChange={(e) => handleFaqSearch(e.target.value)}
               placeholder="Search FAQ (e.g., safe files, phone support, free tools)..."

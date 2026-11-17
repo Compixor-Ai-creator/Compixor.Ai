@@ -99,8 +99,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label="Share on LinkedIn"
-                    className="social-btn min-w-[44px] min-h-[44px]"
-                    style={{ '--glow': '#0A66C2' } as React.CSSProperties}
+                    className="cx-soc"
                   >
                     <LinkedInIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -109,7 +108,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label="Share on X"
-                    className="social-btn social-btn-x min-w-[44px] min-h-[44px]"
+                    className="cx-soc"
                   >
                     <TwitterXIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -118,8 +117,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label="Share on WhatsApp"
-                    className="social-btn min-w-[44px] min-h-[44px]"
-                    style={{ '--glow': '#25D366' } as React.CSSProperties}
+                    className="cx-soc"
                   >
                     <WhatsAppIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -128,8 +126,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label="Share on Facebook"
-                    className="social-btn min-w-[44px] min-h-[44px]"
-                    style={{ '--glow': '#1877F2' } as React.CSSProperties}
+                    className="cx-soc"
                   >
                     <FacebookIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -145,8 +142,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="View source on GitHub"
-                    className="social-btn min-w-[44px] min-h-[44px]"
-                    style={{ '--glow': '#8b5cf6' } as React.CSSProperties}
+                    className="cx-soc"
                   >
                     <GitHubIcon className="w-[18px] h-[18px]" />
                   </a>
