@@ -31,18 +31,10 @@
    Dark mode toggle karte waqt agar koi transition chal rahi ho to poori page
    200-300ms animate karti hai = freeze. Switch ke waqt transition band.
    ---------------------------------------------------------------------------- */
-html.dark,
-html.dark *,
-html.dark *::before,
-html.dark *::after,
-[data-theme="dark"],
-[data-theme="dark"] *,
-[data-theme="dark"] *::before,
-[data-theme="dark"] *::after,
-html.light,
-html.light *,
-[data-theme="light"],
-[data-theme="light"] * {
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
   transition: none !important;
 }
 

@@ -620,14 +620,18 @@ html.dark .cnav-sub-item,
 
 /* Hero title drop shadow & glow */
 .cx-title{position:relative;isolation:isolate;overflow:visible}
-.cx-title h1{
-  filter:drop-shadow(0 14px 18px rgba(var(--cx-ts),.7))
-         drop-shadow(0 5px 7px rgba(var(--cx-ts2),.5));
+html.light .cx-title h1{
+  filter:drop-shadow(0 6px 10px rgba(91,33,182,.10))
+         drop-shadow(0 1px 2px rgba(15,12,40,.10));
+}
+html.dark .cx-title h1{
+  filter:drop-shadow(0 6px 12px rgba(167,139,250,.16))
+         drop-shadow(0 1px 3px rgba(0,0,0,.35));
 }
 .cx-title__glow{position:absolute;inset:-60px -12% -20px;z-index:-1;pointer-events:none;
   background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(124,58,237,.35),transparent 70%)}
 html.light .cx-title__glow{
-  background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(124,58,237,.12),transparent 70%)}
+  background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(124,58,237,.06),transparent 70%)}
 .cx-hero{overflow-x:clip;overflow-y:visible}
 .cx-hero__inner{overflow:visible}
 
