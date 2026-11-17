@@ -358,6 +358,10 @@ html.light .cx-stars i{
 
 /* Hero title drop shadow & glow */
 .cx-title{position:relative;isolation:isolate;overflow:visible}
+.cx-title h1{
+  filter:drop-shadow(0 14px 18px rgba(var(--cx-ts),.7))
+         drop-shadow(0 5px 7px rgba(var(--cx-ts2),.5));
+}
 .cx-title__glow{position:absolute;inset:-60px -12% -20px;z-index:-1;pointer-events:none;
   background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(124,58,237,.35),transparent 70%)}
 html.light .cx-title__glow{
