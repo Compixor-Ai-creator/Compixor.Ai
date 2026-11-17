@@ -26,11 +26,9 @@ html.dark .cx-vcard{
              0 30px 80px -20px rgba(124,58,237,.45);
 }
 
-div.fixed.bottom-5.left-5,
 div:has(> button[aria-label="Feedback / Request Tool"]) {
   transition: opacity .25s ease;
 }
-html.cx-card-view div.fixed.bottom-5.left-5,
 html.cx-card-view div:has(> button[aria-label="Feedback / Request Tool"]) {
   opacity: 0;
   pointer-events: none;

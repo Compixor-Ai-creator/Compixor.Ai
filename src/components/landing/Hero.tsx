@@ -38,13 +38,13 @@ export default function Hero() {
 
           <div className="cx-ctas cx-rise" style={{ animationDelay: "240ms" }}>
             <Link href="#tools" className="cx-hbtn cx-hbtn--primary">
-              <span>Start Now — Make Your Life Easy</span>
+              <span>Start Free No Signup</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </Link>
-            <Link href="#tools" className="cx-hbtn cx-hbtn--ghost">Get Perfect</Link>
+            <Link href="#what-happens" className="cx-hbtn cx-hbtn--ghost">See How It Works</Link>
           </div>
         </div>
 

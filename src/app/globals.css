@@ -1973,7 +1973,9 @@ video {
 }
 
 @supports (height: 100dvh) {
-  .hero-fullscreen {
+  .hero,
+  .hero-section,
+  [class*="hero"] {
     min-height: 100dvh;
   }
 }

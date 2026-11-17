@@ -24,7 +24,6 @@ import PrivacySteps from '@/components/landing/PrivacySteps';
 import UseCases from '@/components/landing/UseCases';
 import WhyTrustCompixor from '@/components/WhyTrustCompixor';
 import WhatUsersSay from '@/components/WhatUsersSay';
-import ClientSideGuideSection from '@/components/ClientSideGuideSection';
 import { tools } from '@/data/tools';
 import '@/components/landing/sections.css';
 
@@ -466,9 +465,6 @@ export default function HomePage() {
 
       {/* ============ WHAT USERS SAY ============ */}
       <WhatUsersSay />
-
-      {/* ============ CLIENT-SIDE ARCHITECTURE GUIDE ============ */}
-      <ClientSideGuideSection />
 
       {/* ============ FAQ SECTION (Modern Accordion with Live Filter & Direct Sibling Pairs) ============ */}
       <section id="faq-section" className="pt-20 sm:pt-28 pb-10 sm:pb-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">

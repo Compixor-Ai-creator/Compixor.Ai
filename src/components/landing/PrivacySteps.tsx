@@ -11,7 +11,7 @@ const Lock = () => (<Svg><rect x="4" y="11" width="16" height="10" rx="2"/><path
 
 export default function PrivacySteps() {
   return (
-    <section className="cx-sec" style={{ position: 'relative', overflow: 'hidden' }} aria-labelledby="how-h">
+    <section id="what-happens" className="cx-sec scroll-mt-20" style={{ position: 'relative', overflow: 'hidden' }} aria-labelledby="how-h">
       <Stars count={70} />
       <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
         <header className="cx-sec__head">
