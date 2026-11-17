@@ -109,11 +109,11 @@ export default function TabletFlatten({ children }: { children: ReactNode }) {
             }}
           />
           <motion.div className="cx-vshade" style={{ opacity: shade }} aria-hidden="true" />
-          <button type="button" className="cx-play" onClick={toggleSound} aria-pressed={sound}>
-            <i aria-hidden="true" />
-            <span>{sound ? "Mute" : "Watch with sound"}</span>
-          </button>
         </motion.div>
+        <button type="button" className="cx-play" onClick={toggleSound} aria-pressed={sound}>
+          <i aria-hidden="true" />
+          <span>{sound ? "Mute" : "Watch with sound"}</span>
+        </button>
       </div>
     </div>
   );

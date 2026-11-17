@@ -108,18 +108,6 @@ html.dark .cnav-sub-item,
   color: rgb(200,203,224);
 }
 
-/* Footer social icons glow */
-.cx-soc{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;color:inherit}
-.cx-soc svg{width:18px;height:18px;fill:currentColor !important}
-html.dark .cx-soc{
-  color:#c8cbe0;background:rgba(255,255,255,.05);
-  box-shadow:0 0 0 1px rgba(255,255,255,.10),0 0 14px rgba(124,58,237,.45);
-}
-html.light .cx-soc{
-  color:#3b3556;background:#fff;
-  box-shadow:0 0 0 1px rgba(15,12,40,.10),0 0 12px rgba(124,58,237,.30);
-}
-.cx-soc:hover{box-shadow:0 0 0 1px rgba(124,58,237,.6),0 0 20px rgba(124,58,237,.75);transform:translateY(-1px)}
-.cx-soc{transition:box-shadow .2s,transform .2s}
+
 
 

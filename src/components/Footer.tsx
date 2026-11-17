@@ -99,7 +99,8 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label="Share on LinkedIn"
-                    className="cx-soc"
+                    className="social-btn min-w-[44px] min-h-[44px]"
+                    style={{ '--glow': '#0A66C2' } as React.CSSProperties}
                   >
                     <LinkedInIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -108,7 +109,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label="Share on X"
-                    className="cx-soc"
+                    className="social-btn social-btn-x min-w-[44px] min-h-[44px]"
                   >
                     <TwitterXIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -117,7 +118,8 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label="Share on WhatsApp"
-                    className="cx-soc"
+                    className="social-btn min-w-[44px] min-h-[44px]"
+                    style={{ '--glow': '#25D366' } as React.CSSProperties}
                   >
                     <WhatsAppIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -126,7 +128,8 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     aria-label="Share on Facebook"
-                    className="cx-soc"
+                    className="social-btn min-w-[44px] min-h-[44px]"
+                    style={{ '--glow': '#1877F2' } as React.CSSProperties}
                   >
                     <FacebookIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -142,7 +145,8 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="View source on GitHub"
-                    className="cx-soc"
+                    className="social-btn min-w-[44px] min-h-[44px]"
+                    style={{ '--glow': '#8b5cf6' } as React.CSSProperties}
                   >
                     <GitHubIcon className="w-[18px] h-[18px]" />
                   </a>
@@ -172,94 +176,104 @@ export default function Footer() {
             </div>
           ))}
 
-          {/* Company Column */}
-          <div>
-            <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
-              Company
+          {/* Company & Help Column */}
+          <div className="space-y-6">
+            <div>
+              <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
+                Company
+              </div>
+              <ul className="space-y-3">
+                <li>
+                  <Link
+                    href="/about"
+                    className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
+                  >
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/contact"
+                    className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
+                  >
+                    Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
+                  >
+                    {CONTACT_EMAIL}
+                  </a>
+                </li>
+                <li>
+                  <Link
+                    href="/blog"
+                    className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
+                  >
+                    Blogs &amp; Guides
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/privacy"
+                    className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/terms"
+                    className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+              </ul>
             </div>
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/about"
-                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
-                >
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
-                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
-                >
-                  {CONTACT_EMAIL}
-                </a>
-              </li>
-              <li>
-                <Link
-                  href="/blog"
-                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
-                >
-                  Blogs &amp; Guides
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/privacy"
-                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms"
-                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${CONTACT_EMAIL}?subject=Feature%20Request%20-%20Compixor%20AI&body=Describe%20the%20tool%20or%20feature%20you%20would%20like%20to%20see%3A`}
-                  onClick={(e) => {
-                    if (typeof window !== 'undefined') {
-                      e.preventDefault();
-                      window.dispatchEvent(
-                        new CustomEvent('compixor:open-feedback', { detail: { category: 'request' } })
-                      );
-                    }
-                  }}
-                  className="py-1 text-sm text-brand-600 dark:text-brand-400 hover:underline inline-flex items-center gap-1.5 min-h-[36px]"
-                >
-                  <MessageSquarePlus className="w-3.5 h-3.5" />
-                  <span>Request a Tool</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${CONTACT_EMAIL}?subject=General%20Feedback%20-%20Compixor%20AI&body=Your%20feedback%20or%20suggestions%3A`}
-                  onClick={(e) => {
-                    if (typeof window !== 'undefined') {
-                      e.preventDefault();
-                      window.dispatchEvent(
-                        new CustomEvent('compixor:open-feedback', { detail: { category: 'feedback' } })
-                      );
-                    }
-                  }}
-                  className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
-                >
-                  Give Feedback
-                </a>
-              </li>
-            </ul>
+
+            <div>
+              <div className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-4 font-display">
+                Help
+              </div>
+              <ul className="space-y-3">
+                <li>
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}?subject=Feature%20Request%20-%20Compixor%20AI&body=Describe%20the%20tool%20or%20feature%20you%20would%20like%20to%20see%3A`}
+                    onClick={(e) => {
+                      if (typeof window !== 'undefined') {
+                        e.preventDefault();
+                        window.dispatchEvent(
+                          new CustomEvent('compixor:open-feedback', { detail: { category: 'request' } })
+                        );
+                      }
+                    }}
+                    className="py-1 text-sm text-brand-600 dark:text-brand-400 hover:underline inline-flex items-center gap-1.5 min-h-[36px]"
+                  >
+                    <MessageSquarePlus className="w-3.5 h-3.5" />
+                    <span>Request a Tool</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}?subject=General%20Feedback%20-%20Compixor%20AI&body=Your%20feedback%20or%20suggestions%3A`}
+                    onClick={(e) => {
+                      if (typeof window !== 'undefined') {
+                        e.preventDefault();
+                        window.dispatchEvent(
+                          new CustomEvent('compixor:open-feedback', { detail: { category: 'feedback' } })
+                        );
+                      }
+                    }}
+                    className="py-1 text-sm text-[#52525b] dark:text-zinc-400 hover:text-brand-500 dark:hover:text-brand-300 transition-colors inline-flex items-center min-h-[36px]"
+                  >
+                    Give Feedback
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 

@@ -25,14 +25,17 @@ export default function HeroTitle({
   const smooth = useSpring(progress, { stiffness: 100, damping: 30, mass: 0.5 });
 
   const y = useTransform(smooth, [0, 1], [0, 40]);
-  const shadowY = useTransform(smooth, [0, 1], [6, 24]);
-  const shadowBlur = useTransform(smooth, [0, 1], [10, small ? 16 : 28]);
-  const shadowAlpha = useTransform(smooth, [0, 1], [0.35, 0.7]);
-  const filter = useMotionTemplate`drop-shadow(0px ${shadowY}px ${shadowBlur}px rgba(124,58,237,${shadowAlpha}))`;
+  const sy = useTransform(smooth, [0, 1], [6, 22]);
+  const sb = useTransform(smooth, [0, 1], [10, small ? 16 : 28]);
+  const sa = useTransform(smooth, [0, 1], [0.55, 0.9]);
+  const dy = useTransform(smooth, [0, 1], [2, 10]);
+  const db = useTransform(smooth, [0, 1], [4, 10]);
+  const da = useTransform(smooth, [0, 1], [0.4, 0.6]);
+  const filter = useMotionTemplate`drop-shadow(0px ${sy}px ${sb}px rgba(var(--cx-ts),${sa})) drop-shadow(0px ${dy}px ${db}px rgba(var(--cx-ts2),${da}))`;
 
   // reduced-motion: movement band, par static shadow dikhe
   const style = reduce
-    ? { filter: "drop-shadow(0px 12px 18px rgba(124,58,237,.5))" }
+    ? { filter: "drop-shadow(0px 12px 20px rgba(var(--cx-ts),.6)) drop-shadow(0px 4px 6px rgba(var(--cx-ts2),.45))" }
     : { y, filter, willChange: "transform, filter" };
 
   return (

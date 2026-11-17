@@ -19,6 +19,7 @@ import {
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { FaqJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
 import Hero from '@/components/landing/Hero';
+import Reveal from '@/components/landing/Reveal';
 import PrivacySteps from '@/components/landing/PrivacySteps';
 import UseCases from '@/components/landing/UseCases';
 import WhyTrustCompixor from '@/components/WhyTrustCompixor';
@@ -202,81 +203,86 @@ export default function HomePage() {
       {/* ============ ALL TOOLS CATALOG ============ */}
       <section id="tools" className="relative py-10 sm:py-16 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
-            <h2 id="tools-catalog-heading" className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-              Explore All Free Private Tools
-            </h2>
-            <div className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
-              Transform, compress, convert, and protect your files in your browser with zero limits.
+          <Reveal delay={0}>
+            <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+              <h2 id="tools-catalog-heading" className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
+                Explore All Free Private Tools
+              </h2>
+              <div className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
+                Transform, compress, convert, and protect your files in your browser with zero limits.
+              </div>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-            {tools.map((tool) => {
-              const Icon = tool.icon;
-              const isServerTool = tool.processing === 'server' || ['/tools/pdf-to-word', '/tools/img-to-word', '/tools/passport-photo'].includes(tool.href);
-              const badgeText = tool.id === 'passport-photo'
-                ? 'Secure server processing'
-                : isServerTool
-                ? 'Secure HTTPS'
-                : (tool.processing === 'local' ? 'Local RAM' : 'Secure HTTPS');
-              const taglineText = isServerTool ? 'Secure HTTPS · Deleted after processing' : tool.tagline;
-              const descriptionText = isServerTool
-                ? tool.description.replace(' with zero data retention', '').replace('with zero data retention', '')
-                : tool.description;
+          <Reveal delay={0.1}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+              {tools.map((tool) => {
+                const Icon = tool.icon;
+                const isServerTool = tool.processing === 'server' || ['/tools/pdf-to-word', '/tools/img-to-word', '/tools/passport-photo'].includes(tool.href);
+                const badgeText = tool.id === 'passport-photo'
+                  ? 'Secure server processing'
+                  : isServerTool
+                  ? 'Secure HTTPS'
+                  : (tool.processing === 'local' ? 'Local RAM' : 'Secure HTTPS');
+                const taglineText = isServerTool ? 'Secure HTTPS · Deleted after processing' : tool.tagline;
+                const descriptionText = isServerTool
+                  ? tool.description.replace(' with zero data retention', '').replace('with zero data retention', '')
+                  : tool.description;
 
-              return (
-                <div key={tool.id}>
-                  <Link
-                    href={tool.href}
-                    className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full hover:scale-[1.02] hover:border-brand-500/40 hover:shadow-xl transition-all duration-300 relative overflow-hidden"
-                  >
-                    <div
-                      aria-hidden="true"
-                      className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
-                    />
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
-                          <Icon className="w-6 h-6" />
+                return (
+                  <div key={tool.id}>
+                    <Link
+                      href={tool.href}
+                      className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full hover:scale-[1.02] hover:border-brand-500/40 hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+                    >
+                      <div
+                        aria-hidden="true"
+                        className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
+                      />
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                            <Icon className="w-6 h-6" />
+                          </div>
+                          <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md border ${
+                            !isServerTool && tool.processing === 'local'
+                              ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
+                              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
+                          }`}>
+                            {badgeText}
+                          </span>
                         </div>
-                        <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md border ${
-                          !isServerTool && tool.processing === 'local'
-                            ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
-                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
-                        }`}>
-                          {badgeText}
-                        </span>
+                        <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors">
+                          {tool.title}
+                        </h3>
+                        <div className="text-xs text-brand-600 dark:text-brand-400 font-semibold mb-2">
+                          {taglineText}
+                        </div>
+                        <div className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
+                          {descriptionText}
+                        </div>
                       </div>
-                      <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors">
-                        {tool.title}
-                      </h3>
-                      <div className="text-xs text-brand-600 dark:text-brand-400 font-semibold mb-2">
-                        {taglineText}
+                      <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
+                        <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+                          <span>{tool.stats}</span>
+                          <span className="text-brand-500 flex items-center gap-1">
+                            Launch Tool &rarr;
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
-                        {descriptionText}
-                      </div>
-                    </div>
-                    <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
-                      <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-                        <span>{tool.stats}</span>
-                        <span className="text-brand-500 flex items-center gap-1">
-                          Launch Tool &rarr;
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* ============ HOW-TO ARTICLE (Sole article tag on page) ============ */}
       <article id="how-to-article" className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-card p-6 sm:p-10 md:p-12 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl">
+        <Reveal delay={0}>
+          <div className="glass-card p-6 sm:p-10 md:p-12 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl">
           <div className="mb-4">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-brand-500/10 text-brand-700 dark:text-brand-300 border border-brand-500/20">
               <BookOpen className="w-3.5 h-3.5 text-brand-500" />
@@ -308,6 +314,7 @@ export default function HomePage() {
             ))}
           </ol>
         </div>
+        </Reveal>
       </article>
 
       {/* ============ PHASE 3: WHAT HAPPENS TO YOUR FILE ============ */}

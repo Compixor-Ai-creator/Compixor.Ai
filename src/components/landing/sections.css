@@ -48,35 +48,22 @@ html.dark #blog-preview [class*="text-brand-"]{
 @media(max-width:1024px){.cx-foot__grid{grid-template-columns:repeat(3,1fr)}.cx-foot__brand{grid-column:1/-1}}
 @media(max-width:600px){.cx-foot__grid{grid-template-columns:repeat(2,1fr)}}
 
-.cx-soc{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;color:inherit}
-.cx-soc svg{width:18px;height:18px;fill:currentColor !important}
-html.dark .cx-soc{
-  color:#c8cbe0;background:rgba(255,255,255,.05);
-  box-shadow:0 0 0 1px rgba(255,255,255,.10),0 0 14px rgba(124,58,237,.45);
-}
-html.light .cx-soc{
-  color:#3b3556;background:#fff;
-  box-shadow:0 0 0 1px rgba(15,12,40,.10),0 0 12px rgba(124,58,237,.30);
-}
-.cx-soc:hover{box-shadow:0 0 0 1px rgba(124,58,237,.6),0 0 20px rgba(124,58,237,.75);transform:translateY(-1px)}
-.cx-soc{transition:box-shadow .2s,transform .2s}
-
-html.dark footer a,
-html.dark footer li a,
+html.dark footer a:not(.social-btn),
+html.dark footer li a:not(.social-btn),
 html.dark footer .text-zinc-400,
 html.dark footer [class*="text-brand-"]{
   color:rgb(200,203,224) !important;
 }
-html.light footer a,
-html.light footer li a{
+html.light footer a:not(.social-btn),
+html.light footer li a:not(.social-btn){
   color:#3b3556 !important;
 }
-html.light footer a:hover,
-html.light footer li a:hover{
+html.light footer a:not(.social-btn):hover,
+html.light footer li a:not(.social-btn):hover{
   color:#6d28d9 !important;
 }
-html.dark footer a:hover,
-html.dark footer li a:hover{
+html.dark footer a:not(.social-btn):hover,
+html.dark footer li a:not(.social-btn):hover{
   color:#c4b5fd !important;
 }
 .cx-sec::before{ /* the ONE glow of the section */
