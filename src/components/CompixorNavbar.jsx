@@ -194,15 +194,15 @@ export default function CompixorNavbar() {
             /* Phase 2: Dedicated Header Structure */
             .cnav-header {
               position: fixed;
-              top: 12px;
+              top: 16px;
               left: 12px;
               right: 12px;
               max-width: 1280px;
               margin: 0 auto;
               z-index: 10000;
               border-radius: 22px;
-              -webkit-transform: translateZ(0);
-              transform: translateZ(0);
+              -webkit-transform: none;
+              transform: none;
             }
             @media (max-width: 768px) {
               .cnav-header {
@@ -329,7 +329,7 @@ export default function CompixorNavbar() {
               .cnav-backdrop {
                 position: fixed;
                 inset: 0;
-                z-index: 9998;
+                z-index: 55;
                 background: rgba(20, 10, 50, 0.18);
                 backdrop-filter: blur(4px);
                 -webkit-backdrop-filter: blur(4px);
@@ -486,7 +486,7 @@ export default function CompixorNavbar() {
                 </button>
 
                 <div
-                  className={`cnav-drop cglass ${openGroup === g.id ? "is-open" : ""}`}
+                  className={`cnav-drop ${openGroup === g.id ? "is-open" : ""}`}
                   role="menu"
                 >
                   {g.items.map((it) => (
@@ -578,7 +578,7 @@ export default function CompixorNavbar() {
       />
       <nav
         id="cnav-mobile"
-        className={`cnav-panel cglass ${mobileOpen ? "is-open" : ""}`}
+        className={`cnav-panel ${mobileOpen ? "is-open" : ""}`}
         aria-hidden={!mobileOpen}
         inert={!mobileOpen ? "" : undefined}
       >

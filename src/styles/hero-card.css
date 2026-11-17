@@ -510,3 +510,111 @@ html.dark .cxg-tab:hover:not(.is-active),[data-theme="dark"] .cxg-tab:hover:not(
   .cxg-tabs{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
   .cxg-tab{color:#c9c1d8}
 }
+
+/* Glass Navbar via ::before, Solid Dropdown and Mobile Menu */
+.cnav-header {
+  top: 16px;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  isolation: isolate;
+  overflow: visible !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+}
+.cnav-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+html.dark .cnav-header::before,
+.dark .cnav-header::before {
+  background: rgba(30,30,40,.5);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 10px 30px -12px rgba(0,0,0,.5);
+}
+html.light .cnav-header::before,
+html:not(.dark) .cnav-header::before {
+  background: rgba(255,255,255,.66);
+  border: 1px solid rgba(15,12,40,.08);
+  box-shadow: 0 10px 30px -14px rgba(15,12,40,.22);
+}
+
+.cnav-glass {
+  display: none !important;
+}
+
+.cnav-bar {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+html.dark .cnav-bar,
+.dark .cnav-bar {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.cnav-drop,
+.cnav-panel {
+  z-index: 60;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.cnav-drop::after,
+.cnav-panel::after {
+  display: none !important;
+}
+html.dark .cnav-drop,
+html.dark .cnav-panel,
+.dark .cnav-drop,
+.dark .cnav-panel {
+  background: #14121f !important;
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 24px 50px -12px rgba(0,0,0,.65);
+}
+html.light .cnav-drop,
+html.light .cnav-panel,
+html:not(.dark) .cnav-drop,
+html:not(.dark) .cnav-panel {
+  background: #ffffff !important;
+  border: 1px solid rgba(15,12,40,.10);
+  box-shadow: 0 24px 50px -14px rgba(15,12,40,.25);
+}
+
+/* Dropdown item contrast */
+.cnav-drop-title {
+  color: #26223d;
+}
+html.dark .cnav-drop-title,
+.dark .cnav-drop-title {
+  color: #f3f0ff;
+}
+.cnav-drop-desc {
+  color: #26223d;
+  opacity: 0.85;
+}
+html.dark .cnav-drop-desc,
+.dark .cnav-drop-desc {
+  color: rgb(200,203,224);
+  opacity: 0.95;
+}
+
+/* Mobile accordion contrast */
+.cnav-sub-item {
+  color: #26223d;
+}
+html.dark .cnav-sub-item,
+.dark .cnav-sub-item {
+  color: rgb(200,203,224);
+}
+
