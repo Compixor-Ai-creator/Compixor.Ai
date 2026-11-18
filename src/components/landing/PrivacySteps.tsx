@@ -15,36 +15,34 @@ export default function PrivacySteps() {
       <Stars count={70} />
       <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
         <header className="cx-sec__head">
-          <p className="cx-eyebrow">How it works</p>
+          <p className="cx-eyebrow">Data Architecture</p>
           <h2 id="how-h" className="cx-h2">What happens to <em>your file</em></h2>
         </header>
         <ol className="st-grid">
           <li className="st">
-            <span className="st-label"><b>01</b>/ Choose</span>
-            <h3>Pick a file</h3>
-            <p>Select the file you want to work on from your device.</p>
+            <span className="st-label"><b>01</b>/ Ingest</span>
+            <h3>Loaded in RAM</h3>
+            <p>Your document is read directly into your browser memory (RAM) through standard web APIs without outbound transmission.</p>
           </li>
           <li className="st st--main">
             <span className="st-label"><b>02</b>/ Process</span>
             <h3>Processed on your device, or securely</h3>
             <div className="st-paths">
               <div className="st-path">
-                <span className="cx-chip cx-chip--device"><Cpu />On-device</span>
-                <p>9 tools do the work inside your browser, on your own device.</p>
+                <span className="cx-chip cx-chip--device"><Cpu />On-device (9 tools)</span>
+                <p>9 client-side tools execute transforms 100% inside your browser WebAssembly sandbox.</p>
               </div>
               <div className="st-path">
-                <span className="cx-chip cx-chip--server"><Lock />Secure server processing</span>
-                <p>PDF to Word, Image to Word and Passport Photo use our server: the file travels
-                   over encrypted HTTPS, is not stored, and is deleted right after processing
-                   once the result is returned.</p>
+                <span className="cx-chip cx-chip--server"><Lock />Secure HTTPS (3 tools)</span>
+                <p>PDF to Word, Image to Word and Passport Photo process over encrypted HTTPS and are permanently deleted right after return.</p>
               </div>
             </div>
             <Link href="/privacy" className="st-link">Read our Privacy Policy →</Link>
           </li>
           <li className="st">
-            <span className="st-label"><b>03</b>/ Download</span>
-            <h3>Download the result</h3>
-            <p>Save the finished file straight to your device.</p>
+            <span className="st-label"><b>03</b>/ Export</span>
+            <h3>Direct download</h3>
+            <p>The transformed file buffer is written directly to your device disk with zero server retention or copies.</p>
           </li>
         </ol>
       </div>

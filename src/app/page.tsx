@@ -30,23 +30,23 @@ import '@/components/landing/sections.css';
 const trustSignals = [
   {
     icon: Lock,
-    title: 'Privacy-First Architecture',
-    description: '9 tools run locally on your device using browser memory with zero uploads. Specialized utilities process over HTTPS with zero permanent file storage.',
+    title: 'Client-Side Execution',
+    description: '9 tools process 100% inside your local browser memory (RAM) with 0 byte server uploads.',
   },
   {
     icon: Zap,
-    title: 'Instant Execution',
-    description: 'No network queue or server waiting times. Transforms complete in milliseconds right on your device.',
+    title: 'Instant Millisecond Speed',
+    description: 'Transforms run directly on your device CPU cores without network latency or server queue delays.',
   },
   {
     icon: Shield,
-    title: 'Privacy By Architecture',
-    description: 'Maximum privacy across all utilities with zero tracking, zero permanent storage, and zero data leakage.',
+    title: 'Zero Tracking or Logins',
+    description: 'Open any tool and process files immediately with zero sign-ups, no cookies, and no email requests.',
   },
   {
     icon: MonitorSmartphone,
-    title: 'Cross-Platform',
-    description: 'Runs flawlessly on desktop browsers, tablets, iOS Safari, Android Chrome, and Linux systems.',
+    title: 'Universal Device Support',
+    description: 'Runs consistently across modern desktop browsers, tablets, iOS Safari, Android Chrome, and Linux.',
   },
 ];
 
@@ -232,7 +232,7 @@ export default function HomePage() {
                   <div key={tool.id}>
                     <Link
                       href={tool.href}
-                      className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full hover:scale-[1.02] hover:border-brand-500/40 hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+                      className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full hover:-translate-y-1 hover:border-brand-500/50 hover:shadow-xl active:scale-[0.99] transition-all duration-200 relative overflow-hidden"
                     >
                       <div
                         aria-hidden="true"
@@ -334,6 +334,9 @@ export default function HomePage() {
           </h2>
           <div className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
             Compare privacy, processing speed, paywalls, and device support across modern document platforms.
+          </div>
+          <div className="text-xs text-brand-600 dark:text-brand-400 mt-2 font-medium sm:hidden">
+            Swipe horizontally to compare columns →
           </div>
         </div>
 
@@ -497,17 +500,18 @@ export default function HomePage() {
               suppressHydrationWarning
               value={faqSearch}
               onChange={(e) => handleFaqSearch(e.target.value)}
-              placeholder="Search FAQ (e.g., safe files, phone support, free tools)..."
+              placeholder="Search questions (e.g., safe files, free tools)..."
               // @ts-expect-error declarative WebMCP attribute
               toolparamdescription="Search keyword"
               data-tool-param-description="Search keyword"
-              className="w-full pl-4 pr-32 py-3 rounded-2xl bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/80 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-500 backdrop-blur-md shadow-sm transition"
+              className="w-full pl-4 pr-24 sm:pr-32 py-3 rounded-2xl bg-white/70 dark:bg-zinc-800/70 border border-zinc-200/80 dark:border-zinc-700/80 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-500 backdrop-blur-md shadow-sm transition"
             />
             <button
               type="submit"
-              className="absolute right-1.5 top-1.5 bottom-1.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+              className="absolute right-1.5 top-1.5 bottom-1.5 px-3 sm:px-4 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-[0.98] text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
             >
-              <span>Search FAQ</span>
+              <span className="hidden sm:inline">Search FAQ</span>
+              <span className="sm:hidden">Search</span>
             </button>
           </form>
 
@@ -591,13 +595,12 @@ export default function HomePage() {
       <section id="cta-section" className="py-10 sm:py-16 relative overflow-hidden">
         <div
           aria-hidden="true"
-          className="hidden md:flex pointer-events-none absolute -z-10 inset-0 items-center justify-center"
+          className="pointer-events-none absolute -z-10 inset-0 flex items-center justify-center"
         >
           <div
-            className="w-[600px] h-[300px] rounded-full opacity-20 dark:opacity-15"
+            className="w-full max-w-2xl h-64 rounded-full opacity-30 dark:opacity-20"
             style={{
-              background: 'radial-gradient(ellipse at center, #7c3aed 0%, #06b6d4 50%, transparent 72%)',
-              filter: 'blur(80px)',
+              background: 'radial-gradient(ellipse at center, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.05) 50%, transparent 70%)',
             }}
           />
         </div>
@@ -605,22 +608,22 @@ export default function HomePage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             className="glow-border p-6 sm:p-10 md:p-14 rounded-3xl"
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
             <h2 id="cta-heading" className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-3">
-              Ready to Transform Your Workflow?
+              Edit Your Documents in Browser Memory
             </h2>
             <div className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-lg mx-auto">
-              Select a tool and start processing files in seconds. No credit card or registration needed.
+              All 12 tools are free to use without accounts, paywalls, or cloud storage risks.
             </div>
             <a
               href="#tools"
-              className="btn-primary inline-flex items-center justify-center gap-2 text-sm sm:text-base px-6 sm:px-8 py-3.5 font-bold cursor-pointer w-full sm:w-auto min-h-[44px]"
+              className="btn-primary inline-flex items-center justify-center gap-2 text-sm sm:text-base px-6 sm:px-8 py-3.5 font-bold cursor-pointer w-full sm:w-auto min-h-[44px] hover:shadow-lg active:scale-[0.98] transition-all"
             >
-              <span>Start Now — Make Your Life Easy</span>
+              <span>Explore 12 Private Tools</span>
               <ArrowRight className="w-5 h-5 shrink-0" />
             </a>
           </motion.div>
