@@ -168,12 +168,19 @@ const homeFaqs = [
   },
 ];
 
+type ToolCategory = 'All' | 'PDF' | 'Word' | 'Media';
+
 export default function HomePage() {
   const [faqSearch, setFaqSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState<ToolCategory>('All');
 
   const handleFaqSearch = (query: string) => {
     setFaqSearch(query);
   };
+
+  const filteredTools = activeCategory === 'All'
+    ? tools
+    : tools.filter((tool) => tool.category === activeCategory);
 
   const filteredFaqs = faqSearch.trim()
     ? homeFaqs.filter((faq) => {
@@ -203,7 +210,7 @@ export default function HomePage() {
       <section id="tools" className="relative py-10 sm:py-16 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal delay={0}>
-            <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+            <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
               <h2 id="tools-catalog-heading" className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
                 Explore All Free Private Tools
               </h2>
@@ -211,11 +218,62 @@ export default function HomePage() {
                 Transform, compress, convert, and protect your files in your browser with zero limits.
               </div>
             </div>
+
+            {/* Trust Metric Strip */}
+            <div className="mb-8 max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
+              <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
+                <div className="text-xl sm:text-2xl font-black font-display text-zinc-900 dark:text-white">12</div>
+                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Free Utilities</div>
+              </div>
+              <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
+                <div className="text-xl sm:text-2xl font-black font-display text-emerald-600 dark:text-emerald-400">100%</div>
+                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">In-Browser RAM</div>
+              </div>
+              <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
+                <div className="text-xl sm:text-2xl font-black font-display text-brand-600 dark:text-brand-400">0 Byte</div>
+                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Server Uploads</div>
+              </div>
+              <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
+                <div className="text-xl sm:text-2xl font-black font-display text-zinc-900 dark:text-white">0</div>
+                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Paywalls &amp; Ads</div>
+              </div>
+            </div>
+
+            {/* Category Filter Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-8 sm:mb-10">
+              {(['All', 'PDF', 'Word', 'Media'] as const).map((cat) => {
+                const isSelected = activeCategory === cat;
+                const count = cat === 'All' ? tools.length : tools.filter((t) => t.category === cat).length;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 active:scale-[0.98] ${
+                      isSelected
+                        ? 'bg-brand-600 text-white shadow-md shadow-brand-500/25 scale-[1.02]'
+                        : 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70'
+                    }`}
+                  >
+                    <span>{cat === 'All' ? 'All Tools' : `${cat} Tools`}</span>
+                    <span
+                      className={`text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
+                        isSelected
+                          ? 'bg-white/20 text-white'
+                          : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </Reveal>
 
           <Reveal delay={0.1} itemSelector=".glass-card">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              {tools.map((tool) => {
+              {filteredTools.map((tool) => {
                 const Icon = tool.icon;
                 const isServerTool = tool.processing === 'server' || ['/tools/pdf-to-word', '/tools/img-to-word', '/tools/passport-photo'].includes(tool.href);
                 const badgeText = tool.id === 'passport-photo'
@@ -264,8 +322,9 @@ export default function HomePage() {
                       <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
                         <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
                           <span>{tool.stats}</span>
-                          <span className="text-brand-500 flex items-center gap-1">
-                            Launch Tool &rarr;
+                          <span className="text-brand-500 flex items-center gap-1 group-hover:gap-1.5 transition-all duration-200 font-semibold">
+                            <span>Launch Tool</span>
+                            <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
                           </span>
                         </div>
                       </div>
