@@ -972,9 +972,12 @@ export default function PdfWatermarkClient({
     toast.info('Document reset to original state.');
   };
 
-  // Canvas Mouse Events for Box Drawing
-  const handleCanvasMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  // Canvas Pointer Events for Box Drawing (Touch & Mouse Universal)
+  const handleCanvasPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (manualToolMode !== 'draw-box' || !canvasRef.current) return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {}
     const rect = canvasRef.current.getBoundingClientRect();
     const scaleX = canvasRef.current.width / rect.width;
     const scaleY = canvasRef.current.height / rect.height;
@@ -986,7 +989,7 @@ export default function PdfWatermarkClient({
     setSelectionBox({ startX: x, startY: y, endX: x, endY: y });
   };
 
-  const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleCanvasPointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!isDrawing || manualToolMode !== 'draw-box' || !canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const scaleX = canvasRef.current.width / rect.width;
@@ -998,7 +1001,12 @@ export default function PdfWatermarkClient({
     setSelectionBox((prev) => (prev ? { ...prev, endX: x, endY: y } : null));
   };
 
-  const handleCanvasMouseUp = () => {
+  const handleCanvasPointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    try {
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+    } catch {}
     setIsDrawing(false);
   };
 
@@ -1496,10 +1504,14 @@ export default function PdfWatermarkClient({
                 >
                   <canvas
                     ref={canvasRef}
-                    onMouseDown={handleCanvasMouseDown}
-                    onMouseMove={handleCanvasMouseMove}
-                    onMouseUp={handleCanvasMouseUp}
-                    style={getCanvasStyle()}
+                    onPointerDown={handleCanvasPointerDown}
+                    onPointerMove={handleCanvasPointerMove}
+                    onPointerUp={handleCanvasPointerUp}
+                    onPointerCancel={handleCanvasPointerUp}
+                    style={{
+                      ...getCanvasStyle(),
+                      touchAction: manualToolMode === 'draw-box' ? 'none' : 'auto',
+                    }}
                     className={`block ${
                       manualToolMode === 'draw-box' ? 'cursor-crosshair' : 'cursor-default'
                     }`}

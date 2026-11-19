@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PDFDocument, StandardFonts, rgb, PDFName, PDFArray, PDFRef, PDFStream, PDFRawStream } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb, PDFName, PDFArray, PDFRef, PDFStream, PDFRawStream, degrees } from 'pdf-lib';
 import {
   addTextWatermark,
   addImageWatermark,
@@ -11,6 +11,7 @@ import {
   hexToRgb,
   parsePageRange,
   calculateTextPositions,
+  RedactionBox,
 } from './pdfWatermarkEngine';
 
 // Helper to create a base PDF with original text and a table
@@ -336,5 +337,380 @@ test('7. Engine A: stripDigitalWatermarks removes transparent overlay Image XObj
   const cleanedDoc = await PDFDocument.load(cleanedPdf);
   assert.equal(cleanedDoc.getPageCount(), 1);
 });
+
+test('8. Mobile Fix (a & e): Rotated 90° and 270° PDF page handling with combined single cm matrix', async () => {
+  const doc = await PDFDocument.create();
+  const page90 = doc.addPage([600, 800]);
+  page90.setRotation(degrees(90));
+
+  const page270 = doc.addPage([600, 800]);
+  page270.setRotation(degrees(270));
+
+  const pdfBytes = await doc.save();
+
+  const watermarkedBytes = await addTextWatermark(pdfBytes, {
+    text: 'ROTATED TEST',
+    fontFamily: 'Helvetica',
+    fontStyle: 'bold',
+    fontSize: 36,
+    color: '#000000',
+    opacity: 50,
+    rotation: 0,
+    layer: 'foreground',
+    layout: 'center-single',
+    pageRange: 'all',
+  });
+
+  const resDoc = await PDFDocument.load(watermarkedBytes);
+  assert.equal(resDoc.getPageCount(), 2);
+
+  // Check page 90 content stream has single combined cm matrix
+  const p1 = resDoc.getPage(0);
+  const contents1 = p1.node.get(PDFName.of('Contents'));
+  assert.ok(contents1 instanceof PDFArray);
+  // Last stream is our watermark stream
+  const lastRef = contents1.get(contents1.size() - 1);
+  const streamObj = resDoc.context.lookup(lastRef);
+  const textStr = new TextDecoder().decode((streamObj as any).contents);
+  // Verify it contains a single cm inside the placement
+  const cmMatches = textStr.match(/cm\n/g);
+  assert.equal(cmMatches?.length, 1, 'Should have exactly 1 combined cm matrix per watermark placement');
+  assert.ok(textStr.includes('BT\n'), 'Should contain Begin Text');
+  assert.ok(textStr.includes('ET\n'), 'Should contain End Text');
+});
+
+test('9. Mobile Fix (b): Scanned/full-page-image detection forces foreground layer', async () => {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([600, 800]);
+  const img = await doc.embedPng(TEST_PNG_BYTES);
+  page.drawImage(img, { x: 0, y: 0, width: 600, height: 800 });
+  const scannedPdf = await doc.save();
+
+  // User requests 'background' layer, but document is scanned
+  const watermarkedBytes = await addTextWatermark(scannedPdf, {
+    text: 'SCANNED OVERLAY',
+    fontFamily: 'Helvetica',
+    fontStyle: 'bold',
+    fontSize: 40,
+    color: '#ef4444',
+    opacity: 30,
+    rotation: -45,
+    layer: 'background', // should be forced to foreground
+    layout: 'center-single',
+    pageRange: 'all',
+  });
+
+  const resDoc = await PDFDocument.load(watermarkedBytes);
+  const p = resDoc.getPage(0);
+  const contents = p.node.get(PDFName.of('Contents')) as PDFArray;
+  assert.ok(contents.size() >= 2, 'Should wrap and place watermark on top of scanned layer');
+  // Watermark is at the end of the content stream array (foreground)
+  const lastRef = contents.get(contents.size() - 1);
+  const streamObj = resDoc.context.lookup(lastRef);
+  const textStr = new TextDecoder().decode((streamObj as any).contents);
+  assert.ok(textStr.includes('CompixorWatermark'), 'Watermark stream is in foreground on top of scan');
+});
+
+test('10. Mobile Fix (a): Non-zero MediaBox/CropBox origin handling', async () => {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage();
+  page.setMediaBox(50, 100, 500, 700); // non-zero origin: x=50, y=100
+  const pdfBytes = await doc.save();
+
+  const watermarkedBytes = await addTextWatermark(pdfBytes, {
+    text: 'OFFSET BOX',
+    fontFamily: 'Helvetica',
+    fontStyle: 'regular',
+    fontSize: 32,
+    color: '#2563eb',
+    opacity: 50,
+    rotation: 0,
+    layer: 'foreground',
+    layout: 'center-single',
+    pageRange: 'all',
+  });
+
+  const resDoc = await PDFDocument.load(watermarkedBytes);
+  const p = resDoc.getPage(0);
+  const contents = p.node.get(PDFName.of('Contents')) as PDFArray;
+  const lastRef = contents.get(contents.size() - 1);
+  const streamObj = resDoc.context.lookup(lastRef);
+  const textStr = new TextDecoder().decode((streamObj as any).contents);
+
+  // Verify translation includes the 50pt X offset and 100pt Y offset
+  const cmLine = textStr.match(/-?[\d.]+ -?[\d.]+ -?[\d.]+ -?[\d.]+ ([\d.]+) ([\d.]+) cm/);
+  assert.ok(cmLine, 'Should find cm matrix with offsets');
+  const finalX = parseFloat(cmLine[1]);
+  const finalY = parseFloat(cmLine[2]);
+  assert.ok(finalX >= 50, `Final X (${finalX}) should be >= MediaBox offset 50`);
+  assert.ok(finalY >= 100, `Final Y (${finalY}) should be >= MediaBox offset 100`);
+});
+
+test('11. Mobile Fix (c): Smart quotes & Unicode punctuation encoded as WinAnsi hex bytes without mojibake', async () => {
+  const { bytes: samplePdf } = await createSamplePdf();
+
+  // Text typed on mobile with smart quotes, en-dash, and non-breaking space
+  const mobileInputText = '“Compixor’s Draft” — 100% Verified\u00A0Doc';
+
+  const watermarkedBytes = await addTextWatermark(samplePdf, {
+    text: mobileInputText,
+    fontFamily: 'Helvetica',
+    fontStyle: 'bold',
+    fontSize: 28,
+    color: '#10b981',
+    opacity: 50,
+    rotation: -45,
+    layer: 'foreground',
+    layout: 'center-single',
+    pageRange: 'all',
+  });
+
+  const resDoc = await PDFDocument.load(watermarkedBytes);
+  const p = resDoc.getPage(0);
+  const contents = p.node.get(PDFName.of('Contents')) as PDFArray;
+  const lastRef = contents.get(contents.size() - 1);
+  const streamObj = resDoc.context.lookup(lastRef);
+  const textStr = new TextDecoder().decode((streamObj as any).contents);
+
+  // Check for hex string format: <HEX...> Tj
+  assert.ok(/<[0-9A-F]+> Tj/.test(textStr), 'Text should be encoded as WinAnsi hex literal <...> Tj');
+  // Verify it does NOT contain raw unencoded multi-byte UTF-8 bytes like â€™
+  assert.ok(!textStr.includes('â€™'), 'Should not contain mojibake');
+});
+
+test('12. Follow-up 1: Non-WinAnsi text ("اردو test", emoji, mixed) must not throw', async () => {
+  const { bytes: samplePdf } = await createSamplePdf();
+
+  // Test 1: Urdu text
+  await assert.doesNotReject(async () => {
+    await addTextWatermark(samplePdf, {
+      text: 'اردو test',
+      fontFamily: 'Helvetica',
+      fontStyle: 'bold',
+      fontSize: 24,
+      color: '#dc2626',
+      opacity: 40,
+      rotation: 0,
+      layer: 'foreground',
+      layout: 'center-single',
+      pageRange: 'all',
+    });
+  }, 'Should not throw on Urdu characters');
+
+  // Test 2: Emoji
+  await assert.doesNotReject(async () => {
+    await addTextWatermark(samplePdf, {
+      text: 'CONFIDENTIAL 🔥🚀',
+      fontFamily: 'Helvetica',
+      fontStyle: 'bold',
+      fontSize: 24,
+      color: '#dc2626',
+      opacity: 40,
+      rotation: 0,
+      layer: 'foreground',
+      layout: 'center-single',
+      pageRange: 'all',
+    });
+  }, 'Should not throw on emojis');
+
+  // Test 3: Mixed string
+  const mixedResult = await addTextWatermark(samplePdf, {
+    text: 'Report: اردو 2026 🔥!',
+    fontFamily: 'Helvetica',
+    fontStyle: 'bold',
+    fontSize: 24,
+    color: '#dc2626',
+    opacity: 40,
+    rotation: 0,
+    layer: 'foreground',
+    layout: 'center-single',
+    pageRange: 'all',
+  });
+
+  const resDoc = await PDFDocument.load(mixedResult);
+  assert.equal(resDoc.getPageCount(), 1);
+});
+
+test('13. Follow-up 2: Small logo keeps background layer vs full-page scan forced to foreground', async () => {
+  // Case A: Small logo (50x50 on 600x800 page = ~0.5% coverage < 85%)
+  const docLogo = await PDFDocument.create();
+  const pageLogo = docLogo.addPage([600, 800]);
+  const imgLogo = await docLogo.embedPng(TEST_PNG_BYTES);
+  pageLogo.drawImage(imgLogo, { x: 50, y: 700, width: 50, height: 50 });
+  const pdfLogoBytes = await docLogo.save();
+
+  const watermarkLogoResult = await addTextWatermark(pdfLogoBytes, {
+    text: 'BACKGROUND WATERMARK',
+    fontFamily: 'Helvetica',
+    fontStyle: 'bold',
+    fontSize: 30,
+    color: '#000000',
+    opacity: 30,
+    rotation: -45,
+    layer: 'background',
+    layout: 'center-single',
+    pageRange: 'all',
+  });
+
+  const docLogoRes = await PDFDocument.load(watermarkLogoResult);
+  const pLogo = docLogoRes.getPage(0);
+  const contentsLogo = pLogo.node.get(PDFName.of('Contents')) as PDFArray;
+  // Background layer should be at index 0 (not forced to foreground)
+  const firstRef = contentsLogo.get(0);
+  const firstStream = docLogoRes.context.lookup(firstRef);
+  const firstStreamText = new TextDecoder().decode((firstStream as any).contents);
+  assert.ok(
+    firstStreamText.includes('CompixorWatermark'),
+    'Small logo page must KEEP watermark in background layer (index 0)'
+  );
+
+  // Case B: Full-page scan (600x800 on 600x800 page = 100% coverage >= 85%)
+  const docScan = await PDFDocument.create();
+  const pageScan = docScan.addPage([600, 800]);
+  const imgScan = await docScan.embedPng(TEST_PNG_BYTES);
+  pageScan.drawImage(imgScan, { x: 0, y: 0, width: 600, height: 800 });
+  const pdfScanBytes = await docScan.save();
+
+  const watermarkScanResult = await addTextWatermark(pdfScanBytes, {
+    text: 'SCANNED OVERLAY',
+    fontFamily: 'Helvetica',
+    fontStyle: 'bold',
+    fontSize: 30,
+    color: '#000000',
+    opacity: 30,
+    rotation: -45,
+    layer: 'background',
+    layout: 'center-single',
+    pageRange: 'all',
+  });
+
+  const docScanRes = await PDFDocument.load(watermarkScanResult);
+  const pScan = docScanRes.getPage(0);
+  const contentsScan = pScan.node.get(PDFName.of('Contents')) as PDFArray;
+  // Watermark must be forced to foreground (at end of contents array)
+  const lastRef = contentsScan.get(contentsScan.size() - 1);
+  const lastStream = docScanRes.context.lookup(lastRef);
+  const lastStreamText = new TextDecoder().decode((lastStream as any).contents);
+  assert.ok(
+    lastStreamText.includes('CompixorWatermark'),
+    'Full-page scan must be FORCED to foreground layer'
+  );
+});
+
+test('14. Follow-up 3: Redact box on 90° rotated page covers known text exactly', async () => {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([600, 800]);
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+
+  // Unrotated text at (x: 100, y: 700, width: 200, height: 30)
+  page.drawText('CONFIDENTIAL TEXT', {
+    x: 100,
+    y: 700,
+    size: 20,
+    font,
+  });
+
+  // Rotate page 90 degrees clockwise
+  page.setRotation(degrees(90));
+  const pdfBytes = await doc.save();
+
+  // In the rotated viewer (width=800, height=600):
+  // The unrotated point (100, 700) rotates to:
+  // visual X = y = 700
+  // visual Y = 600 - (100 + 200) = 300
+  // visual W = 30, visual H = 200
+  const visualBox: RedactionBox = {
+    x: 700,
+    y: 300,
+    width: 30,
+    height: 200,
+    color: '#ffffff',
+  };
+
+  const redactedPdfBytes = await redactAreaOnPage(pdfBytes, 0, visualBox);
+  const resDoc = await PDFDocument.load(redactedPdfBytes);
+  const p = resDoc.getPage(0);
+  const contents = p.node.get(PDFName.of('Contents')) as PDFArray;
+  const lastRef = contents.get(contents.size() - 1);
+  const redactStream = resDoc.context.lookup(lastRef);
+  const redactText = new TextDecoder().decode((redactStream as any).contents);
+
+  // Verify the rectangle in PDF coordinates matches the unrotated text bounding box: 100 700 200 30 re
+  assert.ok(
+    redactText.includes('100.00 700.00 200.00 30.00 re'),
+    `Expected redaction rectangle to cover 100 700 200 30, got: ${redactText}`
+  );
+});
+
+test('15. 180° Rotation Test: Text watermark + Redact box handling', async () => {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([600, 800]);
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+
+  // Unrotated text at (x: 100, y: 700, width: 200, height: 30)
+  page.drawText('CONFIDENTIAL 180 TEXT', {
+    x: 100,
+    y: 700,
+    size: 20,
+    font,
+  });
+
+  page.setRotation(degrees(180));
+  const pdfBytes = await doc.save();
+
+  // 1. Text Watermark test on 180° page
+  const watermarkedBytes = await addTextWatermark(pdfBytes, {
+    text: 'WATERMARK 180',
+    fontFamily: 'Helvetica',
+    fontStyle: 'bold',
+    fontSize: 32,
+    color: '#000000',
+    opacity: 50,
+    rotation: 0,
+    layer: 'foreground',
+    layout: 'center-single',
+    pageRange: 'all',
+  });
+
+  const wmDoc = await PDFDocument.load(watermarkedBytes);
+  const wmPage = wmDoc.getPage(0);
+  const wmContents = wmPage.node.get(PDFName.of('Contents')) as PDFArray;
+  const wmLastRef = wmContents.get(wmContents.size() - 1);
+  const wmStreamObj = wmDoc.context.lookup(wmLastRef);
+  const wmTextStr = new TextDecoder().decode((wmStreamObj as any).contents);
+  assert.ok(wmTextStr.includes('BT\n') && wmTextStr.includes('ET\n'));
+  const cmCount = wmTextStr.match(/cm\n/g)?.length;
+  assert.equal(cmCount, 1, 'Should have exactly 1 combined cm matrix for 180° placement');
+
+  // 2. Redact box test on 180° rotated page
+  // In 180° viewer (width=600, height=800):
+  // visual X = 600 - (100 + 200) = 300
+  // visual Y = 800 - (700 + 30) = 70
+  // visual W = 200, visual H = 30
+  const visualBox: RedactionBox = {
+    x: 300,
+    y: 70,
+    width: 200,
+    height: 30,
+    color: '#ffffff',
+  };
+
+  const redactedPdfBytes = await redactAreaOnPage(pdfBytes, 0, visualBox);
+  const redDoc = await PDFDocument.load(redactedPdfBytes);
+  const redPage = redDoc.getPage(0);
+  const redContents = redPage.node.get(PDFName.of('Contents')) as PDFArray;
+  const redLastRef = redContents.get(redContents.size() - 1);
+  const redStream = redDoc.context.lookup(redLastRef);
+  const redText = new TextDecoder().decode((redStream as any).contents);
+
+  // Expected unrotated rectangle in PDF coordinates: 100 700 200 30 re
+  assert.ok(
+    redText.includes('100.00 700.00 200.00 30.00 re'),
+    `Expected 180° redaction rectangle to cover 100 700 200 30, got: ${redText}`
+  );
+});
+
+
+
 
 

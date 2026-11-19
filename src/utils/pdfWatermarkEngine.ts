@@ -1,5 +1,6 @@
 import {
   PDFDocument,
+  PDFPage,
   PDFName,
   PDFArray,
   PDFRef,
@@ -141,6 +142,388 @@ export function parsePageRange(
 
   const result = Array.from(indices).sort((a, b) => a - b);
   return result.length > 0 ? result : [0];
+}
+
+export interface EffectivePageBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number; // 0, 90, 180, 270
+  visualWidth: number;
+  visualHeight: number;
+}
+
+/**
+ * Extract normalized page boundary (CropBox or MediaBox) and rotation.
+ * In PDF, standard viewers rotate pages by page.getRotation().angle (0, 90, 180, 270 deg clockwise).
+ */
+export function getEffectivePageBox(page: PDFPage): EffectivePageBox {
+  const box = page.getCropBox() || page.getMediaBox() || { x: 0, y: 0, width: 595.28, height: 841.89 };
+  const rawRot = (page.getRotation()?.angle ?? 0) % 360;
+  const rotation = (rawRot + 360) % 360;
+
+  const isSideways = rotation === 90 || rotation === 270;
+  const visualWidth = isSideways ? box.height : box.width;
+  const visualHeight = isSideways ? box.width : box.height;
+
+  return {
+    x: box.x,
+    y: box.y,
+    width: box.width,
+    height: box.height,
+    rotation,
+    visualWidth,
+    visualHeight,
+  };
+}
+
+/**
+ * Transform a visual coordinate (vx, vy in visual points from bottom-left of viewer screen)
+ * into unrotated PDF content stream coordinate system (accounting for box.x, box.y, box.width, box.height, and rotation).
+ */
+export function transformVisualPointToPdf(
+  box: EffectivePageBox,
+  vx: number,
+  vy: number
+): { px: number; py: number } {
+  switch (box.rotation) {
+    case 90:
+      return {
+        px: box.x + box.width - vy,
+        py: box.y + vx,
+      };
+    case 180:
+      return {
+        px: box.x + box.width - vx,
+        py: box.y + box.height - vy,
+      };
+    case 270:
+      return {
+        px: box.x + vy,
+        py: box.y + box.height - vx,
+      };
+    case 0:
+    default:
+      return {
+        px: box.x + vx,
+        py: box.y + vy,
+      };
+  }
+}
+
+/**
+ * Convert any string to a WinAnsi-safe string where every character
+ * is guaranteed to be encodable by StandardFonts (replacing unsupported chars with '?').
+ * Also normalizes surrogate pairs (emojis) to a single '?' so string length and width calculation match.
+ */
+export function toWinAnsiSafeString(text: string): string {
+  // First normalize common mobile keyboard typography
+  const normalized = text
+    .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+    .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+    .replace(/[\u2013\u2014]/g, '-')
+    .replace(/\u2026/g, '...')
+    .replace(/[\u00A0\u2000-\u200B]/g, ' ');
+
+  // Replace emojis / astral plane characters (surrogate pairs) with '?'
+  const noAstral = normalized.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '?');
+
+  let safe = '';
+  for (let i = 0; i < noAstral.length; i++) {
+    const code = noAstral.charCodeAt(i);
+    if ((code >= 32 && code <= 126) || (code >= 160 && code <= 255)) {
+      safe += noAstral[i];
+    } else if (
+      code === 8364 || // €
+      code === 8218 || // ‚
+      code === 402  || // ƒ
+      code === 8222 || // „
+      code === 8224 || // †
+      code === 8225 || // ‡
+      code === 710  || // ˆ
+      code === 8240 || // ‰
+      code === 352  || // Š
+      code === 8249 || // ‹
+      code === 338  || // Œ
+      code === 381  || // Ž
+      code === 8216 || // ‘
+      code === 8217 || // ’
+      code === 8220 || // “
+      code === 8221 || // ”
+      code === 8226 || // •
+      code === 8211 || // –
+      code === 8212 || // —
+      code === 732  || // ˜
+      code === 8482 || // ™
+      code === 353  || // š
+      code === 8250 || // ›
+      code === 339  || // œ
+      code === 382  || // ž
+      code === 376     // Ÿ
+    ) {
+      safe += noAstral[i];
+    } else {
+      safe += '?';
+    }
+  }
+  return safe;
+}
+
+/**
+ * Encode watermark text into a WinAnsi PDF hex string (<HEX> Tj).
+ * Standard PDF Type-1 fonts use WinAnsiEncoding (Windows-1252).
+ */
+export function encodeWinAnsiHexString(text: string): string {
+  const safe = toWinAnsiSafeString(text);
+  let hex = '';
+  for (let i = 0; i < safe.length; i++) {
+    const code = safe.charCodeAt(i);
+    if ((code >= 32 && code <= 126) || (code >= 160 && code <= 255)) {
+      hex += code.toString(16).padStart(2, '0').toUpperCase();
+    } else if (code === 8364) hex += '80';
+    else if (code === 8218) hex += '82';
+    else if (code === 402) hex += '83';
+    else if (code === 8222) hex += '84';
+    else if (code === 8224) hex += '86';
+    else if (code === 8225) hex += '87';
+    else if (code === 710) hex += '88';
+    else if (code === 8240) hex += '89';
+    else if (code === 352) hex += '8A';
+    else if (code === 8249) hex += '8B';
+    else if (code === 338) hex += '8C';
+    else if (code === 381) hex += '8E';
+    else if (code === 8216) hex += '91';
+    else if (code === 8217) hex += '92';
+    else if (code === 8220) hex += '93';
+    else if (code === 8221) hex += '94';
+    else if (code === 8226) hex += '95';
+    else if (code === 8211) hex += '96';
+    else if (code === 8212) hex += '97';
+    else if (code === 732) hex += '98';
+    else if (code === 8482) hex += '99';
+    else if (code === 353) hex += '9A';
+    else if (code === 8250) hex += '9B';
+    else if (code === 339) hex += '9C';
+    else if (code === 382) hex += '9E';
+    else if (code === 376) hex += '9F';
+    else hex += '3F';
+  }
+  return hex;
+}
+
+// Per-page cache for scanned/full-page image analysis so multiple checks on the same page are O(1)
+const scannedPageCache = new WeakMap<PDFPage, boolean>();
+
+/**
+ * Detect if a page contains a full-page raster image or scanned document.
+ * - Resolves inherited resources via page.node.Resources().
+ * - Parses page content streams and tracks q/Q and cm transformation matrix
+ *   to determine the actual coverage of any Image XObject drawn with 'Do'.
+ * - Recursively checks inside Form XObjects with depth limit and cycle guard.
+ * - Caches result in a per-page WeakMap.
+ * - Only returns true if an image covers >= 85% of the page area.
+ * - Returns false on any parse or decompression error.
+ */
+export function isPageScannedOrHasFullPageImage(page: PDFPage, doc: PDFDocument): boolean {
+  try {
+    if (scannedPageCache.has(page)) {
+      return scannedPageCache.get(page)!;
+    }
+
+    const pageBox = getEffectivePageBox(page);
+    const pageArea = pageBox.width * pageBox.height;
+    if (pageArea <= 0) return false;
+
+    // 1. Resolve inherited resources
+    let resDict: PDFDict | undefined;
+    if (typeof (page.node as any).Resources === 'function') {
+      resDict = (page.node as any).Resources();
+    }
+    if (!resDict) {
+      const rawRes = page.node.get(PDFName.of('Resources'));
+      if (rawRes instanceof PDFRef) {
+        resDict = doc.context.lookup(rawRes) as PDFDict;
+      } else if (rawRes instanceof PDFDict) {
+        resDict = rawRes;
+      }
+    }
+    if (!resDict) return false;
+
+    // Helper to multiply 2D affine matrices [a, b, c, d, e, f] in PDF order
+    const multiplyMatrix = (
+      m1: [number, number, number, number, number, number],
+      m2: [number, number, number, number, number, number]
+    ): [number, number, number, number, number, number] => {
+      return [
+        m2[0] * m1[0] + m2[1] * m1[2],
+        m2[0] * m1[1] + m2[1] * m1[3],
+        m2[2] * m1[0] + m2[3] * m1[2],
+        m2[2] * m1[1] + m2[3] * m1[3],
+        m2[4] * m1[0] + m2[5] * m1[2] + m1[4],
+        m2[4] * m1[1] + m2[5] * m1[3] + m1[5],
+      ];
+    };
+
+    // Helper to extract uncompressed text from a PDF stream
+    const getStreamText = (streamObj: any): string => {
+      try {
+        let rawBytes: Uint8Array | null = null;
+        if (streamObj instanceof PDFRawStream) {
+          rawBytes = streamObj.contents;
+        } else if (streamObj && 'contents' in streamObj) {
+          rawBytes = streamObj.contents;
+        }
+        if (!rawBytes) return '';
+        const filter = streamObj.dict?.get(PDFName.of('Filter'));
+        const filterStr = filter ? filter.toString() : '';
+        if (filterStr.includes('FlateDecode')) {
+          return new TextDecoder().decode(pako.inflate(rawBytes));
+        }
+        return new TextDecoder().decode(rawBytes);
+      } catch {
+        return '';
+      }
+    };
+
+    // Check if any stream draws an image covering >= 85% of pageArea
+    const visitedForms = new Set<any>();
+
+    const checkStreamForFullPageImages = (
+      streamText: string,
+      currentResources: PDFDict,
+      initialCtm: [number, number, number, number, number, number],
+      depth = 0
+    ): boolean => {
+      if (depth > 3) return false;
+      let ctm: [number, number, number, number, number, number] = [...initialCtm];
+      const stack: Array<[number, number, number, number, number, number]> = [];
+      const tokens = streamText.match(/\/[^\s()<>[\]{}]+|[^\s()<>[\]{}]+/g) || [];
+      const numBuf: number[] = [];
+
+      const xObjMap = currentResources.get(PDFName.of('XObject'));
+      let xDict: PDFDict | undefined;
+      if (xObjMap instanceof PDFRef) {
+        xDict = doc.context.lookup(xObjMap) as PDFDict;
+      } else if (xObjMap instanceof PDFDict) {
+        xDict = xObjMap;
+      }
+
+      for (let i = 0; i < tokens.length; i++) {
+        const tok = tokens[i];
+        if (/^-?[\d.]+$/.test(tok)) {
+          numBuf.push(parseFloat(tok));
+          continue;
+        }
+        if (tok === 'q') {
+          stack.push([...ctm]);
+          numBuf.length = 0;
+        } else if (tok === 'Q') {
+          ctm = stack.pop() || [...initialCtm];
+          numBuf.length = 0;
+        } else if (tok === 'cm') {
+          if (numBuf.length >= 6) {
+            const [a, b, c, d, e, f] = numBuf.slice(-6);
+            ctm = multiplyMatrix(ctm, [a, b, c, d, e, f]);
+          }
+          numBuf.length = 0;
+        } else if (tok === 'Do') {
+          const prevTok = tokens[i - 1];
+          if (prevTok && prevTok.startsWith('/') && xDict) {
+            const xName = prevTok.substring(1);
+            const xRefOrStream = xDict.get(PDFName.of(xName));
+            let xStream: any;
+            if (xRefOrStream instanceof PDFRef) {
+              xStream = doc.context.lookup(xRefOrStream);
+            } else {
+              xStream = xRefOrStream;
+            }
+            if (xStream && xStream.dict) {
+              const subtype = xStream.dict.get(PDFName.of('Subtype'));
+              if (subtype === PDFName.of('Image')) {
+                // Compute unit square area transformed by CTM: |a*d - b*c|
+                const imageArea = Math.abs(ctm[0] * ctm[3] - ctm[1] * ctm[2]);
+                const coverage = imageArea / pageArea;
+                if (coverage >= 0.85) {
+                  return true;
+                }
+              } else if (subtype === PDFName.of('Form')) {
+                if (visitedForms.has(xStream)) {
+                  numBuf.length = 0;
+                  continue;
+                }
+                visitedForms.add(xStream);
+
+                const formText = getStreamText(xStream);
+                let formRes = xStream.dict.get(PDFName.of('Resources'));
+                if (formRes instanceof PDFRef) {
+                  formRes = doc.context.lookup(formRes);
+                }
+                const effectiveFormRes = formRes instanceof PDFDict ? formRes : currentResources;
+                let formCtm = [...ctm] as [number, number, number, number, number, number];
+                const matrixArr = xStream.dict.get(PDFName.of('Matrix'));
+                if (matrixArr instanceof PDFArray && matrixArr.size() >= 6) {
+                  const mVals = [0, 1, 2, 3, 4, 5].map((idx) => {
+                    const item = matrixArr.get(idx);
+                    return typeof (item as any)?.asNumber === 'function' ? (item as any).asNumber() : 0;
+                  }) as [number, number, number, number, number, number];
+                  formCtm = multiplyMatrix(formCtm, mVals);
+                }
+                if (checkStreamForFullPageImages(formText, effectiveFormRes, formCtm, depth + 1)) {
+                  return true;
+                }
+              }
+            }
+          }
+          numBuf.length = 0;
+        } else {
+          numBuf.length = 0;
+        }
+      }
+      return false;
+    }
+
+    // Collect all content streams from the page
+    const contents = page.node.get(PDFName.of('Contents'));
+    const streamObjs: any[] = [];
+    if (contents instanceof PDFRef) {
+      const deref = doc.context.lookup(contents);
+      if (deref instanceof PDFArray) {
+        for (let i = 0; i < deref.size(); i++) {
+          const item = deref.get(i);
+          if (item instanceof PDFRef) {
+            streamObjs.push(doc.context.lookup(item));
+          } else {
+            streamObjs.push(item);
+          }
+        }
+      } else {
+        streamObjs.push(deref);
+      }
+    } else if (contents instanceof PDFArray) {
+      for (let i = 0; i < contents.size(); i++) {
+        const item = contents.get(i);
+        if (item instanceof PDFRef) {
+          streamObjs.push(doc.context.lookup(item));
+        } else {
+          streamObjs.push(item);
+        }
+      }
+    }
+
+    for (const s of streamObjs) {
+      if (!s) continue;
+      const text = getStreamText(s);
+      if (checkStreamForFullPageImages(text, resDict, [1, 0, 0, 1, 0, 0], 0)) {
+        scannedPageCache.set(page, true);
+        return true;
+      }
+    }
+    scannedPageCache.set(page, false);
+    return false;
+  } catch {
+    return false;
+  }
 }
 
 // Compute grid positions for tiled text watermarks
@@ -315,16 +698,18 @@ export async function addTextWatermark(
   const colorRgb = hexToRgb(options.color);
   const normalizedOpacity = Math.max(0.01, Math.min(1, options.opacity / 100));
 
-  const textWidth = font.widthOfTextAtSize(options.text, options.fontSize);
+  const safeText = toWinAnsiSafeString(options.text);
+  const textWidth = font.widthOfTextAtSize(safeText, options.fontSize);
   const textHeight = font.heightAtSize(options.fontSize);
+  const hexText = encodeWinAnsiHexString(safeText);
 
   for (const pageIdx of targetIndices) {
     const page = doc.getPage(pageIdx);
-    const { width: pageWidth, height: pageHeight } = page.getSize();
+    const pageBox = getEffectivePageBox(page);
 
     const positions = calculateTextPositions(
-      pageWidth,
-      pageHeight,
+      pageBox.visualWidth,
+      pageBox.visualHeight,
       textWidth,
       textHeight,
       options.layout,
@@ -387,32 +772,36 @@ export async function addTextWatermark(
     });
     extGStateDict.set(PDFName.of(gsKey), gsEntry);
 
-    const rad = degreesToRadians(options.rotation);
+    const effectivePdfAngle = options.rotation + pageBox.rotation;
+    const rad = degreesToRadians(effectivePdfAngle);
     const cos = Math.cos(rad);
     const sin = Math.sin(rad);
-
-    // Escape PDF string
-    const escapedText = options.text
-      .replace(/\\/g, '\\\\')
-      .replace(/\(/g, '\\(')
-      .replace(/\)/g, '\\)');
 
     let streamStr = `/Artifact /CompixorWatermark << /Type /Watermark /Creator (Compixor) >> BDC\n`;
     streamStr += `q\n`;
     streamStr += `/${gsKey} gs\n`;
 
+    const cx = textWidth / 2;
+    const cy = textHeight / 2;
+    const ox = -cx;
+    const oy = -cy * 0.7;
+
     for (const pos of positions) {
+      const vcx = pos.x + cx;
+      const vcy = pos.y + cy;
+      const { px: pcx, py: pcy } = transformVisualPointToPdf(pageBox, vcx, vcy);
+
+      const rx = ox * cos - oy * sin;
+      const ry = ox * sin + oy * cos;
+      const finalE = pcx + rx;
+      const finalF = pcy + ry;
+
       streamStr += `q\n`;
-      const cx = textWidth / 2;
-      const cy = textHeight / 2;
-      streamStr += `1 0 0 1 ${pos.x.toFixed(2)} ${pos.y.toFixed(2)} cm\n`;
-      streamStr += `1 0 0 1 ${cx.toFixed(2)} ${cy.toFixed(2)} cm\n`;
-      streamStr += `${cos.toFixed(5)} ${sin.toFixed(5)} ${(-sin).toFixed(5)} ${cos.toFixed(5)} 0 0 cm\n`;
-      streamStr += `1 0 0 1 ${(-cx).toFixed(2)} ${(-cy * 0.7).toFixed(2)} cm\n`;
+      streamStr += `${cos.toFixed(5)} ${sin.toFixed(5)} ${(-sin).toFixed(5)} ${cos.toFixed(5)} ${finalE.toFixed(2)} ${finalF.toFixed(2)} cm\n`;
       streamStr += `BT\n`;
       streamStr += `/${fontRefKey} ${options.fontSize} Tf\n`;
       streamStr += `${colorRgb.r.toFixed(3)} ${colorRgb.g.toFixed(3)} ${colorRgb.b.toFixed(3)} rg\n`;
-      streamStr += `(${escapedText}) Tj\n`;
+      streamStr += `<${hexText}> Tj\n`;
       streamStr += `ET\n`;
       streamStr += `Q\n`;
     }
@@ -428,8 +817,11 @@ export async function addTextWatermark(
     });
     const watermarkStreamRef = doc.context.register(watermarkStream);
 
+    const isScanned = isPageScannedOrHasFullPageImage(page, doc);
+    const effectiveLayer = isScanned && options.layer === 'background' ? 'foreground' : options.layer;
+
     const contentsArray = getPageContentsArray(doc, page.node);
-    if (options.layer === 'background') {
+    if (effectiveLayer === 'background') {
       contentsArray.insert(0, watermarkStreamRef);
     } else {
       // Graphics State Isolation:
@@ -486,11 +878,11 @@ export async function addImageWatermark(
 
   for (const pageIdx of targetIndices) {
     const page = doc.getPage(pageIdx);
-    const { width: pageWidth, height: pageHeight } = page.getSize();
+    const pageBox = getEffectivePageBox(page);
 
     const positions = calculateImagePositions(
-      pageWidth,
-      pageHeight,
+      pageBox.visualWidth,
+      pageBox.visualHeight,
       targetWidth,
       targetHeight,
       options.layout
@@ -552,7 +944,8 @@ export async function addImageWatermark(
     });
     extGStateDict.set(PDFName.of(gsKey), gsEntry);
 
-    const rad = degreesToRadians(options.rotation);
+    const effectivePdfAngle = options.rotation + pageBox.rotation;
+    const rad = degreesToRadians(effectivePdfAngle);
     const cos = Math.cos(rad);
     const sin = Math.sin(rad);
 
@@ -560,15 +953,28 @@ export async function addImageWatermark(
     streamStr += `q\n`;
     streamStr += `/${gsKey} gs\n`;
 
+    const cx = targetWidth / 2;
+    const cy = targetHeight / 2;
+    const ox = -cx;
+    const oy = -cy;
+
     for (const pos of positions) {
+      const vcx = pos.x + cx;
+      const vcy = pos.y + cy;
+      const { px: pcx, py: pcy } = transformVisualPointToPdf(pageBox, vcx, vcy);
+
+      const rx = ox * cos - oy * sin;
+      const ry = ox * sin + oy * cos;
+      const finalE = pcx + rx;
+      const finalF = pcy + ry;
+
+      const a = targetWidth * cos;
+      const b = targetWidth * sin;
+      const c = targetHeight * (-sin);
+      const d = targetHeight * cos;
+
       streamStr += `q\n`;
-      const cx = targetWidth / 2;
-      const cy = targetHeight / 2;
-      streamStr += `1 0 0 1 ${pos.x.toFixed(2)} ${pos.y.toFixed(2)} cm\n`;
-      streamStr += `1 0 0 1 ${cx.toFixed(2)} ${cy.toFixed(2)} cm\n`;
-      streamStr += `${cos.toFixed(5)} ${sin.toFixed(5)} ${(-sin).toFixed(5)} ${cos.toFixed(5)} 0 0 cm\n`;
-      streamStr += `1 0 0 1 ${(-cx).toFixed(2)} ${(-cy).toFixed(2)} cm\n`;
-      streamStr += `${targetWidth.toFixed(2)} 0 0 ${targetHeight.toFixed(2)} 0 0 cm\n`;
+      streamStr += `${a.toFixed(5)} ${b.toFixed(5)} ${c.toFixed(5)} ${d.toFixed(5)} ${finalE.toFixed(2)} ${finalF.toFixed(2)} cm\n`;
       streamStr += `/${imgXKey} Do\n`;
       streamStr += `Q\n`;
     }
@@ -584,8 +990,11 @@ export async function addImageWatermark(
     });
     const watermarkStreamRef = doc.context.register(watermarkStream);
 
+    const isScanned = isPageScannedOrHasFullPageImage(page, doc);
+    const effectiveLayer = isScanned && options.layer === 'background' ? 'foreground' : options.layer;
+
     const contentsArray = getPageContentsArray(doc, page.node);
-    if (options.layer === 'background') {
+    if (effectiveLayer === 'background') {
       contentsArray.insert(0, watermarkStreamRef);
     } else {
       // Graphics State Isolation
@@ -1033,7 +1442,42 @@ export async function redactAreaOnPage(
   }
 
   const page = doc.getPage(pageIndex);
+  const pageBox = getEffectivePageBox(page);
   const color = hexToRgb(box.color || '#ffffff');
+
+  // Map visual rectangle coordinates to unrotated PDF coordinates
+  let pdfX: number;
+  let pdfY: number;
+  let pdfW: number;
+  let pdfH: number;
+
+  switch (pageBox.rotation) {
+    case 90:
+      pdfX = pageBox.x + pageBox.width - (box.y + box.height);
+      pdfY = pageBox.y + box.x;
+      pdfW = box.height;
+      pdfH = box.width;
+      break;
+    case 180:
+      pdfX = pageBox.x + pageBox.width - (box.x + box.width);
+      pdfY = pageBox.y + pageBox.height - (box.y + box.height);
+      pdfW = box.width;
+      pdfH = box.height;
+      break;
+    case 270:
+      pdfX = pageBox.x + box.y;
+      pdfY = pageBox.y + pageBox.height - (box.x + box.width);
+      pdfW = box.height;
+      pdfH = box.width;
+      break;
+    case 0:
+    default:
+      pdfX = pageBox.x + box.x;
+      pdfY = pageBox.y + box.y;
+      pdfW = box.width;
+      pdfH = box.height;
+      break;
+  }
 
   // Vector operator for filling rectangle:
   // q
@@ -1041,7 +1485,7 @@ export async function redactAreaOnPage(
   // x y w h re
   // f
   // Q
-  const opStr = `\nq\n${color.r.toFixed(3)} ${color.g.toFixed(3)} ${color.b.toFixed(3)} rg\n${box.x.toFixed(2)} ${box.y.toFixed(2)} ${box.width.toFixed(2)} ${box.height.toFixed(2)} re\nf\nQ\n`;
+  const opStr = `\nq\n${color.r.toFixed(3)} ${color.g.toFixed(3)} ${color.b.toFixed(3)} rg\n${pdfX.toFixed(2)} ${pdfY.toFixed(2)} ${pdfW.toFixed(2)} ${pdfH.toFixed(2)} re\nf\nQ\n`;
   const opBytes = new TextEncoder().encode(opStr);
 
   const redactStream = doc.context.stream(opBytes, {
