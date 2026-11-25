@@ -84,8 +84,8 @@ export const AUTHOR_NAME = 'Haroon Ali';
 export const OG_IMAGE_URL = `${BASE_URL}/images/og-banner-v2.png`;
 
 export const homepageSeoData: HomepageSeoData = {
-  title: 'Free PDF, Word & Photo Tools Online - Private & Fast | Compixor',
-  description: 'Free online PDF, Word and photo tools with no file upload required. Client-side document converter, photo editor, and QR toolkit. 100% private and in your browser.',
+  title: 'Free PDF, Word & Photo Tools Online - Private | Compixor',
+  description: 'Free online PDF, Word and photo tools with no file upload required. Client-side document converter, photo editor & QR toolkit. 100% private in your browser.',
   canonicalUrl: BASE_URL,
   primaryKeyword: 'free online pdf tools no upload',
   secondaryKeywords: [
@@ -968,9 +968,9 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'passport-photo',
     name: 'Passport Photo Maker',
     icon: IdCard,
-    title: 'Pakistani Passport Size Photo Maker – 35x45mm 300 DPI | Compixor',
+    title: 'Passport Size Photo Maker – 35x45mm 300 DPI | Compixor',
     description:
-      'Create official 35x45 mm Pakistan passport and NADRA CNIC photos online free. AI white or light blue background, 300 DPI print sheets, photo not stored on our servers.',
+      'Create official 35x45 mm Pakistan passport & NADRA CNIC photos online free. AI white or blue background, 300 DPI print sheets, and no photo storage.',
     canonicalUrl: `${BASE_URL}/tools/passport-photo`,
     primaryKeyword: 'pakistani passport size photo maker',
     searchIntent:
@@ -1135,7 +1135,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: FullDpIcon,
     title: 'Free Full DP Maker for WhatsApp – No Crop, 1080p | Compixor',
     description:
-      'Create full-size WhatsApp DP without cropping. 100% private in-browser tool, blur/gradient fills, live circle preview, HD 1080×1080. Free, no signup, no watermark.',
+      'Create full-size WhatsApp DP without cropping. 100% private in-browser tool, blur fills, live circle preview, HD 1080×1080. Free, no signup, no watermark.',
     canonicalUrl: `${BASE_URL}/tools/full-dp-maker`,
     primaryKeyword: 'full dp maker whatsapp',
     searchIntent:
@@ -1296,7 +1296,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     icon: QrCode,
     title: 'QR Code Generator with Logo Free – No Expiry, SVG | Compixor',
     description:
-      'Create custom QR codes with your logo free. Permanent static barcodes for URLs, WiFi & WhatsApp that never expire. Vector SVG & 1000px PNG. 100% private in-browser.',
+      'Create custom QR codes with your logo free. Permanent static barcodes for URLs, WiFi & WhatsApp that never expire. Vector SVG & PNG. 100% private in-browser.',
     canonicalUrl: `${BASE_URL}/tools/qr-generator`,
     primaryKeyword: 'qr code generator with logo free',
     searchIntent:
@@ -1557,7 +1557,7 @@ export const seoConfig: Record<ToolSlug, ToolSeoData> = {
     slug: 'img-to-word',
     name: 'Image to Word Converter',
     icon: ScanText,
-    title: 'Image to Word Converter Online Free',
+    title: 'Image to Word Converter Online Free - OCR',
     description:
       'Convert JPG, PNG, or WEBP images to editable Word DOCX free online. High-accuracy neural OCR for 10+ languages with instant download.',
     canonicalUrl: `${BASE_URL}/tools/img-to-word`,

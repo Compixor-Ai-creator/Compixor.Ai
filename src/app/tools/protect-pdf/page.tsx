@@ -100,9 +100,9 @@ export default function ProtectPdfPage() {
       </header>
 
       {/* ── Interactive Client Tool ── */}
-      <main>
+      <section aria-label="Password Protect PDF Tool">
         <ProtectPdfClient />
-      </main>
+      </section>
 
       {/* ── Static Semantic Content (How to Use, Features, FAQs) for Crawlers & A11y ── */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-16">

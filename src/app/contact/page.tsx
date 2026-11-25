@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import ContactClient from './ContactClient';
 
 export const metadata: Metadata = {
-  title: 'Contact Us - Support & Inquiries',
+  title: 'Contact Compixor Support & Inquiries Team',
   description: 'Contact Compixor AI support for tool assistance, feature requests, or technical inquiries. Email support@compixor-ai.cloud.',
   alternates: {
     canonical: 'https://compixor-ai.cloud/contact',
   },
   openGraph: {
-    title: 'Contact Us - Support & Inquiries | Compixor',
+    title: 'Contact Compixor Support & Inquiries Team | Compixor',
     description: 'Contact Compixor AI support for tool assistance, feature requests, or technical inquiries.',
     url: 'https://compixor-ai.cloud/contact',
     siteName: 'Compixor AI',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'Contact Us - Support & Inquiries | Compixor',
+    title: 'Contact Compixor Support & Inquiries Team | Compixor',
     description: 'Contact Compixor AI support for tool assistance, feature requests, or technical inquiries.',
     images: ['https://compixor-ai.cloud/brand/logo-512.png'],
   },

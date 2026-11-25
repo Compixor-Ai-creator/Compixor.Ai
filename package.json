@@ -6,7 +6,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "tsx --test src/utils/pdfWatermarkEngine.test.ts"
+    "test": "tsx --test src/utils/pdfWatermarkEngine.test.ts",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",

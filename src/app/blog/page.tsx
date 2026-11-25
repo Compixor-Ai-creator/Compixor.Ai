@@ -6,14 +6,14 @@ import { ChevronRight, Sparkles } from 'lucide-react';
 import BlogFilter from '@/components/BlogFilter';
 
 export const metadata: Metadata = {
-  title: 'Client-Side Guides & Tutorials',
+  title: 'Free PDF, Word & Media Guides & Tutorials',
   description:
     'Step-by-step guides on private PDF compression, password security, 300 DPI passport photos, full WhatsApp DPs, and custom QR codes.',
   alternates: {
     canonical: 'https://compixor-ai.cloud/blog',
   },
   openGraph: {
-    title: 'Client-Side Guides & Tutorials | Compixor AI',
+    title: 'Free PDF, Word & Media Guides & Tutorials | Compixor',
     description:
       'Step-by-step guides on private PDF compression, password security, 300 DPI passport photos, full WhatsApp DPs, and custom QR codes.',
     url: 'https://compixor-ai.cloud/blog',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'Client-Side Guides & Tutorials | Compixor AI',
+    title: 'Free PDF, Word & Media Guides & Tutorials | Compixor',
     description:
       'Step-by-step guides on private PDF compression, password security, 300 DPI passport photos, full WhatsApp DPs, and custom QR codes.',
     images: ['https://compixor-ai.cloud/brand/logo-512.png'],

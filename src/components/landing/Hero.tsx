@@ -20,7 +20,7 @@ export default function Hero() {
 
         <div className="cx-hero__inner">
           <div className="cx-badge cx-rise">
-            <Image src="/brand/logo-c.png" alt="" width={22} height={21} />
+            <Image src="/brand/logo-c.png" alt="Compixor AI Logo" width={22} height={21} />
             All-in-One Private PDF &amp; Image Toolkit <i aria-hidden="true" /> Zero File Storage
           </div>
 

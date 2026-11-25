@@ -103,9 +103,9 @@ export default function AddWatermarkPage() {
       </header>
 
       {/* ── Interactive Client Tool (hideHeader suppresses duplicate inner header) ── */}
-      <main>
+      <section aria-label="Add Watermark Tool">
         <PdfWatermarkClient initialMode="add" hideHeader={true} />
-      </main>
+      </section>
 
       {/* Tool Feedback Component */}
       <ToolFeedback toolName="add-watermark" />

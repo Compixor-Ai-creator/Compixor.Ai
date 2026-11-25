@@ -41,12 +41,11 @@ export default function FullDpIcon({
       strokeLinejoin="round"
       shapeRendering="geometricPrecision"
       className={className}
+      aria-label={!isDecorative ? (title || 'Full DP Maker') : undefined}
       aria-hidden={isDecorative ? 'true' : undefined}
       role={isDecorative ? 'presentation' : 'img'}
       {...props}
     >
-      {!isDecorative && <title>{title || 'Full DP Maker'}</title>}
-
       {/* 4 Corner Framing Brackets */}
       <path d="M 3 7 V 5 C 3 3.9 3.9 3 5 3 H 7" />
       <path d="M 17 3 H 19 C 20.1 3 21 3.9 21 5 V 7" />
