@@ -3,14 +3,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
   motion,
-  useScroll,
-  useSpring,
-  useTransform,
+  useAnimationFrame,
   useMotionValue,
   useReducedMotion,
 } from "framer-motion";
-
-const RANGE = 500;
 
 export interface HeroTitleProps {
   className?: string;
@@ -24,88 +20,76 @@ export default function HeroTitle({
   line2 = "Photo Tools That Run in Your Browser",
 }: HeroTitleProps) {
   const reduce = useReducedMotion();
-  const { scrollY } = useScroll();
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Velocity motion value with active zero-reset mechanism
-  const rawVelocity = useMotionValue(0);
-  const lastScrollY = useRef(0);
-  const lastTime = useRef(0);
-  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Motion values for GPU-accelerated transform
+  const skewY = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Frame-by-frame velocity & smoothing refs
+  const prevScrollY = useRef(0);
+  const currentSkew = useRef(0);
 
   useEffect(() => {
+    prevScrollY.current = window.scrollY;
     setMounted(true);
+
     const m = window.matchMedia("(max-width: 768px)");
     const onChange = () => setIsMobile(m.matches);
     onChange();
     m.addEventListener("change", onChange);
 
-    lastScrollY.current = window.scrollY;
-    lastTime.current = performance.now();
+    return () => m.removeEventListener("change", onChange);
+  }, []);
 
-    // Active scroll listener with velocity decay and guaranteed zero-reset
-    const onScroll = () => {
-      const now = performance.now();
-      const currentY = window.scrollY;
-      const dt = Math.max(now - lastTime.current, 8); // min 8ms to prevent div by 0
-      const dy = currentY - lastScrollY.current;
+  const isReduced = reduce || !mounted;
 
-      lastScrollY.current = currentY;
-      lastTime.current = now;
-
-      // Calculate instantaneous scroll velocity (px/sec), clamped to prevent spikes
-      const instantVelocity = Math.max(-1200, Math.min(1200, (dy / dt) * 1000));
-      rawVelocity.set(instantVelocity);
-
-      // Clear any pending idle reset timer
-      if (idleTimer.current) {
-        clearTimeout(idleTimer.current);
+  // Frame-by-frame physics loop: decoupled from scroll-event bursts
+  useAnimationFrame((_time, delta) => {
+    if (isReduced) {
+      if (typeof window !== "undefined") {
+        prevScrollY.current = window.scrollY;
       }
+      if (skewY.get() !== 0) skewY.set(0);
+      if (y.get() !== 0) y.set(0);
+      return;
+    }
 
-      // If user is at or above the top, immediately force 0 velocity
-      if (currentY <= 2) {
-        rawVelocity.set(0);
-        return;
-      }
+    // Guard against 0 or huge delta spikes (e.g. tab switching)
+    const safeDelta = Math.max(1, Math.min(100, delta || 16.7));
 
-      // When scrolling ceases, actively decay and snap velocity to 0
-      // This completely solves the bug where useVelocity hangs with residual non-zero velocity
-      idleTimer.current = setTimeout(() => {
-        rawVelocity.set(0);
-      }, 50);
-    };
+    const currentY = window.scrollY;
+    const rawDeltaY = currentY - prevScrollY.current;
+    prevScrollY.current = currentY;
 
-    window.addEventListener("scroll", onScroll, { passive: true });
+    // Normalize deltaY to 60fps baseline (16.7ms)
+    const deltaY = rawDeltaY * (16.7 / safeDelta);
 
-    return () => {
-      m.removeEventListener("change", onChange);
-      window.removeEventListener("scroll", onScroll);
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-    };
-  }, [rawVelocity]);
+    // 1. Position-based subtle Y parallax (0 to 22px over first 400px of scroll)
+    const targetY = Math.min(22, currentY * 0.055);
+    y.set(targetY);
 
-  // Spring with high damping (no bounce, settles smoothly and decisively to 0)
-  const smoothVelocity = useSpring(rawVelocity, {
-    stiffness: 180,
-    damping: 34,
-    mass: 0.2,
+    // 2. Velocity-based Skew: 2deg max desktop, 1deg mobile
+    const maxDeg = isMobile ? 1.0 : 2.0;
+    const k = isMobile ? 0.08 : 0.12;
+
+    let targetSkew = 0;
+    if (Math.abs(deltaY) >= 0.5 && currentY > 2) {
+      targetSkew = Math.max(-maxDeg, Math.min(maxDeg, deltaY * k));
+    }
+
+    // 3. Frame-rate independent exponential smoothing
+    const lerpFactor = 1 - Math.pow(1 - 0.14, safeDelta / 16.7);
+    currentSkew.current += (targetSkew - currentSkew.current) * lerpFactor;
+
+    // 4. Guaranteed Snap: When scrolling stops and skew decays below 0.01, or at page top, force EXACTLY 0
+    if (currentY <= 1 || (Math.abs(deltaY) < 0.5 && Math.abs(currentSkew.current) < 0.01)) {
+      currentSkew.current = 0;
+    }
+
+    skewY.set(currentSkew.current);
   });
-
-  // Clamped subtle skew range (1.2deg desktop, 0.6deg mobile - stays strictly within 1-2deg limit)
-  const maxSkew = isMobile ? 0.6 : 1.2;
-  const skewY = useTransform(smoothVelocity, [-1200, 1200], [-maxSkew, maxSkew], {
-    clamp: true,
-  });
-
-  // Parallax subtle offset with gentle spring
-  const progress = useTransform(scrollY, [0, RANGE], [0, 1]);
-  const smoothProgress = useSpring(progress, {
-    stiffness: 120,
-    damping: 28,
-    mass: 0.3,
-  });
-  const y = useTransform(smoothProgress, [0, 1], [0, 14]);
 
   const lineVariants = {
     hidden: { y: "100%", opacity: 0 },
@@ -120,8 +104,6 @@ export default function HeroTitle({
     }),
   };
 
-  const isReduced = reduce || !mounted;
-
   return (
     <div className="cx-title">
       <motion.h1
@@ -133,7 +115,7 @@ export default function HeroTitle({
             : {
                 y,
                 skewY,
-                transformOrigin: "50% 50%", // Always centered, never drifts to one side
+                transformOrigin: "50% 50%", // Always centered, zero horizontal drift
                 willChange: "transform",
                 z: 0,
               }
