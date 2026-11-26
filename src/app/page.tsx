@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   HelpCircle,
   ChevronDown,
@@ -173,6 +173,16 @@ type ToolCategory = 'All' | 'PDF' | 'Word' | 'Media';
 export default function HomePage() {
   const [faqSearch, setFaqSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<ToolCategory>('All');
+  const reduce = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const m = window.matchMedia('(max-width: 768px)');
+    const onChange = () => setIsMobile(m.matches);
+    onChange();
+    m.addEventListener('change', onChange);
+    return () => m.removeEventListener('change', onChange);
+  }, []);
 
   const handleFaqSearch = (query: string) => {
     setFaqSearch(query);
@@ -193,6 +203,18 @@ export default function HomePage() {
 
   return (
     <div className="relative overflow-x-clip">
+      <noscript>
+        <style>{`
+          .st, .st-label, .st-connector, .st-path,
+          .cx-rv, .cx-rv--in,
+          .cx-line-enter-1, .cx-line-enter-2,
+          [style*="opacity: 0"], [style*="opacity:0"] {
+            opacity: 1 !important;
+            transform: none !important;
+          }
+        `}</style>
+      </noscript>
+
       <FaqJsonLd faqs={homeFaqs} />
 
       {/* Breadcrumb JSON-LD schema (visual breadcrumb omitted on home to match target design) */}
@@ -209,131 +231,165 @@ export default function HomePage() {
       {/* ============ ALL TOOLS CATALOG ============ */}
       <section id="tools" className="relative py-10 sm:py-16 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal delay={0}>
-            <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
-              <h2 id="tools-catalog-heading" className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
-                Explore All Free Private Tools
-              </h2>
-              <div className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
-                Transform, compress, convert, and protect your files in your browser with zero limits.
-              </div>
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
+            className="text-center max-w-3xl mx-auto mb-8 sm:mb-10"
+          >
+            <h2 id="tools-catalog-heading" className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
+              Explore All Free Private Tools
+            </h2>
+            <div className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400">
+              Transform, compress, convert, and protect your files in your browser with zero limits.
             </div>
+          </motion.div>
 
-            {/* Trust Metric Strip */}
-            <div className="mb-8 max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
-              <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
-                <div className="text-xl sm:text-2xl font-black font-display text-zinc-900 dark:text-white">12</div>
-                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Free Utilities</div>
-              </div>
-              <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
-                <div className="text-xl sm:text-2xl font-black font-display text-purple-600 dark:text-purple-400">9 Tools</div>
-                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Processed on Device</div>
-              </div>
-              <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
-                <div className="text-xl sm:text-2xl font-black font-display text-emerald-600 dark:text-emerald-400">0 Permanent</div>
-                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Server Storage</div>
-              </div>
-              <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
-                <div className="text-xl sm:text-2xl font-black font-display text-zinc-900 dark:text-white">0</div>
-                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Paywalls &amp; Ads</div>
-              </div>
-            </div>
+          {/* Trust Metric Strip */}
+          <div className="mb-8 max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
+            {[
+              { val: '12', label: 'Free Utilities', color: 'text-zinc-900 dark:text-white' },
+              { val: '9 Tools', label: 'Processed on Device', color: 'text-purple-600 dark:text-purple-400' },
+              { val: '0 Permanent', label: 'Server Storage', color: 'text-emerald-600 dark:text-emerald-400' },
+              { val: '0', label: 'Paywalls & Ads', color: 'text-zinc-900 dark:text-white' },
+            ].map((stat, idx) => (
+              <motion.div
+                key={stat.label}
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1], delay: idx * 0.04 }}
+                className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm"
+              >
+                <div className={`text-xl sm:text-2xl font-black font-display tabular-nums ${stat.color}`}>
+                  {stat.val}
+                </div>
+                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-            {/* Category Filter Pills */}
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-8 sm:mb-10">
-              {(['All', 'PDF', 'Word', 'Media'] as const).map((cat) => {
-                const isSelected = activeCategory === cat;
-                const count = cat === 'All' ? tools.length : tools.filter((t) => t.category === cat).length;
-                return (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setActiveCategory(cat)}
-                    className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-[background-color,color,transform] duration-200 ease-out cursor-pointer flex items-center gap-2 active:scale-[0.98] ${
+          {/* Category Filter Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-8 sm:mb-10">
+            {(['All', 'PDF', 'Word', 'Media'] as const).map((cat) => {
+              const isSelected = activeCategory === cat;
+              const count = cat === 'All' ? tools.length : tools.filter((t) => t.category === cat).length;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-[background-color,color,transform] duration-[160ms] cursor-pointer flex items-center gap-2 active:scale-[0.98] ${
+                    isSelected
+                      ? 'bg-purple-600 text-white shadow-md shadow-purple-600/25 scale-[1.02]'
+                      : 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70'
+                  }`}
+                  style={{ transitionTimingFunction: "var(--ease-out)" }}
+                >
+                  <span>{cat === 'All' ? 'All Tools' : `${cat} Tools`}</span>
+                  <span
+                    className={`text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
                       isSelected
-                        ? 'bg-purple-600 text-white shadow-md shadow-purple-600/25 scale-[1.02]'
-                        : 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70'
+                        ? 'bg-white/20 text-white'
+                        : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400'
                     }`}
                   >
-                    <span>{cat === 'All' ? 'All Tools' : `${cat} Tools`}</span>
-                    <span
-                      className={`text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
-                        isSelected
-                          ? 'bg-white/20 text-white'
-                          : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400'
-                      }`}
-                    >
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </Reveal>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-          <Reveal delay={0.1} itemSelector=".glass-card">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              {filteredTools.map((tool) => {
-                const Icon = tool.icon;
-                const isServerTool = tool.processing === 'server' || ['/tools/pdf-to-word', '/tools/img-to-word', '/tools/passport-photo'].includes(tool.href);
-                const badgeText = tool.id === 'passport-photo'
-                  ? 'Secure server processing'
-                  : isServerTool
-                  ? 'Secure HTTPS'
-                  : (tool.processing === 'local' ? 'Local RAM' : 'Secure HTTPS');
-                const taglineText = isServerTool ? 'Secure HTTPS · Deleted after processing' : tool.tagline;
-                const descriptionText = isServerTool
-                  ? tool.description.replace(' with zero data retention', '').replace('with zero data retention', '')
-                  : tool.description;
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            {filteredTools.map((tool, i) => {
+              const Icon = tool.icon;
+              const isServerTool = tool.processing === 'server' || ['/tools/pdf-to-word', '/tools/img-to-word', '/tools/passport-photo'].includes(tool.href);
+              const badgeText = tool.id === 'passport-photo'
+                ? 'Secure server processing'
+                : isServerTool
+                ? 'Secure HTTPS'
+                : (tool.processing === 'local' ? 'Local RAM' : 'Secure HTTPS');
+              const taglineText = isServerTool ? 'Secure HTTPS · Deleted after processing' : tool.tagline;
+              const descriptionText = isServerTool
+                ? tool.description.replace(' with zero data retention', '').replace('with zero data retention', '')
+                : tool.description;
 
-                return (
-                  <div key={tool.id}>
-                    <Link
-                      href={tool.href}
-                      className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full hover:-translate-y-0.5 hover:border-brand-500/50 hover:shadow-lg active:scale-[0.99] transition-[transform,border-color,box-shadow] duration-200 ease-out relative overflow-hidden"
-                    >
-                      <div
-                        aria-hidden="true"
-                        className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-10 transition-opacity duration-200 ease-out`}
-                      />
-                      <div>
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-transform duration-200 ease-out`}>
-                            <Icon className="w-6 h-6" />
-                          </div>
-                          <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md border ${
-                            !isServerTool && tool.processing === 'local'
-                              ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
-                              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
-                          }`}>
-                            {badgeText}
-                          </span>
+              // Row-relative stagger: delay is bound to column position (index % columns)
+              // so any row entering viewport animates immediately without waiting for previous rows
+              const columns = isMobile ? 1 : 3;
+              const colIndex = i % columns;
+              const cardDelay = isMobile ? 0 : Math.min(0.24, colIndex * 0.05);
+
+              return (
+                <motion.div
+                  key={tool.id}
+                  initial={reduce ? false : { opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{
+                    duration: 0.28,
+                    ease: [0.23, 1, 0.32, 1],
+                    delay: cardDelay,
+                  }}
+                  className="h-full"
+                >
+                  <Link
+                    href={tool.href}
+                    className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full relative overflow-hidden transition-[transform,border-color] duration-[180ms] [@media(hover:hover)]:hover:-translate-y-[2px] [@media(hover:hover)]:hover:border-brand-500/50 active:scale-[0.98]"
+                    style={{ transitionTimingFunction: "var(--ease-out)" }}
+                  >
+                    <div
+                      aria-hidden="true"
+                      className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 [@media(hover:hover)]:group-hover:opacity-10 transition-opacity duration-[180ms]`}
+                      style={{ transitionTimingFunction: "var(--ease-out)" }}
+                    />
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div
+                          className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg [@media(hover:hover)]:group-hover:scale-[1.04] transition-transform duration-[180ms]`}
+                          style={{ transitionTimingFunction: "var(--ease-out)" }}
+                        >
+                          <Icon className="w-6 h-6" />
                         </div>
-                        <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors duration-200">
-                          {tool.title}
-                        </h3>
-                        <div className="text-xs text-brand-600 dark:text-brand-400 font-semibold mb-2">
-                          {taglineText}
-                        </div>
-                        <div className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
-                          {descriptionText}
-                        </div>
+                        <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md border ${
+                          !isServerTool && tool.processing === 'local'
+                            ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
+                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
+                        }`}>
+                          {badgeText}
+                        </span>
                       </div>
-                      <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
-                        <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-                          <span>{tool.stats}</span>
-                          <span className="text-brand-500 flex items-center gap-1 font-semibold">
-                            <span>Launch Tool</span>
-                            <span className="inline-block transition-transform duration-200 ease-out group-hover:translate-x-1">&rarr;</span>
-                          </span>
-                        </div>
+                      <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 [@media(hover:hover)]:group-hover:text-brand-500 transition-colors duration-[180ms]">
+                        {tool.title}
+                      </h3>
+                      <div className="text-xs text-brand-600 dark:text-brand-400 font-semibold mb-2">
+                        {taglineText}
                       </div>
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          </Reveal>
+                      <div className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
+                        {descriptionText}
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
+                      <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+                        <span>{tool.stats}</span>
+                        <span className="text-brand-500 flex items-center gap-1 font-semibold">
+                          <span>Launch Tool</span>
+                          <span
+                            className="inline-block transition-transform duration-[180ms] [@media(hover:hover)]:group-hover:translate-x-1"
+                            style={{ transitionTimingFunction: "var(--ease-out)" }}
+                          >&rarr;</span>
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 

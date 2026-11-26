@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 import {
   motion,
-  useAnimationFrame,
-  useMotionValue,
+  useScroll,
+  useTransform,
   useReducedMotion,
 } from "framer-motion";
 
@@ -20,77 +20,19 @@ export default function HeroTitle({
   line2 = "Photo Tools That Run in Your Browser",
 }: HeroTitleProps) {
   const reduce = useReducedMotion();
-  const [mounted, setMounted] = useState(false);
+  const { scrollY } = useScroll();
 
-  // Single unified vertical motion value (GPU-accelerated translateY)
-  const y = useMotionValue(0);
+  // Scroll animations: scrollY 0 -> 400px
+  // Line 1: y 0 -> -40px, opacity 1 -> 0.55
+  const line1Y = useTransform(scrollY, [0, 400], [0, -40], { clamp: true });
+  const line1Opacity = useTransform(scrollY, [0, 400], [1, 0.55], { clamp: true });
 
-  // Velocity lag & frame synchronization refs
-  const prevScrollY = useRef(0);
-  const currentLag = useRef(0);
+  // Line 2: y 0 -> -70px, opacity 1 -> 0.4 (faster than line 1 for distinct stagger)
+  const line2Y = useTransform(scrollY, [0, 400], [0, -70], { clamp: true });
+  const line2Opacity = useTransform(scrollY, [0, 400], [1, 0.4], { clamp: true });
 
-  useEffect(() => {
-    prevScrollY.current = window.scrollY;
-    setMounted(true);
-  }, []);
-
-  const isReduced = reduce || !mounted;
-
-  // Frame-by-frame physics: pure vertical parallax + subtle velocity lag (zero skew/tilt)
-  useAnimationFrame((_time, delta) => {
-    if (isReduced) {
-      if (typeof window !== "undefined") {
-        prevScrollY.current = window.scrollY;
-      }
-      if (y.get() !== 0) y.set(0);
-      return;
-    }
-
-    // Guard against 0 or extreme delta spikes (e.g. tab switching)
-    const safeDelta = Math.max(1, Math.min(100, delta || 16.7));
-
-    const currentY = window.scrollY;
-    const rawDeltaY = currentY - prevScrollY.current;
-    prevScrollY.current = currentY;
-
-    // Normalize deltaY to 60fps baseline (16.7ms)
-    const deltaY = rawDeltaY * (16.7 / safeDelta);
-
-    // 1. Position-based subtle Y parallax (0 to 22px over first 400px of scroll)
-    const targetParallax = Math.min(22, currentY * 0.055);
-
-    // 2. Velocity-based gentle Y-lag (max 4px up or down, absolutely zero tilt/skew/horizontal drift)
-    let targetLag = 0;
-    if (Math.abs(deltaY) >= 0.5 && currentY > 2) {
-      targetLag = Math.max(-4, Math.min(4, deltaY * 0.08));
-    }
-
-    // 3. Frame-rate independent exponential smoothing
-    const lerpFactor = 1 - Math.pow(1 - 0.14, safeDelta / 16.7);
-    currentLag.current += (targetLag - currentLag.current) * lerpFactor;
-
-    // 4. Guaranteed Snap: When scrolling stops and lag decays below 0.02px, or at page top, force EXACTLY 0
-    if (currentY <= 1 || (Math.abs(deltaY) < 0.5 && Math.abs(currentLag.current) < 0.02)) {
-      currentLag.current = 0;
-    }
-
-    // Total Y: position parallax + subtle velocity inertia
-    const totalY = currentY <= 1 ? 0 : targetParallax + currentLag.current;
-    y.set(totalY);
-  });
-
-  const lineVariants = {
-    hidden: { y: "100%", opacity: 0 },
-    visible: (customDelay: number) => ({
-      y: "0%",
-      opacity: 1,
-      transition: {
-        duration: 0.38,
-        ease: [0.23, 1, 0.32, 1], // Emil Kowalski strong --ease-out curve
-        delay: customDelay,
-      },
-    }),
-  };
+  // Entire H1: scale 1 -> 0.94 (transform-origin 50% 50%)
+  const scale = useTransform(scrollY, [0, 400], [1, 0.94], { clamp: true });
 
   return (
     <div className="cx-title">
@@ -98,10 +40,10 @@ export default function HeroTitle({
         id="cx-hero-title"
         className={className}
         style={
-          isReduced
+          reduce
             ? undefined
             : {
-                y,
+                scale,
                 transformOrigin: "50% 50%",
                 willChange: "transform",
                 filter: "none",
@@ -113,13 +55,19 @@ export default function HeroTitle({
           style={{ display: "block", overflow: "hidden", paddingBottom: "0.06em" }}
         >
           <motion.span
-            custom={0.06}
-            initial={isReduced ? false : "hidden"}
-            animate="visible"
-            variants={lineVariants}
-            style={{ display: "inline-block" }}
+            style={
+              reduce
+                ? { display: "inline-block" }
+                : {
+                    display: "inline-block",
+                    y: line1Y,
+                    opacity: line1Opacity,
+                  }
+            }
           >
-            {line1}
+            <span className="cx-line-enter-1" style={{ display: "inline-block" }}>
+              {line1}
+            </span>
           </motion.span>
         </span>
         <span
@@ -127,14 +75,19 @@ export default function HeroTitle({
           style={{ display: "block", overflow: "hidden", paddingBottom: "0.08em" }}
         >
           <motion.span
-            custom={0.18}
-            initial={isReduced ? false : "hidden"}
-            animate="visible"
-            variants={lineVariants}
-            className="cx-grad"
-            style={{ display: "inline-block" }}
+            style={
+              reduce
+                ? { display: "inline-block" }
+                : {
+                    display: "inline-block",
+                    y: line2Y,
+                    opacity: line2Opacity,
+                  }
+            }
           >
-            {line2}
+            <span className="cx-grad cx-line-enter-2" style={{ display: "inline-block" }}>
+              {line2}
+            </span>
           </motion.span>
         </span>
       </motion.h1>
