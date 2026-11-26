@@ -111,7 +111,7 @@ html.light .cx-hero-subtle-glow {
 @keyframes cx-line-rise {
   0% {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(40px);
   }
   100% {
     opacity: 1;
@@ -119,10 +119,10 @@ html.light .cx-hero-subtle-glow {
   }
 }
 .cx-line-enter-1 {
-  animation: cx-line-rise 0.38s var(--ease-out) 0s both;
+  animation: cx-line-rise 700ms var(--reveal-ease) 0s both;
 }
 .cx-line-enter-2 {
-  animation: cx-line-rise 0.38s var(--ease-out) 0.12s both;
+  animation: cx-line-rise 700ms var(--reveal-ease) 180ms both;
 }
 @media (prefers-reduced-motion: reduce) {
   .cx-line-enter-1,
@@ -401,9 +401,9 @@ html.dark .cx-rv,
 html.light .cx-rv,
 .cx-rv{
   opacity:0;
-  transform:translateY(16px);
-  transition:opacity 280ms cubic-bezier(.22,1,.36,1) !important,
-             transform 280ms cubic-bezier(.22,1,.36,1) !important;
+  transform:translateY(var(--reveal-dist, 36px));
+  transition:opacity var(--reveal-dur, 600ms) var(--reveal-ease) !important,
+             transform var(--reveal-dur, 600ms) var(--reveal-ease) !important;
 }
 html.dark .cx-rv--in,
 html.light .cx-rv--in,

@@ -166,11 +166,11 @@ html.dark footer li a:not(.social-btn):hover{
 .uc{
   position:relative;
   padding:32px; border-right:1px solid var(--s-line); border-bottom:1px solid var(--s-line);
-  transition:transform var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+  transition:transform 220ms var(--reveal-ease), border-color 220ms var(--reveal-ease);
 }
 @media (hover: hover) and (pointer: fine){
   .uc:hover{
-    transform:translateY(-2px);
+    transform:translateY(-6px);
     border-color:var(--s-line-hi);
   }
 }

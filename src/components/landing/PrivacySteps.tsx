@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
+import { REVEAL } from '@/lib/reveal';
 import './sections.css';
 
 const Svg = ({ children }: { children: React.ReactNode }) => (
@@ -24,17 +25,15 @@ export default function PrivacySteps() {
     return () => m.removeEventListener('change', onChange);
   }, []);
 
-  const easeOut = [0.23, 1, 0.32, 1] as const;
-
   return (
     <section id="what-happens" className="cx-sec scroll-mt-20" style={{ position: 'relative', overflow: 'hidden' }} aria-labelledby="how-h">
       <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
         <motion.header
           className="cx-sec__head"
-          initial={reduce ? false : { opacity: 0, y: 12 }}
+          initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.28, ease: easeOut }}
+          transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
         >
           <p className="cx-eyebrow">Data Architecture</p>
           <h2 id="how-h" className="cx-h2">What happens to <em>your file</em></h2>
@@ -44,17 +43,17 @@ export default function PrivacySteps() {
           {/* STEP 1 */}
           <motion.li
             className="st"
-            initial={reduce ? false : { opacity: 0, y: 16 }}
+            initial={reduce ? false : { opacity: 0, y: REVEAL.cardDist }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.28, ease: easeOut, delay: isMobile ? 0 : 0 }}
+            transition={{ duration: REVEAL.dur, ease: REVEAL.ease, delay: 0 }}
           >
             <motion.span
               className="st-label"
-              initial={reduce ? false : { scale: 0.9, opacity: 0.5 }}
-              whileInView={{ scale: 1, opacity: 1 }}
+              initial={reduce ? false : { scale: 0.5, opacity: 0 }}
+              whileInView={{ scale: [0.5, 1.08, 1], opacity: [0, 1, 1] }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.28, ease: easeOut, delay: isMobile ? 0.04 : 0.05 }}
+              transition={{ duration: 0.5, times: [0, 0.7, 1], ease: "easeOut", delay: 0.05 }}
               style={{ display: "inline-block", transformOrigin: "left center" }}
             >
               <b>01</b>/ Ingest
@@ -68,7 +67,7 @@ export default function PrivacySteps() {
               initial={reduce ? false : (isMobile ? { scaleY: 0 } : { scaleX: 0 })}
               whileInView={isMobile ? { scaleY: 1 } : { scaleX: 1 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.28, ease: easeOut, delay: isMobile ? 0.08 : 0.14 }}
+              transition={{ duration: REVEAL.dur, ease: REVEAL.ease, delay: 0.15 }}
               style={{ transformOrigin: isMobile ? "top center" : "left center" }}
             />
           </motion.li>
@@ -76,17 +75,17 @@ export default function PrivacySteps() {
           {/* STEP 2 */}
           <motion.li
             className="st st--main"
-            initial={reduce ? false : { opacity: 0, y: 16 }}
+            initial={reduce ? false : { opacity: 0, y: REVEAL.cardDist }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.28, ease: easeOut, delay: isMobile ? 0 : 0.15 }}
+            transition={{ duration: REVEAL.dur, ease: REVEAL.ease, delay: isMobile ? 0 : 0.22 }}
           >
             <motion.span
               className="st-label"
-              initial={reduce ? false : { scale: 0.9, opacity: 0.5 }}
-              whileInView={{ scale: 1, opacity: 1 }}
+              initial={reduce ? false : { scale: 0.5, opacity: 0 }}
+              whileInView={{ scale: [0.5, 1.08, 1], opacity: [0, 1, 1] }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.28, ease: easeOut, delay: isMobile ? 0.04 : 0.20 }}
+              transition={{ duration: 0.5, times: [0, 0.7, 1], ease: "easeOut", delay: (isMobile ? 0 : 0.22) + 0.05 }}
               style={{ display: "inline-block", transformOrigin: "left center" }}
             >
               <b>02</b>/ Process
@@ -95,20 +94,20 @@ export default function PrivacySteps() {
             <div className="st-paths">
               <motion.div
                 className="st-path"
-                initial={reduce ? false : { opacity: 0, y: 8 }}
+                initial={reduce ? false : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.24, ease: easeOut, delay: isMobile ? 0.06 : 0.27 }}
+                transition={{ duration: 0.5, ease: REVEAL.ease, delay: (isMobile ? 0 : 0.22) + 0.10 }}
               >
                 <span className="cx-chip cx-chip--device"><Cpu />On-device (9 tools)</span>
                 <p>9 client-side tools execute transforms 100% inside your browser WebAssembly sandbox.</p>
               </motion.div>
               <motion.div
                 className="st-path"
-                initial={reduce ? false : { opacity: 0, y: 8 }}
+                initial={reduce ? false : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.24, ease: easeOut, delay: isMobile ? 0.14 : 0.35 }}
+                transition={{ duration: 0.5, ease: REVEAL.ease, delay: (isMobile ? 0 : 0.22) + 0.20 }}
               >
                 <span className="cx-chip cx-chip--server"><Lock />Secure HTTPS (3 tools)</span>
                 <p>PDF to Word, Image to Word and Passport Photo process over encrypted HTTPS and are permanently deleted right after return.</p>
@@ -125,7 +124,7 @@ export default function PrivacySteps() {
               initial={reduce ? false : (isMobile ? { scaleY: 0 } : { scaleX: 0 })}
               whileInView={isMobile ? { scaleY: 1 } : { scaleX: 1 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.28, ease: easeOut, delay: isMobile ? 0.08 : 0.29 }}
+              transition={{ duration: REVEAL.dur, ease: REVEAL.ease, delay: (isMobile ? 0 : 0.22) + 0.15 }}
               style={{ transformOrigin: isMobile ? "top center" : "left center" }}
             />
           </motion.li>
@@ -133,17 +132,17 @@ export default function PrivacySteps() {
           {/* STEP 3 */}
           <motion.li
             className="st"
-            initial={reduce ? false : { opacity: 0, y: 16 }}
+            initial={reduce ? false : { opacity: 0, y: REVEAL.cardDist }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.28, ease: easeOut, delay: isMobile ? 0 : 0.30 }}
+            transition={{ duration: REVEAL.dur, ease: REVEAL.ease, delay: isMobile ? 0 : 0.44 }}
           >
             <motion.span
               className="st-label"
-              initial={reduce ? false : { scale: 0.9, opacity: 0.5 }}
-              whileInView={{ scale: 1, opacity: 1 }}
+              initial={reduce ? false : { scale: 0.5, opacity: 0 }}
+              whileInView={{ scale: [0.5, 1.08, 1], opacity: [0, 1, 1] }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.28, ease: easeOut, delay: isMobile ? 0.04 : 0.35 }}
+              transition={{ duration: 0.5, times: [0, 0.7, 1], ease: "easeOut", delay: (isMobile ? 0 : 0.44) + 0.05 }}
               style={{ display: "inline-block", transformOrigin: "left center" }}
             >
               <b>03</b>/ Export

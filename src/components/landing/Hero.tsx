@@ -1,10 +1,18 @@
+"use client";
+
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import TabletFlatten from "./TabletFlatten";
 import HeroTitle from "./HeroTitle";
 import "./hero.css";
 
 export default function Hero() {
+  const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  const depthY = useTransform(scrollY, [0, 450], [0, -30], { clamp: true });
+
   return (
     <section className="cx-hero" aria-labelledby="cx-hero-title">
       <div className="cx-hero__stage">
@@ -20,23 +28,27 @@ export default function Hero() {
             line2="Photo Tools That Run in Your Browser"
           />
 
-          <p className="cx-sub cx-rise" style={{ animationDelay: "320ms" }}>
-            Compixor is a private web toolkit to compress, merge, protect, watermark, and convert
-            documents directly in your browser. 9 tools run locally on your device with zero photo
-            or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport
-            Photo) process securely over HTTPS with zero permanent file storage.
-          </p>
+          <motion.div style={reduce ? undefined : { y: depthY, willChange: "transform" }}>
+            <p className="cx-sub cx-rise" style={{ animationDelay: "320ms" }}>
+              Compixor is a private web toolkit to compress, merge, protect, watermark, and convert
+              documents directly in your browser. 9 tools run locally on your device with zero photo
+              or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport
+              Photo) process securely over HTTPS with zero permanent file storage.
+            </p>
+          </motion.div>
 
-          <div className="cx-ctas cx-rise" style={{ animationDelay: "440ms" }}>
-            <Link href="#tools" className="cx-hbtn cx-hbtn--primary">
-              <span>Explore All 12 Tools</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </Link>
-            <Link href="#what-happens" className="cx-hbtn cx-hbtn--ghost">See How It Works</Link>
-          </div>
+          <motion.div style={reduce ? undefined : { y: depthY, willChange: "transform" }}>
+            <div className="cx-ctas cx-rise" style={{ animationDelay: "440ms" }}>
+              <Link href="#tools" className="cx-hbtn cx-hbtn--primary">
+                <span>Explore All 12 Tools</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
+              <Link href="#what-happens" className="cx-hbtn cx-hbtn--ghost">See How It Works</Link>
+            </div>
+          </motion.div>
         </div>
 
         <div className="cx-stage-crop">

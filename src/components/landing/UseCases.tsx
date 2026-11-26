@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { tools } from '@/data/tools';
+import { REVEAL } from '@/lib/reveal';
 import './sections.css';
 
 const CASES = [
@@ -30,17 +31,15 @@ export default function UseCases() {
     return () => m.removeEventListener('change', onChange);
   }, []);
 
-  const easeOut = [0.23, 1, 0.32, 1] as const;
-
   return (
     <section className="cx-sec" style={{ position: 'relative', overflow: 'visible' }} aria-labelledby="uc-h">
       <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
         <motion.header
           className="cx-sec__head"
-          initial={reduce ? false : { opacity: 0, y: 12 }}
+          initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.28, ease: easeOut }}
+          transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
         >
           <p className="cx-eyebrow">Use cases</p>
           <h2 id="uc-h" className="cx-h2">Made for <em>everyday paperwork</em></h2>
@@ -49,39 +48,39 @@ export default function UseCases() {
           {CASES.map((c, i) => {
             const columns = isMobile ? 1 : 2;
             const colIndex = i % columns;
-            const cardDelay = isMobile ? 0 : Math.min(0.15, colIndex * 0.05);
+            const cardDelay = isMobile ? 0 : Math.min(REVEAL.staggerCap, colIndex * REVEAL.stagger);
 
             return (
               <motion.li
                 key={c.title}
                 className="uc"
-                initial={reduce ? false : { opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={reduce ? false : { opacity: 0, y: REVEAL.cardDist, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.28, ease: easeOut, delay: cardDelay }}
+                transition={{ duration: REVEAL.dur, ease: REVEAL.ease, delay: cardDelay }}
               >
                 <motion.h3
-                  initial={reduce ? false : { opacity: 0, y: 8 }}
+                  initial={reduce ? false : { opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
-                  transition={{ duration: 0.24, ease: easeOut, delay: cardDelay }}
+                  transition={{ duration: 0.5, ease: REVEAL.ease, delay: cardDelay }}
                 >
                   {c.title}
                 </motion.h3>
                 <motion.p
-                  initial={reduce ? false : { opacity: 0, y: 8 }}
+                  initial={reduce ? false : { opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
-                  transition={{ duration: 0.24, ease: easeOut, delay: cardDelay + 0.04 }}
+                  transition={{ duration: 0.5, ease: REVEAL.ease, delay: cardDelay + 0.08 }}
                 >
                   {c.line}
                 </motion.p>
                 <motion.div
                   className="uc-tools"
-                  initial={reduce ? false : { opacity: 0, y: 8 }}
+                  initial={reduce ? false : { opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
-                  transition={{ duration: 0.24, ease: easeOut, delay: cardDelay + 0.08 }}
+                  transition={{ duration: 0.5, ease: REVEAL.ease, delay: cardDelay + 0.16 }}
                 >
                   {c.tools.map(h => (
                     <Link key={h} href={h} className="uc-tool">

@@ -22,14 +22,14 @@ export default function HeroTitle({
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
 
-  // Scroll animations: scrollY 0 -> 400px
-  // Line 1: y 0 -> -70px, opacity 1 -> 0.55
-  const line1Y = useTransform(scrollY, [0, 400], [0, -70], { clamp: true });
-  const line1Opacity = useTransform(scrollY, [0, 400], [1, 0.55], { clamp: true });
+  // Scroll animations: scrollY 0 -> 450px
+  // Line 1: y 0 -> -110px, opacity 1 -> 0.25
+  const line1Y = useTransform(scrollY, [0, 450], [0, -110], { clamp: true });
+  const line1Opacity = useTransform(scrollY, [0, 450], [1, 0.25], { clamp: true });
 
-  // Line 2: y 0 -> -40px, opacity 1 -> 0.4 (Line 1 moves up more so lines diverge cleanly)
-  const line2Y = useTransform(scrollY, [0, 400], [0, -40], { clamp: true });
-  const line2Opacity = useTransform(scrollY, [0, 400], [1, 0.4], { clamp: true });
+  // Line 2: y 0 -> -60px, opacity 1 -> 0.2 (Lines move apart, never overlap)
+  const line2Y = useTransform(scrollY, [0, 450], [0, -60], { clamp: true });
+  const line2Opacity = useTransform(scrollY, [0, 450], [1, 0.2], { clamp: true });
 
   return (
     <div className="cx-title">

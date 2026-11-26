@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Cpu, UserX, LayoutGrid, CheckCircle } from 'lucide-react';
+import { REVEAL } from '@/lib/reveal';
 
 const trustPoints = [
   {
@@ -36,16 +37,24 @@ const trustPoints = [
 ];
 
 export default function WhyTrustCompixor() {
+  const reduce = useReducedMotion();
+
   return (
     <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+      <motion.div
+        className="text-center max-w-2xl mx-auto mb-8 sm:mb-12"
+        initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
+      >
         <h2 id="why-trust-compixor-heading" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
           Why Trust Compixor
         </h2>
         <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
           Straightforward utilities built with privacy and speed by design.
         </div>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {trustPoints.map((point, index) => {
@@ -53,10 +62,10 @@ export default function WhyTrustCompixor() {
           return (
             <motion.div
               key={point.title}
-              initial={{ opacity: 0, y: 12 }}
+              initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.28, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: REVEAL.dur, delay: index * REVEAL.stagger, ease: REVEAL.ease }}
               className="glass-card p-5 sm:p-6 rounded-2xl flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-lg transition-[transform,box-shadow] duration-200 ease-out"
             >
               <div>

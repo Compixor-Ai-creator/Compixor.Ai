@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Star, MessageSquareHeart, X, Send, Loader2, AlertCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import CompixorModal from '@/components/CompixorModal';
 import { toast } from 'sonner';
 import CxSelect from '@/components/ui/CxSelect';
+import { REVEAL } from '@/lib/reveal';
 
 interface ApprovedFeedback {
   id: string;
@@ -37,6 +38,7 @@ const RATE_LIMIT_KEY = 'compixor_last_feedback_time';
 const RATE_LIMIT_MS = 60 * 1000; // 1 submission per minute per browser
 
 export default function WhatUsersSay() {
+  const reduce = useReducedMotion();
   const [items, setItems] = useState<ApprovedFeedback[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -253,7 +255,13 @@ export default function WhatUsersSay() {
       {items.length === 0 ? (
         // Clean empty state when no reviews exist yet
         <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-          <div className="glass-card p-5 sm:p-8 md:p-12 rounded-3xl max-w-xl mx-auto text-center border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm">
+          <motion.div
+            className="glass-card p-5 sm:p-8 md:p-12 rounded-3xl max-w-xl mx-auto text-center border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm"
+            initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
+          >
             <div className="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto mb-4">
               <MessageSquareHeart className="w-6 h-6" />
             </div>
@@ -271,12 +279,18 @@ export default function WhatUsersSay() {
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
               <span>Share Your Feedback</span>
             </button>
-          </div>
+          </motion.div>
         </section>
       ) : (
         // Reviews Grid when reviews exist
         <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 sm:mb-10">
+          <motion.div
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 sm:mb-10"
+            initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
+          >
             <div className="text-center sm:text-left">
               <h2 id="what-users-say-heading" className="text-2xl sm:text-3xl md:text-4xl font-black font-display text-zinc-900 dark:text-white mb-2">
                 What users say
@@ -293,16 +307,16 @@ export default function WhatUsersSay() {
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
               <span>Share Feedback</span>
             </button>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {items.map((fb, idx) => (
               <motion.div
                 key={fb.id || idx}
-                initial={{ opacity: 0, y: 12 }}
+                initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.28, delay: idx * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: REVEAL.dur, delay: (idx % 3) * REVEAL.stagger, ease: REVEAL.ease }}
                 className="glass-card p-5 sm:p-6 rounded-2xl flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-lg transition-[transform,box-shadow] duration-200 ease-out overflow-hidden"
               >
                 <div className="space-y-3">

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, useInView } from 'framer-motion';
 import {
   HelpCircle,
   ChevronDown,
@@ -19,13 +19,13 @@ import {
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { FaqJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
 import Hero from '@/components/landing/Hero';
-import Reveal from '@/components/landing/Reveal';
 import PrivacySteps from '@/components/landing/PrivacySteps';
 import UseCases from '@/components/landing/UseCases';
 import WhyTrustCompixor from '@/components/WhyTrustCompixor';
 import WhatUsersSay from '@/components/WhatUsersSay';
 import { tools } from '@/data/tools';
 import '@/components/landing/sections.css';
+import { REVEAL } from '@/lib/reveal';
 
 const trustSignals = [
   {
@@ -170,6 +170,45 @@ const homeFaqs = [
 
 type ToolCategory = 'All' | 'PDF' | 'Word' | 'Media';
 
+function StatCountUp({
+  target,
+  suffix = '',
+  reduce = false,
+}: {
+  target: number;
+  suffix?: string;
+  reduce?: boolean;
+}) {
+  const [val, setVal] = useState(target);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+
+  useEffect(() => {
+    if (reduce || !inView) return;
+    let start: number | null = null;
+    const dur = 700;
+    let frameId: number;
+
+    const animate = (time: number) => {
+      if (!start) start = time;
+      const progress = Math.min((time - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      setVal(Math.round(ease * target));
+      if (progress < 1) {
+        frameId = requestAnimationFrame(animate);
+      }
+    };
+    frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [inView, reduce, target]);
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      {reduce ? target : val}{suffix}
+    </span>
+  );
+}
+
 export default function HomePage() {
   const [faqSearch, setFaqSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<ToolCategory>('All');
@@ -208,7 +247,7 @@ export default function HomePage() {
           .st, .st-label, .st-connector, .st-path,
           .uc, .uc h3, .uc p, .uc-tools, .uc-tool,
           .cx-rv, .cx-rv--in,
-          .cx-line-enter-1, .cx-line-enter-2,
+          .cx-line-enter-1, .cx-line-enter-2, .cx-rise,
           [style*="opacity: 0"], [style*="opacity:0"] {
             opacity: 1 !important;
             transform: none !important;
@@ -233,10 +272,10 @@ export default function HomePage() {
       <section id="tools" className="relative py-10 sm:py-16 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={reduce ? false : { opacity: 0, y: 12 }}
+            initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
+            transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
             className="text-center max-w-3xl mx-auto mb-8 sm:mb-10"
           >
             <h2 id="tools-catalog-heading" className="text-3xl sm:text-4xl md:text-5xl font-black font-display text-zinc-900 dark:text-white mb-4">
@@ -250,17 +289,17 @@ export default function HomePage() {
           {/* Trust Metric Strip */}
           <div className="mb-8 max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
             {[
-              { val: '12', label: 'Free Utilities', color: 'text-zinc-900 dark:text-white' },
-              { val: '9 Tools', label: 'Processed on Device', color: 'text-purple-600 dark:text-purple-400' },
+              { val: <StatCountUp target={12} reduce={Boolean(reduce)} />, label: 'Free Utilities', color: 'text-zinc-900 dark:text-white' },
+              { val: <StatCountUp target={9} suffix=" Tools" reduce={Boolean(reduce)} />, label: 'Processed on Device', color: 'text-purple-600 dark:text-purple-400' },
               { val: '0 Permanent', label: 'Server Storage', color: 'text-emerald-600 dark:text-emerald-400' },
               { val: '0', label: 'Paywalls & Ads', color: 'text-zinc-900 dark:text-white' },
             ].map((stat, idx) => (
               <motion.div
                 key={stat.label}
-                initial={reduce ? false : { opacity: 0, y: 12 }}
+                initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1], delay: idx * 0.04 }}
+                transition={{ duration: REVEAL.dur, ease: REVEAL.ease, delay: idx * REVEAL.stagger }}
                 className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm"
               >
                 <div className={`text-xl sm:text-2xl font-black font-display tabular-nums ${stat.color}`}>
@@ -320,39 +359,39 @@ export default function HomePage() {
                 : tool.description;
 
               // Row-relative stagger: delay is bound to column position (index % columns)
-              // so any row entering viewport animates immediately without waiting for previous rows
+              // capped at var(--reveal-stagger-cap) (450ms)
               const columns = isMobile ? 1 : 3;
               const colIndex = i % columns;
-              const cardDelay = isMobile ? 0 : Math.min(0.24, colIndex * 0.05);
+              const cardDelay = isMobile ? 0 : Math.min(REVEAL.staggerCap, colIndex * REVEAL.stagger);
 
               return (
                 <motion.div
                   key={tool.id}
-                  initial={reduce ? false : { opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={reduce ? false : { opacity: 0, y: REVEAL.cardDist, scale: 0.96 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true, margin: "-80px" }}
                   transition={{
-                    duration: 0.28,
-                    ease: [0.23, 1, 0.32, 1],
+                    duration: REVEAL.dur,
+                    ease: REVEAL.ease,
                     delay: cardDelay,
                   }}
                   className="h-full"
                 >
                   <Link
                     href={tool.href}
-                    className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full relative overflow-hidden transition-[transform,border-color] duration-[180ms] [@media(hover:hover)]:hover:-translate-y-[2px] [@media(hover:hover)]:hover:border-brand-500/50 active:scale-[0.98]"
-                    style={{ transitionTimingFunction: "var(--ease-out)" }}
+                    className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full relative overflow-hidden transition-[transform,border-color] duration-[220ms] [@media(hover:hover)]:hover:-translate-y-[6px] [@media(hover:hover)]:hover:border-brand-500/50 active:scale-[0.97] active:duration-[120ms]"
+                    style={{ transitionTimingFunction: "var(--reveal-ease)" }}
                   >
                     <div
                       aria-hidden="true"
-                      className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 [@media(hover:hover)]:group-hover:opacity-10 transition-opacity duration-[180ms]`}
-                      style={{ transitionTimingFunction: "var(--ease-out)" }}
+                      className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 [@media(hover:hover)]:group-hover:opacity-10 transition-opacity duration-[220ms]`}
+                      style={{ transitionTimingFunction: "var(--reveal-ease)" }}
                     />
                     <div>
                       <div className="flex items-center justify-between mb-4">
                         <div
-                          className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg [@media(hover:hover)]:group-hover:scale-[1.04] transition-transform duration-[180ms]`}
-                          style={{ transitionTimingFunction: "var(--ease-out)" }}
+                          className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg [@media(hover:hover)]:group-hover:scale-[1.08] transition-transform duration-[220ms]`}
+                          style={{ transitionTimingFunction: "var(--reveal-ease)" }}
                         >
                           <Icon className="w-6 h-6" />
                         </div>
@@ -364,7 +403,7 @@ export default function HomePage() {
                           {badgeText}
                         </span>
                       </div>
-                      <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 [@media(hover:hover)]:group-hover:text-brand-500 transition-colors duration-[180ms]">
+                      <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 [@media(hover:hover)]:group-hover:text-brand-500 transition-colors duration-[220ms]">
                         {tool.title}
                       </h3>
                       <div className="text-xs text-brand-600 dark:text-brand-400 font-semibold mb-2">
@@ -380,8 +419,8 @@ export default function HomePage() {
                         <span className="text-brand-500 flex items-center gap-1 font-semibold">
                           <span>Launch Tool</span>
                           <span
-                            className="inline-block transition-transform duration-[180ms] [@media(hover:hover)]:group-hover:translate-x-1"
-                            style={{ transitionTimingFunction: "var(--ease-out)" }}
+                            className="inline-block transition-transform duration-[220ms] [@media(hover:hover)]:group-hover:translate-x-1"
+                            style={{ transitionTimingFunction: "var(--reveal-ease)" }}
                           >&rarr;</span>
                         </span>
                       </div>
@@ -395,9 +434,15 @@ export default function HomePage() {
       </section>
 
       {/* ============ HOW-TO ARTICLE (Sole article tag on page) ============ */}
-      <article id="how-to-article" className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal delay={0}>
-          <div className="glass-card p-6 sm:p-10 md:p-12 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl">
+      <motion.article
+        id="how-to-article"
+        className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
+      >
+        <div className="glass-card p-6 sm:p-10 md:p-12 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl">
           <div className="mb-4">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-brand-500/10 text-brand-700 dark:text-brand-300 border border-brand-500/20">
               <BookOpen className="w-3.5 h-3.5 text-brand-500" />
@@ -429,8 +474,7 @@ export default function HomePage() {
             ))}
           </ol>
         </div>
-        </Reveal>
-      </article>
+      </motion.article>
 
       {/* ============ PHASE 3: WHAT HAPPENS TO YOUR FILE ============ */}
       <PrivacySteps />
@@ -439,7 +483,14 @@ export default function HomePage() {
       <UseCases />
 
       {/* ============ STRUCTURED COMPARISON TABLE ============ */}
-      <section id="privacy-comparison" className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        id="privacy-comparison"
+        className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
+      >
         <div className="text-center max-w-3xl mx-auto mb-8">
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 mb-3">
             <Shield className="w-3.5 h-3.5 text-emerald-500" />
@@ -503,10 +554,17 @@ export default function HomePage() {
             </tbody>
           </table>
         </div>
-      </section>
+      </motion.section>
 
       {/* ============ TRUST ARCHITECTURE ============ */}
-      <section id="trust-architecture" className="relative py-10 sm:py-16">
+      <motion.section
+        id="trust-architecture"
+        className="relative py-10 sm:py-16"
+        initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h2 id="trust-architecture-heading" className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
@@ -540,10 +598,18 @@ export default function HomePage() {
             })}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ============ SEMANTIC GLOSSARY <dl> ============ */}
-      <aside id="terminology-glossary" aria-label="Privacy and Architecture Glossary" className="relative py-10 sm:py-16 scroll-mt-20">
+      <motion.aside
+        id="terminology-glossary"
+        aria-label="Privacy and Architecture Glossary"
+        className="relative py-10 sm:py-16 scroll-mt-20"
+        initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="glass-card p-6 sm:p-10 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl">
             <div className="text-center max-w-2xl mx-auto mb-8">
@@ -577,7 +643,7 @@ export default function HomePage() {
             </dl>
           </div>
         </div>
-      </aside>
+      </motion.aside>
 
       {/* ============ WHY TRUST COMPIXOR ============ */}
       <WhyTrustCompixor />
@@ -586,7 +652,14 @@ export default function HomePage() {
       <WhatUsersSay />
 
       {/* ============ FAQ SECTION (Modern Accordion with Live Filter & Direct Sibling Pairs) ============ */}
-      <section id="faq-section" className="pt-20 sm:pt-28 pb-10 sm:pb-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
+      <motion.section
+        id="faq-section"
+        className="pt-20 sm:pt-28 pb-10 sm:pb-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24"
+        initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
+      >
         <div className="text-center mb-8 sm:mb-10">
           <h2 id="common-questions" className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
             Questions About Our Free PDF, Word and Photo Tools
@@ -705,10 +778,17 @@ export default function HomePage() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* ============ CTA BOX ============ */}
-      <section id="cta-section" className="py-10 sm:py-16 relative overflow-hidden">
+      <motion.section
+        id="cta-section"
+        className="py-10 sm:py-16 relative overflow-hidden"
+        initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
+      >
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -z-10 inset-0 flex items-center justify-center"
@@ -722,13 +802,7 @@ export default function HomePage() {
         </div>
 
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            className="glow-border p-6 sm:p-10 md:p-14 rounded-3xl"
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <div className="glow-border p-6 sm:p-10 md:p-14 rounded-3xl">
             <h2 id="cta-heading" className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-3">
               Edit Your Documents in Browser Memory
             </h2>
@@ -742,9 +816,9 @@ export default function HomePage() {
               <span>Explore 12 Private Tools</span>
               <ArrowRight className="w-5 h-5 shrink-0" />
             </a>
-          </motion.div>
+          </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

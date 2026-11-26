@@ -81,6 +81,14 @@
     --dur-modal: 280ms;
     --dur-micro: 180ms;
     --dur-std: 280ms;
+
+    /* Central Reveal Tuning Tokens — keep in sync with src/lib/reveal.ts (REVEAL constant). Update both files together! */
+    --reveal-dist: 36px;      /* default rise distance (matches REVEAL.dist) */
+    --reveal-card-dist: 40px; /* cards rise distance (matches REVEAL.cardDist) */
+    --reveal-dur: 600ms;      /* default reveal duration (matches REVEAL.dur) */
+    --reveal-ease: cubic-bezier(0.16, 1, 0.3, 1); /* (matches REVEAL.ease) */
+    --reveal-stagger: 90ms;   /* gap between siblings (matches REVEAL.stagger) */
+    --reveal-stagger-cap: 450ms; /* maximum stagger cap (matches REVEAL.staggerCap) */
     --topo-color: transparent;
     --glass-bg: rgba(255, 255, 255, 0.85);
     --glass-border: rgba(15, 23, 42, 0.12);
