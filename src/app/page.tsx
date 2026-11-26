@@ -249,7 +249,7 @@ export default function HomePage() {
                     key={cat}
                     type="button"
                     onClick={() => setActiveCategory(cat)}
-                    className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 active:scale-[0.98] ${
+                    className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-[background-color,color,transform] duration-200 ease-out cursor-pointer flex items-center gap-2 active:scale-[0.98] ${
                       isSelected
                         ? 'bg-purple-600 text-white shadow-md shadow-purple-600/25 scale-[1.02]'
                         : 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70'
@@ -290,15 +290,15 @@ export default function HomePage() {
                   <div key={tool.id}>
                     <Link
                       href={tool.href}
-                      className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full hover:-translate-y-1 hover:border-brand-500/50 hover:shadow-xl active:scale-[0.99] transition-all duration-200 relative overflow-hidden"
+                      className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full hover:-translate-y-0.5 hover:border-brand-500/50 hover:shadow-lg active:scale-[0.99] transition-[transform,border-color,box-shadow] duration-200 ease-out relative overflow-hidden"
                     >
                       <div
                         aria-hidden="true"
-                        className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
+                        className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-10 transition-opacity duration-200 ease-out`}
                       />
                       <div>
                         <div className="flex items-center justify-between mb-4">
-                          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-transform duration-200 ease-out`}>
                             <Icon className="w-6 h-6" />
                           </div>
                           <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md border ${
@@ -309,7 +309,7 @@ export default function HomePage() {
                             {badgeText}
                           </span>
                         </div>
-                        <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors">
+                        <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors duration-200">
                           {tool.title}
                         </h3>
                         <div className="text-xs text-brand-600 dark:text-brand-400 font-semibold mb-2">
@@ -322,9 +322,9 @@ export default function HomePage() {
                       <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
                         <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
                           <span>{tool.stats}</span>
-                          <span className="text-brand-500 flex items-center gap-1 group-hover:gap-1.5 transition-all duration-200 font-semibold">
+                          <span className="text-brand-500 flex items-center gap-1 font-semibold">
                             <span>Launch Tool</span>
-                            <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+                            <span className="inline-block transition-transform duration-200 ease-out group-hover:translate-x-1">&rarr;</span>
                           </span>
                         </div>
                       </div>
@@ -467,9 +467,9 @@ export default function HomePage() {
               return (
                 <div
                   key={i}
-                  className="glass-card p-5 sm:p-6 text-center rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-brand-500/30 group"
+                  className="glass-card p-5 sm:p-6 text-center rounded-2xl transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:border-brand-500/30 group"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-500 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-500 group-hover:scale-105 transition-transform duration-200 ease-out">
                     <Icon className="w-6 h-6" />
                   </div>
                   <h3 id={signalId} className="font-bold font-display text-zinc-900 dark:text-white mb-2 text-base">
@@ -600,7 +600,7 @@ export default function HomePage() {
                   as="div"
                   key={disclosureKey}
                   defaultOpen={faqSearchActive || originalIndex === 0}
-                  className="glass-card rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden transition-all duration-300 hover:border-brand-500/30"
+                  className="glass-card rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden transition-[border-color,box-shadow] duration-200 ease-out hover:border-brand-500/30"
                 >
                   {({ open }) => (
                     <>
@@ -608,14 +608,14 @@ export default function HomePage() {
                         <DisclosureButton
                           type="button"
                           id={faq.id}
-                          className="w-full p-4 sm:p-5 text-left text-base sm:text-lg font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between gap-3 select-none hover:bg-zinc-500/5 transition-colors"
+                          className="w-full p-4 sm:p-5 text-left text-base sm:text-lg font-bold font-display text-zinc-900 dark:text-white flex items-center justify-between gap-3 select-none hover:bg-zinc-500/5 transition-colors duration-150"
                         >
                           <span className="flex items-center gap-2.5">
                             <HelpCircle className="w-5 h-5 text-brand-600 dark:text-brand-400 shrink-0" />
                             <span>{faq.q}</span>
                           </span>
                           <ChevronDown
-                            className={`w-5 h-5 text-zinc-400 transition-transform duration-300 shrink-0 ${
+                            className={`w-5 h-5 text-zinc-400 transition-transform duration-200 ease-out shrink-0 ${
                               open ? 'rotate-180 text-brand-500' : ''
                             }`}
                           />
@@ -624,7 +624,7 @@ export default function HomePage() {
                       <DisclosurePanel
                         static
                         id={`faq-answer-${faq.id}`}
-                        className="px-4 sm:px-5 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed overflow-hidden border-transparent max-h-0 opacity-0 pb-0 pt-0 m-0 transition-all duration-300 ease-out data-[open]:max-h-96 data-[open]:opacity-100 data-[open]:pb-4 data-[open]:pt-1 data-[open]:border-t data-[open]:border-zinc-100 dark:data-[open]:border-zinc-800/60 sm:data-[open]:pb-5"
+                        className="px-4 sm:px-5 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed overflow-hidden border-transparent max-h-0 opacity-0 pb-0 pt-0 m-0 transition-[max-height,opacity] duration-200 ease-out data-[open]:max-h-96 data-[open]:opacity-100 data-[open]:pb-4 data-[open]:pt-1 data-[open]:border-t data-[open]:border-zinc-100 dark:data-[open]:border-zinc-800/60 sm:data-[open]:pb-5"
                       >
                         <p className="m-0">{faq.a}</p>
                       </DisclosurePanel>
@@ -670,7 +670,7 @@ export default function HomePage() {
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
             <h2 id="cta-heading" className="text-2xl sm:text-3xl font-black font-display text-zinc-900 dark:text-white mb-3">
               Edit Your Documents in Browser Memory
@@ -680,7 +680,7 @@ export default function HomePage() {
             </div>
             <a
               href="#tools"
-              className="btn-primary inline-flex items-center justify-center gap-2 text-sm sm:text-base px-6 sm:px-8 py-3.5 font-bold cursor-pointer w-full sm:w-auto min-h-[44px] hover:shadow-lg active:scale-[0.98] transition-all"
+              className="btn-primary inline-flex items-center justify-center gap-2 text-sm sm:text-base px-6 sm:px-8 py-3.5 font-bold cursor-pointer w-full sm:w-auto min-h-[44px] hover:shadow-lg active:scale-[0.98] transition-[transform,opacity,box-shadow] duration-200 ease-out"
             >
               <span>Explore 12 Private Tools</span>
               <ArrowRight className="w-5 h-5 shrink-0" />

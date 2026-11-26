@@ -36,19 +36,19 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
+      staggerChildren: 0.05,
     },
   },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 15 },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.4,
-      ease: [0.16, 1, 0.3, 1],
+      duration: 0.28,
+      ease: [0.22, 1, 0.36, 1],
     },
   },
 };
@@ -103,7 +103,7 @@ export default function WhyChooseCompixor() {
         {/* ================= CARD 1: ONE COMPLETE WORKSPACE ================= */}
         <motion.div
           variants={cardVariants}
-          className="group relative flex flex-col rounded-[22px] p-6 sm:p-7 glass-card shadow-xs hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-500/10 hover:border-brand-500/40 transition-all duration-500 ease-out"
+          className="group relative flex flex-col rounded-[22px] p-6 sm:p-7 glass-card shadow-xs hover:-translate-y-0.5 hover:shadow-xl hover:shadow-brand-500/10 hover:border-brand-500/40 transition-[transform,border-color,box-shadow] duration-200 ease-out"
         >
           {/* Card Visual Mockup Container */}
           <div className="h-68 rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/70 dark:from-surface-850/80 dark:to-surface-800/60 border border-zinc-200/60 dark:border-zinc-700/50 p-4 flex items-center justify-center relative overflow-hidden mb-6">
@@ -120,9 +120,9 @@ export default function WhyChooseCompixor() {
                   return (
                     <div
                       key={tool.name}
-                      className="group/item flex flex-col items-center justify-center p-1.5 rounded-xl bg-zinc-50 dark:bg-surface-800/80 border border-zinc-100 dark:border-zinc-700/40 hover:border-brand-500/30 hover:scale-105 hover:shadow-xs transition-all duration-300 cursor-default"
+                      className="group/item flex flex-col items-center justify-center p-1.5 rounded-xl bg-zinc-50 dark:bg-surface-800/80 border border-zinc-100 dark:border-zinc-700/40 hover:border-brand-500/30 hover:scale-[1.02] hover:shadow-xs transition-[transform,border-color] duration-200 ease-out cursor-default"
                     >
-                      <div className={`w-7 h-7 rounded-lg ${tool.color} flex items-center justify-center mb-1 group-hover/item:rotate-6 transition-transform duration-300`}>
+                      <div className={`w-7 h-7 rounded-lg ${tool.color} flex items-center justify-center mb-1 group-hover/item:rotate-3 transition-transform duration-200 ease-out`}>
                         <ToolIcon className="w-3.5 h-3.5" />
                       </div>
                       <span className="text-[10px] font-bold text-zinc-700 dark:text-zinc-300 truncate max-w-[60px] text-center">
@@ -159,7 +159,7 @@ export default function WhyChooseCompixor() {
         {/* ================= CARD 2: ACCURACY & SPEED YOU CAN TRUST ================= */}
         <motion.div
           variants={cardVariants}
-          className="group relative flex flex-col rounded-[22px] p-6 sm:p-7 glass-card shadow-xs hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/10 hover:border-emerald-500/40 transition-all duration-500 ease-out"
+          className="group relative flex flex-col rounded-[22px] p-6 sm:p-7 glass-card shadow-xs hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-500/10 hover:border-emerald-500/40 transition-[transform,border-color,box-shadow] duration-200 ease-out"
         >
           {/* Card Visual Mockup Container */}
           <div className="h-68 rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/70 dark:from-surface-850/80 dark:to-surface-800/60 border border-zinc-200/60 dark:border-zinc-700/50 p-4 flex items-center justify-center relative overflow-hidden mb-6">
@@ -231,7 +231,7 @@ export default function WhyChooseCompixor() {
         {/* ================= CARD 3: BUILT-IN SECURITY ================= */}
         <motion.div
           variants={cardVariants}
-          className="group relative flex flex-col rounded-[22px] p-6 sm:p-7 glass-card shadow-xs hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-500/40 transition-all duration-500 ease-out"
+          className="group relative flex flex-col rounded-[22px] p-6 sm:p-7 glass-card shadow-xs hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-500/40 transition-[transform,border-color,box-shadow] duration-200 ease-out"
         >
           {/* Card Visual Mockup Container */}
           <div className="h-68 rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/70 dark:from-surface-850/80 dark:to-surface-800/60 border border-zinc-200/60 dark:border-zinc-700/50 p-4 flex items-center justify-center relative overflow-hidden mb-6">

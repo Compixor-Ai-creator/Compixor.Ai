@@ -34,7 +34,7 @@ export default function Reveal({
         const timer = setTimeout(() => {
           el.removeEventListener("transitionend", done);
           cleanup(el);
-        }, 1200);
+        }, 600);
         el.addEventListener("transitionend", done);
       });
     }, { rootMargin: "0px 0px -8% 0px" });
@@ -42,7 +42,7 @@ export default function Reveal({
     targets.forEach((el, i) => {
       if (el.getBoundingClientRect().top < innerHeight * 0.92) return; // pehle se dikh raha
       el.classList.add("cx-rv");
-      el.style.transitionDelay = `${delay + (itemSelector ? (i % 3) * 0.09 : 0)}s`;
+      el.style.transitionDelay = `${delay + (itemSelector ? (i % 3) * 0.04 : 0)}s`;
       io.observe(el);
     });
     return () => io.disconnect();

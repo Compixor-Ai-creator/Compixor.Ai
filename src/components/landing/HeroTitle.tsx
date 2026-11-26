@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   motion,
   useScroll,
@@ -22,25 +22,37 @@ export default function HeroTitle({
 }) {
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Scroll parallax with spring damping
+  useEffect(() => {
+    const m = window.matchMedia("(max-width: 768px)");
+    const onChange = () => setIsMobile(m.matches);
+    onChange();
+    m.addEventListener("change", onChange);
+    return () => m.removeEventListener("change", onChange);
+  }, []);
+
+  // Scroll parallax with gentle damping (16px distance maintained)
   const progress = useTransform(scrollY, [0, RANGE], [0, 1]);
   const smoothProgress = useSpring(progress, { stiffness: 90, damping: 26, mass: 0.5 });
-  const y = useTransform(smoothProgress, [0, 1], [0, 48]);
+  const y = useTransform(smoothProgress, [0, 1], [0, 16]);
 
-  // Scroll velocity momentum / subtle dynamic inertia
+  // Scroll velocity momentum with smooth damping (stiffness ~120, damping ~24)
   const scrollVelocity = useVelocity(scrollY);
-  const smoothVelocity = useSpring(scrollVelocity, { damping: 45, stiffness: 350 });
-  const skewY = useTransform(smoothVelocity, [-1400, 1400], [-1.2, 1.2]);
+  const smoothVelocity = useSpring(scrollVelocity, { stiffness: 120, damping: 24 });
+
+  // Clamped skew range: max 3.5deg desktop, 1.8deg mobile (half amount on mobile to prevent side slide)
+  const maxSkew = isMobile ? 1.8 : 3.5;
+  const skewY = useTransform(smoothVelocity, [-1200, 1200], [-maxSkew, maxSkew], { clamp: true });
 
   const lineVariants = {
-    hidden: { y: "115%", opacity: 0 },
+    hidden: { y: "100%", opacity: 0 },
     visible: (customDelay: number) => ({
       y: "0%",
       opacity: 1,
       transition: {
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1],
+        duration: 0.45,
+        ease: [0.22, 1, 0.36, 1],
         delay: customDelay,
       },
     }),
@@ -57,7 +69,8 @@ export default function HeroTitle({
             : {
                 y,
                 skewY,
-                willChange: "transform",
+                transformOrigin: "50% 50%",
+                z: 0,
               }
         }
       >

@@ -249,7 +249,7 @@ export default function FeedbackWidget() {
           aria-haspopup="dialog"
           aria-expanded={isOpen}
           aria-label="Feedback / Request Tool"
-          className="group relative flex items-center gap-2.5 px-4 py-2.5 min-h-[44px] rounded-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white shadow-lg shadow-brand-500/25 border border-white/20 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 dark:focus:ring-offset-surface-950"
+          className="group relative flex items-center gap-2.5 px-4 py-2.5 min-h-[44px] rounded-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white shadow-lg shadow-brand-500/25 border border-white/20 transition-[transform,box-shadow] duration-200 ease-out hover:scale-[1.02] active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 dark:focus:ring-offset-surface-950"
         >
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -319,7 +319,7 @@ export default function FeedbackWidget() {
                               key={cat.id}
                               type="button"
                               onClick={() => setCategory(cat.id)}
-                              className={`flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-medium border transition-all duration-200 ${
+                              className={`flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-medium border transition-[background-color,border-color,color] duration-200 ease-out ${
                                 isSelected
                                   ? 'bg-brand-500/10 border-brand-500 text-brand-600 dark:text-brand-300 shadow-sm ring-1 ring-brand-500/30 font-semibold'
                                   : 'bg-zinc-50 dark:bg-surface-850/60 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-surface-800'
@@ -381,11 +381,11 @@ export default function FeedbackWidget() {
                                 }}
                                 onMouseEnter={() => setHoverRating(star)}
                                 onMouseLeave={() => setHoverRating(null)}
-                                className="p-1 rounded-xl hover:bg-amber-500/20 transition-all transform hover:scale-125 active:scale-95 focus:outline-none cursor-pointer"
+                                className="p-1 rounded-xl hover:bg-amber-500/20 transition-transform duration-150 ease-out transform hover:scale-110 active:scale-95 focus:outline-none cursor-pointer"
                                 aria-label={`Rate ${star} out of 5 stars`}
                               >
                                 <Star
-                                  className={`w-7 h-7 transition-all duration-150 ${
+                                  className={`w-7 h-7 transition-colors duration-150 ease-out ${
                                     isFilled
                                       ? 'text-amber-400 fill-amber-400 drop-shadow-sm'
                                       : 'text-zinc-300 dark:text-zinc-600 hover:text-amber-300'
@@ -419,7 +419,7 @@ export default function FeedbackWidget() {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder={activeCategoryConfig.placeholder}
-                        className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-surface-850 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all resize-none"
+                        className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-surface-850 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-[border-color,box-shadow] duration-200 ease-out resize-none"
                       />
                     </div>
 
@@ -437,7 +437,7 @@ export default function FeedbackWidget() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@domain.com"
-                        className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-surface-850 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                        className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-surface-850 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-[border-color,box-shadow] duration-200 ease-out"
                       />
                     </div>
 
@@ -455,7 +455,7 @@ export default function FeedbackWidget() {
                         type="button"
                         onClick={handleSendViaGmail}
                         disabled={isSubmitting || message.trim().length < 5}
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-red-500 hover:from-red-500 hover:to-rose-500 text-white shadow-md shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-red-500 hover:from-red-500 hover:to-rose-500 text-white shadow-md shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,opacity,box-shadow] duration-200 ease-out hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                       >
                         <GmailIcon className="w-4 h-4" />
                         <span>Open &amp; Send in Gmail Web (Pre-Filled)</span>
@@ -464,7 +464,7 @@ export default function FeedbackWidget() {
                       <button
                         type="submit"
                         disabled={isSubmitting || message.trim().length < 5}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,color,border-color] duration-180 ease-out cursor-pointer"
                       >
                         <Send className="w-3.5 h-3.5" />
                         <span>Save Locally Only (Zero Cloud Upload)</span>
@@ -508,7 +508,7 @@ export default function FeedbackWidget() {
                         href={getGmailComposeUrl()}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-red-500 hover:from-red-500 hover:to-rose-500 text-white shadow-md shadow-red-500/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-red-500 hover:from-red-500 hover:to-rose-500 text-white shadow-md shadow-red-500/20 transition-[transform,opacity,box-shadow] duration-200 ease-out hover:scale-[1.01] active:scale-[0.99]"
                       >
                         <GmailIcon className="w-4 h-4 shrink-0" />
                         <span>Open in Gmail (Web) — Pre-Written</span>

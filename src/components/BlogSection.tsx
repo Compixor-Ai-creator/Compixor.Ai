@@ -108,7 +108,7 @@ export default function BlogSection() {
                 key={cat}
                 type="button"
                 onClick={() => setActiveCategory(cat)}
-                className={`relative px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 ${
+                className={`relative px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-[background-color,color,transform] duration-200 ease-out cursor-pointer flex items-center gap-2 active:scale-95 ${
                   isActive
                     ? 'bg-gradient-to-r from-brand-600 via-purple-600 to-indigo-600 text-white shadow-md shadow-brand-500/25 scale-[1.02]'
                     : 'bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:border-brand-500/30 backdrop-blur-md'
@@ -142,10 +142,10 @@ export default function BlogSection() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.25 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                   className="h-full"
                 >
-                  <article className="glass-card p-6 sm:p-7 h-full flex flex-col justify-between rounded-3xl border border-white/80 dark:border-zinc-800/80 hover:border-brand-500/40 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 group">
+                  <article className="glass-card p-6 sm:p-7 h-full flex flex-col justify-between rounded-3xl border border-white/80 dark:border-zinc-800/80 hover:border-brand-500/40 hover:shadow-lg transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 group">
                     <div>
                       {/* Top Meta Row */}
                       <div className="flex items-center justify-between gap-2 mb-4">
@@ -160,7 +160,7 @@ export default function BlogSection() {
 
                       {/* Thumbnail or Vector Illustration Glow Box */}
                       {blog.thumbnail ? (
-                        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-5 border border-zinc-200/80 dark:border-zinc-800/80 shadow-md group-hover:scale-[1.02] transition-transform duration-300 bg-zinc-950">
+                        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-5 border border-zinc-200/80 dark:border-zinc-800/80 shadow-md group-hover:scale-[1.01] transition-transform duration-200 ease-out bg-zinc-950">
                           <Image
                             src={blog.thumbnail}
                             alt={blog.title}
@@ -172,16 +172,16 @@ export default function BlogSection() {
                       ) : (
                         <div className="relative mb-5 inline-block">
                           <div
-                            className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${blog.accentColor} border border-zinc-200/60 dark:border-zinc-700/60 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-300`}
+                            className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${blog.accentColor} border border-zinc-200/60 dark:border-zinc-700/60 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-200 ease-out`}
                           >
                             <IconComponent className="w-7 h-7 text-brand-600 dark:text-brand-400" />
                           </div>
-                          <div className="absolute -inset-1 rounded-2xl bg-brand-500/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                          <div className="absolute -inset-1 rounded-2xl bg-brand-500/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
                         </div>
                       )}
 
                       {/* H3 Title */}
-                      <h3 className="text-lg sm:text-xl font-serif font-bold text-zinc-900 dark:text-white mb-2.5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug">
+                      <h3 className="text-lg sm:text-xl font-serif font-bold text-zinc-900 dark:text-white mb-2.5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors duration-200 line-clamp-2 leading-snug">
                         <Link href={`/blog/${blog.slug}`}>
                           {blog.title}
                         </Link>
@@ -200,12 +200,12 @@ export default function BlogSection() {
                         className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 group-hover:underline cursor-pointer"
                       >
                         <span>Read Full Guide</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 ease-out" />
                       </Link>
 
                       <Link
                         href={blog.toolPath}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-brand-500/10 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-300 transition-all border border-transparent hover:border-brand-500/20 cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-brand-500/10 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-300 transition-[background-color,color,border-color] duration-180 ease-out border border-transparent hover:border-brand-500/20 cursor-pointer"
                       >
                         <span>Try Tool</span>
                         <ExternalLink className="w-3.5 h-3.5" />

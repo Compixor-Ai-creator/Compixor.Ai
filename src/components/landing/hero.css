@@ -94,7 +94,7 @@ html.light .cx-hero-subtle-glow {
   display:inline-flex; align-items:center; gap:8px; height:31px; padding:0 12px 0 6px;
   border-radius:999px; border:1px solid var(--h-badge-line); background:var(--h-badge-bg);
   color:var(--h-badge-text); font:500 13.5px/1 var(--font-inter),system-ui,sans-serif; white-space:nowrap;
-  transition: border-color .2s, box-shadow .2s;
+  transition: border-color 180ms cubic-bezier(.22,1,.36,1), box-shadow 180ms cubic-bezier(.22,1,.36,1);
 }
 .cx-badge:hover {
   border-color: rgba(167,139,250,.55);
@@ -123,7 +123,7 @@ html.light .cx-hero-subtle-glow {
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   min-height:41px; height:41px; border-radius:999px; text-decoration:none;
   font:500 14px/1 var(--font-inter),system-ui,sans-serif; cursor:pointer;
-  transition:filter .2s, background .2s, transform .2s;
+  transition:transform 180ms cubic-bezier(.22,1,.36,1), opacity 180ms cubic-bezier(.22,1,.36,1), background 180ms cubic-bezier(.22,1,.36,1);
 }
 .cx-hbtn:focus-visible{ outline:2px solid var(--h-grad-a); outline-offset:2px; }
 .cx-hbtn--primary{
@@ -145,10 +145,11 @@ html.light .cx-hero-subtle-glow {
 .cx-hbtn--primary:hover::before{animation-duration:1.1s}
 @keyframes cx-shine{0%{transform:translateX(-130%) skewX(-20deg)}55%,100%{transform:translateX(280%) skewX(-20deg)}}
 @media (prefers-reduced-motion:reduce){.cx-hbtn--primary::before{animation:none;display:none}}
-.cx-hbtn--primary:hover{ filter:brightness(1.12); }
-.cx-hbtn--primary:active{ transform:translateY(1px); }
+.cx-hbtn--primary:hover{ opacity:.95; transform:translateY(-1px); }
+.cx-hbtn--primary:active{ transform:translateY(0); }
 .cx-hbtn--ghost{ color:var(--h-btn2-text); border:1px solid var(--h-btn2-line); background:var(--h-btn2-bg); padding:0 14px; }
-.cx-hbtn--ghost:hover{ background:color-mix(in srgb,var(--h-btn2-bg) 70%,#8b5cf6 12%); }
+.cx-hbtn--ghost:hover{ background:color-mix(in srgb,var(--h-btn2-bg) 70%,#8b5cf6 12%); transform:translateY(-1px); }
+.cx-hbtn--ghost:active{ transform:translateY(0); }
 
 .cx-stage-crop{
   position:relative; z-index:2; margin-top:28px; pointer-events:auto;
@@ -335,7 +336,7 @@ html.light .cx-stars i{
 }
 
 /* Hero title drop shadow & glow */
-.cx-title{position:relative;isolation:isolate;overflow:visible}
+.cx-title{position:relative;isolation:isolate;overflow-x:clip;overflow-y:visible}
 html.light .cx-title h1{
   filter:drop-shadow(0 6px 10px rgba(91,33,182,.10))
          drop-shadow(0 1px 2px rgba(15,12,40,.10));
@@ -346,7 +347,7 @@ html.dark .cx-title h1{
 }
 .cx-title__glow{display:none !important}
 .cx-hero{overflow-x:clip;overflow-y:visible}
-.cx-hero__inner{overflow:visible}
+.cx-hero__inner{overflow-x:clip;overflow-y:visible}
 
 /* Dual drop-shadow tokens for H1 */
 html.dark{--cx-ts:167,139,250;--cx-ts2:0,0,0}
@@ -377,16 +378,15 @@ html.dark .cx-rv,
 html.light .cx-rv,
 .cx-rv{
   opacity:0;
-  transform:translateY(34px) scale(.985);
-  transition:opacity .75s cubic-bezier(.22,1,.36,1) !important,
-             transform .75s cubic-bezier(.22,1,.36,1) !important;
-  will-change:opacity,transform;
+  transform:translateY(16px);
+  transition:opacity 280ms cubic-bezier(.22,1,.36,1) !important,
+             transform 280ms cubic-bezier(.22,1,.36,1) !important;
 }
 html.dark .cx-rv--in,
 html.light .cx-rv--in,
 .cx-rv--in{
   opacity:1;
-  transform:none;
+  transform:translateY(0);
 }
 @media (prefers-reduced-motion:reduce){
   html.dark .cx-rv,
@@ -398,7 +398,7 @@ html.light .cx-rv--in,
 @keyframes cx-hero-fade-up {
   0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(14px);
   }
   100% {
     opacity: 1;
@@ -408,8 +408,7 @@ html.light .cx-rv--in,
 
 .cx-rise {
   opacity: 0;
-  animation: cx-hero-fade-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: opacity, transform;
+  animation: cx-hero-fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .cx-line-mask {

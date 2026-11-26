@@ -299,11 +299,11 @@ export default function WhatUsersSay() {
             {items.map((fb, idx) => (
               <motion.div
                 key={fb.id || idx}
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: idx * 0.05 }}
-                className="glass-card p-5 sm:p-6 rounded-2xl flex flex-col justify-between hover:shadow-lg transition-all duration-300 overflow-hidden"
+                transition={{ duration: 0.28, delay: idx * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                className="glass-card p-5 sm:p-6 rounded-2xl flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-lg transition-[transform,box-shadow] duration-200 ease-out overflow-hidden"
               >
                 <div className="space-y-3">
                   {/* Stars & Tool Name */}

@@ -258,7 +258,7 @@ export default function CompixorNavbar() {
               min-height: 16px;
               flex: 0 0 16px;
               opacity: .75;
-              transition: transform .2s ease;
+              transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
             }
 
             /* desktop links / triggers */
@@ -292,7 +292,7 @@ export default function CompixorNavbar() {
               opacity: 0;
               visibility: hidden;
               pointer-events: none;
-              transition: opacity .2s ease, transform .2s ease, visibility .2s;
+              transition: opacity 200ms cubic-bezier(0.22, 1, 0.36, 1), transform 200ms cubic-bezier(0.22, 1, 0.36, 1), visibility 200ms;
               z-index: 10001;
             }
             .cnav-drop.is-open {
@@ -335,7 +335,7 @@ export default function CompixorNavbar() {
                 -webkit-backdrop-filter: blur(4px);
                 opacity: 0;
                 pointer-events: none;
-                transition: opacity .25s ease;
+                transition: opacity 250ms cubic-bezier(0.22, 1, 0.36, 1);
               }
               .cnav-backdrop.is-open { opacity: 1; pointer-events: auto; }
 
@@ -355,7 +355,7 @@ export default function CompixorNavbar() {
                 transform: translateY(-8px) scale(.98);
                 pointer-events: none;
                 visibility: hidden;
-                transition: opacity .25s ease, transform .25s ease, visibility .25s;
+                transition: opacity 250ms cubic-bezier(0.22, 1, 0.36, 1), transform 250ms cubic-bezier(0.22, 1, 0.36, 1), visibility 250ms;
               }
               .cnav-panel.is-open { opacity: 1; transform: none; pointer-events: auto; visibility: visible; }
 
@@ -387,7 +387,7 @@ export default function CompixorNavbar() {
                 flex: 0 0 22px;
               }
 
-              .cnav-sub { max-height: 0; overflow: hidden; opacity: 0; transition: max-height .3s ease, opacity .3s ease; }
+              .cnav-sub { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 250ms cubic-bezier(0.22, 1, 0.36, 1), opacity 250ms cubic-bezier(0.22, 1, 0.36, 1); }
               .cnav-sub.is-open { max-height: 420px; opacity: 1; }
               .cnav-sub-item { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 12px 14px 12px 20px; font-size: 15px; color: #4b4570; text-decoration: none; border-radius: 12px; }
               .cnav-sub-item:active { background: rgba(124,58,237,0.08); }
@@ -532,7 +532,7 @@ export default function CompixorNavbar() {
                 hover:bg-white/50 dark:hover:bg-white/10
                 border border-transparent hover:border-white/40
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
-                transition-all
+                transition-[background-color,border-color,transform] duration-200 ease-out active:scale-95
               "
             >
               {mounted && dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -544,8 +544,8 @@ export default function CompixorNavbar() {
                 hidden sm:inline-block rounded-xl bg-gradient-to-r from-[#6d28d9] to-[#7c3aed]
                 px-4 py-2 text-sm font-semibold text-white
                 shadow-md shadow-purple-600/25
-                hover:brightness-110 hover:shadow-lg hover:shadow-purple-600/35
-                active:scale-[0.98] transition-all
+                hover:opacity-95 hover:shadow-lg hover:shadow-purple-600/35
+                active:scale-[0.98] transition-[transform,opacity,box-shadow] duration-200 ease-out
               "
             >
               Get Started
@@ -562,7 +562,7 @@ export default function CompixorNavbar() {
                 lg:hidden flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl
                 hover:bg-white/50 dark:hover:bg-white/10
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
-                transition-colors duration-200
+                transition-colors duration-200 ease-out active:scale-95
               "
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
