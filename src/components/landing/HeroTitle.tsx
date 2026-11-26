@@ -23,45 +23,27 @@ export default function HeroTitle({
   const { scrollY } = useScroll();
 
   // Scroll animations: scrollY 0 -> 400px
-  // Line 1: y 0 -> -40px, opacity 1 -> 0.55
-  const line1Y = useTransform(scrollY, [0, 400], [0, -40], { clamp: true });
+  // Line 1: y 0 -> -70px, opacity 1 -> 0.55
+  const line1Y = useTransform(scrollY, [0, 400], [0, -70], { clamp: true });
   const line1Opacity = useTransform(scrollY, [0, 400], [1, 0.55], { clamp: true });
 
-  // Line 2: y 0 -> -70px, opacity 1 -> 0.4 (faster than line 1 for distinct stagger)
-  const line2Y = useTransform(scrollY, [0, 400], [0, -70], { clamp: true });
+  // Line 2: y 0 -> -40px, opacity 1 -> 0.4 (Line 1 moves up more so lines diverge cleanly)
+  const line2Y = useTransform(scrollY, [0, 400], [0, -40], { clamp: true });
   const line2Opacity = useTransform(scrollY, [0, 400], [1, 0.4], { clamp: true });
-
-  // Entire H1: scale 1 -> 0.94 (transform-origin 50% 50%)
-  const scale = useTransform(scrollY, [0, 400], [1, 0.94], { clamp: true });
 
   return (
     <div className="cx-title">
-      <motion.h1
-        id="cx-hero-title"
-        className={className}
-        style={
-          reduce
-            ? undefined
-            : {
-                scale,
-                transformOrigin: "50% 50%",
-                willChange: "transform",
-                filter: "none",
-              }
-        }
-      >
-        <span
-          className="cx-line-mask"
-          style={{ display: "block", overflow: "hidden", paddingBottom: "0.06em" }}
-        >
+      <h1 id="cx-hero-title" className={className}>
+        <span className="cx-line-wrap" style={{ display: "block" }}>
           <motion.span
             style={
               reduce
-                ? { display: "inline-block" }
+                ? { display: "block" }
                 : {
-                    display: "inline-block",
+                    display: "block",
                     y: line1Y,
                     opacity: line1Opacity,
+                    willChange: "transform",
                   }
             }
           >
@@ -70,18 +52,16 @@ export default function HeroTitle({
             </span>
           </motion.span>
         </span>
-        <span
-          className="cx-line-mask"
-          style={{ display: "block", overflow: "hidden", paddingBottom: "0.08em" }}
-        >
+        <span className="cx-line-wrap" style={{ display: "block" }}>
           <motion.span
             style={
               reduce
-                ? { display: "inline-block" }
+                ? { display: "block" }
                 : {
-                    display: "inline-block",
+                    display: "block",
                     y: line2Y,
                     opacity: line2Opacity,
+                    willChange: "transform",
                   }
             }
           >
@@ -90,7 +70,7 @@ export default function HeroTitle({
             </span>
           </motion.span>
         </span>
-      </motion.h1>
+      </h1>
     </div>
   );
 }

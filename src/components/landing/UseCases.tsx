@@ -1,5 +1,9 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { tools } from '@/data/tools';      // ADAPT: keep the current import
+import { motion, useReducedMotion } from 'framer-motion';
+import { tools } from '@/data/tools';
 import './sections.css';
 
 const CASES = [
@@ -15,23 +19,80 @@ const CASES = [
 const name = (h: string) => (tools as any[]).find(t => t.href === h)?.name ?? h;
 
 export default function UseCases() {
+  const reduce = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const m = window.matchMedia('(max-width: 767px)');
+    const onChange = () => setIsMobile(m.matches);
+    onChange();
+    m.addEventListener('change', onChange);
+    return () => m.removeEventListener('change', onChange);
+  }, []);
+
+  const easeOut = [0.23, 1, 0.32, 1] as const;
+
   return (
-    <section className="cx-sec" style={{ position: 'relative', overflow: 'hidden' }} aria-labelledby="uc-h">
+    <section className="cx-sec" style={{ position: 'relative', overflow: 'visible' }} aria-labelledby="uc-h">
       <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
-        <header className="cx-sec__head">
+        <motion.header
+          className="cx-sec__head"
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.28, ease: easeOut }}
+        >
           <p className="cx-eyebrow">Use cases</p>
           <h2 id="uc-h" className="cx-h2">Made for <em>everyday paperwork</em></h2>
-        </header>
+        </motion.header>
         <ul className="uc-grid">
-          {CASES.map(c => (
-            <li key={c.title} className="uc">
-              <h3>{c.title}</h3>
-              <p>{c.line}</p>
-              <div className="uc-tools">
-                {c.tools.map(h => <Link key={h} href={h} className="uc-tool">{name(h)}</Link>)}
-              </div>
-            </li>
-          ))}
+          {CASES.map((c, i) => {
+            const columns = isMobile ? 1 : 2;
+            const colIndex = i % columns;
+            const cardDelay = isMobile ? 0 : Math.min(0.15, colIndex * 0.05);
+
+            return (
+              <motion.li
+                key={c.title}
+                className="uc"
+                initial={reduce ? false : { opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.28, ease: easeOut, delay: cardDelay }}
+              >
+                <motion.h3
+                  initial={reduce ? false : { opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.24, ease: easeOut, delay: cardDelay }}
+                >
+                  {c.title}
+                </motion.h3>
+                <motion.p
+                  initial={reduce ? false : { opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.24, ease: easeOut, delay: cardDelay + 0.04 }}
+                >
+                  {c.line}
+                </motion.p>
+                <motion.div
+                  className="uc-tools"
+                  initial={reduce ? false : { opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.24, ease: easeOut, delay: cardDelay + 0.08 }}
+                >
+                  {c.tools.map(h => (
+                    <Link key={h} href={h} className="uc-tool">
+                      <span>{name(h)}</span>
+                      <span className="uc-tool-arrow" aria-hidden="true">&nbsp;&rarr;</span>
+                    </Link>
+                  ))}
+                </motion.div>
+              </motion.li>
+            );
+          })}
         </ul>
       </div>
     </section>

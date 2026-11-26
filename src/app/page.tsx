@@ -202,10 +202,11 @@ export default function HomePage() {
   const faqSearchActive = faqSearch.trim().length > 0;
 
   return (
-    <div className="relative overflow-x-clip">
+    <div className="relative overflow-x-clip w-full max-w-full">
       <noscript>
         <style>{`
           .st, .st-label, .st-connector, .st-path,
+          .uc, .uc h3, .uc p, .uc-tools, .uc-tool,
           .cx-rv, .cx-rv--in,
           .cx-line-enter-1, .cx-line-enter-2,
           [style*="opacity: 0"], [style*="opacity:0"] {
