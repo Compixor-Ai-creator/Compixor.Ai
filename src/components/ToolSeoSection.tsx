@@ -209,7 +209,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
             return (
               <div
                 key={idx}
-                className="glass-card p-5 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60 flex items-start gap-4 transition-all hover:border-brand-500/40 hover:shadow-md"
+                className="glass-card p-5 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60 flex items-start gap-4 transition-[border-color,box-shadow] duration-200 ease-out hover:border-brand-500/40 hover:shadow-md"
               >
                 <div className="w-10 h-10 rounded-2xl bg-brand-500/15 text-brand-600 dark:text-brand-400 font-black flex flex-col items-center justify-center shrink-0 border border-brand-500/20 shadow-xs">
                   <StepIcon className="w-4 h-4 mb-0.5" />
@@ -315,7 +315,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
                   id={panelId}
                   role="region"
                   aria-labelledby={triggerId}
-                  className={`px-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 transition-all duration-300 overflow-hidden ${
+                  className={`px-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800/60 transition-[max-height,opacity,padding] duration-250 ease-out overflow-hidden ${
                     isOpen ? 'max-h-96 pb-5 pt-3 opacity-100' : 'max-h-0 pb-0 pt-0 opacity-0'
                   }`}
                 >
@@ -370,7 +370,7 @@ export default function ToolSeoSection({ toolSlug }: ToolSeoSectionProps) {
                   <Link
                     key={relSlug}
                     href={`/tools/${relSlug}`}
-                    className="glass-card p-5 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60 hover:border-brand-500/40 hover:shadow-lg hover:shadow-brand-500/5 hover:-translate-y-[2px] transition-all duration-200 group flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+                    className="glass-card p-5 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/60 hover:border-brand-500/40 hover:shadow-lg hover:shadow-brand-500/5 hover:-translate-y-[2px] transition-[border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.98] group flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
                   >
                     <div>
                       {/* Top-left icon inside 44x44px rounded square (12px radius) */}

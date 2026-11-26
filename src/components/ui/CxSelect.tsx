@@ -91,7 +91,7 @@ export default function CxSelect<T extends string | number = string>({
             <ListboxOptions
               transition
               anchor={{ to: 'bottom start', gap: 6, padding: 12 }}
-              className={`min-w-[var(--button-width)] w-max max-w-[calc(100vw-2rem)] max-h-60 overflow-auto rounded-xl p-1.5 dropdown-glass z-[10060] border border-zinc-200/90 dark:border-zinc-700/80 shadow-xl focus:outline-none transition duration-150 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 ${optionsClassName}`}
+              className={`min-w-[var(--button-width)] w-max max-w-[calc(100vw-2rem)] max-h-60 overflow-auto rounded-xl p-1.5 dropdown-glass z-[10060] border border-zinc-200/90 dark:border-zinc-700/80 shadow-xl focus:outline-none origin-top data-[anchor~="bottom"]:origin-top data-[anchor~="top"]:origin-bottom transition duration-150 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 motion-reduce:transform-none ${optionsClassName}`}
             >
               {normalizedOptions.map((opt) => (
                 <ListboxOption

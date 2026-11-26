@@ -123,9 +123,10 @@ html.light .cx-hero-subtle-glow {
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   min-height:41px; height:41px; border-radius:999px; text-decoration:none;
   font:500 14px/1 var(--font-inter),system-ui,sans-serif; cursor:pointer;
-  transition:transform 180ms cubic-bezier(.22,1,.36,1), opacity 180ms cubic-bezier(.22,1,.36,1), background 180ms cubic-bezier(.22,1,.36,1);
+  transition:transform var(--dur-press) var(--ease-out), opacity var(--dur-press) var(--ease-out), background var(--dur-press) var(--ease-out);
 }
 .cx-hbtn:focus-visible{ outline:2px solid var(--h-grad-a); outline-offset:2px; }
+.cx-hbtn:active{ transform:scale(0.97); }
 .cx-hbtn--primary{
   position:relative;
   overflow:hidden;
@@ -146,10 +147,10 @@ html.light .cx-hero-subtle-glow {
 @keyframes cx-shine{0%{transform:translateX(-130%) skewX(-20deg)}55%,100%{transform:translateX(280%) skewX(-20deg)}}
 @media (prefers-reduced-motion:reduce){.cx-hbtn--primary::before{animation:none;display:none}}
 .cx-hbtn--primary:hover{ opacity:.95; transform:translateY(-1px); }
-.cx-hbtn--primary:active{ transform:translateY(0); }
+.cx-hbtn--primary:active{ transform:scale(0.97); }
 .cx-hbtn--ghost{ color:var(--h-btn2-text); border:1px solid var(--h-btn2-line); background:var(--h-btn2-bg); padding:0 14px; }
 .cx-hbtn--ghost:hover{ background:color-mix(in srgb,var(--h-btn2-bg) 70%,#8b5cf6 12%); transform:translateY(-1px); }
-.cx-hbtn--ghost:active{ transform:translateY(0); }
+.cx-hbtn--ghost:active{ transform:scale(0.97); }
 
 .cx-stage-crop{
   position:relative; z-index:2; margin-top:28px; pointer-events:auto;
@@ -408,7 +409,7 @@ html.light .cx-rv--in,
 
 .cx-rise {
   opacity: 0;
-  animation: cx-hero-fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: cx-hero-fade-up 0.28s var(--ease-out) forwards;
 }
 
 .cx-line-mask {

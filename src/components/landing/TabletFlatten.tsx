@@ -89,7 +89,7 @@ export default function TabletFlatten({ children }: { children?: ReactNode }) {
           ref={card}
           className="cx-vcard"
           onContextMenu={(e) => e.preventDefault()}
-          style={{ aspectRatio: ratio, ...(animate ? { transform } : null) }}
+          style={{ aspectRatio: ratio, ...(animate ? { transform, willChange: "transform" } : null) }}
         >
           <video
             ref={vid}

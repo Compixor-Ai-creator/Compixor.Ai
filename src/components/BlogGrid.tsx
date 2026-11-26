@@ -51,7 +51,7 @@ export default function BlogGrid({ blogs }: BlogGridProps) {
         return (
           <article
             key={blog.id}
-            className="glass-card p-5 sm:p-7 h-full flex flex-col justify-between rounded-3xl border border-white/80 dark:border-zinc-800/80 hover:border-brand-500/40 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 group"
+            className="glass-card p-5 sm:p-7 h-full flex flex-col justify-between rounded-3xl border border-white/80 dark:border-zinc-800/80 hover:border-brand-500/40 hover:shadow-xl hover:shadow-brand-500/10 transition-[border-color,box-shadow,transform] duration-200 ease-out group"
           >
             <div>
               {/* Top Meta Row */}
@@ -114,7 +114,7 @@ export default function BlogGrid({ blogs }: BlogGridProps) {
 
               <Link
                 href={blog.toolPath}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-brand-500/10 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-300 transition-all border border-transparent hover:border-brand-500/20 cursor-pointer min-h-[44px]"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-brand-500/10 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-300 transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.97] border border-transparent hover:border-brand-500/20 cursor-pointer min-h-[44px]"
               >
                 <span>Try Tool</span>
                 <ExternalLink className="w-3.5 h-3.5" />

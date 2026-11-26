@@ -111,7 +111,7 @@ export default function FileDropZone({
 
   return (
     <div
-      className={`drop-zone p-8 md:p-12 flex flex-col items-center justify-center text-center transition-all duration-300 ${
+      className={`drop-zone p-8 md:p-12 flex flex-col items-center justify-center text-center transition-[transform,background-color,border-color,box-shadow] duration-200 ease-out ${
         isDragOver
           ? 'drag-over !border-brand-500 !bg-brand-500/10 ring-4 ring-brand-500/20 shadow-glow scale-[1.01]'
           : ''
@@ -147,7 +147,7 @@ export default function FileDropZone({
         <div className="flex flex-col items-center gap-4 pointer-events-none">
           {plainIcon && icon ? (
             <div
-              className={`transition-all duration-300 ${
+              className={`transition-transform duration-200 ease-out ${
                 isDragOver ? 'scale-110 drop-shadow-xl animate-bounce' : 'hover:scale-105'
               }`}
             >
@@ -155,7 +155,7 @@ export default function FileDropZone({
             </div>
           ) : (
             <div
-              className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+              className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-[transform,background-color,color,box-shadow] duration-200 ease-out ${
                 isDragOver
                   ? 'bg-brand-500 text-white scale-110 shadow-glow-lg animate-bounce'
                   : 'bg-brand-500/10 text-brand-500'
@@ -175,7 +175,7 @@ export default function FileDropZone({
 
           {buttonText && (
             <div className="mt-1">
-              <span className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-semibold bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 shadow-xs hover:bg-zinc-50 dark:hover:bg-zinc-750 transition-all">
+              <span className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-semibold bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 shadow-xs hover:bg-zinc-50 dark:hover:bg-zinc-750 transition-[background-color,border-color,transform] duration-150 ease-out active:scale-[0.97]">
                 {buttonText}
               </span>
             </div>

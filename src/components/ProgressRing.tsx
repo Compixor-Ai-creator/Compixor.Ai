@@ -42,7 +42,7 @@ export default function ProgressRing({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="text-brand-500 transition-all duration-500 ease-out"
+          className="text-brand-500 transition-[stroke-dashoffset] duration-300 ease-out"
           stroke="url(#progress-gradient)"
         />
         <defs>

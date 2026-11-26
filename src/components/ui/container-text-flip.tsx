@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useId } from "react";
+import React, { useState, useEffect, useId } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@/utils/cn";
 
@@ -22,43 +22,15 @@ export function ContainerTextFlip({
   interval = 3000,
   className,
   textClassName,
-  animationDuration = 300,
+  animationDuration = 240,
 }: ContainerTextFlipProps) {
   const id = useId();
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [measuredWidth, setMeasuredWidth] = useState<number | undefined>(undefined);
-  const currentTextRef = useRef<HTMLSpanElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
   const currentWord = words[currentWordIndex] || "";
 
-  // Measure the current word's width dynamically
-  useEffect(() => {
-    const updateWidth = () => {
-      if (currentTextRef.current) {
-        // Measured element width + padding calculation (0.6em total horizontal padding = 0.3em * 2)
-        const rect = currentTextRef.current.getBoundingClientRect();
-        if (rect.width > 0) {
-          // getComputedStyle to read exact em-to-px horizontal padding if set, or calculate based on font-size
-          const fontSize = parseFloat(window.getComputedStyle(currentTextRef.current).fontSize) || 16;
-          const horizontalPadding = fontSize * 0.6; // 0.3em left + 0.3em right
-          setMeasuredWidth(Math.ceil(rect.width + horizontalPadding));
-        }
-      }
-    };
-
-    updateWidth();
-
-    // Re-check after web fonts are fully loaded
-    if (typeof document !== "undefined" && "fonts" in document) {
-      document.fonts.ready.then(updateWidth);
-    }
-
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, [currentWord, textClassName]);
-
-  // Word cycling interval (3000ms by default, cleaned up on unmount)
+  // Word cycling interval
   useEffect(() => {
     if (words.length <= 1) return;
 
@@ -70,9 +42,9 @@ export function ContainerTextFlip({
   }, [words.length, interval]);
 
   return (
-    <motion.span
+    <span
       className={cn(
-        "relative inline-flex items-center justify-center border border-white/60 dark:border-white/20 bg-white/45 dark:bg-white/[0.08] shadow-[0_8px_32px_rgba(124,58,237,0.12)] rounded-[0.3em] overflow-hidden align-baseline text-center max-w-full",
+        "relative inline-grid items-center justify-center border border-white/60 dark:border-white/20 bg-white/45 dark:bg-white/[0.08] shadow-[0_8px_32px_rgba(124,58,237,0.12)] rounded-[0.3em] overflow-visible align-baseline text-center max-w-full",
         className
       )}
       style={{
@@ -81,45 +53,40 @@ export function ContainerTextFlip({
         WebkitBackdropFilter: "blur(14px) saturate(160%)",
         backdropFilter: "blur(14px) saturate(160%)",
       }}
-      animate={{
-        width: measuredWidth ? `${measuredWidth}px` : "auto",
-      }}
-      transition={{
-        duration: shouldReduceMotion ? 0 : 0.35,
-        ease: "easeOut",
-      }}
     >
-      {/* Off-screen measurement span for current word */}
+      {/* Invisible measurement stack: sizes the pill container naturally to the widest word without animating width or causing layout reflow */}
       <span
-        ref={currentTextRef}
         aria-hidden="true"
-        className={cn(
-          "pointer-events-none absolute left-0 top-0 select-none opacity-0 whitespace-nowrap",
-          textClassName
-        )}
-        style={{ visibility: "hidden" }}
+        className="invisible pointer-events-none select-none inline-grid [grid-area:1/1] items-center justify-center"
       >
-        {currentWord}
+        {words.map((w, idx) => (
+          <span
+            key={idx}
+            className={cn("whitespace-nowrap px-[0.3em] [grid-area:1/1] opacity-0", textClassName)}
+          >
+            {w}
+          </span>
+        ))}
       </span>
 
-      {/* Animated word transition */}
-      <span className="inline-flex items-center justify-center text-center w-full whitespace-nowrap">
+      {/* Active animated word: transform & opacity only, 100% on GPU */}
+      <span className="[grid-area:1/1] inline-flex items-center justify-center text-center w-full whitespace-nowrap">
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={`${currentWord}-${id}`}
-            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
             transition={{
-              duration: shouldReduceMotion ? 0 : 0.3,
-              ease: "easeOut",
+              duration: shouldReduceMotion ? 0 : animationDuration / 1000,
+              ease: [0.23, 1, 0.32, 1], // Emil Kowalski strong --ease-out
             }}
-            className={cn("inline-block whitespace-nowrap text-center", textClassName)}
+            className={cn("inline-block whitespace-nowrap text-center px-[0.3em]", textClassName)}
           >
             {currentWord}
           </motion.span>
         </AnimatePresence>
       </span>
-    </motion.span>
+    </span>
   );
 }

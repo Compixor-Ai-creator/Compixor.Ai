@@ -54,7 +54,7 @@ export default function CompixorModal({
         <div className="flex min-h-full items-center justify-center">
           <DialogPanel
             transition
-            className={`relative w-full ${maxWidthClassName} bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-white/20 rounded-3xl shadow-[0_20px_50px_rgba(76,29,149,0.14),0_4px_16px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(124,58,237,0.18)] overflow-hidden max-h-[92vh] flex flex-col transition-[transform,opacity] duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0`}
+            className={`relative w-full ${maxWidthClassName} bg-white dark:bg-[#0f0c24] border border-zinc-200/90 dark:border-white/20 rounded-3xl shadow-[0_20px_50px_rgba(76,29,149,0.14),0_4px_16px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(124,58,237,0.18)] overflow-hidden max-h-[92vh] flex flex-col transition-[transform,opacity] duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 motion-reduce:transform-none motion-reduce:data-[closed]:scale-100`}
           >
             {children}
           </DialogPanel>

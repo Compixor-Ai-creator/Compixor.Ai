@@ -183,15 +183,15 @@ export default function ErrorStage({
                 <>
                   <button
                     onClick={reset}
-                    className="relative overflow-hidden group inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-600 text-white font-semibold px-7 py-3.5 rounded-xl shadow-glow hover:shadow-glow-lg active:scale-[0.98] transition-all duration-200"
+                    className="relative overflow-hidden group inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-600 text-white font-semibold px-7 py-3.5 rounded-xl shadow-glow hover:shadow-glow-lg active:scale-[0.97] transition-[box-shadow,transform] duration-150 ease-out"
                   >
                     <RotateCcw className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-90" />
                     <span>Try Again</span>
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
                   </button>
                   <Link
                     href="/"
-                    className="inline-flex items-center gap-2 text-zinc-700 dark:text-zinc-200 hover:text-brand-600 dark:hover:text-brand-400 font-semibold px-6 py-3.5 rounded-xl border border-zinc-200 dark:border-brand-500/20 bg-zinc-100/80 dark:bg-surface-800/80 hover:bg-zinc-200/80 dark:hover:bg-surface-700/80 transition-all duration-200 active:scale-[0.98]"
+                    className="inline-flex items-center gap-2 text-zinc-700 dark:text-zinc-200 hover:text-brand-600 dark:hover:text-brand-400 font-semibold px-6 py-3.5 rounded-xl border border-zinc-200 dark:border-brand-500/20 bg-zinc-100/80 dark:bg-surface-800/80 hover:bg-zinc-200/80 dark:hover:bg-surface-700/80 transition-[background-color,border-color,color,transform] duration-150 ease-out active:scale-[0.97]"
                   >
                     <Home className="w-4 h-4" />
                     <span>Back to Homepage</span>
@@ -201,15 +201,15 @@ export default function ErrorStage({
                 <>
                   <Link
                     href="/"
-                    className="relative overflow-hidden group inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-600 text-white font-semibold px-7 py-3.5 rounded-xl shadow-glow hover:shadow-glow-lg active:scale-[0.98] transition-all duration-200"
+                    className="relative overflow-hidden group inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-600 text-white font-semibold px-7 py-3.5 rounded-xl shadow-glow hover:shadow-glow-lg active:scale-[0.97] transition-[box-shadow,transform] duration-150 ease-out"
                   >
                     <span>Back to Homepage</span>
                     <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
                   </Link>
                   <Link
                     href="/#tools"
-                    className="group inline-flex items-center gap-2 text-zinc-700 dark:text-zinc-200 hover:text-brand-600 dark:hover:text-brand-400 font-semibold px-6 py-3.5 rounded-xl border border-zinc-200 dark:border-brand-500/20 bg-zinc-100/80 dark:bg-surface-800/80 hover:bg-zinc-200/80 dark:hover:bg-surface-700/80 transition-all duration-200 active:scale-[0.98]"
+                    className="group inline-flex items-center gap-2 text-zinc-700 dark:text-zinc-200 hover:text-brand-600 dark:hover:text-brand-400 font-semibold px-6 py-3.5 rounded-xl border border-zinc-200 dark:border-brand-500/20 bg-zinc-100/80 dark:bg-surface-800/80 hover:bg-zinc-200/80 dark:hover:bg-surface-700/80 transition-[background-color,border-color,color,transform] duration-150 ease-out active:scale-[0.97]"
                   >
                     <Compass className="w-4 h-4 text-zinc-500 group-hover:text-brand-500 transition-colors" />
                     <span>Explore All Tools</span>
@@ -266,7 +266,7 @@ export default function ErrorStage({
                     <Link
                       key={tool.href}
                       href={tool.href}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-surface-800 hover:bg-brand-50 dark:hover:bg-brand-500/10 hover:text-brand-600 dark:hover:text-brand-300 border border-zinc-200/60 dark:border-brand-500/15 transition-all duration-150"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-surface-800 hover:bg-brand-50 dark:hover:bg-brand-500/10 hover:text-brand-600 dark:hover:text-brand-300 border border-zinc-200/60 dark:border-brand-500/15 transition-[background-color,border-color,color,transform] duration-150 ease-out active:scale-[0.97]"
                     >
                       <Icon className="w-3.5 h-3.5 text-brand-500" />
                       <span>{tool.label}</span>

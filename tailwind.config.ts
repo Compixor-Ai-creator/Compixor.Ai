@@ -52,8 +52,8 @@ module.exports = {
       animation: {
         'float': 'float 6s ease-in-out infinite',
         'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
-        'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
-        'slide-in-right': 'slide-in-right 0.3s ease-out forwards',
+        'fade-in-up': 'fade-in-up 0.28s cubic-bezier(0.23, 1, 0.32, 1) forwards',
+        'slide-in-right': 'slide-in-right 0.28s cubic-bezier(0.23, 1, 0.32, 1) forwards',
         'shimmer': 'shimmer 2s linear infinite',
         'spin-slow': 'spin 3s linear infinite',
       },

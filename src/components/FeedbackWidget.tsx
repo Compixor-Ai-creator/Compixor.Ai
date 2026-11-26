@@ -352,7 +352,7 @@ export default function FeedbackWidget() {
                       <motion.div
                         initial={{ opacity: 0, y: -6 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2 }}
+                        transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="p-3.5 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/25 dark:border-amber-500/35 space-y-2.5"
                       >
                         <div className="flex items-center justify-between">
@@ -476,6 +476,7 @@ export default function FeedbackWidget() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
                     className="py-3 text-center space-y-4"
                   >
                     <div className="w-14 h-14 mx-auto rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center ring-8 ring-emerald-500/5">

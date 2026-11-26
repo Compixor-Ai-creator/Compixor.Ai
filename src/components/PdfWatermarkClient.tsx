@@ -1113,7 +1113,7 @@ export default function PdfWatermarkClient({
               setActiveMode('add');
               router.push('/tools/add-watermark', { scroll: false });
             }}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] cursor-pointer ${
               activeMode === 'add'
                 ? 'bg-white dark:bg-surface-800 text-brand-600 dark:text-brand-300 shadow-md border border-brand-500/20'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -1130,7 +1130,7 @@ export default function PdfWatermarkClient({
               setActiveMode('remove');
               router.push('/tools/remove-watermark', { scroll: false });
             }}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] cursor-pointer ${
               activeMode === 'remove'
                 ? 'bg-white dark:bg-surface-800 text-brand-600 dark:text-brand-300 shadow-md border border-brand-500/20'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
@@ -1217,7 +1217,7 @@ export default function PdfWatermarkClient({
               setIsUploadDragOver(false);
               if (e.dataTransfer.files?.[0]) handlePdfUpload(e.dataTransfer.files[0]);
             }}
-            className={`drop-zone p-10 md:p-14 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 rounded-2xl ${
+            className={`drop-zone p-10 md:p-14 flex flex-col items-center justify-center text-center cursor-pointer transition-[transform,background-color,border-color,box-shadow] duration-200 ease-out rounded-2xl ${
               isUploadDragOver
                 ? 'drag-over !border-brand-500 !bg-brand-500/10 ring-4 ring-brand-500/20 shadow-glow scale-[1.01]'
                 : ''
@@ -1330,7 +1330,7 @@ export default function PdfWatermarkClient({
               </button>
               <button
                 onClick={handleDownload}
-                className="px-4 py-2 text-xs font-bold bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:from-brand-500 hover:via-indigo-500 hover:to-purple-500 text-white rounded-xl shadow-md shadow-brand-500/25 hover:shadow-brand-500/40 flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                className="px-4 py-2 text-xs font-bold bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:from-brand-500 hover:via-indigo-500 hover:to-purple-500 text-white rounded-xl shadow-md shadow-brand-500/25 hover:shadow-brand-500/40 flex items-center gap-1.5 transition-[background-color,box-shadow,transform] duration-150 ease-out hover:scale-[1.01] active:scale-[0.97] cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>Download PDF</span>
@@ -1498,7 +1498,7 @@ export default function PdfWatermarkClient({
                 )}
 
                 <div
-                  className={`relative inline-block shadow-2xl rounded-md overflow-hidden bg-white ring-1 ring-black/5 dark:ring-white/10 transition-all ${
+                  className={`relative inline-block shadow-2xl rounded-md overflow-hidden bg-white ring-1 ring-black/5 dark:ring-white/10 transition-[box-shadow,transform] duration-200 ease-out ${
                     zoomMode === 'fit-page' ? 'max-h-[580px] max-w-full flex items-center justify-center' : ''
                   }`}
                 >
@@ -1582,7 +1582,7 @@ export default function PdfWatermarkClient({
                     <div className="flex items-center bg-slate-100/90 dark:bg-slate-800/70 p-1 rounded-xl border border-slate-200/80 dark:border-slate-700/60 shadow-inner">
                       <button
                         onClick={() => updateSettings({ watermarkType: 'text' })}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] ${
                           settings.watermarkType === 'text'
                             ? 'bg-white dark:bg-[#16132a] text-brand-600 dark:text-brand-400 shadow-xs border border-brand-500/20 font-bold'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -1593,7 +1593,7 @@ export default function PdfWatermarkClient({
                       </button>
                       <button
                         onClick={() => updateSettings({ watermarkType: 'image' })}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] ${
                           settings.watermarkType === 'image'
                             ? 'bg-white dark:bg-[#16132a] text-brand-600 dark:text-brand-400 shadow-xs border border-brand-500/20 font-bold'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -1619,7 +1619,7 @@ export default function PdfWatermarkClient({
                           value={settings.text}
                           onChange={(e) => updateSettings({ text: e.target.value })}
                           placeholder="e.g. COMPIXOR.AI, DRAFT, COPY, WASIF"
-                          className="w-full text-xs font-medium px-3.5 py-2.5 bg-slate-50/90 dark:bg-slate-850/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-900 dark:text-white placeholder:text-slate-400 transition-all shadow-2xs"
+                          className="w-full text-xs font-medium px-3.5 py-2.5 bg-slate-50/90 dark:bg-slate-850/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-900 dark:text-white placeholder:text-slate-400 transition-[border-color,box-shadow] duration-150 ease-out shadow-2xs"
                         />
                       </div>
 
@@ -1694,7 +1694,7 @@ export default function PdfWatermarkClient({
                             <button
                               key={preset.hex}
                               onClick={() => updateSettings({ color: preset.hex })}
-                              className={`w-6 h-6 rounded-full transition-all relative ${
+                              className={`w-6 h-6 rounded-full transition-[transform,box-shadow,opacity] duration-150 ease-out relative ${
                                 settings.color.toLowerCase() === preset.hex.toLowerCase()
                                   ? 'ring-2 ring-brand-500 ring-offset-2 dark:ring-offset-[#0c1222] scale-110 shadow-sm'
                                   : 'border border-slate-300/80 dark:border-slate-700 hover:scale-105 opacity-85 hover:opacity-100'
@@ -1717,7 +1717,7 @@ export default function PdfWatermarkClient({
                             type="text"
                             value={settings.color}
                             onChange={(e) => updateSettings({ color: e.target.value })}
-                            className="flex-1 text-xs font-mono uppercase px-3.5 py-2 bg-slate-50/90 dark:bg-slate-850/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 shadow-2xs transition-all"
+                            className="flex-1 text-xs font-mono uppercase px-3.5 py-2 bg-slate-50/90 dark:bg-slate-850/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 shadow-2xs transition-[border-color,box-shadow] duration-150 ease-out"
                             placeholder="#4f46e5"
                           />
                         </div>
@@ -1771,7 +1771,7 @@ export default function PdfWatermarkClient({
                                 key={deg}
                                 type="button"
                                 onClick={() => updateSettings({ rotation: deg })}
-                                className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border transition-all ${
+                                className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border transition-[background-color,border-color,color,transform] duration-150 ease-out active:scale-[0.97] ${
                                   settings.rotation === deg
                                     ? 'bg-brand-500/15 border-brand-500/40 text-brand-600 dark:text-brand-400 font-bold'
                                     : 'border-slate-200/80 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 hover:border-brand-500/30'
@@ -1929,7 +1929,7 @@ export default function PdfWatermarkClient({
                             onClick={() =>
                               updateSettings({ layout: layoutOption.id as WatermarkLayout })
                             }
-                            className={`p-2.5 rounded-2xl text-left border transition-all ${
+                            className={`p-2.5 rounded-2xl text-left border transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.98] ${
                               settings.layout === layoutOption.id
                                 ? 'border-brand-500 bg-brand-500/10 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 ring-1 ring-brand-500/30 shadow-xs'
                                 : 'border-slate-200/80 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-850/50 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300'
@@ -1952,7 +1952,7 @@ export default function PdfWatermarkClient({
                         <button
                           type="button"
                           onClick={() => updateSettings({ layer: 'foreground' })}
-                          className={`p-2.5 rounded-2xl text-left border transition-all ${
+                          className={`p-2.5 rounded-2xl text-left border transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.98] ${
                             settings.layer === 'foreground'
                               ? 'border-brand-500 bg-brand-500/10 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 ring-1 ring-brand-500/30 shadow-xs'
                               : 'border-slate-200/80 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-850/50 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300'
@@ -1964,7 +1964,7 @@ export default function PdfWatermarkClient({
                         <button
                           type="button"
                           onClick={() => updateSettings({ layer: 'background' })}
-                          className={`p-2.5 rounded-2xl text-left border transition-all ${
+                          className={`p-2.5 rounded-2xl text-left border transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.98] ${
                             settings.layer === 'background'
                               ? 'border-brand-500 bg-brand-500/10 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 ring-1 ring-brand-500/30 shadow-xs'
                               : 'border-slate-200/80 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-850/50 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300'
@@ -1986,7 +1986,7 @@ export default function PdfWatermarkClient({
                         <button
                           type="button"
                           onClick={() => updateSettings({ pageRange: 'all' })}
-                          className={`py-2 px-2 rounded-xl text-xs font-bold border text-center transition-all ${
+                          className={`py-2 px-2 rounded-xl text-xs font-bold border text-center transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.98] ${
                             settings.pageRange === 'all'
                               ? 'border-brand-500 bg-brand-500/10 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 ring-1 ring-brand-500/30 shadow-xs'
                               : 'border-slate-200/80 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-850/50 text-slate-600 dark:text-slate-400 hover:border-slate-300'
@@ -1997,7 +1997,7 @@ export default function PdfWatermarkClient({
                         <button
                           type="button"
                           onClick={() => updateSettings({ pageRange: 'current' })}
-                          className={`py-2 px-2 rounded-xl text-xs font-bold border text-center transition-all ${
+                          className={`py-2 px-2 rounded-xl text-xs font-bold border text-center transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.98] ${
                             settings.pageRange === 'current'
                               ? 'border-brand-500 bg-brand-500/10 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 ring-1 ring-brand-500/30 shadow-xs'
                               : 'border-slate-200/80 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-850/50 text-slate-600 dark:text-slate-400 hover:border-slate-300'
@@ -2008,7 +2008,7 @@ export default function PdfWatermarkClient({
                         <button
                           type="button"
                           onClick={() => updateSettings({ pageRange: 'custom' })}
-                          className={`py-2 px-2 rounded-xl text-xs font-bold border text-center transition-all ${
+                          className={`py-2 px-2 rounded-xl text-xs font-bold border text-center transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.98] ${
                             settings.pageRange === 'custom'
                               ? 'border-brand-500 bg-brand-500/10 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 ring-1 ring-brand-500/30 shadow-xs'
                               : 'border-slate-200/80 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-850/50 text-slate-600 dark:text-slate-400 hover:border-slate-300'
@@ -2034,7 +2034,7 @@ export default function PdfWatermarkClient({
                   <button
                     onClick={handleApplyWatermark}
                     disabled={isProcessing}
-                    className="w-full py-3.5 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:from-brand-500 hover:via-indigo-500 hover:to-purple-500 disabled:opacity-50 text-white rounded-2xl text-xs font-bold shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="w-full py-3.5 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:from-brand-500 hover:via-indigo-500 hover:to-purple-500 disabled:opacity-50 text-white rounded-2xl text-xs font-bold shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:scale-[1.01] active:scale-[0.97] flex items-center justify-center gap-2 transition-[background-color,box-shadow,transform] duration-150 ease-out cursor-pointer"
                   >
                     {isProcessing ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -2079,7 +2079,7 @@ export default function PdfWatermarkClient({
                     <button
                       onClick={handleRemoveCompixorWatermarks}
                       disabled={isProcessing}
-                      className="w-full py-3 px-3 text-xs font-bold bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:from-brand-500 hover:via-indigo-500 hover:to-purple-500 text-white rounded-xl shadow-md shadow-brand-500/25 hover:shadow-brand-500/40 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+                      className="w-full py-3 px-3 text-xs font-bold bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:from-brand-500 hover:via-indigo-500 hover:to-purple-500 text-white rounded-xl shadow-md shadow-brand-500/25 hover:shadow-brand-500/40 hover:scale-[1.01] active:scale-[0.97] flex items-center justify-center gap-2 transition-[background-color,box-shadow,transform] duration-150 ease-out cursor-pointer disabled:opacity-50"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Run Engine A: Auto-Strip Digital Watermarks</span>

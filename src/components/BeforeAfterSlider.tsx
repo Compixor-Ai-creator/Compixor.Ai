@@ -303,7 +303,7 @@ export default function BeforeAfterSlider({
                   key={opt.id}
                   type="button"
                   onClick={() => handleColorSelect(opt.hex)}
-                  className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer select-none ${
+                  className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-[background-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] cursor-pointer select-none ${
                     isSelected
                       ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-md ring-2 ring-brand-500'
                       : 'bg-transparent text-zinc-600 dark:text-zinc-400 hover:bg-white/60 dark:hover:bg-zinc-800/60'

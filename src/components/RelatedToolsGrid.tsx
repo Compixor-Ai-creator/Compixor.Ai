@@ -120,10 +120,10 @@ export default function RelatedToolsGrid({
             <Link
               key={tool.toolPath}
               href={tool.toolPath}
-              className="glass-card p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 hover:border-brand-500/40 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 flex flex-col justify-between group"
+              className="glass-card p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 hover:border-brand-500/40 hover:shadow-xl hover:shadow-brand-500/10 transition-[border-color,box-shadow,transform] duration-200 ease-out active:scale-[0.98] flex flex-col justify-between group"
             >
               <div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500/15 to-purple-500/15 border border-brand-500/25 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500/15 to-purple-500/15 border border-brand-500/25 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4 group-hover:scale-105 transition-transform duration-200 ease-out shadow-sm">
                   <Icon className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-base text-zinc-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">

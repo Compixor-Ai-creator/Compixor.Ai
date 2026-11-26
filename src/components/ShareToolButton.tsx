@@ -70,7 +70,7 @@ export default function ShareToolButton({
           <MenuButton
             onClick={handleShareClick}
             aria-label={`Share this tool: ${toolName}`}
-            className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[38px] sm:min-h-[36px] rounded-xl text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-200 hover:text-brand-600 dark:hover:text-brand-300 border border-zinc-200/80 dark:border-zinc-700/60 shadow-xs hover:shadow-sm hover:border-brand-500/30 transition-all cursor-pointer backdrop-blur-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[38px] sm:min-h-[36px] rounded-xl text-xs font-semibold bg-white/80 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-200 hover:text-brand-600 dark:hover:text-brand-300 border border-zinc-200/80 dark:border-zinc-700/60 shadow-xs hover:shadow-sm hover:border-brand-500/30 transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] cursor-pointer backdrop-blur-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
           >
             <Share2 className="w-3.5 h-3.5 text-brand-500 shrink-0" aria-hidden="true" />
             <span>Share this tool</span>
@@ -85,7 +85,7 @@ export default function ShareToolButton({
           <MenuItems
             transition
             anchor={{ to: 'bottom end', gap: 8, padding: 12 }}
-            className="w-72 max-w-[calc(100vw-1.5rem)] p-3 rounded-2xl dropdown-glass z-[10060] border border-zinc-200/80 dark:border-zinc-700/80 shadow-xl focus:outline-none transition duration-150 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
+            className="w-72 max-w-[calc(100vw-1.5rem)] p-3 rounded-2xl dropdown-glass z-[10060] border border-zinc-200/80 dark:border-zinc-700/80 shadow-xl focus:outline-none origin-top-right transition duration-150 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 motion-reduce:transform-none"
           >
             <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2 px-1">
               Share {toolName}

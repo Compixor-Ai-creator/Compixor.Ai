@@ -65,7 +65,7 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
               <a
                 href={`#${item.id}`}
                 onClick={(e) => scrollToSection(e, item.id)}
-                className={`group flex items-center justify-between py-1.5 px-2 rounded-lg transition-all duration-150 ${
+                className={`group flex items-center justify-between py-1.5 px-2 rounded-lg transition-[background-color,color] duration-150 ease-out ${
                   isActive
                     ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400 font-bold'
                     : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/50'

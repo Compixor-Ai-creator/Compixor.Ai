@@ -244,17 +244,17 @@ export default function RelatedTools({
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.08 }}
+              transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1], delay: idx * 0.05 }}
               className="group"
             >
               <Link
                 href={tool.href}
-                className="flex flex-col justify-between h-full p-6 rounded-2xl glass-card hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-all duration-300 hover:shadow-glow hover:-translate-y-1 relative overflow-hidden"
+                className="flex flex-col justify-between h-full p-6 rounded-2xl glass-card hover:border-brand-500/50 dark:hover:border-brand-500/50 transition-[border-color,box-shadow,transform] duration-200 ease-out hover:shadow-glow hover:-translate-y-1 active:scale-[0.98] relative overflow-hidden"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-4">
                     <div
-                      className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform duration-300`}
+                      className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform duration-200 ease-out`}
                     >
                       <Icon className="w-5 h-5" />
                     </div>

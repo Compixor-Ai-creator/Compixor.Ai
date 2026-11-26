@@ -69,7 +69,7 @@ export default function DecisionCalloutBox({
                 {item.toolName && item.toolPath && (
                   <Link
                     href={item.toolPath}
-                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-white dark:bg-zinc-800 text-brand-600 dark:text-brand-300 border border-brand-500/30 hover:border-brand-500 hover:shadow-xs transition-all ml-1 align-baseline cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-white dark:bg-zinc-800 text-brand-600 dark:text-brand-300 border border-brand-500/30 hover:border-brand-500 hover:shadow-xs transition-[border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] ml-1 align-baseline cursor-pointer"
                   >
                     <span>{item.toolName}</span>
                     <ExternalLink className="w-3 h-3" />

@@ -34,7 +34,7 @@ export default function BlogFaqAccordion({ faqs }: BlogFaqAccordionProps) {
           as="div"
           key={index}
           defaultOpen={index === 0}
-          className="glass-card rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden transition-all duration-200 hover:border-brand-500/30"
+          className="glass-card rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden transition-[border-color,box-shadow] duration-200 ease-out hover:border-brand-500/30"
         >
           {({ open, close }) => {
             // Kept up to date on every render so the parent can close siblings.
@@ -61,17 +61,19 @@ export default function BlogFaqAccordion({ faqs }: BlogFaqAccordionProps) {
                 </h3>
 
                 {/*
-                  `static` keeps the panel mounted in both states (Headless UI
-                  would otherwise render it with display:none when closed, and a
-                  display:none element cannot animate). The collapse is therefore
-                  pure CSS, driven by the `data-open` attribute Headless UI puts
-                  on the panel: max-height + opacity, so no layout shift.
+                  `static` keeps the panel mounted in both states.
+                  Smooth zero-to-auto height using CSS grid-template-rows (0fr -> 1fr)
+                  with inner wrapper overflow-hidden and min-height-0.
                 */}
                 <DisclosurePanel
                   static
-                  className="px-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed overflow-hidden border-transparent max-h-0 opacity-0 pb-0 pt-0 transition-all duration-300 ease-out data-[open]:max-h-[32rem] data-[open]:opacity-100 data-[open]:pb-5 data-[open]:pt-1 data-[open]:border-t data-[open]:border-zinc-100 dark:data-[open]:border-zinc-800/60"
+                  className="grid grid-rows-[0fr] opacity-0 invisible data-[open]:visible data-[open]:grid-rows-[1fr] data-[open]:opacity-100 transition-[grid-template-rows,opacity,visibility] duration-[220ms] ease-out motion-reduce:transition-none data-[open]:border-t data-[open]:border-zinc-100 dark:data-[open]:border-zinc-800/60"
                 >
-                  <p className="m-0">{faq.answer}</p>
+                  <div className="overflow-hidden min-h-0">
+                    <div className="px-5 pt-2 pb-5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                      <p className="m-0">{faq.answer}</p>
+                    </div>
+                  </div>
                 </DisclosurePanel>
               </>
             );

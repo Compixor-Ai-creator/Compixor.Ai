@@ -387,8 +387,22 @@ export default function CompixorNavbar() {
                 flex: 0 0 22px;
               }
 
-              .cnav-sub { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 250ms cubic-bezier(0.22, 1, 0.36, 1), opacity 250ms cubic-bezier(0.22, 1, 0.36, 1); }
-              .cnav-sub.is-open { max-height: 420px; opacity: 1; }
+              .cnav-sub {
+                display: grid;
+                grid-template-rows: 0fr;
+                opacity: 0;
+                visibility: hidden;
+                transition: grid-template-rows 220ms var(--ease-out), opacity 180ms var(--ease-out), visibility 220ms;
+              }
+              .cnav-sub.is-open {
+                grid-template-rows: 1fr;
+                opacity: 1;
+                visibility: visible;
+              }
+              .cnav-sub-inner {
+                overflow: hidden;
+                min-height: 0;
+              }
               .cnav-sub-item { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 12px 14px 12px 20px; font-size: 15px; color: #4b4570; text-decoration: none; border-radius: 12px; }
               .cnav-sub-item:active { background: rgba(124,58,237,0.08); }
               .cnav-sub-item .cnav-ico {
@@ -594,18 +608,23 @@ export default function CompixorNavbar() {
               <span>{g.label}</span>
               <ChevronDown size={18} className="cnav-chev" />
             </button>
-            <div className={`cnav-sub ${mobGroup === g.id ? "is-open" : ""}`}>
-              {g.items.map((it) => (
-                <Link
-                  key={it.href}
-                  href={it.href}
-                  className="cnav-sub-item"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <NavIcon name={it.icon} size={16} />
-                  <span>{it.label}</span>
-                </Link>
-              ))}
+            <div
+              className={`cnav-sub ${mobGroup === g.id ? "is-open" : ""}`}
+              inert={mobGroup !== g.id ? "" : undefined}
+            >
+              <div className="cnav-sub-inner">
+                {g.items.map((it) => (
+                  <Link
+                    key={it.href}
+                    href={it.href}
+                    className="cnav-sub-item"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <NavIcon name={it.icon} size={16} />
+                    <span>{it.label}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         ))}
