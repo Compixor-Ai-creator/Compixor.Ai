@@ -20,43 +20,33 @@ export default function HeroTitle({
   line2 = "Photo Tools That Run in Your Browser",
 }: HeroTitleProps) {
   const reduce = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Motion values for GPU-accelerated transform
-  const skewY = useMotionValue(0);
+  // Single unified vertical motion value (GPU-accelerated translateY)
   const y = useMotionValue(0);
 
-  // Frame-by-frame velocity & smoothing refs
+  // Velocity lag & frame synchronization refs
   const prevScrollY = useRef(0);
-  const currentSkew = useRef(0);
+  const currentLag = useRef(0);
 
   useEffect(() => {
     prevScrollY.current = window.scrollY;
     setMounted(true);
-
-    const m = window.matchMedia("(max-width: 768px)");
-    const onChange = () => setIsMobile(m.matches);
-    onChange();
-    m.addEventListener("change", onChange);
-
-    return () => m.removeEventListener("change", onChange);
   }, []);
 
   const isReduced = reduce || !mounted;
 
-  // Frame-by-frame physics loop: decoupled from scroll-event bursts
+  // Frame-by-frame physics: pure vertical parallax + subtle velocity lag (zero skew/tilt)
   useAnimationFrame((_time, delta) => {
     if (isReduced) {
       if (typeof window !== "undefined") {
         prevScrollY.current = window.scrollY;
       }
-      if (skewY.get() !== 0) skewY.set(0);
       if (y.get() !== 0) y.set(0);
       return;
     }
 
-    // Guard against 0 or huge delta spikes (e.g. tab switching)
+    // Guard against 0 or extreme delta spikes (e.g. tab switching)
     const safeDelta = Math.max(1, Math.min(100, delta || 16.7));
 
     const currentY = window.scrollY;
@@ -67,28 +57,26 @@ export default function HeroTitle({
     const deltaY = rawDeltaY * (16.7 / safeDelta);
 
     // 1. Position-based subtle Y parallax (0 to 22px over first 400px of scroll)
-    const targetY = Math.min(22, currentY * 0.055);
-    y.set(targetY);
+    const targetParallax = Math.min(22, currentY * 0.055);
 
-    // 2. Velocity-based Skew: 2deg max desktop, 1deg mobile
-    const maxDeg = isMobile ? 1.0 : 2.0;
-    const k = isMobile ? 0.08 : 0.12;
-
-    let targetSkew = 0;
+    // 2. Velocity-based gentle Y-lag (max 4px up or down, absolutely zero tilt/skew/horizontal drift)
+    let targetLag = 0;
     if (Math.abs(deltaY) >= 0.5 && currentY > 2) {
-      targetSkew = Math.max(-maxDeg, Math.min(maxDeg, deltaY * k));
+      targetLag = Math.max(-4, Math.min(4, deltaY * 0.08));
     }
 
     // 3. Frame-rate independent exponential smoothing
     const lerpFactor = 1 - Math.pow(1 - 0.14, safeDelta / 16.7);
-    currentSkew.current += (targetSkew - currentSkew.current) * lerpFactor;
+    currentLag.current += (targetLag - currentLag.current) * lerpFactor;
 
-    // 4. Guaranteed Snap: When scrolling stops and skew decays below 0.01, or at page top, force EXACTLY 0
-    if (currentY <= 1 || (Math.abs(deltaY) < 0.5 && Math.abs(currentSkew.current) < 0.01)) {
-      currentSkew.current = 0;
+    // 4. Guaranteed Snap: When scrolling stops and lag decays below 0.02px, or at page top, force EXACTLY 0
+    if (currentY <= 1 || (Math.abs(deltaY) < 0.5 && Math.abs(currentLag.current) < 0.02)) {
+      currentLag.current = 0;
     }
 
-    skewY.set(currentSkew.current);
+    // Total Y: position parallax + subtle velocity inertia
+    const totalY = currentY <= 1 ? 0 : targetParallax + currentLag.current;
+    y.set(totalY);
   });
 
   const lineVariants = {
@@ -114,10 +102,9 @@ export default function HeroTitle({
             ? undefined
             : {
                 y,
-                skewY,
-                transformOrigin: "50% 50%", // Always centered, zero horizontal drift
+                transformOrigin: "50% 50%",
                 willChange: "transform",
-                z: 0,
+                filter: "none",
               }
         }
       >

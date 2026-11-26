@@ -339,12 +339,10 @@ html.light .cx-stars i{
 /* Hero title drop shadow & glow */
 .cx-title{position:relative;isolation:isolate;overflow-x:clip;overflow-y:visible}
 html.light .cx-title h1{
-  filter:drop-shadow(0 6px 10px rgba(91,33,182,.10))
-         drop-shadow(0 1px 2px rgba(15,12,40,.10));
+  filter:none !important;
 }
 html.dark .cx-title h1{
-  filter:drop-shadow(0 6px 12px rgba(167,139,250,.16))
-         drop-shadow(0 1px 3px rgba(0,0,0,.35));
+  filter:none !important;
 }
 .cx-title__glow{display:none !important}
 .cx-hero{overflow-x:clip;overflow-y:visible}
