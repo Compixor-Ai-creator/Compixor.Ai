@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import Stars from "./Stars";
 import TabletFlatten from "./TabletFlatten";
 import HeroTitle from "./HeroTitle";
 import "./hero.css";
@@ -8,16 +7,7 @@ import "./hero.css";
 export default function Hero() {
   return (
     <section className="cx-hero" aria-labelledby="cx-hero-title">
-      <Stars count={110} />
-      <div className="cx-halo" aria-hidden="true" />
-
       <div className="cx-hero__stage">
-        <div className="cx-hero__bg" aria-hidden="true">
-          <div className="cx-hero__beam" />
-          <div className="cx-hero__nebula" />
-        </div>
-        <div className="cx-hero__ring" aria-hidden="true" />
-
         <div className="cx-hero__inner">
           <div className="cx-badge cx-rise">
             <Image src="/brand/logo-c.png" alt="Compixor AI Logo" width={22} height={21} />
@@ -32,9 +22,8 @@ export default function Hero() {
 
           <p className="cx-sub cx-rise" style={{ animationDelay: "320ms" }}>
             Compixor is a private web toolkit to compress, merge, protect, watermark, and convert
-            documents directly in your browser. 9 tools run locally on your device with zero photo
-            or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport
-            Photo) process securely over HTTPS with zero permanent file storage.
+            documents. Most tools run locally on your device in your browser memory, while specialized
+            utilities process securely over HTTPS with zero permanent file storage.
           </p>
 
           <div className="cx-ctas cx-rise" style={{ animationDelay: "440ms" }}>
@@ -49,16 +38,11 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="cx-stage-crop">
+        <div className="cx-stage-crop relative">
+          {/* Exactly ONE subtle purple glow behind the hero card */}
+          <div className="cx-hero-subtle-glow" aria-hidden="true" />
           <div className="cx-stage">
-            <TabletFlatten>
-              <Image
-                className="cx-tablet__img"
-                src="/brand/hero-orbit.png" width={1672} height={941} priority
-                sizes="(max-width:768px) 92vw, 720px"
-                alt="Compixor tools orbiting a PDF: compress, convert to Word, edit image, QR generator, merge and split, protect PDF"
-              />
-            </TabletFlatten>
+            <TabletFlatten />
           </div>
         </div>
       </div>

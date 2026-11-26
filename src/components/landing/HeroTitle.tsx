@@ -48,7 +48,6 @@ export default function HeroTitle({
 
   return (
     <div className="cx-title">
-      <span className="cx-title__glow" aria-hidden="true" />
       <motion.h1
         id="cx-hero-title"
         className={className}
@@ -79,7 +78,6 @@ export default function HeroTitle({
             initial={reduce ? false : "hidden"}
             animate="visible"
             variants={lineVariants}
-            className="cx-grad"
             style={{ display: "inline-block" }}
           >
             {line2}

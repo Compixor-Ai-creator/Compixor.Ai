@@ -72,47 +72,20 @@ html.light .cx-hero{
   --h-ring-fill:#f1ecff; --h-ring-glow:transparent; --h-ring-rim:transparent;
 }
 
-/* ---------- halo glow (Automark style) ---------- */
-.cx-halo{
-  position:absolute;left:50%;top:0;width:min(1400px,100%);height:620px;transform:translateX(-50%);
-  pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 50% 100% at 50% 0%,rgba(139,92,246,.55),rgba(109,61,240,.22) 45%,transparent 72%);
+/* ---------- hero subtle glow (SINGLE subtle purple glow behind hero card) ---------- */
+.cx-hero-subtle-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(850px, 90vw);
+  height: 340px;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(147, 51, 234, 0.12), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
-
-/* ---------- decorative background: plate layer in dark mode ---------- */
-.cx-hero__bg{
-  position:absolute; inset:0; z-index:-1; pointer-events:none;
-  background:#08070f url('/brand/hero-bg-dark-v3.webp') center top / 100% auto no-repeat;
-  -webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);
-  mask-image:linear-gradient(180deg,#000 80%,transparent);
-}
-/* In dark mode, stars, beam and nebula are integrated into the hero-bg-dark image; keep DOM nodes hidden */
-.cx-hero__beam,
-.cx-hero__nebula{
-  display:none !important;
-}
-
-/* Light mode overrides: hide dark bg image, no beam or nebula blobs */
-html.light .cx-hero__bg,
-html.light .cx-hero__beam,
-html.light .cx-hero__nebula{
-  display:none !important;
-  background:none !important;
-  -webkit-mask-image:none !important;
-  mask-image:none !important;
-}
-
-/* ---------- eclipse ring: completely hidden in both themes ---------- */
-.cx-hero__ring,
-.cx-hero__ring::before,
-.cx-hero__ring::after,
-html.light .cx-hero__ring,
-html.light .cx-hero__ring::before,
-html.light .cx-hero__ring::after {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
+html.light .cx-hero-subtle-glow {
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(147, 51, 234, 0.06), transparent 70%);
 }
 
 /* ---------- content ---------- */
@@ -136,9 +109,8 @@ html.light .cx-hero__ring::after {
 }
 .cx-h1 span{ display:inline-block; }
 .cx-grad{
-  background:linear-gradient(90deg,var(--h-grad-a),var(--h-grad-b));
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-  padding-bottom:.08em;                              /* no clipped descenders */
+  color: #c4b5fd;
+  padding-bottom:.08em;
 }
 .cx-sub,
 .cx-hero .cx-sub{
@@ -303,10 +275,9 @@ html.dark .cx-halo{
     rgba(139,108,245,.55) 0%,rgba(110,80,220,.22) 45%,transparent 75%) !important;
 }
 html.dark .cx-grad{
-  background:linear-gradient(90deg,#8e6dff 0%,#a58bff 50%,#7f63f5 100%) !important;
-  -webkit-background-clip:text !important;background-clip:text !important;
-  -webkit-text-fill-color:transparent !important;color:transparent !important;
-  opacity:1 !important;filter:none !important;
+  color:#c4b5fd !important;
+  background:none !important;
+  -webkit-text-fill-color:#c4b5fd !important;
 }
 html.dark .cx-hero .cx-sub{
   color:#d3d6ea !important;
@@ -336,10 +307,9 @@ html.light .cx-halo{
   background:radial-gradient(50% 40% at 50% 0%,rgba(124,58,237,.10),transparent 70%) !important;
 }
 html.light .cx-grad{
-  background:linear-gradient(90deg,#5b21b6 0%,#6d28d9 50%,#4338ca 100%) !important;
-  -webkit-background-clip:text !important;background-clip:text !important;
-  -webkit-text-fill-color:transparent !important;color:transparent !important;
-  opacity:1 !important;filter:none !important;
+  color:#6d28d9 !important;
+  background:none !important;
+  -webkit-text-fill-color:#6d28d9 !important;
 }
 html.light .cx-hero h1,
 html.light .cx-hero h1 span:first-child{
@@ -371,10 +341,7 @@ html.dark .cx-title h1{
   filter:drop-shadow(0 6px 12px rgba(167,139,250,.16))
          drop-shadow(0 1px 3px rgba(0,0,0,.35));
 }
-.cx-title__glow{position:absolute;inset:-60px -12% -20px;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(124,58,237,.35),transparent 70%)}
-html.light .cx-title__glow{
-  background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(124,58,237,.06),transparent 70%)}
+.cx-title__glow{display:none !important}
 .cx-hero{overflow-x:clip;overflow-y:visible}
 .cx-hero__inner{overflow:visible}
 

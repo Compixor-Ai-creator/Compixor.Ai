@@ -628,10 +628,7 @@ html.dark .cx-title h1{
   filter:drop-shadow(0 6px 12px rgba(167,139,250,.16))
          drop-shadow(0 1px 3px rgba(0,0,0,.35));
 }
-.cx-title__glow{position:absolute;inset:-60px -12% -20px;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(124,58,237,.35),transparent 70%)}
-html.light .cx-title__glow{
-  background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(124,58,237,.06),transparent 70%)}
+.cx-title__glow{display:none !important}
 .cx-hero{overflow-x:clip;overflow-y:visible}
 .cx-hero__inner{overflow:visible}
 

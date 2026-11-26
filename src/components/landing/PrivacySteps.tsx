@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Stars from './Stars';
 import './sections.css';
 
 const Svg = ({ children }: { children: React.ReactNode }) => (
@@ -12,7 +11,6 @@ const Lock = () => (<Svg><rect x="4" y="11" width="16" height="10" rx="2"/><path
 export default function PrivacySteps() {
   return (
     <section id="what-happens" className="cx-sec scroll-mt-20" style={{ position: 'relative', overflow: 'hidden' }} aria-labelledby="how-h">
-      <Stars count={70} />
       <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
         <header className="cx-sec__head">
           <p className="cx-eyebrow">Data Architecture</p>

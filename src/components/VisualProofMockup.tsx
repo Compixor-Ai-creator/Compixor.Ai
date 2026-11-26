@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Sparkles, CheckCircle2, ArrowRight, Download, FileText, QrCode, Smartphone, Layers, Eye } from 'lucide-react';
+import { CheckCircle2, XCircle, ArrowRight, Download, FileText, FileImage, QrCode, Smartphone, Layers, Eye } from 'lucide-react';
 
 export function DpMakerPreviewMockup() {
   return (
@@ -9,8 +9,8 @@ export function DpMakerPreviewMockup() {
       <div className="glass-card rounded-3xl p-4 sm:p-6 md:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20 mb-1">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 mb-1">
+              <Smartphone className="w-3.5 h-3.5" />
               <span>Visual Proof Mockup</span>
             </div>
             <h3 className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white">
@@ -32,34 +32,35 @@ export function DpMakerPreviewMockup() {
             <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-3">
               Standard Smartphone Photo (9:16)
             </span>
-            <div className="w-40 h-56 rounded-xl overflow-hidden relative shadow-md bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-3">
-              <div className="w-full h-full rounded-lg bg-zinc-950/20 flex flex-col items-center justify-center text-white text-center p-2 backdrop-blur-xs">
-                <div className="w-12 h-12 rounded-full bg-white/20 border-2 border-white/60 mb-2 flex items-center justify-center">
-                  <span className="text-xl">👤</span>
+            <div className="w-40 h-56 rounded-xl overflow-hidden relative shadow-md bg-gradient-to-b from-zinc-700 via-zinc-800 to-zinc-900 flex items-center justify-center p-3">
+              <div className="w-full h-full rounded-lg bg-zinc-950/40 flex flex-col items-center justify-center text-white text-center p-2 backdrop-blur-xs">
+                <div className="w-12 h-12 rounded-full bg-purple-600 border-2 border-white/60 mb-2 flex items-center justify-center font-bold text-sm tracking-wider">
+                  JD
                 </div>
                 <span className="text-[11px] font-bold">Tall Vertical Image</span>
                 <span className="text-[9px] opacity-80 mt-1">Gets cropped on WhatsApp</span>
               </div>
             </div>
-            <div className="mt-3 text-[11px] text-red-500 font-medium">
-              ❌ Cuts off shoulders or tops of head
+            <div className="mt-3 text-[11px] text-rose-500 font-medium flex items-center gap-1">
+              <XCircle className="w-3.5 h-3.5" />
+              <span>Cuts off shoulders or tops of head</span>
             </div>
           </div>
 
           {/* After: 1:1 Canvas with Ambient Blur Background & Circular Guide */}
-          <div className="flex flex-col items-center p-4 rounded-2xl bg-brand-500/5 dark:bg-brand-500/10 border border-brand-500/30">
-            <span className="text-xs font-semibold text-brand-600 dark:text-brand-400 mb-3">
+          <div className="flex flex-col items-center p-4 rounded-2xl bg-purple-500/5 dark:bg-purple-500/10 border border-purple-500/30">
+            <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 mb-3">
               Compixor Full DP Output (1:1 Canvas)
             </span>
             <div className="w-56 h-56 rounded-xl overflow-hidden relative shadow-lg bg-zinc-900 flex items-center justify-center">
               {/* Blurred background mirroring the photo */}
-              <div className="absolute inset-0 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 blur-xl opacity-70 scale-125" />
+              <div className="absolute inset-0 bg-gradient-to-b from-zinc-700 via-zinc-800 to-zinc-900 blur-xl opacity-70 scale-125" />
               
               {/* Centered uncropped photo */}
-              <div className="w-32 h-48 rounded-lg overflow-hidden relative shadow-2xl z-10 bg-gradient-to-b from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center p-2 border border-white/20">
-                <div className="w-full h-full rounded-md bg-zinc-950/20 flex flex-col items-center justify-center text-white text-center p-1">
-                  <div className="w-10 h-10 rounded-full bg-white/20 border-2 border-white/60 mb-1 flex items-center justify-center">
-                    <span className="text-lg">👤</span>
+              <div className="w-32 h-48 rounded-lg overflow-hidden relative shadow-2xl z-10 bg-gradient-to-b from-zinc-700 via-zinc-800 to-zinc-900 flex items-center justify-center p-2 border border-white/20">
+                <div className="w-full h-full rounded-md bg-zinc-950/40 flex flex-col items-center justify-center text-white text-center p-1">
+                  <div className="w-10 h-10 rounded-full bg-purple-600 border-2 border-white/60 mb-1 flex items-center justify-center font-bold text-xs tracking-wider">
+                    JD
                   </div>
                   <span className="text-[10px] font-bold">100% Intact</span>
                 </div>
@@ -88,8 +89,8 @@ export function QrGeneratorPreviewMockup() {
       <div className="glass-card rounded-3xl p-4 sm:p-6 md:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 mb-1">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 mb-1">
+              <QrCode className="w-3.5 h-3.5" />
               <span>Branded Output Proof</span>
             </div>
             <h3 className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white">
@@ -214,7 +215,7 @@ export function PdfCompressorPreviewMockup() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-1">
-              <Sparkles className="w-3.5 h-3.5" />
+              <FileText className="w-3.5 h-3.5" />
               <span>Real Benchmark Reduction</span>
             </div>
             <h3 className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white">
@@ -289,8 +290,8 @@ export function ImgToWordPreviewMockup() {
       <div className="glass-card rounded-3xl p-4 sm:p-6 md:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 mb-1">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 mb-1">
+              <FileText className="w-3.5 h-3.5" />
               <span>Real OCR Extraction Benchmark</span>
             </div>
             <h3 className="text-lg sm:text-xl font-bold font-display text-zinc-900 dark:text-white">
@@ -300,7 +301,7 @@ export function ImgToWordPreviewMockup() {
               Extract typography, paragraphs, and lists into real Microsoft Word documents with instant download.
             </p>
           </div>
-          <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 shrink-0">
+          <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 shrink-0">
             True .DOCX Output
           </span>
         </div>
@@ -310,7 +311,7 @@ export function ImgToWordPreviewMockup() {
           {/* Original Image */}
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-              <span className="text-lg">🖼️</span>
+              <FileImage className="w-6 h-6 text-amber-500" />
             </div>
             <div>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">Original Scan / Image</p>

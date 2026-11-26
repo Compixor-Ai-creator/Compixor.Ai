@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, ShieldCheck, MessageSquarePlus } from 'lucide-react';
+import Image from 'next/image';
+import { Shield, ShieldCheck, MessageSquarePlus } from 'lucide-react';
 import { SITE_URL, SITE_SHARE_TEXT, CONTACT_EMAIL, getShareUrls } from '@/lib/config';
 import {
   LinkedInIcon,
@@ -52,12 +53,12 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="cx-foot__brand space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center shadow-glow">
-                <Sparkles className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-xl bg-purple-600/10 dark:bg-purple-500/20 border border-purple-500/30 flex items-center justify-center">
+                <Image src="/brand/logo-c.png" alt="Compixor AI Logo" width={20} height={20} />
               </div>
-              <span className="text-xl font-bold font-display tracking-tight">
-                <span className="text-gradient">COMPIXOR</span>
-                <span className="text-brand-500 dark:text-brand-400">.AI</span>
+              <span className="text-xl font-bold font-display tracking-tight text-zinc-900 dark:text-white">
+                COMPIXOR
+                <span className="text-purple-600 dark:text-purple-400">.AI</span>
               </span>
             </Link>
             <div className="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm leading-relaxed">

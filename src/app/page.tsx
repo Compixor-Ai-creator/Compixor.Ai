@@ -15,6 +15,8 @@ import {
   Zap,
   MonitorSmartphone,
   Layers,
+  FileArchive,
+  IdCard,
 } from 'lucide-react';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { FaqJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
@@ -226,12 +228,12 @@ export default function HomePage() {
                 <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Free Utilities</div>
               </div>
               <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
-                <div className="text-xl sm:text-2xl font-black font-display text-emerald-600 dark:text-emerald-400">100%</div>
-                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">In-Browser RAM</div>
+                <div className="text-xl sm:text-2xl font-black font-display text-purple-600 dark:text-purple-400">9 Tools</div>
+                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Processed on Device</div>
               </div>
               <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
-                <div className="text-xl sm:text-2xl font-black font-display text-brand-600 dark:text-brand-400">0 Byte</div>
-                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Server Uploads</div>
+                <div className="text-xl sm:text-2xl font-black font-display text-emerald-600 dark:text-emerald-400">0 Permanent</div>
+                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">Server Storage</div>
               </div>
               <div className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm">
                 <div className="text-xl sm:text-2xl font-black font-display text-zinc-900 dark:text-white">0</div>
@@ -251,7 +253,7 @@ export default function HomePage() {
                     onClick={() => setActiveCategory(cat)}
                     className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 active:scale-[0.98] ${
                       isSelected
-                        ? 'bg-brand-600 text-white shadow-md shadow-brand-500/25 scale-[1.02]'
+                        ? 'bg-purple-600 text-white shadow-md shadow-purple-600/25 scale-[1.02]'
                         : 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70'
                     }`}
                   >
@@ -276,57 +278,101 @@ export default function HomePage() {
               {filteredTools.map((tool) => {
                 const Icon = tool.icon;
                 const isServerTool = tool.processing === 'server' || ['/tools/pdf-to-word', '/tools/img-to-word', '/tools/passport-photo'].includes(tool.href);
-                const badgeText = tool.id === 'passport-photo'
-                  ? 'Secure server processing'
-                  : isServerTool
-                  ? 'Secure HTTPS'
-                  : (tool.processing === 'local' ? 'Local RAM' : 'Secure HTTPS');
-                const taglineText = isServerTool ? 'Secure HTTPS · Deleted after processing' : tool.tagline;
-                const descriptionText = isServerTool
-                  ? tool.description.replace(' with zero data retention', '').replace('with zero data retention', '')
-                  : tool.description;
+                const isFlagship = tool.id === 'pdf-compressor' || tool.id === 'passport-photo';
+                const privacyChip = isServerTool ? 'Secure server processing, auto-deleted' : 'Processed on your device';
+                const cleanTagline = tool.subtitle || tool.shortDescription;
 
                 return (
-                  <div key={tool.id}>
+                  <div key={tool.id} className={isFlagship ? 'col-span-1 sm:col-span-2 lg:col-span-2' : 'col-span-1'}>
                     <Link
                       href={tool.href}
-                      className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full hover:-translate-y-1 hover:border-brand-500/50 hover:shadow-xl active:scale-[0.99] transition-all duration-200 relative overflow-hidden"
+                      className={`glass-card group p-5 sm:p-6 rounded-2xl flex flex-col justify-between h-full hover:-translate-y-0.5 hover:border-purple-500/40 hover:shadow-lg transition-all duration-200 relative ${
+                        isFlagship
+                          ? 'border-purple-500/30 bg-purple-500/[0.02] dark:bg-purple-500/[0.04]'
+                          : 'border-zinc-200/80 dark:border-zinc-800/80'
+                      }`}
                     >
-                      <div
-                        aria-hidden="true"
-                        className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
-                      />
                       <div>
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
-                            <Icon className="w-6 h-6" />
-                          </div>
-                          <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md border ${
-                            !isServerTool && tool.processing === 'local'
-                              ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
-                              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
+                        <div className="flex items-center justify-between mb-3">
+                          <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
+                            isFlagship
+                              ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
+                              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-zinc-700/60'
                           }`}>
-                            {badgeText}
+                            <Icon className="w-5 h-5" />
+                          </div>
+                          <span className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${
+                            isServerTool
+                              ? 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20'
+                              : 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
+                          }`}>
+                            {privacyChip}
                           </span>
                         </div>
-                        <h3 className="font-bold text-lg text-zinc-900 dark:text-white mb-1.5 group-hover:text-brand-500 transition-colors">
-                          {tool.title}
-                        </h3>
-                        <div className="text-xs text-brand-600 dark:text-brand-400 font-semibold mb-2">
-                          {taglineText}
+
+                        <div className="flex items-baseline justify-between gap-2 mb-1">
+                          <h3 className="font-bold text-base sm:text-lg text-zinc-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                            {tool.name}
+                          </h3>
+                          {isFlagship ? (
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-300 border border-purple-500/20 font-bold shrink-0">
+                              Flagship
+                            </span>
+                          ) : null}
                         </div>
-                        <div className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
-                          {descriptionText}
+
+                        <div className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-1 mb-2">
+                          {cleanTagline}
                         </div>
+
+                        {/* Flagship Visual Previews */}
+                        {tool.id === 'pdf-compressor' ? (
+                          <div className="mt-3 p-3 rounded-xl bg-zinc-50/80 dark:bg-zinc-950/60 border border-zinc-200/70 dark:border-zinc-800/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className="w-7 h-7 rounded-lg bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shrink-0">
+                                <FileArchive className="w-3.5 h-3.5 text-rose-400" />
+                              </div>
+                              <div className="text-left truncate">
+                                <div className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">Q4_Report.pdf</div>
+                                <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400">14.8 MB → 3.2 MB</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 self-end sm:self-auto">
+                              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                                -78% Lossless
+                              </span>
+                              <span className="text-[10px] text-zinc-400 font-mono">0 Bytes Out</span>
+                            </div>
+                          </div>
+                        ) : null}
+
+                        {tool.id === 'passport-photo' ? (
+                          <div className="mt-3 p-3 rounded-xl bg-zinc-50/80 dark:bg-zinc-950/60 border border-zinc-200/70 dark:border-zinc-800/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className="w-7 h-7 rounded-lg bg-purple-500/15 border border-purple-500/30 flex items-center justify-center shrink-0">
+                                <IdCard className="w-3.5 h-3.5 text-purple-400" />
+                              </div>
+                              <div className="text-left truncate">
+                                <div className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">2×2 Inch Biometric Print</div>
+                                <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400">300 DPI Standard • 4-Photo Sheet</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 self-end sm:self-auto">
+                              <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">
+                                Auto-Deleted
+                              </span>
+                              <span className="text-[10px] text-zinc-400 font-mono">ISO Compliant</span>
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
-                      <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
-                        <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-                          <span>{tool.stats}</span>
-                          <span className="text-brand-500 flex items-center gap-1 group-hover:gap-1.5 transition-all duration-200 font-semibold">
-                            <span>Launch Tool</span>
-                            <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
-                          </span>
-                        </div>
+
+                      <div className="pt-3 mt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+                        <span>{tool.stats}</span>
+                        <span className="text-purple-600 dark:text-purple-400 flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform">
+                          <span>Open Tool</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </span>
                       </div>
                     </Link>
                   </div>
