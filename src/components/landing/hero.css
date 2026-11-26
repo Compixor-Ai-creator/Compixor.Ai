@@ -109,8 +109,9 @@ html.light .cx-hero-subtle-glow {
 }
 .cx-h1 span{ display:inline-block; }
 .cx-grad{
-  color: #c4b5fd;
-  padding-bottom:.08em;
+  background:linear-gradient(90deg,var(--h-grad-a),var(--h-grad-b));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  padding-bottom:.08em;                              /* no clipped descenders */
 }
 .cx-sub,
 .cx-hero .cx-sub{
@@ -275,9 +276,10 @@ html.dark .cx-halo{
     rgba(139,108,245,.55) 0%,rgba(110,80,220,.22) 45%,transparent 75%) !important;
 }
 html.dark .cx-grad{
-  color:#c4b5fd !important;
-  background:none !important;
-  -webkit-text-fill-color:#c4b5fd !important;
+  background:linear-gradient(90deg,#8e6dff 0%,#a58bff 50%,#7f63f5 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;color:transparent !important;
+  opacity:1 !important;filter:none !important;
 }
 html.dark .cx-hero .cx-sub{
   color:#d3d6ea !important;
@@ -307,9 +309,10 @@ html.light .cx-halo{
   background:radial-gradient(50% 40% at 50% 0%,rgba(124,58,237,.10),transparent 70%) !important;
 }
 html.light .cx-grad{
-  color:#6d28d9 !important;
-  background:none !important;
-  -webkit-text-fill-color:#6d28d9 !important;
+  background:linear-gradient(90deg,#5b21b6 0%,#6d28d9 50%,#4338ca 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;color:transparent !important;
+  opacity:1 !important;filter:none !important;
 }
 html.light .cx-hero h1,
 html.light .cx-hero h1 span:first-child{

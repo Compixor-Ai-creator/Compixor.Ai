@@ -22,8 +22,9 @@ export default function Hero() {
 
           <p className="cx-sub cx-rise" style={{ animationDelay: "320ms" }}>
             Compixor is a private web toolkit to compress, merge, protect, watermark, and convert
-            documents. Most tools run locally on your device in your browser memory, while specialized
-            utilities process securely over HTTPS with zero permanent file storage.
+            documents directly in your browser. 9 tools run locally on your device with zero photo
+            or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport
+            Photo) process securely over HTTPS with zero permanent file storage.
           </p>
 
           <div className="cx-ctas cx-rise" style={{ animationDelay: "440ms" }}>
@@ -38,11 +39,16 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="cx-stage-crop relative">
-          {/* Exactly ONE subtle purple glow behind the hero card */}
-          <div className="cx-hero-subtle-glow" aria-hidden="true" />
+        <div className="cx-stage-crop">
           <div className="cx-stage">
-            <TabletFlatten />
+            <TabletFlatten>
+              <Image
+                className="cx-tablet__img"
+                src="/brand/hero-orbit.png" width={1672} height={941} priority
+                sizes="(max-width:768px) 92vw, 720px"
+                alt="Compixor tools orbiting a PDF: compress, convert to Word, edit image, QR generator, merge and split, protect PDF"
+              />
+            </TabletFlatten>
           </div>
         </div>
       </div>

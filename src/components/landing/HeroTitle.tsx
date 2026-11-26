@@ -78,6 +78,7 @@ export default function HeroTitle({
             initial={reduce ? false : "hidden"}
             animate="visible"
             variants={lineVariants}
+            className="cx-grad"
             style={{ display: "inline-block" }}
           >
             {line2}
