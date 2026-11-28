@@ -3,16 +3,12 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import TabletFlatten from "./TabletFlatten";
 import HeroTitle from "./HeroTitle";
+import HeroScrollLayer from "./HeroScrollLayer";
 import "./hero.css";
 
 export default function Hero() {
-  const reduce = useReducedMotion();
-  const { scrollY } = useScroll();
-  const depthY = useTransform(scrollY, [0, 450], [0, -30], { clamp: true });
-
   return (
     <section className="cx-hero" aria-labelledby="cx-hero-title">
       <div className="cx-hero__stage">
@@ -28,16 +24,16 @@ export default function Hero() {
             line2="Photo Tools That Run in Your Browser"
           />
 
-          <motion.div style={reduce ? undefined : { y: depthY, willChange: "transform" }}>
+          <HeroScrollLayer y={-30} opacity={0.35}>
             <p className="cx-sub cx-rise" style={{ animationDelay: "320ms" }}>
               Compixor is a private web toolkit to compress, merge, protect, watermark, and convert
               documents directly in your browser. 9 tools run locally on your device with zero photo
               or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport
               Photo) process securely over HTTPS with zero permanent file storage.
             </p>
-          </motion.div>
+          </HeroScrollLayer>
 
-          <motion.div style={reduce ? undefined : { y: depthY, willChange: "transform" }}>
+          <HeroScrollLayer y={-20} opacity={0.35}>
             <div className="cx-ctas cx-rise" style={{ animationDelay: "440ms" }}>
               <Link href="#tools" className="cx-hbtn cx-hbtn--primary">
                 <span>Explore All 12 Tools</span>
@@ -48,7 +44,7 @@ export default function Hero() {
               </Link>
               <Link href="#what-happens" className="cx-hbtn cx-hbtn--ghost">See How It Works</Link>
             </div>
-          </motion.div>
+          </HeroScrollLayer>
         </div>
 
         <div className="cx-stage-crop">

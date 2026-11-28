@@ -125,11 +125,16 @@ html.light .cx-hero-subtle-glow {
   animation: cx-line-rise 700ms var(--reveal-ease) 180ms both;
 }
 @media (prefers-reduced-motion: reduce) {
+  .cx-scroll-line {
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto !important;
+  }
   .cx-line-enter-1,
   .cx-line-enter-2 {
     animation: none !important;
-    transform: none !important;
     opacity: 1 !important;
+    transform: none !important;
   }
 }
 .cx-grad{

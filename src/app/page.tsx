@@ -248,6 +248,7 @@ export default function HomePage() {
           .uc, .uc h3, .uc p, .uc-tools, .uc-tool,
           .cx-rv, .cx-rv--in,
           .cx-line-enter-1, .cx-line-enter-2, .cx-rise,
+          .cx-scroll-line,
           [style*="opacity: 0"], [style*="opacity:0"] {
             opacity: 1 !important;
             transform: none !important;
