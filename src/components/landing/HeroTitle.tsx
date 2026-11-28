@@ -10,9 +10,9 @@ export interface HeroTitleProps {
 }
 
 // Tune here: scroll distance and per-line motion
-const SCROLL_RANGE: [number, number] = [0, 450];
-const LINE1 = { y: -110, opacity: 0.25 };
-const LINE2 = { y: -60, opacity: 0.2 };
+const SCROLL_RANGE: [number, number] = [0, 260];
+const LINE1 = { y: -150, opacity: 0 };
+const LINE2 = { y: -80, opacity: 0.05 };
 
 export default function HeroTitle({
   className = "cx-h1",

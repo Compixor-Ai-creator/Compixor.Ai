@@ -16,7 +16,7 @@ export default function HeroScrollLayer({
   className,
   y = -30,
   opacity = 0.35,
-  range = [0, 450],
+  range = [0, 260],
 }: HeroScrollLayerProps) {
   const { scrollY } = useScroll();
   const yValue = useTransform(scrollY, range, [0, y]);

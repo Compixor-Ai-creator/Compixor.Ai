@@ -6,13 +6,11 @@ import Link from "next/link";
 import TabletFlatten from "./TabletFlatten";
 import HeroTitle from "./HeroTitle";
 import HeroScrollLayer from "./HeroScrollLayer";
-import HeroDebugBadge from "./HeroDebugBadge";
 import "./hero.css";
 
 export default function Hero() {
   return (
     <section className="cx-hero" aria-labelledby="cx-hero-title">
-      <HeroDebugBadge />
       <div className="cx-hero__stage">
         <div className="cx-hero__inner">
           <div className="cx-badge cx-rise">
@@ -26,7 +24,7 @@ export default function Hero() {
             line2="Photo Tools That Run in Your Browser"
           />
 
-          <HeroScrollLayer y={-30} opacity={0.35}>
+          <HeroScrollLayer range={[0, 260]} y={-60} opacity={0.1}>
             <p className="cx-sub cx-rise" style={{ animationDelay: "320ms" }}>
               Compixor is a private web toolkit to compress, merge, protect, watermark, and convert
               documents directly in your browser. 9 tools run locally on your device with zero photo
@@ -35,7 +33,7 @@ export default function Hero() {
             </p>
           </HeroScrollLayer>
 
-          <HeroScrollLayer y={-20} opacity={0.35}>
+          <HeroScrollLayer range={[0, 260]} y={-35} opacity={0.2}>
             <div className="cx-ctas cx-rise" style={{ animationDelay: "440ms" }}>
               <Link href="#tools" className="cx-hbtn cx-hbtn--primary">
                 <span>Explore All 12 Tools</span>
