@@ -34,15 +34,16 @@ module.exports = {
           100: '#f4f4f5',
           200: '#e4e4e7',
           800: '#1e1b2e',
-          850: '#16132a',
-          900: '#0f0c24',
-          950: '#0a0818',
+          850: '#111827',
+          900: '#0E1424',
+          950: '#0B0F1A',
         }
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['var(--font-outfit)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
         serif: ['var(--font-playfair)', 'Playfair Display', 'Georgia', 'serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

@@ -25,6 +25,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { blogsData, BlogItem } from '@/lib/blogsData';
+import { handleSpotlightMove } from '@/lib/spotlight';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Camera,
@@ -60,7 +61,7 @@ export default function BlogSection() {
       : blogsData.filter((item) => item.category === activeCategory);
 
   return (
-    <section id="blog-section" className="relative py-20 scroll-mt-20 overflow-hidden">
+    <section id="blog-section" className="relative py-20 scroll-mt-20 overflow-hidden dark:bg-[#0B0F1A]/85">
       {/* Background Atmosphere */}
       <div
         aria-hidden="true"
@@ -116,7 +117,7 @@ export default function BlogSection() {
               >
                 <span>{cat}</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                  className={`font-mono text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                     isActive
                       ? 'bg-white/20 text-white'
                       : 'bg-zinc-200/70 dark:bg-zinc-700/70 text-zinc-600 dark:text-zinc-400'
@@ -145,14 +146,17 @@ export default function BlogSection() {
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                   className="h-full"
                 >
-                  <article className="glass-card p-6 sm:p-7 h-full flex flex-col justify-between rounded-3xl border border-white/80 dark:border-zinc-800/80 hover:border-brand-500/40 hover:shadow-lg transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 group">
+                  <article
+                    onMouseMove={handleSpotlightMove}
+                    className="glass-card cx-spotlight p-6 sm:p-7 h-full flex flex-col justify-between rounded-3xl border border-white/80 dark:border-white/[0.06] hover:border-brand-500/40 hover:shadow-lg transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 group"
+                  >
                     <div>
                       {/* Top Meta Row */}
                       <div className="flex items-center justify-between gap-2 mb-4">
-                        <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20">
+                        <span className="font-mono text-[11px] font-bold px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20">
                           {blog.category}
                         </span>
-                        <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                        <span className="font-mono text-xs font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5" />
                           {blog.readTime}
                         </span>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { tools } from '@/data/tools';
 import { REVEAL } from '@/lib/reveal';
+import { handleSpotlightMove } from '@/lib/spotlight';
 import './sections.css';
 
 const CASES = [
@@ -32,7 +33,7 @@ export default function UseCases() {
   }, []);
 
   return (
-    <section className="cx-sec" style={{ position: 'relative', overflow: 'visible' }} aria-labelledby="uc-h">
+    <section className="cx-sec dark:bg-[#0B0F1A]/85" style={{ position: 'relative', overflow: 'visible' }} aria-labelledby="uc-h">
       <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
         <motion.header
           className="cx-sec__head"
@@ -53,7 +54,8 @@ export default function UseCases() {
             return (
               <motion.li
                 key={c.title}
-                className="uc"
+                className="uc cx-spotlight"
+                onMouseMove={handleSpotlightMove}
                 initial={reduce ? false : { opacity: 0, y: REVEAL.cardDist, scale: 0.96 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-80px" }}

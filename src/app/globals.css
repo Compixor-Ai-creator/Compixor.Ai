@@ -24,7 +24,7 @@
   }
 
   html.dark {
-    background-color: #0a0818;
+    background-color: #0B0F1A;
   }
 
   body {
@@ -99,6 +99,7 @@
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-muted: #64748b;
+    --cx-font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
   [data-theme="light"] .hero-title-gradient {
@@ -106,16 +107,26 @@
   }
 
   .dark {
+    --bg-base: #0B0F1A;
+    --bg-alt: #0E1424;
+    --surface-card: rgba(17, 24, 39, 0.70);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --accent-primary: #7C3AED;
+    --accent-cyan: #22D3EE;
+    --accent-magenta: #F472B6;
+    --accent-live: #22C55E;
+    --cx-font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
     --topo-color: transparent;
-    --glass-bg: rgba(18, 15, 38, 0.80);
-    --glass-border: rgba(255, 255, 255, 0.12);
-    --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    --glow-color: rgba(124, 58, 237, 0.20);
-    --surface-primary: #0f0c24;
-    --surface-secondary: #16132a;
-    --text-primary: #fafafa;
-    --text-secondary: #a1a1aa;
-    --text-muted: #71717a;
+    --glass-bg: rgba(17, 24, 39, 0.70);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --glow-color: rgba(124, 58, 237, 0.28);
+    --surface-primary: #0B0F1A;
+    --surface-secondary: #0E1424;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
   }
 
   * {
@@ -208,14 +219,279 @@
     transform: translateY(0) scale(0.99);
   }
 
+  .dark .glass-card {
+    background: var(--surface-card, rgba(17, 24, 39, 0.70));
+    border-color: var(--border-subtle, rgba(255, 255, 255, 0.06));
+  }
+
   .dark .glass-card:hover {
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 25px var(--glow-color);
-    border-color: rgba(255, 255, 255, 0.22);
-    transform: translateY(-2px);
+    box-shadow: 0 18px 42px -12px rgba(124, 58, 237, 0.30), 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    border-color: rgba(124, 58, 237, 0.35);
+    transform: translateY(-4px);
   }
 
   .dark .glass-card:active {
     transform: translateY(0) scale(0.99);
+  }
+
+  /* Privacy Lab Background System (Dark Mode Only) */
+  .lab-blueprint-grid,
+  .lab-stars,
+  .lab-grain,
+  .lab-divider {
+    display: none;
+  }
+
+  .dark .lab-stars {
+    display: block;
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+  }
+
+  .lab-stars__tier {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 9999px;
+    background: transparent;
+    will-change: opacity, transform;
+  }
+
+  /* Tier 1: 1px stars (28 stars — kept on mobile & desktop) */
+  .lab-stars__tier--1 {
+    width: 1px;
+    height: 1px;
+    box-shadow:
+      6vw 8vh 0 rgba(255,255,255,0.65),
+      14vw 22vh 0 rgba(34,211,238,0.55),
+      21vw 11vh 0 rgba(255,255,255,0.55),
+      29vw 34vh 0 rgba(167,139,250,0.55),
+      35vw 16vh 0 rgba(255,255,255,0.6),
+      42vw 7vh 0 rgba(255,255,255,0.5),
+      49vw 28vh 0 rgba(34,211,238,0.5),
+      56vw 12vh 0 rgba(255,255,255,0.65),
+      63vw 38vh 0 rgba(255,255,255,0.5),
+      71vw 19vh 0 rgba(167,139,250,0.55),
+      78vw 9vh 0 rgba(255,255,255,0.6),
+      85vw 31vh 0 rgba(255,255,255,0.55),
+      92vw 14vh 0 rgba(34,211,238,0.5),
+      9vw 48vh 0 rgba(255,255,255,0.5),
+      18vw 62vh 0 rgba(255,255,255,0.45),
+      27vw 54vh 0 rgba(167,139,250,0.45),
+      39vw 46vh 0 rgba(255,255,255,0.55),
+      47vw 66vh 0 rgba(255,255,255,0.4),
+      58vw 52vh 0 rgba(34,211,238,0.45),
+      67vw 64vh 0 rgba(255,255,255,0.45),
+      76vw 49vh 0 rgba(255,255,255,0.5),
+      88vw 58vh 0 rgba(167,139,250,0.45),
+      95vw 42vh 0 rgba(255,255,255,0.5),
+      4vw 74vh 0 rgba(255,255,255,0.35),
+      24vw 78vh 0 rgba(255,255,255,0.35),
+      52vw 75vh 0 rgba(255,255,255,0.35),
+      74vw 72vh 0 rgba(34,211,238,0.35),
+      91vw 76vh 0 rgba(255,255,255,0.35);
+    animation: lab-twinkle-1 2.8s ease-in-out infinite alternate;
+  }
+
+  /* Tier 2: 1.5px stars (24 stars — desktop/tablet) */
+  .lab-stars__tier--2 {
+    width: 1.5px;
+    height: 1.5px;
+    box-shadow:
+      11vw 14vh 0 rgba(255,255,255,0.7),
+      19vw 29vh 0 rgba(167,139,250,0.6),
+      25vw 6vh 0 rgba(255,255,255,0.65),
+      33vw 24vh 0 rgba(34,211,238,0.55),
+      44vw 19vh 0 rgba(255,255,255,0.65),
+      53vw 5vh 0 rgba(255,255,255,0.6),
+      61vw 26vh 0 rgba(167,139,250,0.55),
+      69vw 11vh 0 rgba(255,255,255,0.7),
+      77vw 29vh 0 rgba(255,255,255,0.6),
+      83vw 17vh 0 rgba(34,211,238,0.55),
+      94vw 24vh 0 rgba(255,255,255,0.65),
+      7vw 39vh 0 rgba(255,255,255,0.55),
+      16vw 53vh 0 rgba(34,211,238,0.45),
+      31vw 43vh 0 rgba(255,255,255,0.55),
+      41vw 59vh 0 rgba(167,139,250,0.5),
+      54vw 41vh 0 rgba(255,255,255,0.6),
+      65vw 55vh 0 rgba(255,255,255,0.5),
+      79vw 43vh 0 rgba(167,139,250,0.45),
+      89vw 49vh 0 rgba(255,255,255,0.5),
+      13vw 69vh 0 rgba(255,255,255,0.4),
+      36vw 71vh 0 rgba(255,255,255,0.4),
+      60vw 69vh 0 rgba(34,211,238,0.4),
+      81vw 67vh 0 rgba(255,255,255,0.4),
+      96vw 63vh 0 rgba(255,255,255,0.4);
+    animation: lab-twinkle-2 3.9s ease-in-out 0.9s infinite alternate;
+  }
+
+  /* Tier 3: 2px stars (18 stars — desktop/tablet) */
+  .lab-stars__tier--3 {
+    width: 2px;
+    height: 2px;
+    box-shadow:
+      8vw 18vh 0 rgba(255,255,255,0.75),
+      23vw 15vh 0 rgba(34,211,238,0.65),
+      38vw 11vh 0 rgba(255,255,255,0.7),
+      51vw 22vh 0 rgba(167,139,250,0.65),
+      66vw 16vh 0 rgba(255,255,255,0.75),
+      82vw 8vh 0 rgba(255,255,255,0.7),
+      90vw 21vh 0 rgba(34,211,238,0.6),
+      15vw 36vh 0 rgba(167,139,250,0.6),
+      28vw 48vh 0 rgba(255,255,255,0.6),
+      46vw 35vh 0 rgba(255,255,255,0.65),
+      62vw 46vh 0 rgba(34,211,238,0.55),
+      75vw 37vh 0 rgba(255,255,255,0.6),
+      87vw 39vh 0 rgba(255,255,255,0.6),
+      20vw 60vh 0 rgba(255,255,255,0.45),
+      49vw 57vh 0 rgba(167,139,250,0.45),
+      70vw 61vh 0 rgba(255,255,255,0.45),
+      34vw 74vh 0 rgba(255,255,255,0.35),
+      84vw 73vh 0 rgba(255,255,255,0.35);
+    animation: lab-twinkle-3 4.8s ease-in-out 1.7s infinite alternate;
+  }
+
+  @keyframes lab-twinkle-1 {
+    0% { opacity: 0.22; transform: scale(0.9); }
+    100% { opacity: 0.92; transform: scale(1.1); }
+  }
+  @keyframes lab-twinkle-2 {
+    0% { opacity: 0.9; transform: scale(1.08); }
+    100% { opacity: 0.2; transform: scale(0.88); }
+  }
+  @keyframes lab-twinkle-3 {
+    0% { opacity: 0.25; transform: scale(0.92); }
+    100% { opacity: 0.95; transform: scale(1.12); }
+  }
+
+  /* Rare subtle shooting stars (Desktop only) */
+  .lab-shooting-star {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .dark .lab-shooting-star {
+      display: block;
+      position: absolute;
+      width: 110px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), rgba(34, 211, 238, 0.65));
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .dark .lab-shooting-star--1 {
+      top: 12%;
+      left: 18%;
+      animation: lab-shoot 17s ease-in-out 3s infinite;
+    }
+    .dark .lab-shooting-star--2 {
+      top: 24%;
+      left: 62%;
+      animation: lab-shoot 21s ease-in-out 11s infinite;
+    }
+  }
+  @keyframes lab-shoot {
+    0%, 91% {
+      opacity: 0;
+      transform: translate3d(0, 0, 0) rotate(28deg) scaleX(0.4);
+    }
+    94% {
+      opacity: 0.72;
+      transform: translate3d(120px, 64px, 0) rotate(28deg) scaleX(1);
+    }
+    97%, 100% {
+      opacity: 0;
+      transform: translate3d(260px, 138px, 0) rotate(28deg) scaleX(0.5);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .lab-stars__tier--2,
+    .lab-stars__tier--3,
+    .lab-shooting-star {
+      display: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lab-stars__tier {
+      animation: none !important;
+      opacity: 0.65 !important;
+      transform: none !important;
+    }
+    .lab-shooting-star {
+      display: none !important;
+      animation: none !important;
+    }
+  }
+
+  .dark .lab-blueprint-grid {
+    display: block;
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+      radial-gradient(circle, rgba(34, 211, 238, 0.14) 1px, transparent 1px);
+    background-size: 48px 48px, 48px 48px, 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 35%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 35%, transparent 100%);
+  }
+
+  .dark .lab-grain {
+    display: block;
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+  }
+
+  .dark .lab-divider {
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(124, 58, 237, 0.30) 50%, transparent 100%);
+  }
+
+  /* Mouse-following spotlight border on cards (Desktop Dark Mode Only) */
+  @media (hover: hover) and (pointer: fine) {
+    .dark .cx-spotlight {
+      position: relative;
+    }
+    .dark .cx-spotlight::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: radial-gradient(
+        280px circle at var(--mx, -999px) var(--my, -999px),
+        rgba(124, 58, 237, 0.65),
+        rgba(34, 211, 238, 0.35) 45%,
+        transparent 75%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 200ms ease;
+      z-index: 2;
+    }
+    .dark .cx-spotlight:hover::after {
+      opacity: 1;
+    }
   }
 
   /* Premium Clean Frosted Glass Panel (Core Toolkit, Showcase, Large Floating Panels) */
@@ -975,7 +1251,7 @@
 
     .dark .topo-bg {
       background-image: none !important;
-      background-color: #0a0818 !important;
+      background-color: #0B0F1A !important;
     }
 
     /* Stop heavy animated ambient orbs on mobile completely */
@@ -1048,8 +1324,8 @@
     }
 
     .dark .glass-card {
-      background: rgba(22, 19, 42, 0.96) !important;
-      border: 1px solid rgba(124, 58, 237, 0.18) !important;
+      background: rgba(17, 24, 39, 0.88) !important;
+      border: 1px solid rgba(255, 255, 255, 0.06) !important;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
     }
 

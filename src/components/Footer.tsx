@@ -47,7 +47,7 @@ export default function Footer() {
   const shareUrls = getShareUrls(SITE_URL, SITE_SHARE_TEXT);
 
   return (
-    <footer className="relative mt-24 border-t border-black/[0.06] dark:border-white/[0.06] bg-zinc-50/50 dark:bg-surface-900/40">
+    <footer className="relative mt-24 border-t border-black/[0.06] dark:border-white/[0.06] bg-zinc-50/50 dark:bg-[#0B0F1A]">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
         <div className="cx-foot__grid">
           {/* Brand Column */}

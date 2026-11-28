@@ -5,22 +5,44 @@ import Image from "next/image";
 import Link from "next/link";
 import TabletFlatten from "./TabletFlatten";
 import HeroTitle from "./HeroTitle";
+import HandDrawn from "./HandDrawn";
 import "./hero.css";
 
 export default function Hero() {
   return (
     <section className="cx-hero" aria-labelledby="cx-hero-title">
+      {/* Privacy Lab Hero Aurora (Dark mode only, CSS-controlled) */}
+      <div className="cx-aurora" aria-hidden="true">
+        <div className="cx-aurora__blob cx-aurora__blob--1" />
+        <div className="cx-aurora__blob cx-aurora__blob--2" />
+        <div className="cx-aurora__blob cx-aurora__blob--3" />
+      </div>
+
       <div className="cx-hero__stage">
         <div className="cx-hero__inner">
           <div className="cx-badge cx-rise">
             <Image src="/brand/logo-c.png" alt="Compixor AI Logo" width={22} height={21} />
-            All-in-One Private PDF &amp; Image Toolkit <i aria-hidden="true" /> Zero File Storage
+            <span>
+              All-in-One Private PDF &amp; Image Toolkit <i aria-hidden="true" /> Zero File Storage
+            </span>
+            <span className="cx-live-pill">
+              <span className="cx-live-dot" aria-hidden="true" />
+              <span className="font-mono">LOCAL • 0 UPLOADS</span>
+            </span>
           </div>
 
           <HeroTitle
             className="cx-h1"
-            line1="Free Private PDF, Word &"
-            line2="Photo Tools That Run in Your Browser"
+            line1={
+              <>
+                Free <HandDrawn variant="circle">Private</HandDrawn> PDF, Word &amp;
+              </>
+            }
+            line2={
+              <>
+                Photo Tools That Run in Your <HandDrawn variant="underline">Browser</HandDrawn>
+              </>
+            }
           />
 
           <p className="cx-sub cx-rise" style={{ animationDelay: "320ms" }}>
@@ -43,6 +65,7 @@ export default function Hero() {
         </div>
 
         <div className="cx-stage-crop">
+          <div className="cx-mockup-glow" aria-hidden="true" />
           <div className="cx-stage">
             <TabletFlatten>
               <Image

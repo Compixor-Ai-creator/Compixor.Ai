@@ -1,6 +1,7 @@
 import Script from 'next/script';
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
+import { JetBrains_Mono } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -52,10 +53,17 @@ const playfair = localFont({
   preload: true,
 });
 
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-mono',
+  display: 'swap',
+});
+
 export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#090d16' },
+    { media: '(prefers-color-scheme: dark)', color: '#0B0F1A' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -143,7 +151,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} ${playfair.variable}`}
+      className={`${inter.variable} ${outfit.variable} ${playfair.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -217,6 +225,17 @@ export default function RootLayout({
         </a>
         <ThemeProvider>
           <div className="relative min-h-screen flex flex-col">
+            {/* Privacy Lab Blueprint Grid, Twinkling Stars & SVG Grain (Dark mode only, CSS-controlled) */}
+            <div className="lab-blueprint-grid" aria-hidden="true" />
+            <div className="lab-stars" aria-hidden="true">
+              <div className="lab-stars__tier lab-stars__tier--1" />
+              <div className="lab-stars__tier lab-stars__tier--2" />
+              <div className="lab-stars__tier lab-stars__tier--3" />
+              <div className="lab-shooting-star lab-shooting-star--1" />
+              <div className="lab-shooting-star lab-shooting-star--2" />
+            </div>
+            <div className="lab-grain" aria-hidden="true" />
+
             {/* Sliding Ambient Blur Glows (Desktop only — disabled on mobile for 60fps scrolling) */}
             <div className="hidden md:block slide-blur-container">
               <div className="slide-blur-orb-1" />

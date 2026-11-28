@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { REVEAL } from '@/lib/reveal';
+import { handleSpotlightMove } from '@/lib/spotlight';
 import './sections.css';
 
 const Svg = ({ children }: { children: React.ReactNode }) => (
@@ -26,7 +27,7 @@ export default function PrivacySteps() {
   }, []);
 
   return (
-    <section id="what-happens" className="cx-sec scroll-mt-20" style={{ position: 'relative', overflow: 'hidden' }} aria-labelledby="how-h">
+    <section id="what-happens" className="cx-sec scroll-mt-20 dark:bg-[#0E1424]/85" style={{ position: 'relative', overflow: 'hidden' }} aria-labelledby="how-h">
       <div className="cx-container" style={{ position: 'relative', zIndex: 1 }}>
         <motion.header
           className="cx-sec__head"
@@ -42,7 +43,8 @@ export default function PrivacySteps() {
         <ol className="st-grid">
           {/* STEP 1 */}
           <motion.li
-            className="st"
+            className="st cx-spotlight"
+            onMouseMove={handleSpotlightMove}
             initial={reduce ? false : { opacity: 0, y: REVEAL.cardDist }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -74,7 +76,8 @@ export default function PrivacySteps() {
 
           {/* STEP 2 */}
           <motion.li
-            className="st st--main"
+            className="st st--main cx-spotlight"
+            onMouseMove={handleSpotlightMove}
             initial={reduce ? false : { opacity: 0, y: REVEAL.cardDist }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -131,7 +134,8 @@ export default function PrivacySteps() {
 
           {/* STEP 3 */}
           <motion.li
-            className="st"
+            className="st cx-spotlight"
+            onMouseMove={handleSpotlightMove}
             initial={reduce ? false : { opacity: 0, y: REVEAL.cardDist }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}

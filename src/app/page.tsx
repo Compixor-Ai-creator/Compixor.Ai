@@ -26,6 +26,7 @@ import WhatUsersSay from '@/components/WhatUsersSay';
 import { tools } from '@/data/tools';
 import '@/components/landing/sections.css';
 import { REVEAL } from '@/lib/reveal';
+import { handleSpotlightMove } from '@/lib/spotlight';
 
 const trustSignals = [
   {
@@ -269,8 +270,10 @@ export default function HomePage() {
       {/* ============ HERO SECTION ============ */}
       <Hero />
 
+      <div className="lab-divider" aria-hidden="true" />
+
       {/* ============ ALL TOOLS CATALOG ============ */}
-      <section id="tools" className="relative py-10 sm:py-16 scroll-mt-20">
+      <section id="tools" className="relative py-10 sm:py-16 scroll-mt-20 dark:bg-[#0E1424]/85">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
@@ -303,10 +306,10 @@ export default function HomePage() {
                 transition={{ duration: REVEAL.dur, ease: REVEAL.ease, delay: idx * REVEAL.stagger }}
                 className="p-3 sm:p-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 backdrop-blur-sm"
               >
-                <div className={`text-xl sm:text-2xl font-black font-display tabular-nums ${stat.color}`}>
+                <div className={`font-mono text-xl sm:text-2xl font-black tabular-nums ${stat.color}`}>
                   {stat.val}
                 </div>
-                <div className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+                <div className="font-mono text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">
                   {stat.label}
                 </div>
               </motion.div>
@@ -332,7 +335,7 @@ export default function HomePage() {
                 >
                   <span>{cat === 'All' ? 'All Tools' : `${cat} Tools`}</span>
                   <span
-                    className={`text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
+                    className={`font-mono text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
                       isSelected
                         ? 'bg-white/20 text-white'
                         : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400'
@@ -380,7 +383,8 @@ export default function HomePage() {
                 >
                   <Link
                     href={tool.href}
-                    className="glass-card group p-6 rounded-3xl flex flex-col justify-between h-full relative overflow-hidden transition-[transform,border-color] duration-[220ms] [@media(hover:hover)]:hover:-translate-y-[6px] [@media(hover:hover)]:hover:border-brand-500/50 active:scale-[0.97] active:duration-[120ms]"
+                    onMouseMove={handleSpotlightMove}
+                    className="glass-card cx-spotlight group p-6 rounded-3xl flex flex-col justify-between h-full relative overflow-hidden transition-[transform,border-color,box-shadow] duration-[200ms] [@media(hover:hover)]:hover:-translate-y-[4px] [@media(hover:hover)]:hover:border-brand-500/50 active:scale-[0.97] active:duration-[120ms]"
                     style={{ transitionTimingFunction: "var(--reveal-ease)" }}
                   >
                     <div
@@ -396,7 +400,7 @@ export default function HomePage() {
                         >
                           <Icon className="w-6 h-6" />
                         </div>
-                        <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md border ${
+                        <span className={`font-mono text-[11px] font-semibold px-2.5 py-0.5 rounded-md border ${
                           !isServerTool && tool.processing === 'local'
                             ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
                             : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
@@ -414,9 +418,9 @@ export default function HomePage() {
                         {descriptionText}
                       </div>
                     </div>
-                    <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
+                    <div className="pt-4 border-t border-zinc-200/60 dark:border-white/[0.06]">
                       <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-                        <span>{tool.stats}</span>
+                        <span className="font-mono text-[11px]">{tool.stats}</span>
                         <span className="text-brand-500 flex items-center gap-1 font-semibold">
                           <span>Launch Tool</span>
                           <span
@@ -434,18 +438,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      <div className="lab-divider" aria-hidden="true" />
+
       {/* ============ HOW-TO ARTICLE (Sole article tag on page) ============ */}
       <motion.article
         id="how-to-article"
-        className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="relative py-10 sm:py-16 scroll-mt-20 dark:bg-[#0B0F1A]/85"
         initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
       >
-        <div className="glass-card p-6 sm:p-10 md:p-12 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="glass-card p-6 sm:p-10 md:p-12 rounded-3xl border border-zinc-200/80 dark:border-white/[0.06] shadow-xl">
           <div className="mb-4">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-brand-500/10 text-brand-700 dark:text-brand-300 border border-brand-500/20">
+            <span className="font-mono inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-brand-500/10 text-brand-700 dark:text-brand-300 border border-brand-500/20">
               <BookOpen className="w-3.5 h-3.5 text-brand-500" />
               Step-by-Step Guide
             </span>
@@ -458,10 +465,11 @@ export default function HomePage() {
             {howToSteps.map((step) => (
               <li
                 key={step.step}
-                className="p-5 sm:p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex flex-col justify-between"
+                onMouseMove={handleSpotlightMove}
+                className="cx-spotlight p-5 sm:p-6 rounded-2xl bg-zinc-50/70 dark:bg-[#111827]/70 border border-zinc-200/60 dark:border-white/[0.06] flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-brand-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-sm shadow-brand-500/30">
+                  <div className="font-mono w-10 h-10 rounded-xl bg-brand-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-sm shadow-brand-500/30">
                     {step.step}
                   </div>
                   <h3 id={`how-to-step-${step.step}`} className="text-base font-bold font-display text-zinc-900 dark:text-white mb-2">
@@ -475,25 +483,33 @@ export default function HomePage() {
             ))}
           </ol>
         </div>
+        </div>
       </motion.article>
+
+      <div className="lab-divider" aria-hidden="true" />
 
       {/* ============ PHASE 3: WHAT HAPPENS TO YOUR FILE ============ */}
       <PrivacySteps />
 
+      <div className="lab-divider" aria-hidden="true" />
+
       {/* ============ PHASE 3: USE CASES ============ */}
       <UseCases />
+
+      <div className="lab-divider" aria-hidden="true" />
 
       {/* ============ STRUCTURED COMPARISON TABLE ============ */}
       <motion.section
         id="privacy-comparison"
-        className="relative py-10 sm:py-16 scroll-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="relative py-10 sm:py-16 scroll-mt-20 dark:bg-[#0E1424]/85"
         initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
       >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-8">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 mb-3">
+          <span className="font-mono inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 mb-3">
             <Shield className="w-3.5 h-3.5 text-emerald-500" />
             Architecture Comparison
           </span>
@@ -555,12 +571,15 @@ export default function HomePage() {
             </tbody>
           </table>
         </div>
+        </div>
       </motion.section>
+
+      <div className="lab-divider" aria-hidden="true" />
 
       {/* ============ TRUST ARCHITECTURE ============ */}
       <motion.section
         id="trust-architecture"
-        className="relative py-10 sm:py-16"
+        className="relative py-10 sm:py-16 dark:bg-[#0B0F1A]/85"
         initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
@@ -583,7 +602,8 @@ export default function HomePage() {
               return (
                 <div
                   key={i}
-                  className="glass-card p-5 sm:p-6 text-center rounded-2xl transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:border-brand-500/30 group"
+                  onMouseMove={handleSpotlightMove}
+                  className="glass-card cx-spotlight p-5 sm:p-6 text-center rounded-2xl transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:border-brand-500/30 group"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mx-auto mb-4 text-brand-500 group-hover:scale-105 transition-transform duration-200 ease-out">
                     <Icon className="w-6 h-6" />
@@ -601,20 +621,22 @@ export default function HomePage() {
         </div>
       </motion.section>
 
+      <div className="lab-divider" aria-hidden="true" />
+
       {/* ============ SEMANTIC GLOSSARY <dl> ============ */}
       <motion.aside
         id="terminology-glossary"
         aria-label="Privacy and Architecture Glossary"
-        className="relative py-10 sm:py-16 scroll-mt-20"
+        className="relative py-10 sm:py-16 scroll-mt-20 dark:bg-[#0E1424]/85"
         initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="glass-card p-6 sm:p-10 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl">
+          <div className="glass-card p-6 sm:p-10 rounded-3xl border border-zinc-200/80 dark:border-white/[0.06] shadow-xl">
             <div className="text-center max-w-2xl mx-auto mb-8">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 mb-3">
+              <span className="font-mono inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 mb-3">
                 <Layers className="w-3.5 h-3.5 text-purple-500" />
                 Key Concepts
               </span>
@@ -630,7 +652,8 @@ export default function HomePage() {
               {glossaryTerms.map((item, idx) => (
                 <div
                   key={idx}
-                  className="p-4 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60"
+                  onMouseMove={handleSpotlightMove}
+                  className="cx-spotlight p-4 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-[#111827]/70 border border-zinc-200/60 dark:border-white/[0.06]"
                 >
                   <dt className="text-sm font-bold font-display text-zinc-900 dark:text-white mb-1.5 flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-brand-500 inline-block"></span>
@@ -646,21 +669,28 @@ export default function HomePage() {
         </div>
       </motion.aside>
 
+      <div className="lab-divider" aria-hidden="true" />
+
       {/* ============ WHY TRUST COMPIXOR ============ */}
       <WhyTrustCompixor />
+
+      <div className="lab-divider" aria-hidden="true" />
 
       {/* ============ WHAT USERS SAY ============ */}
       <WhatUsersSay />
 
+      <div className="lab-divider" aria-hidden="true" />
+
       {/* ============ FAQ SECTION (Modern Accordion with Live Filter & Direct Sibling Pairs) ============ */}
       <motion.section
         id="faq-section"
-        className="pt-20 sm:pt-28 pb-10 sm:pb-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24"
+        className="pt-20 sm:pt-28 pb-10 sm:pb-16 dark:bg-[#0B0F1A]/85 scroll-mt-24"
         initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: REVEAL.dur, ease: REVEAL.ease }}
       >
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 sm:mb-10">
           <h2 id="common-questions" className="text-3xl sm:text-4xl font-black font-display text-zinc-900 dark:text-white mb-3">
             Questions About Our Free PDF, Word and Photo Tools
@@ -779,12 +809,15 @@ export default function HomePage() {
             </div>
           )}
         </div>
+        </div>
       </motion.section>
+
+      <div className="lab-divider" aria-hidden="true" />
 
       {/* ============ CTA BOX ============ */}
       <motion.section
         id="cta-section"
-        className="py-10 sm:py-16 relative overflow-hidden"
+        className="py-10 sm:py-16 relative overflow-hidden dark:bg-[#0E1424]/85"
         initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}

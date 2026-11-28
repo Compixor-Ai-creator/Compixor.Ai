@@ -254,7 +254,8 @@ export default function WhatUsersSay() {
       {/* ============ WHAT USERS SAY SECTION ============ */}
       {items.length === 0 ? (
         // Clean empty state when no reviews exist yet
-        <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <section className="py-10 sm:py-16 md:py-20 dark:bg-[#0E1424]/85 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="glass-card p-5 sm:p-8 md:p-12 rounded-3xl max-w-xl mx-auto text-center border border-zinc-200/70 dark:border-zinc-800/60 shadow-sm"
             initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
@@ -280,10 +281,12 @@ export default function WhatUsersSay() {
               <span>Share Your Feedback</span>
             </button>
           </motion.div>
+          </div>
         </section>
       ) : (
         // Reviews Grid when reviews exist
-        <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <section className="py-10 sm:py-16 md:py-20 dark:bg-[#0E1424]/85 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 sm:mb-10"
             initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
@@ -353,6 +356,7 @@ export default function WhatUsersSay() {
                 </div>
               </motion.div>
             ))}
+          </div>
           </div>
         </section>
       )}

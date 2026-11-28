@@ -126,8 +126,8 @@ export default function CompixorNavbar() {
               --cglass-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .7  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
             }
             .dark {
-              --cglass-bg: rgba(20,18,35,0.72);
-              --cglass-border: rgba(255,255,255,0.10);
+              --cglass-bg: rgba(11,15,26,0.60);
+              --cglass-border: rgba(255,255,255,0.08);
               --cglass-shadow: 0 20px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
             }
 
@@ -165,23 +165,25 @@ export default function CompixorNavbar() {
               }
             }
 
-            /* Dark mode: clean solid header + panel, no glass/noise overlay on any screen */
+            /* Dark mode: Privacy Lab floating glass header */
             .dark .cnav-glass {
-              background-color: #0f172a !important;
+              background-color: rgba(11, 15, 26, 0.60) !important;
               background-image: none !important;
-              border-color: rgba(255, 255, 255, 0.08) !important;
+              backdrop-filter: blur(20px) saturate(160%) !important;
+              -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+              border: 1px solid rgba(255, 255, 255, 0.08) !important;
             }
             .dark .cglass::after { display: none !important; }
             .dark .cnav-bar {
-              background: rgba(15, 23, 42, 0.92);
-              border: 1px solid rgba(255, 255, 255, 0.06);
+              background: transparent;
+              border: 1px solid transparent;
             }
 
             @media (max-width: 1023px) {
               .dark .cnav-panel {
-                background: #0f172a !important;
+                background: #0E1424 !important;
                 border: 1px solid rgba(255, 255, 255, 0.08);
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
               }
               .dark .cnav-panel::after { display: none !important; }
               .dark .cnav-backdrop {
@@ -319,8 +321,10 @@ export default function CompixorNavbar() {
             .cnav-drop-desc  { display: block; font-size: 12px; opacity: 0.7; }
 
             .dark .cnav-drop {
-              background: rgba(20, 18, 35, 0.82);
-              border-color: rgba(255, 255, 255, 0.10);
+              background: rgba(11, 15, 26, 0.88);
+              backdrop-filter: blur(20px) saturate(160%);
+              -webkit-backdrop-filter: blur(20px) saturate(160%);
+              border: 1px solid rgba(255, 255, 255, 0.08);
             }
             .dark .cnav-drop-item { color: #f3f0ff; }
 
@@ -555,10 +559,10 @@ export default function CompixorNavbar() {
             <Link
               href="/#tools"
               className="
-                hidden sm:inline-block rounded-xl bg-gradient-to-r from-[#6d28d9] to-[#7c3aed]
+                hidden sm:inline-block rounded-xl bg-gradient-to-r from-[#6d28d9] via-[#7c3aed] to-[#8b5cf6]
                 px-4 py-2 text-sm font-semibold text-white
-                shadow-md shadow-purple-600/25
-                hover:opacity-95 hover:shadow-lg hover:shadow-purple-600/35
+                shadow-md shadow-purple-600/25 dark:shadow-[0_0_20px_rgba(124,58,237,0.45)]
+                hover:opacity-95 hover:shadow-lg hover:shadow-purple-600/35 dark:hover:shadow-[0_0_26px_rgba(124,58,237,0.65)]
                 active:scale-[0.98] transition-[transform,opacity,box-shadow] duration-200 ease-out
               "
             >

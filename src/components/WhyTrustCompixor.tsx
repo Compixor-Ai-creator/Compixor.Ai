@@ -4,6 +4,7 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Cpu, UserX, LayoutGrid, CheckCircle } from 'lucide-react';
 import { REVEAL } from '@/lib/reveal';
+import { handleSpotlightMove } from '@/lib/spotlight';
 
 const trustPoints = [
   {
@@ -40,7 +41,8 @@ export default function WhyTrustCompixor() {
   const reduce = useReducedMotion();
 
   return (
-    <section className="py-10 sm:py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <section className="py-10 sm:py-16 md:py-20 dark:bg-[#0B0F1A]/85 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <motion.div
         className="text-center max-w-2xl mx-auto mb-8 sm:mb-12"
         initial={reduce ? false : { opacity: 0, y: REVEAL.dist }}
@@ -66,7 +68,8 @@ export default function WhyTrustCompixor() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: REVEAL.dur, delay: index * REVEAL.stagger, ease: REVEAL.ease }}
-              className="glass-card p-5 sm:p-6 rounded-2xl flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-lg transition-[transform,box-shadow] duration-200 ease-out"
+              className="glass-card cx-spotlight p-5 sm:p-6 rounded-2xl flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-lg transition-[transform,box-shadow] duration-200 ease-out"
+              onMouseMove={handleSpotlightMove}
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center mb-4">
@@ -82,6 +85,7 @@ export default function WhyTrustCompixor() {
             </motion.div>
           );
         })}
+      </div>
       </div>
     </section>
   );
