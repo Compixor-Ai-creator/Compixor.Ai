@@ -6,11 +6,13 @@ import Link from "next/link";
 import TabletFlatten from "./TabletFlatten";
 import HeroTitle from "./HeroTitle";
 import HeroScrollLayer from "./HeroScrollLayer";
+import HeroDebugBadge from "./HeroDebugBadge";
 import "./hero.css";
 
 export default function Hero() {
   return (
     <section className="cx-hero" aria-labelledby="cx-hero-title">
+      <HeroDebugBadge />
       <div className="cx-hero__stage">
         <div className="cx-hero__inner">
           <div className="cx-badge cx-rise">
