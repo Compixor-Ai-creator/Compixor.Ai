@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 
 export default function HeroDebugBadge() {
-  const [isDebug, setIsDebug] = useState(false);
   const [data, setData] = useState<{
     reducedMotion: boolean;
     windowScrollY: number;
@@ -14,14 +13,18 @@ export default function HeroDebugBadge() {
   } | null>(null);
 
   useEffect(() => {
-    // Only activate if ?debug=hero is in URL
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("debug") !== "hero") return;
-
-    setIsDebug(true);
+    const checkDebug = () => {
+      if (typeof window === "undefined") return false;
+      const search = window.location.search || "";
+      const hash = window.location.hash || "";
+      return search.includes("debug=hero") || hash.includes("debug=hero");
+    };
 
     const update = () => {
+      if (!checkDebug()) {
+        setData(null);
+        return;
+      }
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const scrollY = Math.round(window.scrollY);
       const scrollTop = Math.round(document.scrollingElement?.scrollTop ?? 0);
@@ -42,14 +45,19 @@ export default function HeroDebugBadge() {
     update();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update, { passive: true });
+    window.addEventListener("popstate", update);
+
+    const interval = setInterval(update, 500);
 
     return () => {
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
+      window.removeEventListener("popstate", update);
+      clearInterval(interval);
     };
   }, []);
 
-  if (!isDebug || !data) return null;
+  if (!data) return null;
 
   return (
     <div
