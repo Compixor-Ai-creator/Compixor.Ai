@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import TabletFlatten from "./TabletFlatten";
 import HeroTitle from "./HeroTitle";
-import HeroScrollLayer from "./HeroScrollLayer";
 import "./hero.css";
 
 export default function Hero() {
@@ -24,17 +23,14 @@ export default function Hero() {
             line2="Photo Tools That Run in Your Browser"
           />
 
-          <HeroScrollLayer range={[0, 260]} y={-60} opacity={0.1}>
-            <p className="cx-sub cx-rise" style={{ animationDelay: "320ms" }}>
+          <p className="cx-sub cx-rise" style={{ animationDelay: "320ms" }}>
               Compixor is a private web toolkit to compress, merge, protect, watermark, and convert
               documents directly in your browser. 9 tools run locally on your device with zero photo
               or document uploads. Specialized utilities (PDF to Word, Image to Word, and Passport
               Photo) process securely over HTTPS with zero permanent file storage.
             </p>
-          </HeroScrollLayer>
 
-          <HeroScrollLayer range={[0, 260]} y={-35} opacity={0.2}>
-            <div className="cx-ctas cx-rise" style={{ animationDelay: "440ms" }}>
+          <div className="cx-ctas cx-rise" style={{ animationDelay: "440ms" }}>
               <Link href="#tools" className="cx-hbtn cx-hbtn--primary">
                 <span>Explore All 12 Tools</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -44,7 +40,6 @@ export default function Hero() {
               </Link>
               <Link href="#what-happens" className="cx-hbtn cx-hbtn--ghost">See How It Works</Link>
             </div>
-          </HeroScrollLayer>
         </div>
 
         <div className="cx-stage-crop">
